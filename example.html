@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Chat Example</title>
+        <link rel="stylesheet" type="text/css" href="./css/wsc.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="./src/lib.js"></script>
+        <script type="text/javascript" src="./src/templates.js"></script>
+        <script type="text/javascript" src="./src/packet.js"></script>
+        <script type="text/javascript" src="./src/protocol.js"></script>
+        <script type="text/javascript" src="./src/tablumps.js"></script>
+        <script type="text/javascript" src="./src/channel.js"></script>
+        <script type="text/javascript" src="./src/client.js"></script>
+        <script type="text/javascript" src="./src/events.js"></script>
+        <script type="text/javascript" src="./src/commands.js"></script>
+        <script type="text/javascript" src="./src/control.js"></script>
+        <script type="text/javascript" src="./src/wsc.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('body').wsc( 'init', {
+                    "domain": 'website.com',
+                    "server": 'ws://address',
+                    "username": "username",
+                    "pk": 'chattoken',
+                    "autojoin": '#Default',
+                });
+                $('body').wsc('connect');
+            });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

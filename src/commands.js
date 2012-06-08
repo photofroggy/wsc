@@ -1,0 +1,180 @@
+/* wsc commands - photofroggy
+ * Commands for the user to use.
+ */
+
+// Create our extension and return it.
+function wsc_extdefault( client ) {
+
+    var extension = {
+    
+        client: null,
+        
+        init: function( client ) {
+            this.client = client;
+            // Commands.
+            this.client.addListener('cmd.join.wsc', this.join);
+            this.client.addListener('cmd.part.wsc', this.part);
+            this.client.addListener('cmd.title.wsc', this.title);
+            this.client.addListener('cmd.promote.wsc', this.promote);
+            this.client.addListener('cmd.me.wsc', this.action);
+            this.client.addListener('cmd.kick.wsc', this.kick);
+            this.client.addListener('cmd.raw.wsc', this.raw);
+            this.client.addListener('cmd.say.wsc', this.say);
+            this.client.addListener('cmd.npmsg.wsc', this.npmsg);
+            // userlistings
+            this.client.addListener('set.userlist.wsc', this.setUsers);
+        },
+        
+        // Join a channel
+        join: function( e ) {
+            chans = e.args.split(' ');
+            
+            if( e.ns != e.target )
+                chans.unshift(e.target);
+            
+            if( chans.toString() == '' )
+                return;
+            
+            for( index in chans )
+                extension.client.join(chans[index]);
+        },
+        
+        // Leave a channel
+        part: function( e ) {
+            chans = e.args.split(' ');
+            if( e.ns != e.target )
+                chans.unshift(e.target);
+            //console.log(chans);
+            //console.log(chans.length + ', ' + (chans.toString() == ''));
+            if( chans.toString() == '' ) {
+                extension.client.part(e.ns);
+                return;
+            }
+            for( index in chans )
+                extension.client.part(chans[index]);
+        },
+        
+        // Set the title
+        title: function( e ) {
+            extension.client.title(e.target, e.args);
+        },
+        
+        // Promote user
+        promote: function( e ) {
+            bits = e.args.split(' ');
+            extension.client.promote(e.target, bits[0], bits[1]);
+        },
+        
+        // Send a /me action thingy.
+        action: function( e ) {
+            extension.client.action(e.target, e.args);
+        },
+        
+        // Send a raw packet.
+        raw: function( e ) {
+            extension.client.send( e.args.replace(/\\n/gm, "\n") );
+        },
+        
+        // Kick someone.
+        kick: function( e ) {
+            d = e.args.split(' ');
+            u = d.shift();
+            r = d.length > 0 ? d.join(' ') : null;
+            extension.client.kick( e.target, u, r );
+        },
+        
+        // Say something.
+        say: function( e ) {
+            extension.client.say( e.target, e.args );
+        },
+        
+        npmsg: function( e ) {
+            extension.client.npmsg( e.target, e.args );
+        },
+        
+        // Set users, right?
+        setUsers: function( e ) {
+            var chan = extension.client.channel(e.ns);
+            users = chan.userpanel.find('li a');
+            users.each(
+                function( index, item ) {
+                    var usertag = chan.userpanel.find(item);
+                    var username = usertag.html();
+                    var info = chan.info['members'][username];
+                    var infobox = null;
+                    usertag.data('hover', 0);
+                    
+                    function hovering( elem, x, y ) {
+                        o = elem.offset();
+                        eb = elem.outerHeight(true) + o.top;
+                        er = elem.outerWidth(true) + o.left;
+                        return x >= o.left
+                            && x <= er
+                            && y >= o.top
+                            && y <= eb;
+                    }
+                    
+                    function rembox( ) {
+                        infobox.remove();
+                    }
+                    
+                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+                    
+                    function repl( match, s, i ) {
+                        return info.username[i].toLowerCase();
+                    }
+                    
+                    usertag.hover(
+                        function( e ) {
+                            chan.window.find(this).data('hover', 1);
+                            rn = info.realname ? '<li>'+info.realname+'</li>' : '';
+                            tn = info.typename ? '<li>'+info.typename+'</li>' : '';
+                            ico = extension.client.settings['avatarfile'].replace(ru, repl);
+                            ico = info.usericon == '0' ? extension.client.settings['defaultavatar'] : ico.replacePArg( '{un}', info.username.toLowerCase() );
+                            //<div class="damncri-member">
+                            //  <div class="aside-left avatar alt1">
+                            //      <a target="_blank" href="http://photofroggy.deviantart.com/">
+                            //         <img class="avvie" alt=":iconphotofroggy:" src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1" title="photofroggy">
+                            //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
+                            pane = '<div class="userinfo" id="'+info.username+'">\
+                                <div class="avatar">\
+                                    <a class="avatar" target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">\
+                                        <img class="avatar" alt=":icon'+info.username+':"\
+                                        src="'+extension.client.settings['avatarfolder']+ico+'" />\
+                                    </a>\
+                                </div><div class="info">\
+                                <strong>\
+                                '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
+                                </strong>\
+                                <ul>\
+                                    '+rn+tn+'\
+                                </ul></div>\
+                            </div>';
+                            chan.window.append(pane);
+                            infobox = chan.window.find('.userinfo#'+info.username);
+                            pos = usertag.offset();
+                            infobox.css({ 'top': pos.top - usertag.height(), 'left': pos.left - (infobox.width()) });
+                            infobox.hover(function(){
+                                chan.window.find(this).data('hover', 1);
+                            }, rembox);
+                            infobox.data('hover', 0);
+                            box = chan.userpanel.find('div.userinfo:not(\'#'+info.username+'\')');
+                            box.remove();
+                        },
+                        function( e ) {
+                            chan.window.find(this).data('hover', 0);
+                            if(hovering( infobox, e.pageX, e.pageY ))
+                                return;
+                            rembox();
+                        }
+                    );
+                }
+            );
+        },
+    
+    };
+    
+    extension.init(client);
+    return extension;
+
+}
