@@ -15,20 +15,6 @@
 
 (function( $ ) {
     
-    function inc( $, src ) {
-        $.getScript('/static/chat/' + src + '.js');
-    }
-    
-    /*
-    inc($, 'lib');
-    inc($, 'templates');
-    inc($, 'packet');
-    inc($, 'channel');
-    inc($, 'protocol');
-    inc($, 'commands');
-    inc($, 'client');
-    /**/
-    
     // Client containment.
     //var client = null;
     
