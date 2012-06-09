@@ -24,7 +24,7 @@ function wsc_client( view, options, mozilla ) {
             "userinfo": {},
             "pk": "",
             // Monitor: `ns`
-            "monitor": ['~Monitor', false],
+            "monitor": ['~Monitor', true],
             "welcome": "Welcome to the wsc web client!",
             "autojoin": "chat:channel",
             "protocol": wsc_protocol,
