@@ -26,9 +26,21 @@ div.wsc ul#chattabs li.hidden {
     display: none;
 }
 
+a {
+    color: #69aab8;
+    text-decoration: none;
+}
+
+a:hover { color: #990000 }
+
+a.user em {
+    font-style: normal;
+}
+
 div.wsc ul#chattabs li a {
+    text-decoration: none;
     padding: 7px 10px;
-    margin: auto;
+    margin: 0px 2px;
     background-color: #C3D3DE;
     border: 1px solid #95B4CC;
     border-bottom: none;
@@ -36,6 +48,7 @@ div.wsc ul#chattabs li a {
 }
 
 div.wsc ul#chattabs li a:hover {
+    text-decoration: none;
     background-color: #F5FDFF;
     border: 1px solid #95B4CC;
     border-bottom: none;
@@ -239,8 +252,7 @@ div.wsc div.chatusers h4 {
     padding: 5px;
     border: 1px solid #485875;
     border-left: none;
-    padding: 15px 10px;
-    padding-left: 20px;
+    padding: 2px 10px;
     background-color: #2B58A6;
     color: #EDF8FF;
     -moz-border-radius: none;
@@ -256,7 +268,7 @@ div.wsc div.chatusers h4.first {
 
 div.wsc div.chatusers ul {
     list-style: none;
-    padding: 10px 25px;
+    padding: 4px 10px;
     margin: 0px;
     
 }

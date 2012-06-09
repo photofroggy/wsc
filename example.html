@@ -7,8 +7,8 @@
                 height: 100%;
             }
         </style>
-        <link rel="stylesheet" type="text/css" href="./css/wsc.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./dist/wsc.min.css" />
         <script type="text/javascript" src="./dist/wsc.min.js"></script>
         <script type="text/javascript">
             $(function() {
@@ -19,6 +19,8 @@
                     "pk": 'token',
                     "autojoin": '#Channel'
                 });
+                // Start connecting to the WebSocket proxy.
+                $('.main').wsc( 'connect' );
             });
         </script>
     </head>

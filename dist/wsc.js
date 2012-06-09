@@ -1427,14 +1427,26 @@ function wsc_extdefault( client ) {
                     var infobox = null;
                     usertag.data('hover', 0);
                     
-                    function hovering( elem, x, y ) {
+                    function hovering( elem, x, y, flag ) {
                         o = elem.offset();
                         eb = elem.outerHeight(true) + o.top;
                         er = elem.outerWidth(true) + o.left;
-                        return x >= o.left
+                        
+                        if( x >= o.left
                             && x <= er
                             && y >= o.top
-                            && y <= eb;
+                            && y <= eb)
+                            return true;
+                            
+                        if( flag === true ) {
+                            if( x <= (er + 30)
+                                && x >= o.left
+                                && y >= o.top
+                                && y <= (o.top + 30) )
+                                return true;
+                        }
+                        
+                        return false;
                     }
                     
                     function rembox( ) {
@@ -1476,7 +1488,7 @@ function wsc_extdefault( client ) {
                             chan.window.append(pane);
                             infobox = chan.window.find('.userinfo#'+info.username);
                             pos = usertag.offset();
-                            infobox.css({ 'top': pos.top - usertag.height(), 'left': pos.left - (infobox.width()) });
+                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 18 });
                             infobox.hover(function(){
                                 chan.window.find(this).data('hover', 1);
                             }, rembox);
@@ -1486,7 +1498,7 @@ function wsc_extdefault( client ) {
                         },
                         function( e ) {
                             chan.window.find(this).data('hover', 0);
-                            if(hovering( infobox, e.pageX, e.pageY ))
+                            if(hovering( infobox, e.pageX, e.pageY, true ))
                                 return;
                             rembox();
                         }
