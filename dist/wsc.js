@@ -1344,7 +1344,6 @@ function wsc_extdefault( client ) {
         
         // Connect to the server.
         connect: function( e ) {
-            console.log('hey')
             this.client.connect();
         },
         
