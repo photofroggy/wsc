@@ -1,0 +1,720 @@
+html, body {
+    font: normal 13px arial,sans-serif;
+    line-height: 1.6em;
+}
+
+body {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;/*
+    background-color: #F0F6F7;*/
+    background-color: #85c2ff;
+    color: #124273;
+}
+h1, h2, h3, h4 { color: #044e39;
+    /*font-family: Georgia, "Palatino Linotype", Palatino, "Book Antiqua", "Times New Roman", Times, serif;*/ }
+
+/* MAIN NAVIGATION */
+nav.crest {
+    margin: 0px auto 0px 0px;
+    padding: 0;
+    color: #878787;
+    /*
+    background-color: #FFFFFF;*/
+    background-color: #e5f1ff;
+    /*list-style: none;
+    color: #0000B8;*/
+    border-bottom: 1px solid #c1c1c2;
+    height: 30px;
+    position: fixed;
+    width: 100%;
+    -webkit-box-shadow: 0 0 8px #363636;
+    box-shadow: 0 0 5px #363636;
+}
+
+nav.crest ul {
+    margin: 0;
+    padding: 5px 10px 5px 10px;
+    list-style: none;
+    display: inline;
+    float: left;
+}
+
+nav.crest ul li {
+    display: inline;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+nav.crest ul li a {
+    padding: 5px 10px;
+    margin: 0;
+    border-left: 1px dotted #878787;
+}
+nav.crest ul li a:hover {
+    background-color: #F5FDFF;
+}
+nav.crest ul li:first-child a {
+    border: None;
+}
+
+/* DROPDOWN */
+nav.crest ul li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding: 0;
+    padding-top: 7px;
+    color: #878787;
+    background-color: #FFFFFF;
+    list-style: none;
+    float: left;
+}
+nav.crest ul li:hover ul {
+    display: block;
+    z-index: 401;
+    white-space: nowrap;
+}
+
+nav.crest ul li:hover ul li a {
+    display: block;
+    margin: 0;
+    padding: 10px 30px;
+    border: 1px solid #c1c1c2;
+    border-top: none;
+    border-bottom: none;
+    position: relative;
+}
+
+nav.crest ul li:hover ul li:first-child a {
+}
+
+nav.crest ul li:hover ul li:last-child a {
+    border-bottom: 1px solid #c1c1c2;
+}
+
+/* NAVIGATION RIGHT SIDE */
+nav.crest ul:last-child {
+    float: right;
+}
+/* LOGIN FORM */
+nav.crest ul li form.crest-login {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    padding: 0;
+    padding-top: 7px;
+    color: #878787;
+    background-color: #FFFFFF;
+    list-style: none;
+    float: left;
+}
+nav.crest ul li:hover form.crest-login {
+    display: block;
+    z-index: 401;
+}
+
+nav.crest ul li:hover form.crest-login p {
+    display: block;
+    margin: 0;
+    padding: 10px 30px;
+    border: none;
+    position: relative;
+    border: 1px solid #c1c1c2;
+    border-top: none;
+    border-bottom: none;
+    overflow: hidden;
+}
+/*
+nav.crest ul li:hover form.crest-login section label {
+}*/
+
+nav.crest ul li:hover form.crest-login p input {
+    float: right;
+}
+
+nav.crest ul li:hover form.crest-login p:last-child {
+    border-bottom: 1px solid #c1c1c2;
+}
+
+nav.crest ul:last-child li ul {
+    left: auto;
+    right: 0;
+}
+
+div.body {
+    width: 100%;
+    clear: both;
+    overflow: hidden;
+}
+header.mast {
+    height: auto;
+    border: none;
+    background: none;
+    width: 50%;
+    margin: 3em auto;
+}
+
+header.mast h1 {
+    color: #062d22;
+}
+
+header.mast p {
+    margin-bottom: 0;
+    color: #124273;
+}
+header.mast code {
+    float: right;
+    padding: 0px 20px;
+}
+header.mast code a{
+    color: #21bfbf;
+    font-weight: bold;
+}
+
+div.main {
+    /*background-color: #FFFFFF;*/
+    background-color: #e5f1ff;
+    border-bottom: 1px solid #c1c1c2;
+    overflow: hidden;
+    padding: 0px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    clear: both;
+    height: 90%;
+    /*-webkit-box-shadow: 0 0 5px #363636;
+    box-shadow: 0 -1px #FFFFFF;*/
+    box-shadow: 0 2px 8px #363636;
+}
+
+div.main:not(:first-child) {
+    border-top: 1px solid #c1c1c2;
+    /*-webkit-box-shadow: none;
+    box-shadow: none;*/
+}
+
+div.mainpadded {
+    padding: 0px 10%;
+}
+
+div.mainskinny {
+    overflow: hidden;
+    vertical-align: top;
+    padding: auto;
+    width: 650px;
+    margin: 1em auto;
+}
+
+div.error {
+    background-color: #FFD6D6;
+    border: 1px solid #B82828;
+    margin: 1.2em auto 1.2em auto;
+    padding: 1.2em;
+    color: #910606;
+}
+
+div.error h3 {
+    margin: 0 auto;
+}
+
+div.error p {
+    margin: 0 auto;
+}
+
+div.featured {
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    width: 60%;
+    float: left;
+}
+
+
+footer {
+    clear: both;
+    margin: 15px;
+    text-align: center;
+    font-size: 11px;
+}
+
+p {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+a {
+    color: #69aab8;
+    text-decoration: none;
+}
+
+a:hover { color: #990000 }
+
+a.user em {
+    font-style: normal;
+}
+
+strong {
+    color: #990000;
+    font-style: normal;
+    font-weight: bold;
+}
+
+em { color: #0000B8; }
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h2 span {
+    display: block;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+/* anchor buttons */
+button, a.button, form input[type="submit"] {
+    text-align: middle;
+    padding: 5px;
+    background-color: #1c77e3;
+    background: -webkit-linear-gradient(#1c77e3, #125cb5);
+    border: 1px solid #000000;
+    border-radius: 8px;
+    font-size: 11px;
+    color: #CCFF33
+}
+
+button:hover, a.button:hover, form input[type="submit"]:hover {
+    background-color: #CCFF33;
+    background: -webkit-linear-gradient(#125cb5, #1c77e3);
+    color: #1C77E3;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+ * ============================================================================================= *
+ *                                        PRINTER CSS                                            *
+ * ============================================================================================= *
+ *        This stuff is just for the printer! Again, trying to keep things sweet and simple in   *
+ *        the CSS so I'm trying to keep this part short.                                         *
+ *                                                                                               *
+ *        The CSS in this section relies on the default CSS for the website, which helps keep    *
+ *        the CSS minimal.                                                                       *
+\* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+@media print {
+    nav.crest, nav.notebook ul li:not(.current), div.mclinks { display: none; }
+    div.body { border: none; }
+    header.mast { width: 80%; }
+    div.body code { display: none; }
+    div.featured {
+        float: none;
+        display: block;
+        width: 90%;
+        clear: both;
+        margin: auto;
+        border-bottom: 1px solid #c1c1c2;
+    }
+    div.news {
+        float: none;
+        display: block;
+        width: 90%;
+        margin: auto;
+    }
+    p a { font-weight: bold; }
+}
+
+div.wsc {
+    font: normal 13px verdana, sans-serif;
+    line-height: 1.6em;
+    background-color: #1E4382;
+    color: white;
+    padding-top: 10px;
+}
+
+div.wsc ul#chattabs {
+    clear: both;
+    list-style: none;
+    padding: 0px;
+    margin: 10px;
+    margin-bottom: 5px;
+}
+
+div.wsc ul#chattabs li {
+    display: inline;
+    /*padding: 5px 0px;/**/
+    /*margin-right: 1px;/**/
+}
+
+div.wsc ul#chattabs li.hidden {
+    display: none;
+}
+
+div.wsc ul#chattabs li a {
+    padding: 7px 10px;
+    margin: auto;
+    background-color: #C3D3DE;
+    border: 1px solid #95B4CC;
+    border-bottom: none;
+    border-right: none;
+}
+
+div.wsc ul#chattabs li a:hover {
+    background-color: #F5FDFF;
+    border: 1px solid #95B4CC;
+    border-bottom: none;
+}
+
+div.wsc ul#chattabs li.active {
+    /*padding: 7px 0 5px 0;*/
+}
+
+div.wsc ul#chattabs li.active a {
+    /**/padding: 8px 12px;/**/
+    background-color: #EDF8FF;
+    border: 1px solid #95B4CC;
+    border-bottom: none;
+}
+
+/* Channel book lolol. */
+div.wsc div.chatbook {
+    background-color: #EDF8FF;
+    margin: 0px;
+    padding: 10px;
+    border-top: 1px solid #95B4CC;
+}
+
+div.wsc div.chatbook img {
+    display: inline;
+}
+
+/* Chat view */
+div.wsc div.chatbook div.chatwindow {
+    background-color: #EDF8FF;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+/* Chat headers */
+div.wsc div.chatbook div.chatwindow header {
+    width: auto;
+    background-color: #EDF8FF;
+    color: #48779C;
+    height: auto;
+    overflow: hidden;
+    border-bottom: none;
+    line-height: 1.3em;
+}
+
+div.wsc div.chatwindow header div {
+    margin: 0px;
+    padding: 5px;
+    display: none;
+}
+
+div.wsc div.chatwindow header div p {
+    margin: 0px;
+    padding: 0xp;
+}
+
+div.wsc div.chatwindow header div.title {
+}
+
+div.wsc div.chatwindow header div.topic {
+    background-color: #9ABED6;
+    border: 1px solid #95B4CC;
+    border-bottom: none;
+    color: #2D506B;
+}
+div.wsc div.chatwindow header div a {
+    color: #2042C9;
+}
+div.wsc div.chatwindow header div a:hover {
+    color: #990000;
+}
+
+/* Chat log */
+div.wsc div.chatbook div.chatwindow div.chatlog {
+    background-color: white;
+    color: #48779C;
+    overflow: hidden;
+    float: left;
+    width: 100%;
+    font-size: 12px;
+}
+
+div.wsc div.chatlog a {
+    color: #69AAB8;
+    text-decoration: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+div.wsc div.chatlog a:hover {
+    color: #990000;
+}
+
+div.wsc div.chatlog img {
+    padding: 0px;
+    margin: 0px;
+}
+
+div.chatlog div.logwrap {
+    border: 1px solid #95B4CC;
+    overflow: auto;
+}
+
+/* Chat messages */
+div.wsc p.logmsg {
+    margin: 0px;
+    padding: 0px 5px;
+    overflow: hidden;
+    vertical-align: middle;
+    position: relative;
+    word-wrap: break-word;
+}
+
+/* Highlight messages of interest dawg */
+div.wsc p.logmsg.highlight,
+div.wsc p.logmsg.highlight span {
+    background-color: #DEF0FF;
+}
+
+div.wsc  p.logmsg span {
+    display: table-cell;
+    padding-right: 5px;
+    font-style: Verdana, sans-serif;
+    vertical-align: middle;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+div.wsc p.logmsg span strong {
+    color: inherit;
+}
+
+div.wsc span.ts {
+    color: #91A8BA;
+    font-weight: bold;
+}
+
+div.wsc span.servermsg {
+    font-weight: bold;
+    font-style: normal;
+}
+
+div.wsc p.logmsg .caction {
+    font-weight: normal;
+    font-style: italic;
+}
+
+div.wsc p.logmsg .caction.user em {
+    font-style: italic;
+    font-weight: bold;
+    color: inherit;
+    vertical-align: middle;
+}
+
+div.wsc p.logmsg .cevent {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+div.wsc p.logmsg .cevent.bg {
+    color: #91A8BA;
+}
+
+div.wsc p.logmsg .cevent.bg em {
+    color: #91A8BA;
+}
+
+div.wsc p.logmsg em {
+    color: #48779C;
+    font-weight: normal;
+}
+
+/* User list */
+div.wsc div.chatbook div.chatwindow div.chatusers {
+    margin: 0px;
+    padding: 0px;
+    overflow: auto;
+    max-width: 300px;
+    float: left;
+    display: none;
+    overflow: auto;
+    background-color: #C4DAFF;
+    border: 1px solid #95B4CC;
+    border-left: none;
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers div.pc {
+    padding: 0px;
+    margin: 0p;
+}
+
+div.wsc div.chatusers h3,
+div.wsc div.chatusers h4 {
+    margin: 0px;
+    padding: 5px;
+    border: 1px solid #485875;
+    border-left: none;
+    padding: 15px 10px;
+    padding-left: 20px;
+    background-color: #2B58A6;
+    color: #EDF8FF;
+    -moz-border-radius: none;
+    border-radius: none;
+    font-size: 12px;
+}
+
+div.wsc div.chatusers h3.first,
+div.wsc div.chatusers h4.first {
+    -moz-border-radius: inherit;
+    border-radius: inherit;
+}
+
+div.wsc div.chatusers ul {
+    list-style: none;
+    padding: 10px 25px;
+    margin: 0px;
+    
+}
+
+div.wsc div.chatusers ul li {
+    font-size: 11px;
+    position: relative;
+}
+
+div.wsc div.chatusers ul li a {
+    padding: 0px;
+    margin: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers ul li a:hover {
+    color: #990000;
+}
+
+/* Userlist info box */
+div.wsc div.userinfo {
+    display: block;
+    position: absolute;
+    padding: 0;
+    background-color: #2B58A6;
+    border: 1px solid #95B4CC;
+    border-right: none;
+}
+div.wsc div.userinfo div {
+    display: block;
+    float: left;
+    padding: 0px;
+    background-color: #C4DAFF;
+}
+
+div.wsc div.userinfo div.avatar {
+    background: none;
+    height: 100%;
+    padding: 5px;
+}
+
+div.wsc div.userinfo a.avatar {
+    padding: 0px;
+}
+
+div.wsc div.userinfo div.avatar a img {
+    height: 50px;
+    width: 50px;
+    padding: 0px;
+    margin: 0px;
+}
+
+div.wsc div.userinfo div.info {
+    padding-right: 5px;
+    padding-left: 5px;
+    color: #2D506B;
+    height: 60px;
+    margin: 0px;
+}
+
+div.wsc div.userinfo div ul {
+    margin: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.userinfo div ul li {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-size: 11px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers ul li:hover div {
+    display: block;
+    z-index: 500;
+    white-space: nowrap;
+    float: left;
+}
+
+/* Input panel */
+div.wsc div.chatcontrol {
+    clear: both;
+    margin: 0px;
+    padding: 0px;
+    background-color: #EDF8FF;
+    color: #2D506B;
+    width: 100%;
+    padding-left: 10px;
+}
+div.wsc p {
+    margin: 0px;
+    padding: 0px;
+    padding-left: 5px;
+}
+div.wsc form.msg {
+    clear: both;
+    padding: 5px 0px;
+    width: 100%;
+}
+
+div.wsc form.msg input.msg {
+    width: 60%;
+}
+
+div.wsc form.msg input[type="submit"] {
+    text-align: middle;
+    padding: 5px 10px;
+    background: none;
+    background-color: #C4DAFF;
+    border: 1px solid #95B4CC;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-size: 13px;
+    color: #2D506B;
+    -webkit-box-shadow: 1px 1px 2px black;
+    -moz-box-shadow: 1px 1px 2px black;
+    box-shadow: 1px 1px 2px black;
+}
+
+div.wsc form.msg input[type="submit"]:hover {
+    background: none;
+    /*background-color: #95B4CC;*/
+    background-color: #C4DAFF;
+    border: 1px solid #C4DAFF;
+    color: #2D506B;
+    /*color: #EDF8FF;*/
+    cursor: pointer;
+    -webkit-box-shadow: inset 1px 1px 2px black;
+    -moz-box-shadow: inset 1px 1px 2px black;
+    box-shadow: inset 1px 1px 2px black;
+}
