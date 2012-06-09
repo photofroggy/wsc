@@ -24,7 +24,7 @@ function wsc_client( view, options, mozilla ) {
             "userinfo": {},
             "pk": "",
             // Monitor: `ns`
-            "monitor": ['~Wsc', ''],
+            "monitor": ['~Monitor', false],
             "welcome": "Welcome to the wsc web client!",
             "autojoin": "chat:channel",
             "protocol": wsc_protocol,
@@ -80,9 +80,6 @@ function wsc_client( view, options, mozilla ) {
             // Welcome!
             this.monitor(this.settings["welcome"]);
             
-            select = this.deform_ns(this.mns).slice(1).toLowerCase();
-            this.view.find('#' + select + '-tab').addClass(this.settings["monitor"][1]);
-            
         },
         
         // Register a listener with an event.
@@ -124,7 +121,13 @@ function wsc_client( view, options, mozilla ) {
         // How many channels are we joined in?
         channels: function( ) {
             // - 2 because we always has at least 2 tabs open. Change for release.
-            return Object.size(this.channelo) - 2;
+            chans = -1;
+            for(ns in client.channelo) {
+                if( client.channelo[ns].hidden )
+                    continue;
+                chans++;
+            }
+            return chans;
         },
         
         // Start the client.
@@ -165,7 +168,8 @@ function wsc_client( view, options, mozilla ) {
             this.tabul = this.view.find('#chattabs');
             this.chatbook = this.view.find('div.chatbook');
             // The monitor channel is essentially our console for the chat.
-            this.createChannel(this.settings["monitor"][0], this.settings["monitor"][1]);
+            hide = this.settings.monitor[1];
+            this.createChannel(this.mns, hide);
             this.control.setInput();
             this.control.focus();
             /*
@@ -216,12 +220,11 @@ function wsc_client( view, options, mozilla ) {
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         createChannel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns));
+            chan = this.channel(ns, wsc_channel(this, ns), toggle);
             chan.build();
             this.toggleChannel(ns);
-            
             if( toggle )
-                chan.toggleTabClass(toggle);
+                chan.invisible();
         },
         
         // Remove a channel from the client and the GUI.

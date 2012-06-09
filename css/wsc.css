@@ -70,6 +70,7 @@ div.wsc div.chatbook {
     background-color: #EDF8FF;
     margin: 0px;
     padding: 10px;
+    padding-bottom: 0px;
     border-top: 1px solid #95B4CC;
 }
 
@@ -172,7 +173,6 @@ div.wsc p.logmsg.highlight span {
 div.wsc  p.logmsg span {
     display: table-cell;
     padding-right: 5px;
-    font-style: Verdana, sans-serif;
     vertical-align: middle;
     margin-top: auto;
     margin-bottom: auto;
