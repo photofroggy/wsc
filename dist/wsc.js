@@ -876,9 +876,6 @@ function wsc_tablumps( client ) {
                 tag = working.substring(0, ti + 1);
                 working = working.substring(ti + 1);
                 
-                if( tag.indexOf(' ') > -1 )
-                    continue;
-                
                 if( !( tag in this.lumps ) )
                     continue;
                 
@@ -892,6 +889,7 @@ function wsc_tablumps( client ) {
                     parsed = lump[1](cropping[0]);
                 
                 data = primer + parsed + cropping[1];
+                i = i + (parsed.length - 2);
                 
             }
             
