@@ -93,7 +93,7 @@ function wsc_protocol( client ) {
         init: function( client ) {
             this.client = client;
             this.mapper['recv'] = this.map_recv;
-            this.tablumps = this.client.settings['tablumps'](client);
+            this.tablumps = this.client.settings['tablumps'](client.settings);
             
             //var proto = this;
             //console.log(client.view);

@@ -74,6 +74,28 @@ String.prototype.replacePArg = function( search, replace ) {
     return replaceAll(this, search, replace);
 };
 
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};
+
+String.prototype.replaceAll = function ( search, replace ) {
+    return replaceAllRaw( this, search, replace );
+};
+
+// Replace all stuff with some shit idk.
+replaceAllRaw = function ( text, search, replace ) {
+    while( text.indexOf( search ) > -1 ) {
+        text = text.replace( search, replace );
+    }
+    return text;
+};
+
 replaceAll = function( text, search, replace ) {
     search = new RegExp(EscapeRegExp(search), 'g');
     return text.replace(search, replace || '');

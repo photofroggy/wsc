@@ -14,11 +14,6 @@
  * characters being used as delimeters. The job of this class is to
  * replace tablumps with readable strings, or to extract the data
  * given in the tablumps.
- *
- * At the moment we use regular expressions to parse tablumps, this is
- * a terrible idea! TODO: Use simpler string operations to avoid using regex
- * everywhere. To do this we need to define the tablump syntax a little more
- * concretely.
  */
 
 // Create a tablump parser object.
@@ -26,146 +21,120 @@ function wsc_tablumps( client ) {
     
     var tablumps = {
         client: null,
-        expressions: null,
-        replace: null,
+        lumps: null,
+        repl: null,
         titles: null,
         subs: null,
     
-        init: function( client ) {
+        init: function( opts ) {
             // Populate the expressions and replaces used when parsing tablumps.
             if( this.expressions )
                 return;
-            this.client = client;
-            var domain = client.settings['domain'];
-            var dav = client.settings['defaultavatar'];
-            var avfold = client.settings['avatarfolder'];
-            var avfile = client.settings['avatarfile'];
-            var emfold = client.settings['emotefolder'];
-            var thfold = client.settings['thumbfolder'];
-            // Regular expression objects used to find any complicated tablumps.
-            this.expressions = [
-                new RegExp('\&avatar\t([a-zA-Z0-9-]+)\t([0-9]+)\t', 'g'),
-                new RegExp('\&dev\t(.)\t([a-zA-Z0-9-]+)\t', 'g'),
-                new RegExp("\&emote\t([^\t]+)\t([0-9]+)\t([0-9]+)\t(.*?)\t([a-z0-9./=-_]+)\t", 'g'),
-                new RegExp("\&a\t([^\t]+)\t([^\t]*)\t", 'g'),
-                new RegExp("\&link\t([^\t]+)\t&\t", 'g'),
-                new RegExp("\&link\t([^\t]+)\t([^\t]+)\t&\t", 'g'),
-                new RegExp("\&acro\t([^\t]+)\t(.*)&\/acro\t", 'g'),
-                new RegExp("\&abbr\t([^\t]+)\t(.*)&\/abbr\t", 'g'),
-                //new RegExp("\&thumb\t(?P<ID>[0-9]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t", 'g'),
-                new RegExp("\&img\t([^\t]+)\t([^\t]*)\t([^\t]*)\t", 'g'),
-                new RegExp("\&iframe\t([^\t]+)\t([0-9%]*)\t([0-9%]*)\t&\/iframe\t", 'g'),
-            ]
-            this.titles = ['avatar', 'dev', 'emote', 'a', 'link', 'link', 'acronym', 'abbr', 'thumb', 'img', 'iframe'];
-            // Regular expression objects used to find and replace complicated tablumps.
-            this.subs = [
-                [new RegExp("\&avatar\t([a-zA-Z0-9-]+)\t([0-9]+)\t", 'g'),
-                    function( match, un, icon ) {
-                        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+            var domain = opts['domain'];
+            var dav = opts['defaultavatar'];
+            var avfold = opts['avatarfolder'];
+            var avfile = opts['avatarfile'];
+            var emfold = opts['emotefolder'];
+            var thfold = opts['thumbfolder'];
+            
+            // This array defines the regex for replacing the simpler tablumps.
+            this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|br|a|iframe)\t/g, '<$1$2>'];
+            
+            /* Tablumps formatting rules.
+             * This object can be defined as follows:
+             *     lumps[tag] => [ arguments, format ]
+             * ``tag`` is the tablumps-formatted tag to process.
+             * ``arguments`` is the number of arguments contained in the tablump.
+             * ``format`` is a function which returns the tablump as valid HTML.
+             * Or it's a string template thing. Whichever.
+             */
+            this.lumps = {
+                '&avatar\t': [ 2, function( data ) {
+                    un = data[0];
+                    icon = data[1];
+                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+                
+                    function repl( m, s, i ) {
+                        return un[i].toLowerCase();
+                    }
                     
-                        function repl( m, s, i ) {
-                            return un[i].toLowerCase();
-                        }
-                        
-                        ico = avfile.replace(ru, repl);
-                        ico = icon == '0' ? dav : ico.replacePArg( '{un}', un.toLowerCase() );
-                        return '<a target="_blank" title=":icon'+un+':" href="http://$1.'+domain+'"><img class="avatar"\
-                                alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
-                    }],
-                [new RegExp("\&dev\t(.)\t([a-zA-Z0-9-]+)\t", 'g'),
-                    '$1<a target="_blank" alt=":dev$2:" href="http://$2.'+domain+'/">$2</a>'],
-                [new RegExp("\&emote\t([^\t]+)\t([0-9]+)\t([0-9]+)\t(.*?)\t([a-z0-9./=-_]+)\t", 'g'),
-                    '<img alt="$1" width="$2" height="$3" title="$4" src="'+emfold+'$5" />'],
-                [new RegExp("\&a\t([^\t]+)\t([^\t]*)\t", 'g'), "<a target=\"_blank\" href=\"$1\" title=\"$2\">"],
-                [new RegExp("\&link\t([^\t]+)\t&\t", 'g'), "<a target=\"_blank\" href=\"$1\">[link]</a>"],
-                [new RegExp("\&link\t([^\t]+)\t([^\t]+)\t&\t", 'g'), "<a target=\"_blank\" href=\"$1\" title=\"$2\">$2</a>"],
-                [new RegExp("\&acro\t([^\t]+)\t", 'g'), "<acronym title=\"$1\">"],
-                [new RegExp("\&abbr\t([^\t]+)\t", 'g'), "<abbr title=\"$1\">"],
-                [new RegExp("\&thumb\t([0-9]+)\t([^\t]+)\t([^\ta-zA-Z0-9])([^\t]+)\t([0-9]+)x([[0-9]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t", 'g'), 
-                    function( match, id, t, s, u, w, h, b, f ) {
+                    ico = avfile.replace(ru, repl);
+                    ico = icon == '0' ? dav : ico.replacePArg( '{un}', un.toLowerCase() );
+                    return '<a target="_blank" title=":icon'+un+':" href="http://$1.'+domain+'"><img class="avatar"\
+                            alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
+                }],
+                '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
+                '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
+                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{2}">{2}</a>' ],
+                '&acro\t': [ 1, '<acronym title=\"{0}\">' ],
+                '&abbr\t': [ 1, '<abbr title="{0}">'],
+                '&thumb\t': [ 8, function( match, id, t, s, u, w, h, b, f ) {
+                        id = data[0]; t = data[1]; s = data[2]; u = data[3]; w = data[4]; h = data[5]; b = data[6]; f = data[7];
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+w+'"\
                                 height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
-                // <img class="thumb" title=":stare: by ~Link3Kokiri, 15x15" width="15" height="15" alt=":thumb$1:" src="http://fc03.deviantart.net/fs70/f/2010/222/1/5/_stare__by_Link3Kokiri.png">
-                [new RegExp("\&thumb\t([0-9]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t", 'g'), "<abbr title=\"$2\">:thumb$1:</abbr>"],
-                [new RegExp("\&img\t([^\t]+)\t([^\t]*)\t([^\t]*)\t", 'g'), "<img src=\"$1\" alt=\"$2\" title=\"$3\" />"],
-                [new RegExp("\&iframe\t([^\t]+)\t([0-9%]*)\t([0-9%]*)\t&\/iframe\t", 'g'), "<iframe src=\"$1\" width=\"$2\" height=\"$3\" />"],
-                [new RegExp("<([^>]+) (width|height|title|alt)=\"\"([^>]*?)>", 'g'), "<$1$3>"],
-            ];
-            // Search and replace pairs used to parse simple HTML tags.
-            this.replace = [
-                [new RegExp(EscapeRegExp("&b\t"), 'g'), "<b>"],
-                [new RegExp(EscapeRegExp("&/b\t"), 'g'), "</b>"],
-                [new RegExp(EscapeRegExp("&i\t"), 'g'), "<i>"],
-                [new RegExp(EscapeRegExp("&/i\t"), 'g'), "</i>"],
-                [new RegExp(EscapeRegExp("&u\t"), 'g'), "<u>"],
-                [new RegExp(EscapeRegExp("&/u\t"), 'g'), "</u>"],
-                [new RegExp(EscapeRegExp("&s\t"), 'g'), "<s>"],
-                [new RegExp(EscapeRegExp("&/s\t"), 'g'), "</s>"],
-                [new RegExp(EscapeRegExp("&sup\t"), 'g'), "<sup>"],
-                [new RegExp(EscapeRegExp("&/sup\t"), 'g'), "</sup>"],
-                [new RegExp(EscapeRegExp("&sub\t"), 'g'), "<sub>"],
-                [new RegExp(EscapeRegExp("&/sub\t"), 'g'), "</sub>"],
-                [new RegExp(EscapeRegExp("&code\t"), 'g'), "<code>"],
-                [new RegExp(EscapeRegExp("&/code\t"), 'g'), "</code>"],
-                [new RegExp(EscapeRegExp("&p\t"), 'g'), "<p>"],
-                [new RegExp(EscapeRegExp("&/p\t"), 'g'), "</p>"],
-                [new RegExp(EscapeRegExp("&ul\t"), 'g'), "<ul>"],
-                [new RegExp(EscapeRegExp("&/ul\t"), 'g'), "</ul>"],
-                [new RegExp(EscapeRegExp("&ol\t"), 'g'), "<ol>"],
-                [new RegExp(EscapeRegExp("&/ol\t"), 'g'), "</ol>"],
-                [new RegExp(EscapeRegExp("&li\t"), 'g'), "<li>"],
-                [new RegExp(EscapeRegExp("&/li\t"), 'g'), "</li>"],
-                [new RegExp(EscapeRegExp("&bcode\t"), 'g'), "<bcode>"],
-                [new RegExp(EscapeRegExp("&/bcode\t"), 'g'), "</bcode>"],
-                [new RegExp(EscapeRegExp("&br\t"), 'g'), "\n"],
-                [new RegExp(EscapeRegExp("&/a\t"), 'g'), "</a>"],
-                [new RegExp(EscapeRegExp("&/acro\t"), 'g'), "</acronym>"],
-                [new RegExp(EscapeRegExp("&/abbr\t"), 'g'), "</abbr>"]
-            ];
+                // <img class="thumb" title=":stare: by ~Link3Kokiri, 15x15" width="15" height="15" alt=":thumb{0}:" src="http://fc03.deviantart.net/fs70/f/2010/222/1/5/_stare__by_Link3Kokiri.png">
+                //'&thumb\t': [ [0-9]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t", 'g'), '<abbr title="{1}">:thumb{0}:</abbr>'],
+                '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
+                '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
+                '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
+            };
         
         },
         
-        // Parse any dAmn Tablumps found in our input data.
-        // 
-        // This method will simply return a string with the tablumps
-        // parsed into readable formats.
+        /* Parse tablumps!
+         * This implementation hopefully only uses simple string operations.
+         */
         parse: function( data ) {
             if( !data )
                 return '';
-            for( i in this.replace ) {
-                lump = this.replace[i][0];
-                repl = this.replace[i][1];
-                data = data.replace(lump, repl);
-           }
-           for( i in this.subs ) {
-                expression = this.subs[i][0];
-                repl = this.subs[i][1];
-                //if( typeof(repl) == 'function' )
-                //    data = repl(data, expression);
-                //else
-                    data = data.replace(expression, repl);
+            
+            for( tag in this.lumps ) {
+                while( (i = data.indexOf( tag )) > -1 ) {
+                    info = this.crop( data, tag, i, this.lumps[tag][0] );
+                    f = this.lumps[tag][1];
+                    
+                    if( typeof(f) == 'string' )
+                        parsed = this.lumps[tag][1].format.apply( this.lumps[tag][1], info[1] );
+                    else
+                        parsed = this.lumps[tag][1]( info[1] );
+                    
+                    data = info[0] + parsed + info[2];
+                }
             }
-            return data.replace(/\n/gm, "<br/>") ;
+            
+            data = data.replace(this.repl[0], this.repl[1]);
+            
+            return data;
         },
-    
-        /* Return any dAmn Tablumps found in our input data.
+        
+        /* Crop a tablump!
+         * When we have found a tablump in a string, we want to replace it with
+         * valid HTML. Before we do this we must extract the tablump from the
+         * string, and also extract the information contained in the tablump.
          *
-         * Rather than parsing the tablumps, this method returns the
-         * data given by tablumps. This only works for tablumps where
-         * a regular expression is used for parsing.                    */
-        capture: function( text ) {
-            lumps = {};
-            for( i in this.expressions ) {
-                expression = self.expressions[i];
-                cc = false; //expression.findall(text);
-                if( !cc )
-                    continue;
-                lumps[this.titles[i]] = cc;
+         * This method simply starts at the beginning of the tablump, and
+         * extracts ``limit`` arguments from the tablump. This is used in
+         * conjunction with the ``lumps`` object in this class.
+         */
+        crop: function( data, tag, index, limit, sep ) {
+            sep = sep || '\t';
+            start = data.substring(0, index);
+            rest = data.substring(index + tag.length);
+            bits = [];
+
+            for( i = limit; i > 0; i-- ) {
+                find = rest.indexOf(sep);
+                if( find == -1 )
+                    break;
+                bits.push( rest.substring(0, find) );
+                rest = rest.substring(find + 1);
             }
-            return lumps;
+            
+            return [start, bits, rest];
         },
+        
     };
     
     tablumps.init(client);
