@@ -1,0 +1,3 @@
+#!/bin/bash
+cat src/events.js src/templates.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/commands.js src/client.js src/control.js src/wsc.js > dist/wsc.js
+java -jar /usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar -o dist/wsc.min.js dist/wsc.js 
