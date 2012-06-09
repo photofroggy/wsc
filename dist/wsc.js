@@ -861,18 +861,38 @@ function wsc_tablumps( client ) {
             if( !data )
                 return '';
             
-            for( tag in this.lumps ) {
-                while( (i = data.indexOf( tag )) > -1 ) {
-                    info = this.crop( data, tag, i, this.lumps[tag][0] );
-                    f = this.lumps[tag][1];
-                    
-                    if( typeof(f) == 'string' )
-                        parsed = this.lumps[tag][1].format.apply( this.lumps[tag][1], info[1] );
-                    else
-                        parsed = this.lumps[tag][1]( info[1] );
-                    
-                    data = info[0] + parsed + info[2];
-                }
+            for( i = 0; i < data.length; i++ ) {
+            
+                if( data[i] != '&' )
+                    continue;
+        
+                primer = data.substring(0, i);
+                working = data.substring(i);
+                ti = working.indexOf('\t');
+                
+                if( ti == -1 )
+                    continue;
+                
+                tag = working.substring(0, ti + 1);
+                working = working.substring(ti + 1);
+                
+                if( tag.indexOf(' ') > -1 )
+                    continue;
+                
+                if( !( tag in this.lumps ) )
+                    continue;
+                
+                lump = this.lumps[tag];
+                
+                cropping = this.tokens(working, lump[0]);
+                
+                if( typeof(lump[1]) == 'string' )
+                    parsed = lump[1].format.apply(lump[1], cropping[0]);
+                else
+                    parsed = lump[1](cropping[0]);
+                
+                data = primer + parsed + cropping[1];
+                
             }
             
             data = data.replace(this.repl[0], this.repl[1]);
@@ -880,30 +900,24 @@ function wsc_tablumps( client ) {
             return data;
         },
         
-        /* Crop a tablump!
-         * When we have found a tablump in a string, we want to replace it with
-         * valid HTML. Before we do this we must extract the tablump from the
-         * string, and also extract the information contained in the tablump.
-         *
-         * This method simply starts at the beginning of the tablump, and
-         * extracts ``limit`` arguments from the tablump. This is used in
-         * conjunction with the ``lumps`` object in this class.
+        /* Return n tokens from any given input.
+         * Tablumps contain arguments which are separated by tab characters. This
+         * method is used to crop a specific number of arguments from a given
+         * input.
          */
-        crop: function( data, tag, index, limit, sep ) {
+        tokens: function( data, limit, sep ) {
             sep = sep || '\t';
-            start = data.substring(0, index);
-            rest = data.substring(index + tag.length);
-            bits = [];
-
+            tokens = [];
+            
             for( i = limit; i > 0; i-- ) {
-                find = rest.indexOf(sep);
+                find = data.indexOf(sep);
                 if( find == -1 )
                     break;
-                bits.push( rest.substring(0, find) );
-                rest = rest.substring(find + 1);
+                tokens.push( data.substring(0, find) );
+                data = data.substring(find + 1);
             }
             
-            return [start, bits, rest];
+            return [tokens, data];
         },
         
     };
