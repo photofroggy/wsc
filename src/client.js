@@ -17,14 +17,14 @@ function wsc_client( view, options, mozilla ) {
         events: null,
         settings: {
             "domain": "website.com",
-            "server": "ws://chat.website.com/wsendpoint",
+            "server": "ws://website.com/wsendpoint",
             "agent": "wsc 0.1a",
             "symbol": "",
             "username": "",
             "userinfo": {},
             "pk": "",
             // Monitor: `ns`
-            "monitor": ['~Llama', ''],
+            "monitor": ['~Wsc', ''],
             "welcome": "Welcome to the wsc web client!",
             "autojoin": "chat:channel",
             "protocol": wsc_protocol,
@@ -129,14 +129,16 @@ function wsc_client( view, options, mozilla ) {
         
         // Start the client.
         connect: function( ) {
+            if( client.connected )
+                return;
             // Start connecting!
             if(CanCreateWebsocket()) {
-                this.conn = this.createChatSocket();
+                client.conn = client.createChatSocket();
                 //console.log("connecting");
-                this.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=ok\n\n')});
+                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=ok\n\n')});
             } else {
-                this.monitor("Your browser does not support WebSockets. Sorry.");
-                this.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=no websockets available\n\n')});
+                client.monitor("Your browser does not support WebSockets. Sorry.");
+                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=no websockets available\n\n')});
             }
         },
         
@@ -298,7 +300,7 @@ function wsc_client( view, options, mozilla ) {
         
         monitorAll: function( msg, info ) {
             for( ns in this.channelo )
-                this.channelo[ns].serverMessage(msg, info);s
+                this.channelo[ns].serverMessage(msg, info);
         },
         
         // Write a server message to the UI.

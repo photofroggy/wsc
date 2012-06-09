@@ -130,6 +130,7 @@ function wsc_protocol( client ) {
     
         // WebSocket connection closed!
         closed: function( evt ) {
+            console.log(evt);
             this.client.trigger('closed.wsc', {name: 'closed', pkt: wsc_packet('connection closed\n\n')});
             this.client.monitorAll("Connection closed");
             

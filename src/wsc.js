@@ -45,7 +45,7 @@
         
         client = $(window).data('wscclient');
         
-        if( method == 'init' || ui == undefined ) {
+        if( method == 'init' || client === undefined ) {
             if( client == undefined ) {
                 client = wsc_client( $(this), options, $.browser.mozilla );
                 $(window).resize(client.resizeUI);

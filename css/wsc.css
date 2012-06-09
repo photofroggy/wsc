@@ -1,10 +1,11 @@
 
 
 div.wsc {
+    font: normal 13px verdana, sans-serif;
+    line-height: 1.6em;
     background-color: #1E4382;
     color: white;
     padding-top: 10px;
-    font-family: verdana, sans-serif;
 }
 
 div.wsc ul#chattabs {

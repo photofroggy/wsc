@@ -12,6 +12,8 @@ function wsc_extdefault( client ) {
         init: function( client ) {
             this.client = client;
             // Commands.
+            this.client.addListener('cmd.set.wsc', this.setter);
+            this.client.addListener('cmd.connect.wsc', this.connect);
             this.client.addListener('cmd.join.wsc', this.join);
             this.client.addListener('cmd.part.wsc', this.part);
             this.client.addListener('cmd.title.wsc', this.title);
@@ -23,6 +25,37 @@ function wsc_extdefault( client ) {
             this.client.addListener('cmd.npmsg.wsc', this.npmsg);
             // userlistings
             this.client.addListener('set.userlist.wsc', this.setUsers);
+        },
+        
+        /* Set an option!
+         * We need to be able to set stuff like the username and token if
+         * we want to be able to make a client which can be started without
+         * any configuration information being passed to the init stuff. Woop.
+         */
+        setter: function( e ) {
+            data = e.args.split(' ');
+            setting = data.shift().toLowerCase();
+            data = data.join(' ');
+            if( data.length == 0 ) {
+                this.client.cchannel.serverMessage('Could not set ' + setting, 'No data supplied');
+                return;
+            }
+            
+            if( !( setting in this.client.settings ) ) {
+                this.client.cchannel.serverMessage('Unknown setting "' + setting + '"');
+                return;
+            }
+            
+            this.client.settings[setting] = data;
+            this.client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
+            this.client.control.setLabel();
+            
+        },
+        
+        // Connect to the server.
+        connect: function( e ) {
+            console.log('hey')
+            this.client.connect();
         },
         
         // Join a channel
@@ -88,6 +121,7 @@ function wsc_extdefault( client ) {
             extension.client.say( e.target, e.args );
         },
         
+        // Say something without emotes and shit. Zomg.
         npmsg: function( e ) {
             extension.client.npmsg( e.target, e.args );
         },
