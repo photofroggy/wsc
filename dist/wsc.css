@@ -12,8 +12,8 @@ div.wsc ul#chattabs {
     clear: both;
     list-style: none;
     padding: 0px;
-    margin: 10px;
-    margin-bottom: 5px;
+    margin: 5px;
+    margin-bottom: 2px;
 }
 
 div.wsc ul#chattabs li {
@@ -39,7 +39,7 @@ a.user em {
 
 div.wsc ul#chattabs li a {
     text-decoration: none;
-    padding: 7px 10px;
+    padding: 4px 5px;
     margin: 0px 2px;
     background-color: #C3D3DE;
     border: 1px solid #95B4CC;
@@ -52,6 +52,7 @@ div.wsc ul#chattabs li a:hover {
     background-color: #F5FDFF;
     border: 1px solid #95B4CC;
     border-bottom: none;
+    padding: 5px 7px;
 }
 
 div.wsc ul#chattabs li.active {
@@ -59,7 +60,7 @@ div.wsc ul#chattabs li.active {
 }
 
 div.wsc ul#chattabs li.active a {
-    /**/padding: 8px 12px;/**/
+    padding: 5px 7px;
     background-color: #EDF8FF;
     border: 1px solid #95B4CC;
     border-bottom: none;

@@ -23,8 +23,6 @@ function wsc_tablumps( client ) {
         client: null,
         lumps: null,
         repl: null,
-        titles: null,
-        subs: null,
     
         init: function( opts ) {
             // Populate the expressions and replaces used when parsing tablumps.
@@ -38,7 +36,7 @@ function wsc_tablumps( client ) {
             var thfold = opts['thumbfolder'];
             
             // This array defines the regex for replacing the simpler tablumps.
-            this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|br|a|iframe)\t/g, '<$1$2>'];
+            this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|a|iframe|acro|abbr)\t/g, '<$1$2>'];
             
             /* Tablumps formatting rules.
              * This object can be defined as follows:
@@ -66,7 +64,7 @@ function wsc_tablumps( client ) {
                 '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
                 '&link\t': [ 3, '<a target="_blank" href="{0}" title="{2}">{2}</a>' ],
-                '&acro\t': [ 1, '<acronym title=\"{0}\">' ],
+                '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
                 '&thumb\t': [ 8, function( match, id, t, s, u, w, h, b, f ) {
                         id = data[0]; t = data[1]; s = data[2]; u = data[3]; w = data[4]; h = data[5]; b = data[6]; f = data[7];
@@ -74,11 +72,10 @@ function wsc_tablumps( client ) {
                                 height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
-                // <img class="thumb" title=":stare: by ~Link3Kokiri, 15x15" width="15" height="15" alt=":thumb{0}:" src="http://fc03.deviantart.net/fs70/f/2010/222/1/5/_stare__by_Link3Kokiri.png">
-                //'&thumb\t': [ [0-9]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t([^\t]+)\t", 'g'), '<abbr title="{1}">:thumb{0}:</abbr>'],
                 '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
                 '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
                 '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
+                '&br\t': [ 0, '<br />' ]
             };
         
         },
@@ -92,36 +89,46 @@ function wsc_tablumps( client ) {
             
             for( i = 0; i < data.length; i++ ) {
             
+                // All tablumps start with &!
                 if( data[i] != '&' )
                     continue;
-        
+                
+                // We want to work on extracting the tag. First thing is split
+                // the string at the current index. We don't need to parse
+                // anything to the left of the index.
                 primer = data.substring(0, i);
                 working = data.substring(i);
-                ti = working.indexOf('\t');
                 
+                // Next make sure there is a tab character ending the tag.
+                ti = working.indexOf('\t');
                 if( ti == -1 )
                     continue;
                 
+                // Now we can crop the tag.
                 tag = working.substring(0, ti + 1);
                 working = working.substring(ti + 1);
-                
-                if( !( tag in this.lumps ) )
-                    continue;
-                
                 lump = this.lumps[tag];
                 
+                // If we don't know how to parse the tag, leave it be!
+                if( lump === undefined )
+                    continue;
+                
+                // Crop the rest of the tablump!
                 cropping = this.tokens(working, lump[0]);
                 
+                // Parse the tablump.
                 if( typeof(lump[1]) == 'string' )
                     parsed = lump[1].format.apply(lump[1], cropping[0]);
                 else
                     parsed = lump[1](cropping[0]);
                 
+                // Glue everything back together.
                 data = primer + parsed + cropping[1];
                 i = i + (parsed.length - 2);
                 
             }
             
+            // Replace the simpler tablumps which do not have arguments.
             data = data.replace(this.repl[0], this.repl[1]);
             
             return data;

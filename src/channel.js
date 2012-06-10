@@ -41,7 +41,6 @@ function wsc_channel( client, ns ) {
         
         // Initialise! Create a new channel mofo!
         init: function( client, ns, hidden ) {
-            console.log(ns, hidden);
             var selector = client.deform_ns(ns).slice(1).toLowerCase();
             this.client = client;
             this.hidden = hidden;
@@ -109,7 +108,7 @@ function wsc_channel( client, ns ) {
         
         invisible: function( ) {
             channel.hidden = true;
-            this.tab.addClass('hidden');
+            channel.tab.addClass('hidden');
         },
         
         // Remove a channel from the screen entirely.
