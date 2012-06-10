@@ -61,21 +61,24 @@ function wsc_tablumps( client ) {
                     return '<a target="_blank" title=":icon'+un+':" href="http://$1.'+domain+'"><img class="avatar"\
                             alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
                 }],
-                '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
                 '&link\t': [ 3, '<a target="_blank" href="{0}" title="{2}">{2}</a>' ],
                 '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
+                /* llama does not use this yet. Do not include by default.
+                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.
+                '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
                 '&thumb\t': [ 8, function( match, id, t, s, u, w, h, b, f ) {
                         id = data[0]; t = data[1]; s = data[2]; u = data[3]; w = data[4]; h = data[5]; b = data[6]; f = data[7];
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+w+'"\
                                 height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
+                */
                 '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
                 '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
                 '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-                '&br\t': [ 0, '<br />' ]
+                '&br\t': [ 0, '<br/>' ]
             };
         
         },

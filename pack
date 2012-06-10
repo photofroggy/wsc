@@ -2,7 +2,7 @@
 echo ">> Cleaning ./dist..."
 rm -f dist/*.*
 echo ">> Combining javascript files..."
-cat src/events.js src/templates.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/commands.js src/client.js src/control.js src/wsc.js > dist/wsc.js
+cat src/events.js src/templates.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/extension.js src/commands.js src/client.js src/control.js src/wsc.js > dist/wsc.js
 echo ">> Combining CSS files..."
 cp css/wsc.css dist/wsc.css
 echo ">> Compressing javascript source..."

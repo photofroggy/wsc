@@ -23,6 +23,7 @@ function wsc_protocol( client ) {
             'part': ['ns', ['e', '*r'] ],
             'property': ['ns', ['p', 'by', 'ts'], '*value' ],
             'recv_msg': [null, [['from', 'user']], '*message'],
+            'recv_npmsg': [null, [['from', 'user']], 'message'],
             'recv_action': [null, ['s', ['from', 'user']], '*message'],
             'recv_join': ['user', ['s'], '*info'],
             'recv_part': ['user', ['s', 'r']],
