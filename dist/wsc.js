@@ -137,8 +137,8 @@ function DateStamp(ts) {
 }
 
 // Case insensitive sort function.
-function caseInsesitiveSort( a, b ) {
-    x = String(a).toLowerCase(); y = string(b).toLowerCase();
+function caseInsensitiveSort( a, b ) {
+    x = String(a).toLowerCase(); y = String(b).toLowerCase();
     return ( ( x > y ) ? 1 : ( x == y ? 0 : -1 ) );
 }
 
@@ -1036,7 +1036,7 @@ function wsc_protocol( client ) {
             this.mapper['recv'] = this.map_recv;
             this.tablumps = this.client.settings['tablumps'](client.settings);
             
-            //client.bind("data.wsc", this.debug_pkt);
+            client.bind("data.wsc", this.debug_pkt);
             client.bind('chatserver.wsc', this.chatserver);
             client.bind('dAmnServer.wsc', this.chatserver);
             client.bind('login.wsc', this.login);
@@ -1393,6 +1393,7 @@ function wsc_extdefault( client ) {
         // Join a channel
         join: function( e ) {
             chans = e.args.split(' ');
+            chans = chans.toString() == '' ? [] : chans;
             
             if( e.ns != e.target )
                 chans.unshift(e.target);
@@ -2041,7 +2042,8 @@ function wsc_client( view, options, mozilla ) {
             if(ns.indexOf("pchat:") == 0) {
                 var names = ns.split(":");
                 names.shift();
-                for(var name in names) {
+                for(i in names) {
+                    name = names[i];
                     if(name.toLowerCase() != this.lun) {
                         return '@' + name;
                     }

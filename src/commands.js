@@ -80,6 +80,7 @@ function wsc_extdefault( client ) {
         // Join a channel
         join: function( e ) {
             chans = e.args.split(' ');
+            chans = chans.toString() == '' ? [] : chans;
             
             if( e.ns != e.target )
                 chans.unshift(e.target);

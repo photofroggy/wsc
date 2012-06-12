@@ -484,7 +484,8 @@ function wsc_client( view, options, mozilla ) {
             if(ns.indexOf("pchat:") == 0) {
                 var names = ns.split(":");
                 names.shift();
-                for(var name in names) {
+                for(i in names) {
+                    name = names[i];
                     if(name.toLowerCase() != this.lun) {
                         return '@' + name;
                     }

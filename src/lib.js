@@ -34,8 +34,8 @@ function DateStamp(ts) {
 }
 
 // Case insensitive sort function.
-function caseInsesitiveSort( a, b ) {
-    x = String(a).toLowerCase(); y = string(b).toLowerCase();
+function caseInsensitiveSort( a, b ) {
+    x = String(a).toLowerCase(); y = String(b).toLowerCase();
     return ( ( x > y ) ? 1 : ( x == y ? 0 : -1 ) );
 }
 
