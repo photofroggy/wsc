@@ -3,7 +3,12 @@
  */
 
 // Chat UI.
-wsc_html_ui = '<ul id="chattabs"></ul>\
+wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
+        <ul id="tabnav">\
+            <li><a href="#left" class="button">&laquo;</a></li>\
+            <li><a href="#right" class="button">&raquo;</a></li>\
+        </ul>\
+        </nav>\
         <div class="chatbook"></div>';
 
 wsc_html_control = '<div class="chatcontrol">\

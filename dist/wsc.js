@@ -52,7 +52,12 @@ function EventEmitter() {
  */
 
 // Chat UI.
-wsc_html_ui = '<ul id="chattabs"></ul>\
+wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
+        <ul id="tabnav">\
+            <li><a href="#left" class="button">&laquo;</a></li>\
+            <li><a href="#right" class="button">&raquo;</a></li>\
+        </ul>\
+        </nav>\
         <div class="chatbook"></div>';
 
 wsc_html_control = '<div class="chatcontrol">\
@@ -782,8 +787,7 @@ function wsc_channel( client, ns ) {
  *
  * We refer to these items as "tablumps" because of the tab
  * characters being used as delimeters. The job of this class is to
- * replace tablumps with readable strings, or to extract the data
- * given in the tablumps.
+ * replace tablumps with readable strings.
  */
 
 // Create a tablump parser object.
@@ -832,19 +836,20 @@ function wsc_tablumps( client ) {
                             alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
-                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{2}">{2}</a>' ],
+                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{1}">{1}</a>' ],
                 '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
                 /* llama does not use this yet. Do not include by default.
-                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.
+                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.*/
                 '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
-                '&thumb\t': [ 8, function( match, id, t, s, u, w, h, b, f ) {
-                        id = data[0]; t = data[1]; s = data[2]; u = data[3]; w = data[4]; h = data[5]; b = data[6]; f = data[7];
+                '&thumb\t': [ 7, function( data ) {
+                        id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data['3'].split('x'); b = data[6]; f = data[5];
+                        w = dim[0]; h = dim[1];
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+w+'"\
                                 height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
-                */
+                /**/
                 '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
                 '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
                 '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
@@ -1031,23 +1036,21 @@ function wsc_protocol( client ) {
             this.mapper['recv'] = this.map_recv;
             this.tablumps = this.client.settings['tablumps'](client.settings);
             
-            //var proto = this;
-            //console.log(client.view);
-            //client.addListener("data.wsc", this.debug_pkt);
-            client.addListener('chatserver.wsc', this.chatserver);
-            client.addListener('dAmnServer.wsc', this.chatserver);
-            client.addListener('login.wsc', this.login);
-            client.addListener('join.wsc', this.join);
-            client.addListener('part.wsc', this.part);
-            //client.addListener('kicked.wsc', this.kicked);
-            client.addListener('ping.wsc', this.ping);
-            client.addListener('property.wsc', this.property);
-            client.addListener('recv_join.wsc', this.recv_joinpart);
-            client.addListener('recv_part.wsc', this.recv_joinpart);
-            client.addListener('recv_msg.wsc', this.recv_msg);
-            client.addListener('recv_action.wsc', this.recv_msg);
-            client.addListener('recv_privchg.wsc', this.recv_privchg);
-            client.addListener('recv_kicked.wsc', this.recv_kicked);
+            //client.bind("data.wsc", this.debug_pkt);
+            client.bind('chatserver.wsc', this.chatserver);
+            client.bind('dAmnServer.wsc', this.chatserver);
+            client.bind('login.wsc', this.login);
+            client.bind('join.wsc', this.join);
+            client.bind('part.wsc', this.part);
+            //client.bind('kicked.wsc', this.kicked);
+            client.bind('ping.wsc', this.ping);
+            client.bind('property.wsc', this.property);
+            client.bind('recv_join.wsc', this.recv_joinpart);
+            client.bind('recv_part.wsc', this.recv_joinpart);
+            client.bind('recv_msg.wsc', this.recv_msg);
+            client.bind('recv_action.wsc', this.recv_msg);
+            client.bind('recv_privchg.wsc', this.recv_privchg);
+            client.bind('recv_kicked.wsc', this.recv_kicked);
         },
         
         // What to do with every packet.
@@ -1308,242 +1311,247 @@ function wsc_protocol( client ) {
     protocol.init(client);
     return protocol;
 
-}/* wsc extension - photofroggy
- * Base object for extensions to use. Nothing fancy really.
- */
-
-// Create our extension and return it.
-function wsc_extbase( client ) {
-
-    var extension = {
-    
-        client: null,
-        
-        init: function( client ) {
-            this.client = client;
-        },
-    };
-    
-    extension.init( client );
-    return extension;
-    
 }/* wsc commands - photofroggy
  * Commands for the user to use.
  */
 
-// Create our extension and return it.
+/**
+ * @constructor wsc_extdefault
+ * Create our extension and return it.
+ * @param [Object] client A reference to a {wsc_client.client wsc client object}.
+ * @return [Object] An initialised {wsc_extdefault.extension default extension object}.
+ */
 function wsc_extdefault( client ) {
 
-    var extension = wsc_extbase( client );
-    
-    extension.register = function( ) {
-        // Commands.
-        this.client.addListener('cmd.set.wsc', this.setter);
-        this.client.addListener('cmd.connect.wsc', this.connect);
-        this.client.addListener('cmd.join.wsc', this.join);
-        this.client.addListener('cmd.part.wsc', this.part);
-        this.client.addListener('cmd.title.wsc', this.title);
-        this.client.addListener('cmd.promote.wsc', this.promote);
-        this.client.addListener('cmd.me.wsc', this.action);
-        this.client.addListener('cmd.kick.wsc', this.kick);
-        this.client.addListener('cmd.raw.wsc', this.raw);
-        this.client.addListener('cmd.say.wsc', this.say);
-        this.client.addListener('cmd.npmsg.wsc', this.npmsg);
-        // userlistings
-        this.client.addListener('set.userlist.wsc', this.setUsers);
-    };
-    
-    /* Set an option!
-     * We need to be able to set stuff like the username and token if
-     * we want to be able to make a client which can be started without
-     * any configuration information being passed to the init stuff. Woop.
+    /**
+     * @object extension
+     * The default extension implements the client's default commands.
      */
-    extension.setter = function( e ) {
-        data = e.args.split(' ');
-        setting = data.shift().toLowerCase();
-        data = data.join(' ');
-        if( data.length == 0 ) {
-            this.client.cchannel.serverMessage('Could not set ' + setting, 'No data supplied');
-            return;
-        }
+    var extension = {
+    
+        /**
+         * @constructor init
+         * Initialises the extension.
+         * 
+         * Here, the extension stores a reference to the client and binds the
+         * extension's command handlers to their respective command events.
+         * 
+         * @param [Object] client A reference to a {wsc_client.client wsc client object}.
+         */
+        init: function( client ) {
+            this.client = client;
+            // Commands.
+            this.client.bind('cmd.set.wsc', this.setter);
+            this.client.bind('cmd.connect.wsc', this.connect);
+            this.client.bind('cmd.join.wsc', this.join);
+            this.client.bind('cmd.part.wsc', this.part);
+            this.client.bind('cmd.title.wsc', this.title);
+            this.client.bind('cmd.promote.wsc', this.promote);
+            this.client.bind('cmd.me.wsc', this.action);
+            this.client.bind('cmd.kick.wsc', this.kick);
+            this.client.bind('cmd.raw.wsc', this.raw);
+            this.client.bind('cmd.say.wsc', this.say);
+            this.client.bind('cmd.npmsg.wsc', this.npmsg);
+            // userlistings
+            this.client.bind('set.userlist.wsc', this.setUsers);
+        },
         
-        if( !( setting in this.client.settings ) ) {
-            this.client.cchannel.serverMessage('Unknown setting "' + setting + '"');
-            return;
-        }
-        
-        this.client.settings[setting] = data;
-        this.client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        this.client.control.setLabel();
-        
-    };
-    
-    // Connect to the server.
-    extension.connect = function( e ) {
-        this.client.connect();
-    };
-    
-    // Join a channel
-    extension.join = function( e ) {
-        chans = e.args.split(' ');
-        
-        if( e.ns != e.target )
-            chans.unshift(e.target);
-        
-        if( chans.toString() == '' )
-            return;
-        
-        for( index in chans )
-            extension.client.join(chans[index]);
-    };
-    
-    // Leave a channel
-    extension.part = function( e ) {
-        chans = e.args.split(' ');
-        if( e.ns != e.target )
-            chans.unshift(e.target);
-        //console.log(chans);
-        //console.log(chans.length + ', ' + (chans.toString() == ''));
-        if( chans.toString() == '' ) {
-            extension.client.part(e.ns);
-            return;
-        }
-        for( index in chans )
-            extension.client.part(chans[index]);
-    };
-    
-    // Set the title
-    extension.title = function( e ) {
-        extension.client.title(e.target, e.args);
-    };
-    
-    // Promote user
-    extension.promote = function( e ) {
-        bits = e.args.split(' ');
-        extension.client.promote(e.target, bits[0], bits[1]);
-    };
-    
-    // Send a /me action thingy.
-    extension.action = function( e ) {
-        extension.client.action(e.target, e.args);
-    };
-    
-    // Send a raw packet.
-    extension.raw = function( e ) {
-        extension.client.send( e.args.replace(/\\n/gm, "\n") );
-    };
-    
-    // Kick someone.
-    extension.kick = function( e ) {
-        d = e.args.split(' ');
-        u = d.shift();
-        r = d.length > 0 ? d.join(' ') : null;
-        extension.client.kick( e.target, u, r );
-    };
-    
-    // Say something.
-    extension.say = function( e ) {
-        extension.client.say( e.target, e.args );
-    };
-    
-    // Say something without emotes and shit. Zomg.
-    extension.npmsg = function( e ) {
-        extension.client.npmsg( e.target, e.args );
-    };
-    
-    // Set users, right?
-    extension.setUsers = function( e ) {
-        var chan = extension.client.channel(e.ns);
-        users = chan.userpanel.find('li a');
-        users.each(
-            function( index, item ) {
-                var usertag = chan.userpanel.find(item);
-                var username = usertag.html();
-                var info = chan.info['members'][username];
-                var infobox = null;
-                usertag.data('hover', 0);
-                
-                function hovering( elem, x, y, flag ) {
-                    o = elem.offset();
-                    eb = elem.outerHeight(true) + o.top;
-                    er = elem.outerWidth(true) + o.left;
-                    
-                    if( x >= o.left
-                        && x <= er
-                        && y >= o.top
-                        && y <= eb)
-                        return true;
-                        
-                    if( flag === true ) {
-                        if( x <= (er + 30)
-                            && x >= o.left
-                            && y >= o.top
-                            && y <= (o.top + 30) )
-                            return true;
-                    }
-                    
-                    return false;
-                }
-                
-                function rembox( ) {
-                    infobox.remove();
-                }
-                
-                ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                
-                function repl( match, s, i ) {
-                    return info.username[i].toLowerCase();
-                }
-                
-                usertag.hover(
-                    function( e ) {
-                        chan.window.find(this).data('hover', 1);
-                        rn = info.realname ? '<li>'+info.realname+'</li>' : '';
-                        tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                        ico = extension.client.settings['avatarfile'].replace(ru, repl);
-                        ico = info.usericon == '0' ? extension.client.settings['defaultavatar'] : ico.replacePArg( '{un}', info.username.toLowerCase() );
-                        //<div class="damncri-member">
-                        //  <div class="aside-left avatar alt1">
-                        //      <a target="_blank" href="http://photofroggy.deviantart.com/">
-                        //         <img class="avvie" alt=":iconphotofroggy:" src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1" title="photofroggy">
-                        //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
-                        pane = '<div class="userinfo" id="'+info.username+'">\
-                            <div class="avatar">\
-                                <a class="avatar" target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">\
-                                    <img class="avatar" alt=":icon'+info.username+':"\
-                                    src="'+extension.client.settings['avatarfolder']+ico+'" />\
-                                </a>\
-                            </div><div class="info">\
-                            <strong>\
-                            '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
-                            </strong>\
-                            <ul>\
-                                '+rn+tn+'\
-                            </ul></div>\
-                        </div>';
-                        chan.window.append(pane);
-                        infobox = chan.window.find('.userinfo#'+info.username);
-                        pos = usertag.offset();
-                        infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 18 });
-                        infobox.hover(function(){
-                            chan.window.find(this).data('hover', 1);
-                        }, rembox);
-                        infobox.data('hover', 0);
-                        box = chan.userpanel.find('div.userinfo:not(\'#'+info.username+'\')');
-                        box.remove();
-                    },
-                    function( e ) {
-                        chan.window.find(this).data('hover', 0);
-                        if(hovering( infobox, e.pageX, e.pageY, true ))
-                            return;
-                        rembox();
-                    }
-                );
+        /**
+         * @function setter
+         * @cmd set set configuration options
+         * This command allows the user to change the settings for the client through
+         * the input box.
+         */
+        setter: function( e ) {
+            data = e.args.split(' ');
+            setting = data.shift().toLowerCase();
+            data = data.join(' ');
+            if( data.length == 0 ) {
+                this.client.cchannel.serverMessage('Could not set ' + setting, 'No data supplied');
+                return;
             }
-        );
+            
+            if( !( setting in this.client.settings ) ) {
+                this.client.cchannel.serverMessage('Unknown setting "' + setting + '"');
+                return;
+            }
+            
+            this.client.settings[setting] = data;
+            this.client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
+            this.client.control.setLabel();
+            
+        },
+        
+        /**
+         * @function connect
+         * This command allows the user to force the client to connect to the server.
+         */
+        connect: function( e ) {
+            this.client.connect();
+        },
+        
+        // Join a channel
+        join: function( e ) {
+            chans = e.args.split(' ');
+            
+            if( e.ns != e.target )
+                chans.unshift(e.target);
+            
+            if( chans.toString() == '' )
+                return;
+            
+            for( index in chans )
+                extension.client.join(chans[index]);
+        },
+        
+        // Leave a channel
+        part: function( e ) {
+            chans = e.args.split(' ');
+            if( e.ns != e.target )
+                chans.unshift(e.target);
+            //console.log(chans);
+            //console.log(chans.length + ', ' + (chans.toString() == ''));
+            if( chans.toString() == '' ) {
+                extension.client.part(e.ns);
+                return;
+            }
+            for( index in chans )
+                extension.client.part(chans[index]);
+        },
+        
+        // Set the title
+        title: function( e ) {
+            extension.client.title(e.target, e.args);
+        },
+        
+        // Promote user
+        promote: function( e ) {
+            bits = e.args.split(' ');
+            extension.client.promote(e.target, bits[0], bits[1]);
+        },
+        
+        // Send a /me action thingy.
+        action: function( e ) {
+            extension.client.action(e.target, e.args);
+        },
+        
+        // Send a raw packet.
+        raw: function( e ) {
+            extension.client.send( e.args.replace(/\\n/gm, "\n") );
+        },
+        
+        // Kick someone.
+        kick: function( e ) {
+            d = e.args.split(' ');
+            u = d.shift();
+            r = d.length > 0 ? d.join(' ') : null;
+            extension.client.kick( e.target, u, r );
+        },
+        
+        // Say something.
+        say: function( e ) {
+            extension.client.say( e.target, e.args );
+        },
+        
+        // Say something without emotes and shit. Zomg.
+        npmsg: function( e ) {
+            extension.client.npmsg( e.target, e.args );
+        },
+        
+        // Set users, right?
+        setUsers: function( e ) {
+            var chan = extension.client.channel(e.ns);
+            users = chan.userpanel.find('li a');
+            users.each(
+                function( index, item ) {
+                    var usertag = chan.userpanel.find(item);
+                    var username = usertag.html();
+                    var info = chan.info['members'][username];
+                    var infobox = null;
+                    usertag.data('hover', 0);
+                    
+                    function hovering( elem, x, y, flag ) {
+                        o = elem.offset();
+                        eb = elem.outerHeight(true) + o.top;
+                        er = elem.outerWidth(true) + o.left;
+                        
+                        if( x >= o.left
+                            && x <= er
+                            && y >= o.top
+                            && y <= eb)
+                            return true;
+                            
+                        if( flag === true ) {
+                            if( x <= (er + 30)
+                                && x >= o.left
+                                && y >= o.top
+                                && y <= (o.top + 30) )
+                                return true;
+                        }
+                        
+                        return false;
+                    }
+                    
+                    function rembox( ) {
+                        infobox.remove();
+                    }
+                    
+                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+                    
+                    function repl( match, s, i ) {
+                        return info.username[i].toLowerCase();
+                    }
+                    
+                    usertag.hover(
+                        function( e ) {
+                            chan.window.find(this).data('hover', 1);
+                            rn = info.realname ? '<li>'+info.realname+'</li>' : '';
+                            tn = info.typename ? '<li>'+info.typename+'</li>' : '';
+                            ico = extension.client.settings['avatarfile'].replace(ru, repl);
+                            ico = info.usericon == '0' ? extension.client.settings['defaultavatar'] : ico.replacePArg( '{un}', info.username.toLowerCase() );
+                            //<div class="damncri-member">
+                            //  <div class="aside-left avatar alt1">
+                            //      <a target="_blank" href="http://photofroggy.deviantart.com/">
+                            //         <img class="avvie" alt=":iconphotofroggy:" src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1" title="photofroggy">
+                            //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
+                            pane = '<div class="userinfo" id="'+info.username+'">\
+                                <div class="avatar">\
+                                    <a class="avatar" target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">\
+                                        <img class="avatar" alt=":icon'+info.username+':"\
+                                        src="'+extension.client.settings['avatarfolder']+ico+'" />\
+                                    </a>\
+                                </div><div class="info">\
+                                <strong>\
+                                '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
+                                </strong>\
+                                <ul>\
+                                    '+rn+tn+'\
+                                </ul></div>\
+                            </div>';
+                            chan.window.append(pane);
+                            infobox = chan.window.find('.userinfo#'+info.username);
+                            pos = usertag.offset();
+                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 18 });
+                            infobox.hover(function(){
+                                chan.window.find(this).data('hover', 1);
+                            }, rembox);
+                            infobox.data('hover', 0);
+                            box = chan.userpanel.find('div.userinfo:not(\'#'+info.username+'\')');
+                            box.remove();
+                        },
+                        function( e ) {
+                            chan.window.find(this).data('hover', 0);
+                            if(hovering( infobox, e.pageX, e.pageY, true ))
+                                return;
+                            rembox();
+                        }
+                    );
+                }
+            );
+        },
     };
     
-    extension.register();
+    extension.init(client);
     return extension;
 
 }
@@ -1551,8 +1559,44 @@ function wsc_extdefault( client ) {
  * wsc's chat client. Manages everything pretty much.
  */
 
+/**
+ * @constructor wsc_client 
+ * @author photofroggy
+ * @note To create a client, use the {wsc wsc jQuery method}.
+ * 
+ * wsc_client is a constructor for the {wsc_client.client wsc client} object.
+ * 
+ * @param [jQuery] element Main view for the client to be drawn in.
+ * @param options
+ *  Here the client's settings can be defined, and we store them in ``client.settings``. The settings available are as follows:
+ *  [String] domain The domain of the website hosting the client. Used for constructing URLs.
+ *  [String] server Address for the WebSocket server to connect to.
+ *  [String] agent The client's user-agent. This is sent in the handshake when connecting to the chat server.
+ *  [String] username Name of the user using the client.
+ *  [String] symbol User symbol for the user. This is automatically updated when the client logs in to the chat server.
+ *  [String] pk The user's chat token. Required for logging in to the chat server.
+ *  [Array] monitor Configuration for the monitor channel. ``[(String) shorthand_name, (Bool) hidden]``.
+ *  [String] welcome Define the message displayed when the client is loaded.
+ *  [String] autojoin Define the channel to join when the client logs in successfully.
+ *  [Function] protocol A function which returns a protocol parser. By default, {wsc_protocol} is used.
+ *  [Array] extend Array of extensions. By default, this only includes {wsc_extdefault}. Refer to {wsc_extbase} for more information.
+ *  [String] client Client string to send in the handshake. Defaults to ``chatclient``.
+ *  [Function] tablumps Tablumps parser constructor. By default, {wsc_tablumps} is used.
+ * @param [Boolean] mozilla Is the browser being used made by mozilla?
+ * @return [Object] A {wsc_client.client wsc client} object.
+ */
 function wsc_client( view, options, mozilla ) {
     
+    /**
+     * @object client
+     * @author photofroggy
+     * 
+     * @note To create a client, use the {wsc wsc jQuery method}.
+     * 
+     * This object acts as a client for dAmn-like chat servers.
+     * When initialising the object, you can provide different configuration
+     * options using the ``options`` parameter.
+     */
     var client = {
     
         view: null,
@@ -1596,8 +1640,16 @@ function wsc_client( view, options, mozilla ) {
         cchannel: null,
         // Known command names.
         cmds: [],
-    
-        // Initialise mo'fo'.
+        
+        /**
+         * @constructor init
+         * @author photofroggy
+         * 
+         * I guess this is what I would consider the "actual" constructor.
+         * 
+         * @param [jQuery] element The client's main view.
+         * @param [Boolean] mozilla Are we running firefox?
+         */
         init: function( view, options, mozilla ) {
             
             view.append('<div class="wsc"></div>');
@@ -1631,8 +1683,54 @@ function wsc_client( view, options, mozilla ) {
             
         },
         
-        // Register a listener with an event.
-        addListener: function( event, handler ) {
+        /**
+         * @function registerExtension
+         * Use this function to register an extension with the client after
+         * creating the client. This method should be called through jQuery
+         * as follows:
+         * 
+         * @example registering an extension
+         *  $('.container').wsc( 'registerExtension', my_constructor );
+         *  
+         *  // The above uses an example 'my_constructor', which can be as simple
+         *  // as the following.
+         *  function my_constructor( client ) {
+         *      client.addListener( 'cmd.slap.wsc',
+         *          function( e ) {
+         *              // Slap your victim or something.
+         *              client.action( e.target, 'slaps ' + ( e.args || e.user ) );
+         *          }
+         *      );
+         *  }
+         * 
+         * @param [Function] constructor Extension constructor.
+         */
+        registerExtension: function( constructor ) {
+            if( container === undefined )
+                return;
+            client.settings['extend'].push( constructor );
+            constructor( client );
+        },
+        
+        /**
+         * @function jq_registerExtension
+         * jQuery interface for registerExtension.
+         * 
+         * @param [jQuery] view jQuery view the method was called through.
+         * @param [Function] constructor Extension constructor.
+         */
+        jq_registerExtension: function( view, constructor ) {
+            client.registerExtension(constructor);
+        },
+        
+        /**
+         * @function bind
+         * Bind an event handler to a specific wsc event. Doing this will make
+         * the client call the handler every time the given event is triggered.
+         * @param [String] event Name of the event to bind the handler to.
+         * @param [Function] handler Event handling function.
+         */
+        bind: function( event, handler ) {
             this.events.addListener(event, function( e ) { handler( e ); });
             jqi = event.indexOf('.wsc');
             
@@ -1643,18 +1741,55 @@ function wsc_client( view, options, mozilla ) {
             this.cmds.push(cmd);
         },
         
-        // Remove listeners.
+        /**
+         * @function jq_bind
+         * jQuery interface for the bind method.
+         * @param [jQuery] view Element the method was called on.
+         * @param [Object] opt Method arguments.
+         */
+        jq_bind: function( view, opt ) {
+            client.bind( opt['event'], opt['handler'] );
+        },
+        
+        /**
+         * @function removeListeners
+         * Removes all event listeners from the client.
+         */
         removeListeners: function( ) {
             this.events.removeListeners();
         },
         
-        // Run events dawg.
+        /**
+         * @function trigger
+         * Trigger an event in the client.
+         * @param [String] event Name of the event to trigger.
+         * @param [Object] data Event data.
+         */
         trigger: function( event, data ) {
             //console.log("emitting "+ event);
             this.events.emit(event, data);
         },
         
-        // Channel method wooo
+        /**
+         * @function jq_trigger
+         * jQuery interface for the trigger method.
+         */
+        jq_trigger: function( view, opts ) {
+            client.trigger( opts['event'], opts['data'] );
+        },
+        
+        /**
+         * @function channel
+         * 
+         * @overload
+         *  Get the channel object associated with the given namespace.
+         *  @param [String] namespace
+         *  
+         * @overload
+         *  Set the channel object associated with the given namespace.
+         *  @param [String] namespace
+         *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+         */
         channel: function( namespace, chan ) {
             namespace = this.deform_ns(namespace).slice(1).toLowerCase();
             /* 
@@ -1667,9 +1802,17 @@ function wsc_client( view, options, mozilla ) {
             return this.channelo[namespace];
         },
         
-        // How many channels are we joined in?
+        /**
+         * @function channels
+         * 
+         * Determine how many channels the client has open. Hidden channels are
+         * not included in this, and we don't include the first channel because
+         * there should always be at least one non-hidden channel present in the
+         * client.
+         * 
+         * @return [Integer] Number of channels open in the client.
+         */
         channels: function( ) {
-            // - 2 because we always has at least 2 tabs open. Change for release.
             chans = -1;
             for(ns in client.channelo) {
                 if( client.channelo[ns].hidden )
@@ -1679,7 +1822,15 @@ function wsc_client( view, options, mozilla ) {
             return chans;
         },
         
-        // Start the client.
+        /**
+         * @function connect
+         * 
+         * This function can be used to open a connection to the chat server. If
+         * we are already connected, this function does nothing.
+         * 
+         * @todo Create a fallback to use if WebSockets are not available. Like,
+         *  really now.
+         */
         connect: function( ) {
             if( client.connected )
                 return;
@@ -1687,14 +1838,23 @@ function wsc_client( view, options, mozilla ) {
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=ok\n\n')});
+                client.trigger('start.wsc', wsc_packet('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=no websockets available\n\n')});
+                client.trigger('start.wsc', wsc_packet('client connecting\ne=no websockets available\n\n'));
             }
         },
         
-        // Create a new WebSocket chat connection.
+        // We need this, dawg.
+        jq_connect: function( ) {
+            client.connect();
+        },
+        
+        /**
+         * @function createChatSocket
+         * Does what it says on the tin.
+         * @return [Object] WebSocket connection.
+         */
         createChatSocket: function( ) {
             
             var client = this;
@@ -1748,11 +1908,13 @@ function wsc_client( view, options, mozilla ) {
             
             
             // Main view dimensions.
+            //console.log('>> pH:',client.view.parent().height());
             client.view.height( client.view.parent().height() );
             client.view.width( '100%' );
             
             h = (client.view.parent().height() - client.tabul.outerHeight(true) - client.control.height());
-            //console.log('>>',client.view.parent().innerHeight(),client.tabul.outerHeight(true),client.control.height())
+            //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
+            //console.log('>> rUI h:', h);
             // Chatbook dimensions.
             client.chatbook.height(h);
             
@@ -2081,7 +2243,7 @@ function wsc_control( client ) {
         },
         
         height: function( ) {
-            return this.panel.height() + 20;
+            return this.panel.height() + 17;
         },
         
         // Edit the input bar's label.
@@ -2368,6 +2530,44 @@ function wsc_control( client ) {
         }
     );
     
+    /**
+     * @function wsc
+     * 
+     * This function is the plugin method allowing you to run wsc using jQuery.
+     * The client is designed to work with jQuery, but the objects are
+     * abstracted out of this file/function to make it easier to maintain and
+     * such.
+     * 
+     * This function generates a new {wsc_client.client wsc_client object} if there is no client
+     * present in the window. Apart from that, this function can be used to
+     * invoke functions on the client object. 
+     * 
+     * @example
+     *  // Create a client inside div.container
+     *  $('.container').wsc( 'init' );
+     *  
+     *  // The above code will create a new chat client which will draw itself
+     *  // inside div.container on the page. This example is not too good as no
+     *  // configuration options have been supplied. The example connecting is an
+     *  // example of a simple configuration using dummy values. In this example,
+     *  // we also start a connection to the WebSocket chat server.
+     *  
+     *  $('.container').wsc( 'init', {
+     *      // Connection information.
+     *      'domain': 'mywebsite.com',
+     *      'server': 'ws://website.com/my/wsproxy:0000',
+     *      // Login details.
+     *      'username': 'username',
+     *      'pk': 'token'
+     *  });
+     *  
+     *  // After creating our client, we can start connecting to the server.
+     *  $('.container').wsc( 'connect' );
+     * 
+     * @param [String] method Name of the method to call on the client object.
+     * @param [Object] options Use this to pass arguments to the method being called.
+     * @return [Object] Client object on init, something else on different methods.
+     */
     $.fn.wsc = function( method, options ) {
         
         client = $(window).data('wscclient');
@@ -2382,19 +2582,12 @@ function wsc_control( client ) {
         }
         
         if( method != 'init' && method != undefined ) {
-            pieces = method.split('.');
-            o = client;
-            for( i in pieces ) {
-                p = pieces[i];
-                if( p in o )
-                    o = o[p];
-                else
-                    return this;
-            }
-            o( $(this), options);
+            method = 'jq_' + method;
+            if( method in client )
+                client[method]( $(this), options);
         }
         
-        return this;
+        return client;
         
     };
     

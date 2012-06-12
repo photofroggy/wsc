@@ -12,8 +12,7 @@
  *
  * We refer to these items as "tablumps" because of the tab
  * characters being used as delimeters. The job of this class is to
- * replace tablumps with readable strings, or to extract the data
- * given in the tablumps.
+ * replace tablumps with readable strings.
  */
 
 // Create a tablump parser object.
@@ -62,19 +61,20 @@ function wsc_tablumps( client ) {
                             alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
-                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{2}">{2}</a>' ],
+                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{1}">{1}</a>' ],
                 '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
                 /* llama does not use this yet. Do not include by default.
-                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.
+                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.*/
                 '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
-                '&thumb\t': [ 8, function( match, id, t, s, u, w, h, b, f ) {
-                        id = data[0]; t = data[1]; s = data[2]; u = data[3]; w = data[4]; h = data[5]; b = data[6]; f = data[7];
+                '&thumb\t': [ 7, function( data ) {
+                        id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data['3'].split('x'); b = data[6]; f = data[5];
+                        w = dim[0]; h = dim[1];
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+w+'"\
                                 height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
-                */
+                /**/
                 '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
                 '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
                 '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],

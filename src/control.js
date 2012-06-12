@@ -58,7 +58,7 @@ function wsc_control( client ) {
         },
         
         height: function( ) {
-            return this.panel.height() + 20;
+            return this.panel.height() + 17;
         },
         
         // Edit the input bar's label.

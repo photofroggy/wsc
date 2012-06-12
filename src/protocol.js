@@ -96,23 +96,21 @@ function wsc_protocol( client ) {
             this.mapper['recv'] = this.map_recv;
             this.tablumps = this.client.settings['tablumps'](client.settings);
             
-            //var proto = this;
-            //console.log(client.view);
-            //client.addListener("data.wsc", this.debug_pkt);
-            client.addListener('chatserver.wsc', this.chatserver);
-            client.addListener('dAmnServer.wsc', this.chatserver);
-            client.addListener('login.wsc', this.login);
-            client.addListener('join.wsc', this.join);
-            client.addListener('part.wsc', this.part);
-            //client.addListener('kicked.wsc', this.kicked);
-            client.addListener('ping.wsc', this.ping);
-            client.addListener('property.wsc', this.property);
-            client.addListener('recv_join.wsc', this.recv_joinpart);
-            client.addListener('recv_part.wsc', this.recv_joinpart);
-            client.addListener('recv_msg.wsc', this.recv_msg);
-            client.addListener('recv_action.wsc', this.recv_msg);
-            client.addListener('recv_privchg.wsc', this.recv_privchg);
-            client.addListener('recv_kicked.wsc', this.recv_kicked);
+            //client.bind("data.wsc", this.debug_pkt);
+            client.bind('chatserver.wsc', this.chatserver);
+            client.bind('dAmnServer.wsc', this.chatserver);
+            client.bind('login.wsc', this.login);
+            client.bind('join.wsc', this.join);
+            client.bind('part.wsc', this.part);
+            //client.bind('kicked.wsc', this.kicked);
+            client.bind('ping.wsc', this.ping);
+            client.bind('property.wsc', this.property);
+            client.bind('recv_join.wsc', this.recv_joinpart);
+            client.bind('recv_part.wsc', this.recv_joinpart);
+            client.bind('recv_msg.wsc', this.recv_msg);
+            client.bind('recv_action.wsc', this.recv_msg);
+            client.bind('recv_privchg.wsc', this.recv_privchg);
+            client.bind('recv_kicked.wsc', this.recv_kicked);
         },
         
         // What to do with every packet.

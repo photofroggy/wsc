@@ -1,0 +1,128 @@
+/* User list */
+div.wsc div.chatbook div.chatwindow div.chatusers {
+    margin: 0px;
+    padding: 0px;
+    overflow: auto;
+    max-width: 300px;
+    float: left;
+    display: none;
+    overflow: auto;
+    background-color: #C4DAFF;
+    border: 1px solid #95B4CC;
+    border-left: none;
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers div.pc {
+    padding: 0px;
+    margin: 0p;
+}
+
+div.wsc div.chatusers h3,
+div.wsc div.chatusers h4 {
+    margin: 0px;
+    padding: 5px;
+    border: 1px solid #485875;
+    border-left: none;
+    padding: 2px 10px;
+    background-color: #2B58A6;
+    color: #EDF8FF;
+    -moz-border-radius: none;
+    border-radius: none;
+    font-size: 12px;
+}
+
+div.wsc div.chatusers h3.first,
+div.wsc div.chatusers h4.first {
+    -moz-border-radius: inherit;
+    border-radius: inherit;
+}
+
+div.wsc div.chatusers ul {
+    list-style: none;
+    padding: 4px 10px;
+    margin: 0px;
+    
+}
+
+div.wsc div.chatusers ul li {
+    font-size: 11px;
+    position: relative;
+}
+
+div.wsc div.chatusers ul li a {
+    padding: 0px;
+    margin: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers ul li a:hover {
+    color: #990000;
+}
+
+/* Userlist info box */
+div.wsc div.userinfo {
+    display: block;
+    position: absolute;
+    padding: 0;
+    background-color: #2B58A6;
+    border: 1px solid #95B4CC;
+    border-right: none;
+}
+div.wsc div.userinfo div {
+    display: block;
+    float: left;
+    padding: 0px;
+    background-color: #C4DAFF;
+}
+
+div.wsc div.userinfo div.avatar {
+    background: none;
+    height: 100%;
+    padding: 5px;
+}
+
+div.wsc div.userinfo a.avatar {
+    padding: 0px;
+}
+
+div.wsc div.userinfo div.avatar a img {
+    height: 50px;
+    width: 50px;
+    padding: 0px;
+    margin: 0px;
+}
+
+div.wsc div.userinfo div.info {
+    padding-right: 5px;
+    padding-left: 5px;
+    color: #2D506B;
+    height: 60px;
+    margin: 0px;
+}
+
+div.wsc div.userinfo div ul {
+    margin: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.userinfo div ul li {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-size: 11px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    color: #2D506B;
+}
+
+div.wsc div.chatusers ul li:hover div {
+    display: block;
+    z-index: 500;
+    white-space: nowrap;
+    float: left;
+}

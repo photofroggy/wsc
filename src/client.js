@@ -2,8 +2,44 @@
  * wsc's chat client. Manages everything pretty much.
  */
 
+/**
+ * @constructor wsc_client 
+ * @author photofroggy
+ * @note To create a client, use the {wsc wsc jQuery method}.
+ * 
+ * wsc_client is a constructor for the {wsc_client.client wsc client} object.
+ * 
+ * @param [jQuery] element Main view for the client to be drawn in.
+ * @param options
+ *  Here the client's settings can be defined, and we store them in ``client.settings``. The settings available are as follows:
+ *  [String] domain The domain of the website hosting the client. Used for constructing URLs.
+ *  [String] server Address for the WebSocket server to connect to.
+ *  [String] agent The client's user-agent. This is sent in the handshake when connecting to the chat server.
+ *  [String] username Name of the user using the client.
+ *  [String] symbol User symbol for the user. This is automatically updated when the client logs in to the chat server.
+ *  [String] pk The user's chat token. Required for logging in to the chat server.
+ *  [Array] monitor Configuration for the monitor channel. ``[(String) shorthand_name, (Bool) hidden]``.
+ *  [String] welcome Define the message displayed when the client is loaded.
+ *  [String] autojoin Define the channel to join when the client logs in successfully.
+ *  [Function] protocol A function which returns a protocol parser. By default, {wsc_protocol} is used.
+ *  [Array] extend Array of extensions. By default, this only includes {wsc_extdefault}. Refer to {wsc_extbase} for more information.
+ *  [String] client Client string to send in the handshake. Defaults to ``chatclient``.
+ *  [Function] tablumps Tablumps parser constructor. By default, {wsc_tablumps} is used.
+ * @param [Boolean] mozilla Is the browser being used made by mozilla?
+ * @return [Object] A {wsc_client.client wsc client} object.
+ */
 function wsc_client( view, options, mozilla ) {
     
+    /**
+     * @object client
+     * @author photofroggy
+     * 
+     * @note To create a client, use the {wsc wsc jQuery method}.
+     * 
+     * This object acts as a client for dAmn-like chat servers.
+     * When initialising the object, you can provide different configuration
+     * options using the ``options`` parameter.
+     */
     var client = {
     
         view: null,
@@ -47,8 +83,16 @@ function wsc_client( view, options, mozilla ) {
         cchannel: null,
         // Known command names.
         cmds: [],
-    
-        // Initialise mo'fo'.
+        
+        /**
+         * @constructor init
+         * @author photofroggy
+         * 
+         * I guess this is what I would consider the "actual" constructor.
+         * 
+         * @param [jQuery] element The client's main view.
+         * @param [Boolean] mozilla Are we running firefox?
+         */
         init: function( view, options, mozilla ) {
             
             view.append('<div class="wsc"></div>');
@@ -82,8 +126,54 @@ function wsc_client( view, options, mozilla ) {
             
         },
         
-        // Register a listener with an event.
-        addListener: function( event, handler ) {
+        /**
+         * @function registerExtension
+         * Use this function to register an extension with the client after
+         * creating the client. This method should be called through jQuery
+         * as follows:
+         * 
+         * @example registering an extension
+         *  $('.container').wsc( 'registerExtension', my_constructor );
+         *  
+         *  // The above uses an example 'my_constructor', which can be as simple
+         *  // as the following.
+         *  function my_constructor( client ) {
+         *      client.addListener( 'cmd.slap.wsc',
+         *          function( e ) {
+         *              // Slap your victim or something.
+         *              client.action( e.target, 'slaps ' + ( e.args || e.user ) );
+         *          }
+         *      );
+         *  }
+         * 
+         * @param [Function] constructor Extension constructor.
+         */
+        registerExtension: function( constructor ) {
+            if( container === undefined )
+                return;
+            client.settings['extend'].push( constructor );
+            constructor( client );
+        },
+        
+        /**
+         * @function jq_registerExtension
+         * jQuery interface for registerExtension.
+         * 
+         * @param [jQuery] view jQuery view the method was called through.
+         * @param [Function] constructor Extension constructor.
+         */
+        jq_registerExtension: function( view, constructor ) {
+            client.registerExtension(constructor);
+        },
+        
+        /**
+         * @function bind
+         * Bind an event handler to a specific wsc event. Doing this will make
+         * the client call the handler every time the given event is triggered.
+         * @param [String] event Name of the event to bind the handler to.
+         * @param [Function] handler Event handling function.
+         */
+        bind: function( event, handler ) {
             this.events.addListener(event, function( e ) { handler( e ); });
             jqi = event.indexOf('.wsc');
             
@@ -94,18 +184,55 @@ function wsc_client( view, options, mozilla ) {
             this.cmds.push(cmd);
         },
         
-        // Remove listeners.
+        /**
+         * @function jq_bind
+         * jQuery interface for the bind method.
+         * @param [jQuery] view Element the method was called on.
+         * @param [Object] opt Method arguments.
+         */
+        jq_bind: function( view, opt ) {
+            client.bind( opt['event'], opt['handler'] );
+        },
+        
+        /**
+         * @function removeListeners
+         * Removes all event listeners from the client.
+         */
         removeListeners: function( ) {
             this.events.removeListeners();
         },
         
-        // Run events dawg.
+        /**
+         * @function trigger
+         * Trigger an event in the client.
+         * @param [String] event Name of the event to trigger.
+         * @param [Object] data Event data.
+         */
         trigger: function( event, data ) {
             //console.log("emitting "+ event);
             this.events.emit(event, data);
         },
         
-        // Channel method wooo
+        /**
+         * @function jq_trigger
+         * jQuery interface for the trigger method.
+         */
+        jq_trigger: function( view, opts ) {
+            client.trigger( opts['event'], opts['data'] );
+        },
+        
+        /**
+         * @function channel
+         * 
+         * @overload
+         *  Get the channel object associated with the given namespace.
+         *  @param [String] namespace
+         *  
+         * @overload
+         *  Set the channel object associated with the given namespace.
+         *  @param [String] namespace
+         *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+         */
         channel: function( namespace, chan ) {
             namespace = this.deform_ns(namespace).slice(1).toLowerCase();
             /* 
@@ -118,9 +245,17 @@ function wsc_client( view, options, mozilla ) {
             return this.channelo[namespace];
         },
         
-        // How many channels are we joined in?
+        /**
+         * @function channels
+         * 
+         * Determine how many channels the client has open. Hidden channels are
+         * not included in this, and we don't include the first channel because
+         * there should always be at least one non-hidden channel present in the
+         * client.
+         * 
+         * @return [Integer] Number of channels open in the client.
+         */
         channels: function( ) {
-            // - 2 because we always has at least 2 tabs open. Change for release.
             chans = -1;
             for(ns in client.channelo) {
                 if( client.channelo[ns].hidden )
@@ -130,7 +265,15 @@ function wsc_client( view, options, mozilla ) {
             return chans;
         },
         
-        // Start the client.
+        /**
+         * @function connect
+         * 
+         * This function can be used to open a connection to the chat server. If
+         * we are already connected, this function does nothing.
+         * 
+         * @todo Create a fallback to use if WebSockets are not available. Like,
+         *  really now.
+         */
         connect: function( ) {
             if( client.connected )
                 return;
@@ -138,14 +281,23 @@ function wsc_client( view, options, mozilla ) {
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=ok\n\n')});
+                client.trigger('start.wsc', wsc_packet('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger({name: 'start.wsc', pkt: wsc_packet('client connecting\ne=no websockets available\n\n')});
+                client.trigger('start.wsc', wsc_packet('client connecting\ne=no websockets available\n\n'));
             }
         },
         
-        // Create a new WebSocket chat connection.
+        // We need this, dawg.
+        jq_connect: function( ) {
+            client.connect();
+        },
+        
+        /**
+         * @function createChatSocket
+         * Does what it says on the tin.
+         * @return [Object] WebSocket connection.
+         */
         createChatSocket: function( ) {
             
             var client = this;
@@ -199,11 +351,13 @@ function wsc_client( view, options, mozilla ) {
             
             
             // Main view dimensions.
+            //console.log('>> pH:',client.view.parent().height());
             client.view.height( client.view.parent().height() );
             client.view.width( '100%' );
             
             h = (client.view.parent().height() - client.tabul.outerHeight(true) - client.control.height());
-            //console.log('>>',client.view.parent().innerHeight(),client.tabul.outerHeight(true),client.control.height())
+            //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
+            //console.log('>> rUI h:', h);
             // Chatbook dimensions.
             client.chatbook.height(h);
             
