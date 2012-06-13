@@ -2338,6 +2338,8 @@ function wsc_control( client ) {
         // Handle a single keypress thingy.
         keypress: function( event ) {
             key = event.which || event.keypress;
+            ut = control.tab.hit;
+            bubble = false;
             
             switch( key ) {
                 case 13: // Enter
@@ -2351,14 +2353,17 @@ function wsc_control( client ) {
                     break;
                 case 9: // Tab
                     control.tabItem( event );
+                    ut = false;
                     break;
                 default:
-                    if( control.tab.hit )
-                        control.untab( event );
-                    return true;
+                    bubble = true;
+                    break;
             }
             
-            return false;
+            if( ut )
+                control.untab( event );
+                
+            return bubble;
         },
         
         // Handle submit events woop.
@@ -2452,13 +2457,13 @@ function wsc_control( client ) {
                 return d;
             }
             
-            r = d.slice(i + 1);
+            chunk = d.slice(i + 1);
             this.input.val( d.slice(0, i) );
             
-            if( r.length == 0 )
+            if( chunk.length == 0 )
                 return this.chomp();
             
-            return r;
+            return chunk;
         },
         
         unchomp: function( data ) {
