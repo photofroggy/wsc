@@ -96,7 +96,7 @@ function wsc_protocol( client ) {
             this.mapper['recv'] = this.map_recv;
             this.tablumps = this.client.settings['tablumps'](client.settings);
             
-            client.bind("data.wsc", this.debug_pkt);
+            //client.bind("data.wsc", this.debug_pkt);
             client.bind('chatserver.wsc', this.chatserver);
             client.bind('dAmnServer.wsc', this.chatserver);
             client.bind('login.wsc', this.login);

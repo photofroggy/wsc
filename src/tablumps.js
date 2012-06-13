@@ -61,7 +61,10 @@ function wsc_tablumps( client ) {
                             alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
-                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{1}">{1}</a>' ],
+                '&link\t': [ 3, function( data ) {
+                    t = data[1] || '[link]';
+                    return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+                } ],
                 '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
                 /* llama does not use this yet. Do not include by default.
@@ -86,9 +89,11 @@ function wsc_tablumps( client ) {
         /* Parse tablumps!
          * This implementation hopefully only uses simple string operations.
          */
-        parse: function( data ) {
+        parse: function( data, sep ) {
             if( !data )
                 return '';
+            
+            sep = sep || '\t';
             
             for( i = 0; i < data.length; i++ ) {
             
@@ -117,7 +122,7 @@ function wsc_tablumps( client ) {
                     continue;
                 
                 // Crop the rest of the tablump!
-                cropping = this.tokens(working, lump[0]);
+                cropping = this.tokens(working, lump[0], sep);
                 
                 // Parse the tablump.
                 if( typeof(lump[1]) == 'string' )
@@ -148,10 +153,17 @@ function wsc_tablumps( client ) {
             
             for( i = limit; i > 0; i-- ) {
                 find = data.indexOf(sep);
+                
                 if( find == -1 )
                     break;
+                
                 tokens.push( data.substring(0, find) );
                 data = data.substring(find + 1);
+                
+                if( tokens[tokens.length - 1] == '&' ) {
+                    tokens.pop();
+                    break;
+                }
             }
             
             return [tokens, data];

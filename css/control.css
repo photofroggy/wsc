@@ -24,6 +24,7 @@ div.wsc form.msg {
 
 div.wsc form.msg input.msg {
     width: 60%;
+    line-height: 1.6em;
 }
 
 div.wsc a.button,

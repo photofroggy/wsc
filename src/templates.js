@@ -12,7 +12,6 @@ wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <div class="chatbook"></div>';
 
 wsc_html_control = '<div class="chatcontrol">\
-            <p>{user} - {ns}</p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <input type="submit" value="Send" class="sendmsg" />\

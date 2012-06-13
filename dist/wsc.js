@@ -61,7 +61,6 @@ wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <div class="chatbook"></div>';
 
 wsc_html_control = '<div class="chatcontrol">\
-            <p>{user} - {ns}</p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <input type="submit" value="Send" class="sendmsg" />\
@@ -836,7 +835,10 @@ function wsc_tablumps( client ) {
                             alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
-                '&link\t': [ 3, '<a target="_blank" href="{0}" title="{1}">{1}</a>' ],
+                '&link\t': [ 3, function( data ) {
+                    t = data[1] || '[link]';
+                    return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+                } ],
                 '&acro\t': [ 1, '<acronym title="{0}">' ],
                 '&abbr\t': [ 1, '<abbr title="{0}">'],
                 /* llama does not use this yet. Do not include by default.
@@ -861,9 +863,11 @@ function wsc_tablumps( client ) {
         /* Parse tablumps!
          * This implementation hopefully only uses simple string operations.
          */
-        parse: function( data ) {
+        parse: function( data, sep ) {
             if( !data )
                 return '';
+            
+            sep = sep || '\t';
             
             for( i = 0; i < data.length; i++ ) {
             
@@ -892,7 +896,7 @@ function wsc_tablumps( client ) {
                     continue;
                 
                 // Crop the rest of the tablump!
-                cropping = this.tokens(working, lump[0]);
+                cropping = this.tokens(working, lump[0], sep);
                 
                 // Parse the tablump.
                 if( typeof(lump[1]) == 'string' )
@@ -923,10 +927,17 @@ function wsc_tablumps( client ) {
             
             for( i = limit; i > 0; i-- ) {
                 find = data.indexOf(sep);
+                
                 if( find == -1 )
                     break;
+                
                 tokens.push( data.substring(0, find) );
                 data = data.substring(find + 1);
+                
+                if( tokens[tokens.length - 1] == '&' ) {
+                    tokens.pop();
+                    break;
+                }
             }
             
             return [tokens, data];
@@ -1036,7 +1047,7 @@ function wsc_protocol( client ) {
             this.mapper['recv'] = this.map_recv;
             this.tablumps = this.client.settings['tablumps'](client.settings);
             
-            client.bind("data.wsc", this.debug_pkt);
+            //client.bind("data.wsc", this.debug_pkt);
             client.bind('chatserver.wsc', this.chatserver);
             client.bind('dAmnServer.wsc', this.chatserver);
             client.bind('login.wsc', this.login);
@@ -2241,7 +2252,7 @@ function wsc_control( client ) {
                 width: '100%'});
             // Form dimensionals.
             this.form.css({'width': '100%'});
-            this.input.css({'width': this.client.cchannel.logpanel.width() - 250});
+            this.input.css({'width': this.client.view.width() - 80});
         },
         
         height: function( ) {
@@ -2251,9 +2262,9 @@ function wsc_control( client ) {
         // Edit the input bar's label.
         setLabel: function( ) {
             ns = this.client.cchannel.info['namespace'];
-            this.panel.find('p').replaceWith(
-                '<p>' + this.userLine() + ' - ' + ns + '</p>'
-            );
+            //this.panel.find('p').replaceWith(
+            //    '<p>' + this.userLine() + ' - ' + ns + '</p>'
+            //);
             this.untab();
             h = this.getHistory();
             this.input.val( h.index == -1 ? h.tmp : h.list[h.index] );
@@ -2298,6 +2309,8 @@ function wsc_control( client ) {
             h = this.getHistory();
             h.list.unshift(data);
             h.index = -1;
+            if( h.list.length > 100 )
+                h.list.pop();
         },
         
         // Scroll history or something.
@@ -2325,8 +2338,6 @@ function wsc_control( client ) {
         // Handle a single keypress thingy.
         keypress: function( event ) {
             key = event.which || event.keypress;
-            untab = true;
-            ret = false;
             
             switch( key ) {
                 case 13: // Enter
@@ -2340,17 +2351,14 @@ function wsc_control( client ) {
                     break;
                 case 9: // Tab
                     control.tabItem( event );
-                    untab = false;
                     break;
                 default:
-                    ret = true;
-                    break;
+                    if( control.tab.hit )
+                        control.untab( event );
+                    return true;
             }
             
-            if( untab )
-                control.untab( event );
-            
-            return ret;
+            return false;
         },
         
         // Handle submit events woop.

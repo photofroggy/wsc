@@ -54,7 +54,7 @@ function wsc_control( client ) {
                 width: '100%'});
             // Form dimensionals.
             this.form.css({'width': '100%'});
-            this.input.css({'width': this.client.cchannel.logpanel.width() - 250});
+            this.input.css({'width': this.client.view.width() - 80});
         },
         
         height: function( ) {
@@ -64,9 +64,9 @@ function wsc_control( client ) {
         // Edit the input bar's label.
         setLabel: function( ) {
             ns = this.client.cchannel.info['namespace'];
-            this.panel.find('p').replaceWith(
-                '<p>' + this.userLine() + ' - ' + ns + '</p>'
-            );
+            //this.panel.find('p').replaceWith(
+            //    '<p>' + this.userLine() + ' - ' + ns + '</p>'
+            //);
             this.untab();
             h = this.getHistory();
             this.input.val( h.index == -1 ? h.tmp : h.list[h.index] );
@@ -111,6 +111,8 @@ function wsc_control( client ) {
             h = this.getHistory();
             h.list.unshift(data);
             h.index = -1;
+            if( h.list.length > 100 )
+                h.list.pop();
         },
         
         // Scroll history or something.
@@ -138,8 +140,6 @@ function wsc_control( client ) {
         // Handle a single keypress thingy.
         keypress: function( event ) {
             key = event.which || event.keypress;
-            untab = true;
-            ret = false;
             
             switch( key ) {
                 case 13: // Enter
@@ -153,17 +153,14 @@ function wsc_control( client ) {
                     break;
                 case 9: // Tab
                     control.tabItem( event );
-                    untab = false;
                     break;
                 default:
-                    ret = true;
-                    break;
+                    if( control.tab.hit )
+                        control.untab( event );
+                    return true;
             }
             
-            if( untab )
-                control.untab( event );
-            
-            return ret;
+            return false;
         },
         
         // Handle submit events woop.
