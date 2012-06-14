@@ -80,7 +80,19 @@ function wsc_tablumps( client ) {
                 '&thumb\t': [ 7, function( data ) {
                         id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
                         server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
-                        if( w/h > 1 ) { th = (h * 100) / w; tw = 100; } else { tw = (w * 100) / 100; th = 100; }
+                        if( w > 100 || h > 100) {
+                            if( w/h > 1 ) {
+                                th = (h * 100) / w;
+                                tw = 100;
+                            } else {
+                                tw = (w * 100) / w;
+                                th = 100;
+                            }
+                            if( tw > w || th > h ) {
+                                tw = w;
+                                th = h;
+                            }
+                        }
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
                                 height="'+th+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
