@@ -70,7 +70,7 @@ function wsc_client( view, options, mozilla ) {
             "stype": 'llama',
             "client": 'chatclient',
             "tablumps": wsc_tablumps,
-            "avatarfile": '$un[0]/$un[1]/{un}.png',
+            "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
             "emotefolder": '/emoticons/',
@@ -381,17 +381,20 @@ function wsc_client( view, options, mozilla ) {
         // Ok so I lied, this is the stuff that actually runs on the loop thingy.
         // This is to avoid thingies like scope fucking up. Seriously. Wtf js?
         doLoop: function( ) {
-            mod = false;
             for( key in this.channelo ) {
-                c = this.channel(key);
-                msgs = this.view.find( '#' + c.selector + ' .logmsg' );
+                c = this.channelo[key];
+                msgs = c.logpanel.find( '.logmsg' );
+                
                 if( msgs.length < 100 )
                     continue;
-                msgs.slice(0, 10).remove();
-                mod = true;
+                
+                while( msgs.length > 100 ) {
+                    msgs.slice(0, 10).remove();
+                    msgs = c.logpanel.find( '.logmsg' );
+                }
+                
+                c.resize();
             }
-            if( mod )
-                this.resizeUI();
         },
         
         // Create a screen for channel `ns` in the UI, and initialise data

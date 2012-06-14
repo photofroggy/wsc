@@ -284,11 +284,9 @@ function wsc_control( client ) {
             if( data[0] != '/' ) {
                 if( !this.client.cchannel )
                     return;
-                //this.client.say(this.client.cchannel.info["namespace"], data);
-                //return;
-                data = (e.shiftKey ? '/npmsg ' : '/say ') + data;
             }
-            
+            console.log(String(e.shiftKey));
+            data = (e.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
             data = data.slice(1);
             bits = data.split(' ');
             cmdn = bits.shift();

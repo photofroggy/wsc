@@ -74,7 +74,7 @@
                 client = wsc_client( $(this), options, $.browser.mozilla );
                 $(window).resize(client.resizeUI);
                 $(window).focus(function( ) { client.control.focus(); });
-                setInterval(client.loop(), 120000);
+                setInterval(client.loop, 120000);
             }
             $(window).data('wscclient', client);
         }

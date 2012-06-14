@@ -289,9 +289,8 @@ function wsc_protocol( client ) {
                     protocol.client.join(client.settings["autojoin"]);
                 else {
                     for( key in protocol.client.channelo ) {
-                        ns = protocol.client.channelo[key].namespace;
-                        if( ns[0] != '~' )
-                            protocol.client.join(ns);
+                        if( protocol.client.channelo[key].info['namespace'][0] != '~' )
+                            protocol.client.join(key);
                     }
                 }
             } else {

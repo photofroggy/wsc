@@ -822,17 +822,26 @@ function wsc_tablumps( client ) {
             this.lumps = {
                 '&avatar\t': [ 2, function( data ) {
                     un = data[0];
-                    icon = data[1];
-                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                
-                    function repl( m, s, i ) {
-                        return un[i].toLowerCase();
+                    icon = parseInt(data[1]);
+                    console.log('>> user:',un,'; icon:',icon);
+                    ext = icon == 6 ? 'jpg' : 'png';
+                    
+                    if( icon == 0 ) { 
+                        ico = dav;
+                        ext = 'gif';
+                    } else {
+                        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+                    
+                        function repl( m, s, i ) {
+                            return un[i].toLowerCase();
+                        }
+                        
+                        ico = avfile.replace(ru, repl);
+                        ico = ico.replacePArg( '{un}', un.toLowerCase() );
                     }
                     
-                    ico = avfile.replace(ru, repl);
-                    ico = icon == '0' ? dav : ico.replacePArg( '{un}', un.toLowerCase() );
                     return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.'+domain+'"><img class="avatar"\
-                            alt=":icon$1:" src="'+avfold+ico+'?1" height="50" width="50" /></a>';
+                            alt=":icon$1:" src="'+avfold+ico+'.'+ext+'?1" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
                 '&link\t': [ 3, function( data ) {
@@ -845,10 +854,11 @@ function wsc_tablumps( client ) {
                  * Maybe make a plugin for dAmn which uses dAmn specific tablumps.*/
                 '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
                 '&thumb\t': [ 7, function( data ) {
-                        id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data['3'].split('x'); b = data[6]; f = data[5];
-                        w = dim[0]; h = dim[1];
-                        return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+w+'"\
-                                height="'+h+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
+                        id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
+                        server = parseInt(data[4]); w = parseInt(dim[0]); h = parseInt(dim[1]);
+                        if( w/h > 1 ) { th = (h * 100) / w; tw = 100; } else { tw = (w * 100) / 100; th = 100; }
+                        return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
+                                height="'+th+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
                     }
                 ],
                 /**/
@@ -1240,9 +1250,8 @@ function wsc_protocol( client ) {
                     protocol.client.join(client.settings["autojoin"]);
                 else {
                     for( key in protocol.client.channelo ) {
-                        ns = protocol.client.channelo[key].namespace;
-                        if( ns[0] != '~' )
-                            protocol.client.join(ns);
+                        if( protocol.client.channelo[key].info['namespace'][0] != '~' )
+                            protocol.client.join(key);
                     }
                 }
             } else {
@@ -1379,6 +1388,7 @@ function wsc_extdefault( client ) {
             this.client.bind('cmd.raw.wsc', this.raw);
             this.client.bind('cmd.say.wsc', this.say);
             this.client.bind('cmd.npmsg.wsc', this.npmsg);
+            this.client.bind('cmd.clear.wsc', this.clear);
             // userlistings
             this.client.bind('set.userlist.wsc', this.setUsers);
         },
@@ -1484,6 +1494,12 @@ function wsc_extdefault( client ) {
         // Say something without emotes and shit. Zomg.
         npmsg: function( e ) {
             extension.client.npmsg( e.target, e.args );
+        },
+        
+        // Clear the channel's log.
+        clear: function( e ) {
+            this.client.cchannel.logpanel.find('p.logmsg').remove();
+            this.client.cchannel.resize();
         },
         
         // Set users, right?
@@ -1655,7 +1671,7 @@ function wsc_client( view, options, mozilla ) {
             "stype": 'llama',
             "client": 'chatclient',
             "tablumps": wsc_tablumps,
-            "avatarfile": '$un[0]/$un[1]/{un}.png',
+            "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
             "emotefolder": '/emoticons/',
@@ -1966,17 +1982,20 @@ function wsc_client( view, options, mozilla ) {
         // Ok so I lied, this is the stuff that actually runs on the loop thingy.
         // This is to avoid thingies like scope fucking up. Seriously. Wtf js?
         doLoop: function( ) {
-            mod = false;
             for( key in this.channelo ) {
-                c = this.channel(key);
-                msgs = this.view.find( '#' + c.selector + ' .logmsg' );
+                c = this.channelo[key];
+                msgs = c.logpanel.find( '.logmsg' );
+                
                 if( msgs.length < 100 )
                     continue;
-                msgs.slice(0, 10).remove();
-                mod = true;
+                
+                while( msgs.length > 100 ) {
+                    msgs.slice(0, 10).remove();
+                    msgs = c.logpanel.find( '.logmsg' );
+                }
+                
+                c.resize();
             }
-            if( mod )
-                this.resizeUI();
         },
         
         // Create a screen for channel `ns` in the UI, and initialise data
@@ -2523,11 +2542,9 @@ function wsc_control( client ) {
             if( data[0] != '/' ) {
                 if( !this.client.cchannel )
                     return;
-                //this.client.say(this.client.cchannel.info["namespace"], data);
-                //return;
-                data = (e.shiftKey ? '/npmsg ' : '/say ') + data;
             }
-            
+            console.log(String(e.shiftKey));
+            data = (e.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
             data = data.slice(1);
             bits = data.split(' ');
             cmdn = bits.shift();
@@ -2633,7 +2650,7 @@ function wsc_control( client ) {
                 client = wsc_client( $(this), options, $.browser.mozilla );
                 $(window).resize(client.resizeUI);
                 $(window).focus(function( ) { client.control.focus(); });
-                setInterval(client.loop(), 120000);
+                setInterval(client.loop, 120000);
             }
             $(window).data('wscclient', client);
         }

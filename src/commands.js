@@ -39,6 +39,7 @@ function wsc_extdefault( client ) {
             this.client.bind('cmd.raw.wsc', this.raw);
             this.client.bind('cmd.say.wsc', this.say);
             this.client.bind('cmd.npmsg.wsc', this.npmsg);
+            this.client.bind('cmd.clear.wsc', this.clear);
             // userlistings
             this.client.bind('set.userlist.wsc', this.setUsers);
         },
@@ -144,6 +145,12 @@ function wsc_extdefault( client ) {
         // Say something without emotes and shit. Zomg.
         npmsg: function( e ) {
             extension.client.npmsg( e.target, e.args );
+        },
+        
+        // Clear the channel's log.
+        clear: function( e ) {
+            this.client.cchannel.logpanel.find('p.logmsg').remove();
+            this.client.cchannel.resize();
         },
         
         // Set users, right?
