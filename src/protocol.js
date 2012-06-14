@@ -52,11 +52,12 @@ function wsc_protocol( client ) {
         mapper: {},
         
         // Messages for every packet.
-        //      pkt_name: [ msg[, monitor]]
+        //      pkt_name: [ msg[, monitor[, global]] ]
         // If provided, `monitor` should be true or false. By default the
         // protocol assumes false. When true, the message will be displayed in
         // the monitor channel ONLY. When false, the message will be displayed
         // in the channel the packet came from.
+        // If `global` is true, the message is displayed in all open channels.
         messages: {
             'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
             'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
@@ -86,8 +87,8 @@ function wsc_protocol( client ) {
             'kick': ['<span class="servermsg">** Could not kick {user}: <em>{e}</em></span>'],
             'get': ['<span class="servermsg">** Could not get {p} info for {ns}: <em>{e}</em></span>'],
             'set': ['<span class="servermsg">** Could not set {p}: <em>{e}</em></span>'],
-            //'kill': ['** Kill error: {1}'],*/
-            //'unknown': ['** Received unknown packet in {0}: {packet}', true],
+            'kill': ['<span class="servermsg">** Kill error: <em>{e}</em></span>'],
+            'unknown': ['<span class="servermsg">** Received unknown packet in {ns}: <em>{packet}</em></span>', true],
         },
         
         // Initialise!
@@ -135,6 +136,10 @@ function wsc_protocol( client ) {
             
             if(this.client.connected)
                 this.client.connected = false;
+            
+            // For now we want to automatically reconnect.
+            // Should probably be more intelligent about this though.
+            this.client.connect();
         
         }, 
     
@@ -280,10 +285,21 @@ function wsc_protocol( client ) {
                 protocol.client.settings['userinfo'] = info.arg;
                 // Autojoin!
                 // TODO: multi-channel?
-                protocol.client.join(client.settings["autojoin"]);
+                if ( protocol.client.fresh )
+                    protocol.client.join(client.settings["autojoin"]);
+                else {
+                    for( key in protocol.client.channelo ) {
+                        ns = protocol.client.channelo[key].namespace;
+                        if( ns[0] != '~' )
+                            protocol.client.join(ns);
+                    }
+                }
             } else {
                 //protocol.client.monitor("Failed to log in: \"" + e.pkt["arg"]["e"] + '"');
             }
+            
+            if( protocol.client.fresh )
+                protocol.client.fresh = false;
             
             
         },
@@ -296,7 +312,7 @@ function wsc_protocol( client ) {
                 protocol.client.createChannel(ns);
                 protocol.client.channel(ns).serverMessage("You have joined " + ns);
             } else {
-                protocol.client.cchannel.serverMessage("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), '[' + e.pkt["arg"]["e"] + ']');
+                protocol.client.cchannel.serverMessage("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), e.pkt["arg"]["e"]);
             }
         },
         
@@ -327,7 +343,7 @@ function wsc_protocol( client ) {
                     protocol.process_data( { data: 'disconnect\ne='+e.r+'\n' } );
                 }
             } else {
-                protocol.client.monitor('Couldn\'t leave ' + protocol.client.deform_ns(e.pkt['param']), '[' + e.pkt['arg']['e'] + ']');
+                protocol.client.monitor('Couldn\'t leave ' + protocol.client.deform_ns(e.pkt['param']), e.pkt['arg']['e']);
             }
         },
         

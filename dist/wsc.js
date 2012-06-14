@@ -831,8 +831,8 @@ function wsc_tablumps( client ) {
                     
                     ico = avfile.replace(ru, repl);
                     ico = icon == '0' ? dav : ico.replacePArg( '{un}', un.toLowerCase() );
-                    return '<a target="_blank" title=":icon'+un+':" href="http://$1.'+domain+'"><img class="avatar"\
-                            alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
+                    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.'+domain+'"><img class="avatar"\
+                            alt=":icon$1:" src="'+avfold+ico+'?1" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
                 '&link\t': [ 3, function( data ) {
@@ -1003,11 +1003,12 @@ function wsc_protocol( client ) {
         mapper: {},
         
         // Messages for every packet.
-        //      pkt_name: [ msg[, monitor]]
+        //      pkt_name: [ msg[, monitor[, global]] ]
         // If provided, `monitor` should be true or false. By default the
         // protocol assumes false. When true, the message will be displayed in
         // the monitor channel ONLY. When false, the message will be displayed
         // in the channel the packet came from.
+        // If `global` is true, the message is displayed in all open channels.
         messages: {
             'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
             'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
@@ -1037,8 +1038,8 @@ function wsc_protocol( client ) {
             'kick': ['<span class="servermsg">** Could not kick {user}: <em>{e}</em></span>'],
             'get': ['<span class="servermsg">** Could not get {p} info for {ns}: <em>{e}</em></span>'],
             'set': ['<span class="servermsg">** Could not set {p}: <em>{e}</em></span>'],
-            //'kill': ['** Kill error: {1}'],*/
-            //'unknown': ['** Received unknown packet in {0}: {packet}', true],
+            'kill': ['<span class="servermsg">** Kill error: <em>{e}</em></span>'],
+            'unknown': ['<span class="servermsg">** Received unknown packet in {ns}: <em>{packet}</em></span>', true],
         },
         
         // Initialise!
@@ -1086,6 +1087,10 @@ function wsc_protocol( client ) {
             
             if(this.client.connected)
                 this.client.connected = false;
+            
+            // For now we want to automatically reconnect.
+            // Should probably be more intelligent about this though.
+            this.client.connect();
         
         }, 
     
@@ -1231,10 +1236,21 @@ function wsc_protocol( client ) {
                 protocol.client.settings['userinfo'] = info.arg;
                 // Autojoin!
                 // TODO: multi-channel?
-                protocol.client.join(client.settings["autojoin"]);
+                if ( protocol.client.fresh )
+                    protocol.client.join(client.settings["autojoin"]);
+                else {
+                    for( key in protocol.client.channelo ) {
+                        ns = protocol.client.channelo[key].namespace;
+                        if( ns[0] != '~' )
+                            protocol.client.join(ns);
+                    }
+                }
             } else {
                 //protocol.client.monitor("Failed to log in: \"" + e.pkt["arg"]["e"] + '"');
             }
+            
+            if( protocol.client.fresh )
+                protocol.client.fresh = false;
             
             
         },
@@ -1247,7 +1263,7 @@ function wsc_protocol( client ) {
                 protocol.client.createChannel(ns);
                 protocol.client.channel(ns).serverMessage("You have joined " + ns);
             } else {
-                protocol.client.cchannel.serverMessage("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), '[' + e.pkt["arg"]["e"] + ']');
+                protocol.client.cchannel.serverMessage("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), e.pkt["arg"]["e"]);
             }
         },
         
@@ -1278,7 +1294,7 @@ function wsc_protocol( client ) {
                     protocol.process_data( { data: 'disconnect\ne='+e.r+'\n' } );
                 }
             } else {
-                protocol.client.monitor('Couldn\'t leave ' + protocol.client.deform_ns(e.pkt['param']), '[' + e.pkt['arg']['e'] + ']');
+                protocol.client.monitor('Couldn\'t leave ' + protocol.client.deform_ns(e.pkt['param']), e.pkt['arg']['e']);
             }
         },
         
@@ -1618,6 +1634,7 @@ function wsc_client( view, options, mozilla ) {
         chatbook: null,
         connected: false,
         conn: null,
+        fresh: true,
         evt_chains: [["recv", "admin"]],
         events: null,
         settings: {
@@ -1938,12 +1955,36 @@ function wsc_client( view, options, mozilla ) {
             //client.control.resize();
         },
         
+        // Called by setInterval every two minutes. Approximately. Maybe. Who cares?
+        // It is up to whatever implements the client to set up the loop by
+        // calling setInterval(client.loop, 120000); or whatever variations.
+        // Wsc's jQuery plugin does this automagically.
+        loop: function( ) {
+            client.doLoop();
+        },
+        
+        // Ok so I lied, this is the stuff that actually runs on the loop thingy.
+        // This is to avoid thingies like scope fucking up. Seriously. Wtf js?
+        doLoop: function( ) {
+            mod = false;
+            for( key in this.channelo ) {
+                c = this.channel(key);
+                msgs = this.view.find( '#' + c.selector + ' .logmsg' );
+                if( msgs.length < 100 )
+                    continue;
+                msgs.slice(0, 10).remove();
+                mod = true;
+            }
+            if( mod )
+                this.resizeUI();
+        },
+        
         // Create a screen for channel `ns` in the UI, and initialise data
         // structures or some shit idk. The `selector` parameter defines the
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         createChannel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns), toggle);
+            chan = this.channel(ns, wsc_channel(this, ns));
             chan.build();
             this.toggleChannel(ns);
             if( toggle )
@@ -2592,6 +2633,7 @@ function wsc_control( client ) {
                 client = wsc_client( $(this), options, $.browser.mozilla );
                 $(window).resize(client.resizeUI);
                 $(window).focus(function( ) { client.control.focus(); });
+                setInterval(client.loop(), 120000);
             }
             $(window).data('wscclient', client);
         }

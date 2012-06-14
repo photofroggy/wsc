@@ -57,8 +57,8 @@ function wsc_tablumps( client ) {
                     
                     ico = avfile.replace(ru, repl);
                     ico = icon == '0' ? dav : ico.replacePArg( '{un}', un.toLowerCase() );
-                    return '<a target="_blank" title=":icon'+un+':" href="http://$1.'+domain+'"><img class="avatar"\
-                            alt=":icon$1:" src="'+avfold+ico+'" height="50" width="50" /></a>';
+                    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.'+domain+'"><img class="avatar"\
+                            alt=":icon$1:" src="'+avfold+ico+'?1" height="50" width="50" /></a>';
                 }],
                 '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
                 '&link\t': [ 3, function( data ) {

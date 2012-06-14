@@ -49,6 +49,7 @@ function wsc_client( view, options, mozilla ) {
         chatbook: null,
         connected: false,
         conn: null,
+        fresh: true,
         evt_chains: [["recv", "admin"]],
         events: null,
         settings: {
@@ -369,12 +370,36 @@ function wsc_client( view, options, mozilla ) {
             //client.control.resize();
         },
         
+        // Called by setInterval every two minutes. Approximately. Maybe. Who cares?
+        // It is up to whatever implements the client to set up the loop by
+        // calling setInterval(client.loop, 120000); or whatever variations.
+        // Wsc's jQuery plugin does this automagically.
+        loop: function( ) {
+            client.doLoop();
+        },
+        
+        // Ok so I lied, this is the stuff that actually runs on the loop thingy.
+        // This is to avoid thingies like scope fucking up. Seriously. Wtf js?
+        doLoop: function( ) {
+            mod = false;
+            for( key in this.channelo ) {
+                c = this.channel(key);
+                msgs = this.view.find( '#' + c.selector + ' .logmsg' );
+                if( msgs.length < 100 )
+                    continue;
+                msgs.slice(0, 10).remove();
+                mod = true;
+            }
+            if( mod )
+                this.resizeUI();
+        },
+        
         // Create a screen for channel `ns` in the UI, and initialise data
         // structures or some shit idk. The `selector` parameter defines the
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         createChannel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns), toggle);
+            chan = this.channel(ns, wsc_channel(this, ns));
             chan.build();
             this.toggleChannel(ns);
             if( toggle )
