@@ -831,12 +831,10 @@ function wsc_tablumps( client ) {
                         ext = 'gif';
                     } else {
                         ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                    
-                        function repl( m, s, i ) {
-                            return un[i].toLowerCase();
-                        }
                         
-                        ico = avfile.replace(ru, repl);
+                        ico = avfile.replace(ru, function ( m, s, i ) {
+                            return un[i].toLowerCase();
+                        });
                         ico = ico.replacePArg( '{un}', un.toLowerCase() );
                     }
                     
@@ -855,7 +853,7 @@ function wsc_tablumps( client ) {
                 '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
                 '&thumb\t': [ 7, function( data ) {
                         id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
-                        server = parseInt(data[4]); w = parseInt(dim[0]); h = parseInt(dim[1]);
+                        server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
                         if( w/h > 1 ) { th = (h * 100) / w; tw = 100; } else { tw = (w * 100) / 100; th = 100; }
                         return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
                                 height="'+th+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
