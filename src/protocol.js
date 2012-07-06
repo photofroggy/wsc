@@ -348,16 +348,19 @@ function wsc_protocol( client ) {
         // Received a part packet.
         part: function( e ) {
             ns = protocol.client.deform_ns(e.ns);
+            c = protocol.client.channel(ns);
+            
             if(e.e == "ok") {
-                console.log(e);
                 info = '';
-                if( e.pkt["arg"]["r"] )
-                    info = '[' + e.pkt["arg"]["r"] + ']';
+                if( e.r )
+                    info = '[' + e.r + ']';
                 
                 msg = 'You have left ' + ns;
-                c = protocol.client.channel(ns);
                 c.serverMessage(msg, info);
-                protocol.client.removeChannel(ns);
+                
+                if( info == '' )
+                    protocol.client.removeChannel(ns);
+                
                 if( protocol.client.channels() == 0 ) {
                     switch( e.r ) {
                         case 'bad data':
@@ -372,8 +375,10 @@ function wsc_protocol( client ) {
                     protocol.process_data( { data: 'disconnect\ne='+e.r+'\n' } );
                 }
             } else {
-                protocol.client.monitor('Couldn\'t leave ' + protocol.client.deform_ns(e.pkt['param']), e.pkt['arg']['e']);
+                protocol.client.monitor('Couldn\'t leave ' + ns, e.e);
+                c.serverMessage("Couldn't leave "+ns, e.e);
             }
+            
         },
         
         // Process a property packet.
