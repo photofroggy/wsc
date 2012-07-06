@@ -1,0 +1,57 @@
+@mixin control {
+    div.chatcontrol {
+        clear: both;
+        margin: 0px;
+        padding: 5px;
+        width: 100%;
+        border-bottom: 1px solid black;
+        font-size: 12px;
+        
+        p {
+            margin: 0px;
+            padding: 0px;
+            padding-left: 5px;
+        }
+        
+        form.msg {
+            clear: both;
+            padding: 0px;
+            margin: 0px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        
+        form.msg input.msg {
+            width: 60%;
+            line-height: 1.6em;
+        }
+    
+    }
+    
+    a.button,
+    form.msg input[type="submit"] {
+        text-align: middle;
+        padding: 5px 10px;
+        background: none;
+        border: 1px solid black;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        font-size: 13px;
+        -webkit-box-shadow: 0px 1px 1px black;
+        -moz-box-shadow: 0px 1px 1px black;
+        box-shadow: 0px 1px 1px black;
+        
+        &:hover {
+            background: none;
+            /*background-color: #95B4CC;*/
+            border: 1px solid black;
+            /*color: #EDF8FF;*/
+            cursor: pointer;
+            -webkit-box-shadow: inset 0px 1px 2px black;
+            -moz-box-shadow: inset 0px 1px 2px black;
+            box-shadow: inset 0px 1px 2px black;
+        }
+    
+    }
+
+}

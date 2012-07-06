@@ -49,7 +49,20 @@ function wsc_protocol( client ) {
         },
         
         // Mapping callbacks!
-        mapper: {},
+        mapper: {
+            "recv": function( args, packet, mapping ) {
+                args.ns = packet.param;
+                sub = new WscPacket( packet.body );
+                
+                if( sub.cmd == 'admin' ) {
+                    ssub = new WscPacket( sub.body );
+                    return protocol.mapPacket(args, ssub, mapping);
+                }
+                
+                return protocol.mapPacket(args, sub, mapping);
+            }
+            
+        },
         
         // Messages for every packet.
         //      pkt_name: [ msg[, monitor[, global]] ]
@@ -95,7 +108,13 @@ function wsc_protocol( client ) {
         init: function( client ) {
             this.client = client;
             this.mapper['recv'] = this.map_recv;
-            this.tablumps = this.client.settings['tablumps'](client.settings);
+            this.tablumps = new WscTablumps();
+            
+            if ( this.client.settings['tablumps'] !== null ) {
+                lumpmap = this.client.settings['tablumps']();
+                this.client.view.extend(lumpmap, this.tablumps.lumps);
+                this.tablumps.registerMap( lumpmap );
+            }
             
             //client.bind("data.wsc", this.debug_pkt);
             client.bind('chatserver.wsc', this.chatserver);
@@ -122,30 +141,41 @@ function wsc_protocol( client ) {
     
         // Established a WebSocket connection.
         connected: function( evt ) {
-            this.client.trigger('connected.wsc', {name: 'connected', pkt: wsc_packet('connected\n\n')});
+            this.client.trigger('connected.wsc', {name: 'connected', pkt: new WscPacket('connected\n\n')});
             //console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
+            this.client.attempts = 0;
         },
     
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed.wsc', {name: 'closed', pkt: wsc_packet('connection closed\n\n')});
-            this.client.monitorAll("Connection closed");
+            this.client.trigger('closed.wsc', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
             
-            if(this.client.connected)
+            if(this.client.connected) {
+                this.client.monitorAll("Connection closed");
                 this.client.connected = false;
+            } else {
+                this.client.monitorAll("Connection failed");
+            }
             
             // For now we want to automatically reconnect.
             // Should probably be more intelligent about this though.
-            this.client.connect();
+            if( this.client.attempts > 2 ) {
+                this.client.monitorAll("Can't connect. Try again later.");
+                this.client.attempts = 0;
+                return;
+            }
+            
+            this.client.monitorAll("Connecting in 5 seconds...");
+            setTimeout(this.client.connect.bind(this.client), 5000);
         
         }, 
     
         // Received data from WebSocket connection.
         process_data: function( evt ) {
-            var pack = wsc_packet(evt.data);
+            var pack = new WscPacket(evt.data);
             
             if(pack == null)
                 return;
@@ -163,7 +193,7 @@ function wsc_protocol( client ) {
         
         // Create a wsc event based on a packet.
         packetEvent: function( name, packet ) {
-            args = { 'name': name, 'pkt': packet, 'ns': this.client.mns };
+            var args = { 'name': name, 'pkt': packet, 'ns': this.client.mns };
         
             if( !this.maps[name] )
                 return args;
@@ -210,7 +240,7 @@ function wsc_protocol( client ) {
                     // e.<map[event][2]> = pkt.body
                     case "2":
                         if( key instanceof Array )
-                            this.mapPacket(arguments, wsc_packet(pkt['body']), key);
+                            this.mapPacket(arguments, new WscPacket(pkt['body']), key);
                         else
                             arguments[key] = pkt['body'];
                         break;
@@ -279,7 +309,7 @@ function wsc_protocol( client ) {
             if(e.pkt["arg"]["e"] == "ok") {
                 //protocol.client.monitor("Logged in as " + e.pkt["param"] + '.');
                 // Use the username returned by the server!
-                info = wsc_packet('info\n' + e.data);
+                info = new WscPacket('info\n' + e.data);
                 protocol.client.settings["username"] = e.pkt["param"];
                 protocol.client.settings['symbol'] = info.arg.symbol;
                 protocol.client.settings['userinfo'] = info.arg;

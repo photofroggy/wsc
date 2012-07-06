@@ -2,68 +2,98 @@
  * Methods to parse and create packets for the chat protocol.
  */
 
-// Parse a packet.
-function wsc_packet( data ) {
-    if(!data) {
+function WscPacket( data, separator ) {
+
+    this.raw = data;
+    /*this.parse = bind( this, this.parse );
+    this.parseArgs = bind( this, this.parseArgs );
+    this.setNull = bind( this, this.setNull );
+    this.serialize = bind( this, this.serialize );
+    this.toString = bind( this, this.toString );*/
+    //scope_methods( this, WscPacket.prototype );
+    this.setNull();
+    this.parse(separator);
+    this.raw = this.serialize();
+
+}
+
+WscPacket.prototype.parse = function( separator ) {
+
+    if(!( this.raw )) {
         return null;
     }
-
+    
+    separator = separator || '=';
+    var data = this.raw;
+    
     try {
-        var cmd;
-        //We need param to be null so it will fail the if test.
-        //This is to make the serializer work properly.
-        var param;
-        //var param = '';
-
-        var idx = data.search('\n');
-        if(idx == 0) {
-            return null;
+        // Crop the body.
+        idx = data.indexOf('\n\n');
+        if( idx > -1 ) {
+            this.body = data.substr(idx + 2);
+            data = data.substr( 0, idx );
         }
-        var headerline = data.substr(0, idx).replace(/\s*$/, '');
-        cmd = headerline.match(/\S+/)[0];
-        var sidx = headerline.search(' ');
-        if(sidx && sidx > 0)
-            param = headerline.substr(sidx+1).match(/\S.*/)[0].replace(/\s*$/, '');
-        var args = wsc_packet_args(data.substr(idx + 1));
-
-        return {
-            'cmd' : cmd,
-            'param' : param,
-            'arg' : args.args,
-            'body' : args.data,
-            'serialize': function( ) { return wsc_packetstr(this.cmd, this.param, this.arg, this.body); }
-        };
+        
+        cmdline = null;
+        idx = data.indexOf('\n');
+        sidx = data.indexOf( separator );
+        
+        if( idx > -1 && ( sidx == -1 || sidx > idx ) ) {
+            cmdline = data.substr( 0, idx );
+            data = data.substr( idx + 1 );
+        } else if( sidx == -1 ) {
+            cmdline = data;
+            data = '';
+        }
+        
+        if( cmdline ) {
+            seg = cmdline.split(' ');
+            this.cmd = seg[0];
+            this.param = seg[1] ? seg[1] : null;
+        }
+        
+        this.arg = this.parseArgs(data, separator);
+        
     } catch(e) {
         alert('parser exception:' + e);
-        return null;
+        this.setNull();
     }
-}
 
-// Parse packet arguments.
-function wsc_packet_args( data ) {
-    var args = new Object();
-    var body = '';
-    var work = data;
-    while(work && work.search('\n')) {
-        var i = work.search('\n');
-        var tmp = work.substr(0, i);
-        work = work.substr(i + 1);
-        i = tmp.search('=');
-        if(i == null || i <= 0) {
-            throw "bad argument line:" + tmp;
-        }
-        an = tmp.substr(0, i)
-        av = tmp.substr(i + 1)
-        args[an.replace(/\s*$/, '')] = av.replace(/\s*$/, '');
+};
+
+WscPacket.prototype.parseArgs = function ( data, separator ) {    
+    separator = separator || '=';
+    args = {};
+    lines = data.split('\n');
+    for( n in lines ) {
+        line = lines[n];
+        si = line.search(separator);
+        
+        if( si == -1 )
+            continue;
+        
+        args[line.substr( 0, si )] = line.substr( si + separator.length ) || '';
     }
-    if(work) {
-        body = work.substr(1);
-    }
-    return {
-        'args' : args,
-        'data' : body
-    };
-}
+    
+    return args;
+};
+
+WscPacket.prototype.setNull = function(  ) {
+
+    this.cmd = null;
+    this.param = null;
+    this.arg = null;
+    this.body = null;
+
+};
+
+WscPacket.prototype.toString = function(  ) {
+    return this.raw;
+};
+
+WscPacket.prototype.serialize = function(  ) {
+    return wsc_packetstr( this.cmd, this.param, this.arg, this.body );
+};
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {

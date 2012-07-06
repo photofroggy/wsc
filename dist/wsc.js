@@ -23,16 +23,16 @@ function EventEmitter() {
         return self;
     }
 
-    function emit(event, args) {
-        //var args = Array.prototype.slice.call(arguments);
-        //var event = args.shift();
+    function emit() {
+        var args = Array.prototype.slice.call(arguments);
+        var event = args.shift();
         var callbacks = events[event] || false;
         if(callbacks === false) {
             return self;
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
-                callbacks[i](args);
+                callbacks[i].apply({}, args);
             }
         }
         return self;
@@ -103,7 +103,38 @@ var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
 /* wsc lib - photofroggy
  * Generic useful functions or something.
  */
- 
+
+// Function scope binding. Convoluted weirdness. Lol internet.
+Function.prototype.bind = function( scope ) {
+    var _function = this;
+    
+    return function () {
+        return _function.apply( scope, arguments );
+    };
+}; 
+
+// Some other constructor type thing?
+function scope_methods( scope, methods ) {
+
+    for( cbn in methods ) {
+        scope[cbn] = methods[cbn].bind( scope );
+    }
+
+}
+
+Function.prototype.scope_methods = function( scope, methods ) {
+
+    for( cbn in methods ) {
+        scope[cbn] = methods[cbn].bind( scope );
+    }
+
+};
+
+// Alternate binding interface
+function bind( scope, cb ) {
+    return cb.bind( scope );
+}
+
 // Fetch url GET variable. 
 function $_GET( q, s ) {
     s = s || window.location.search;
@@ -215,68 +246,98 @@ Object.size = function(obj) {
  * Methods to parse and create packets for the chat protocol.
  */
 
-// Parse a packet.
-function wsc_packet( data ) {
-    if(!data) {
+function WscPacket( data, separator ) {
+
+    this.raw = data;
+    /*this.parse = bind( this, this.parse );
+    this.parseArgs = bind( this, this.parseArgs );
+    this.setNull = bind( this, this.setNull );
+    this.serialize = bind( this, this.serialize );
+    this.toString = bind( this, this.toString );*/
+    //scope_methods( this, WscPacket.prototype );
+    this.setNull();
+    this.parse(separator);
+    this.raw = this.serialize();
+
+}
+
+WscPacket.prototype.parse = function( separator ) {
+
+    if(!( this.raw )) {
         return null;
     }
-
+    
+    separator = separator || '=';
+    var data = this.raw;
+    
     try {
-        var cmd;
-        //We need param to be null so it will fail the if test.
-        //This is to make the serializer work properly.
-        var param;
-        //var param = '';
-
-        var idx = data.search('\n');
-        if(idx == 0) {
-            return null;
+        // Crop the body.
+        idx = data.indexOf('\n\n');
+        if( idx > -1 ) {
+            this.body = data.substr(idx + 2);
+            data = data.substr( 0, idx );
         }
-        var headerline = data.substr(0, idx).replace(/\s*$/, '');
-        cmd = headerline.match(/\S+/)[0];
-        var sidx = headerline.search(' ');
-        if(sidx && sidx > 0)
-            param = headerline.substr(sidx+1).match(/\S.*/)[0].replace(/\s*$/, '');
-        var args = wsc_packet_args(data.substr(idx + 1));
-
-        return {
-            'cmd' : cmd,
-            'param' : param,
-            'arg' : args.args,
-            'body' : args.data,
-            'serialize': function( ) { return wsc_packetstr(this.cmd, this.param, this.arg, this.body); }
-        };
+        
+        cmdline = null;
+        idx = data.indexOf('\n');
+        sidx = data.indexOf( separator );
+        
+        if( idx > -1 && ( sidx == -1 || sidx > idx ) ) {
+            cmdline = data.substr( 0, idx );
+            data = data.substr( idx + 1 );
+        } else if( sidx == -1 ) {
+            cmdline = data;
+            data = '';
+        }
+        
+        if( cmdline ) {
+            seg = cmdline.split(' ');
+            this.cmd = seg[0];
+            this.param = seg[1] ? seg[1] : null;
+        }
+        
+        this.arg = this.parseArgs(data, separator);
+        
     } catch(e) {
         alert('parser exception:' + e);
-        return null;
+        this.setNull();
     }
-}
 
-// Parse packet arguments.
-function wsc_packet_args( data ) {
-    var args = new Object();
-    var body = '';
-    var work = data;
-    while(work && work.search('\n')) {
-        var i = work.search('\n');
-        var tmp = work.substr(0, i);
-        work = work.substr(i + 1);
-        i = tmp.search('=');
-        if(i == null || i <= 0) {
-            throw "bad argument line:" + tmp;
-        }
-        an = tmp.substr(0, i)
-        av = tmp.substr(i + 1)
-        args[an.replace(/\s*$/, '')] = av.replace(/\s*$/, '');
+};
+
+WscPacket.prototype.parseArgs = function ( data, separator ) {    
+    separator = separator || '=';
+    args = {};
+    lines = data.split('\n');
+    for( n in lines ) {
+        line = lines[n];
+        si = line.search(separator);
+        
+        if( si == -1 )
+            continue;
+        
+        args[line.substr( 0, si )] = line.substr( si + separator.length ) || '';
     }
-    if(work) {
-        body = work.substr(1);
-    }
-    return {
-        'args' : args,
-        'data' : body
-    };
-}
+    
+    return args;
+};
+
+WscPacket.prototype.setNull = function(  ) {
+
+    this.cmd = null;
+    this.param = null;
+    this.arg = null;
+    this.body = null;
+
+};
+
+WscPacket.prototype.toString = function(  ) {
+    return this.raw;
+};
+
+WscPacket.prototype.serialize = function(  ) {
+    return wsc_packetstr( this.cmd, this.param, this.arg, this.body );
+};
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {
@@ -305,6 +366,221 @@ function wsc_packet_serialze(pkt) {
  * Provides a JavaScript representation of a chat channel and handles the UI
  * for the channel.
  */
+
+function WscChannel( client, ns ) {
+
+    var selector = client.deform_ns(ns).slice(1).toLowerCase();
+    this.client = client;
+    //this.hidden = hidden;
+    
+    this.info = {
+        'raw': null,
+        'selector': null,
+        'namespace': null,
+        'members': {},
+        'pc': {},
+        'pc_order': [],
+        'title': {
+            'content': '',
+            'by': '',
+            'ts': ''
+        },
+        'topic': {
+            'content': '',
+            'by': '',
+            'ts': ''
+        },
+    };
+
+    this.info.raw = client.format_ns(ns);
+    this.info.selector = selector;
+    this.info['namespace'] = this.info.ns = client.deform_ns(ns);
+    
+    //this.property = this.property.bind( this );
+    scope_methods( this, WscChannel.prototype );
+
+}
+
+WscChannel.prototype.property = function( e ) {
+    var prop = e.pkt["arg"]["p"];
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.setHeader(prop, e);
+            break;
+        case "privclasses":
+            this.setPrivclasses(e);
+            break;
+        case "members":
+            this.setMembers(e);
+            break;
+        default:
+            this.client.monitor("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
+};
+
+// Set the channel header.
+// This can be the title or topic, determined by `head`.
+WscChannel.prototype.setHeader = function( head, e ) {
+    this.info[head]["content"] = e.value || '';
+    this.info[head]["by"] = e.by;
+    this.info[head]["ts"] = e.ts;
+    //console.log("set " + head);
+    if(!this.info[head]["content"]) {
+        /*
+        this.setHeader('title', { pkt: {
+                    "arg": { "by": "", "ts": "" },
+                    "body": '<p>sample title</p>'
+                }
+            }
+        );
+        /**/
+        /*
+        this.setHeader('topic', { pkt: {
+                    'arg': { 'by': '', 'ts': '' },
+                    'body': '<p>sample topic</p>'
+                }
+            }
+        );
+        /**/
+        /*
+        return;/**/
+    }
+    //this.ui.setHeader();
+};
+
+// Set the channel's privclasses.
+// TODO: Draw UI componentories!
+WscChannel.prototype.setPrivclasses = function( e ) {
+    this.info["pc"] = {};
+    this.info["pc_order"] = [];
+    var lines = e.pkt["body"].split('\n');
+    //console.log(lines);
+    for(var i in lines) {
+        if( !lines[i] )
+            continue;
+        bits = lines[i].split(":");
+        this.info["pc_order"].push(parseInt(bits[0]));
+        this.info["pc"][parseInt(bits[0])] = bits[1];
+    }
+    this.info["pc_order"].sort(function(a,b){return b-a});
+    /* 
+    console.log("got privclasses");
+    console.log(this.info["pc"]);
+    console.log(this.info["pc_order"]);
+    /* */
+};
+
+// Store each member of the this.
+// TODO: GUI stuffs!
+WscChannel.prototype.setMembers = function( e ) {
+    pack = new WscPacket(e.pkt["body"]);
+    this.info['members'] = {};
+    
+    while(pack["cmd"] == "member") {
+        this.registerUser(pack);
+        pack = new WscPacket(pack.body);
+        if(pack == null)
+            break;
+    }
+    //console.log("registered users");
+    this.setUserList();
+};
+
+// Register a user with the this.
+WscChannel.prototype.registerUser = function( pkt ) {
+    //delete pkt['arg']['s'];
+    un = pkt["param"];
+    
+    if(this.info["members"][un] == undefined) {
+        this.info["members"][un] = pkt["arg"];
+        this.info["members"][un]["username"] = un;
+        this.info["members"][un]["conn"] = 1;
+    } else {
+        this.info["members"][un]["conn"]++;
+    }
+};
+
+// Unregister a user.
+WscChannel.prototype.removeUser = function( user ) {
+    member = this.info['members'][user];
+    
+    if( member == undefined )
+        return;
+    
+    member['conn']--;
+    
+    if( member['conn'] == 0 )
+        delete this.info['members'][user];
+};
+
+// Joins
+WscChannel.prototype.recv_join = function( e ) {
+    info = new WscPacket('user ' + e.user + '\n' + e['*info']);
+    this.registerUser( info );
+    this.setUserList();
+};
+
+// Process someone leaving or whatever.
+WscChannel.prototype.recv_part = function( e ) {
+    
+    this.removeUser(e.user);
+    this.setUserList();
+    
+};
+/*
+// Display a message sent by a user.
+WscChannel.prototype.recv_msg = function( e ) {
+
+    tabl = this.tab.find('a');
+    
+    if( !this.tab.hasClass('active') )
+        tabl.css({'font-weight': 'bold'});
+    
+    u = channel.client.settings['username'].toLowerCase();
+    msg = e['message'].toLowerCase();
+    p = channel.window.find('p.logmsg').last();
+    
+    if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
+        return;
+    
+    p.addClass('highlight');
+    
+    if( this.tab.hasClass('active') )
+        return;
+    
+    console.log(tabl);
+    tabl
+        .animate( { 'backgroundColor': '#990000' }, 500)
+        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+        .animate( { 'backgroundColor': '#990000' }, 250)
+        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+        .animate( { 'backgroundColor': '#990000' }, 250)
+        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+        .animate( { 'backgroundColor': '#990000' }, 250);
+
+};
+*/
+// Changed privclass buddy?
+WscChannel.prototype.recv_privchg = function( e ) {
+    member = this.info['members'][e.user];
+    
+    if( !member )
+        return;
+    
+    member['pc'] = event.pc;
+    this.setUserList();
+};
+
+// Process a kick event thingy.
+WscChannel.prototype.recv_kicked = function( e ) {
+    if( !this.info['members'][e.user] )
+        return;
+    
+    delete this.info['members'][e.user];
+    this.setUserList();
+};
 
 // Create a screen for channel `ns` in the UI, and initialise data
 // structures or some shit idk. The `selector` parameter defines the
@@ -403,7 +679,6 @@ function wsc_channel( client, ns ) {
             
             if( this.hidden ) {
                 this.tab.toggleClass('hidden');
-                console.log('hey');
             }
             
             this.built = true;
@@ -432,6 +707,7 @@ function wsc_channel( client, ns ) {
             //console.log("show  " + this.info.selector);
             this.window.css({'display': 'block'});
             this.tab.addClass('active');
+            this.tab.find('a').css({'font-weight': 'normal'});
             this.resize();
         },
         
@@ -495,14 +771,14 @@ function wsc_channel( client, ns ) {
                 
             // Log panel dimensions
             this.logpanel.css({
-                height: wh,
+                height: wh + 1,
                 width: cw});
             
             // Scroll again just to make sure.
             this.scroll();
             
             // User list dimensions
-            cu.css({height: this.logpanel.innerHeight() - 2});
+            cu.css({height: this.logpanel.innerHeight() - 3});
         },
         
         // Display a log message.
@@ -679,12 +955,12 @@ function wsc_channel( client, ns ) {
         // Store each member of the this.
         // TODO: GUI stuffs!
         setMembers: function( e ) {
-            pack = wsc_packet(e.pkt["body"]);
+            pack = new WscPacket(e.pkt["body"]);
             this.info['members'] = {};
             
             while(pack["cmd"] == "member") {
                 this.registerUser(pack);
-                pack = wsc_packet(pack.body);
+                pack = new WscPacket(pack.body);
                 if(pack == null)
                     break;
             }
@@ -721,7 +997,7 @@ function wsc_channel( client, ns ) {
         
         // Joins
         recv_join: function( e ) {
-            info = wsc_packet('user ' + e.user + '\n' + e['*info']);
+            info = new WscPacket('user ' + e.user + '\n' + e['*info']);
             channel.registerUser( info );
             channel.setUserList();
         },
@@ -737,6 +1013,11 @@ function wsc_channel( client, ns ) {
         // Display a message sent by a user.
         recv_msg: function( e ) {
         
+            tabl = this.tab.find('a');
+            
+            if( !this.tab.hasClass('active') )
+                tabl.css({'font-weight': 'bold'});
+            
             u = channel.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
             p = channel.window.find('p.logmsg').last();
@@ -745,6 +1026,19 @@ function wsc_channel( client, ns ) {
                 return;
             
             p.addClass('highlight');
+            
+            if( this.tab.hasClass('active') )
+                return;
+            
+            console.log(tabl);
+            tabl
+                .animate( { 'backgroundColor': '#990000' }, 500)
+                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+                .animate( { 'backgroundColor': '#990000' }, 250)
+                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+                .animate( { 'backgroundColor': '#990000' }, 250)
+                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
+                .animate( { 'backgroundColor': '#990000' }, 250);
         
         },
         
@@ -789,187 +1083,198 @@ function wsc_channel( client, ns ) {
  * replace tablumps with readable strings.
  */
 
-// Create a tablump parser object.
-function wsc_tablumps( client ) {
-    
-    var tablumps = {
-        client: null,
-        lumps: null,
-        repl: null,
-    
-        init: function( opts ) {
-            // Populate the expressions and replaces used when parsing tablumps.
-            if( this.expressions )
-                return;
-            var domain = opts['domain'];
-            var dav = opts['defaultavatar'];
-            var avfold = opts['avatarfolder'];
-            var avfile = opts['avatarfile'];
-            var emfold = opts['emotefolder'];
-            var thfold = opts['thumbfolder'];
-            
-            // This array defines the regex for replacing the simpler tablumps.
-            this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|a|iframe|acro|abbr)\t/g, '<$1$2>'];
-            
-            /* Tablumps formatting rules.
-             * This object can be defined as follows:
-             *     lumps[tag] => [ arguments, format ]
-             * ``tag`` is the tablumps-formatted tag to process.
-             * ``arguments`` is the number of arguments contained in the tablump.
-             * ``format`` is a function which returns the tablump as valid HTML.
-             * Or it's a string template thing. Whichever.
-             */
-            this.lumps = {
-                '&avatar\t': [ 2, function( data ) {
-                    un = data[0];
-                    icon = parseInt(data[1]);
-                    console.log('>> user:',un,'; icon:',icon);
-                    ext = icon == 6 ? 'jpg' : 'png';
-                    
-                    if( icon == 0 ) { 
-                        ico = dav;
-                        ext = 'gif';
-                    } else {
-                        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                        
-                        ico = avfile.replace(ru, function ( m, s, i ) {
-                            return un[i].toLowerCase();
-                        });
-                        ico = ico.replacePArg( '{un}', un.toLowerCase() );
-                    }
-                    
-                    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.'+domain+'"><img class="avatar"\
-                            alt=":icon$1:" src="'+avfold+ico+'.'+ext+'?1" height="50" width="50" /></a>';
-                }],
-                '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="'+emfold+'{4}" />' ],
-                '&link\t': [ 3, function( data ) {
-                    t = data[1] || '[link]';
-                    return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
-                } ],
-                '&acro\t': [ 1, '<acronym title="{0}">' ],
-                '&abbr\t': [ 1, '<abbr title="{0}">'],
-                /* llama does not use this yet. Do not include by default.
-                 * Maybe make a plugin for dAmn which uses dAmn specific tablumps.*/
-                '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.'+domain+'/">{1}</a>' ],
-                '&thumb\t': [ 7, function( data ) {
-                        id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
-                        server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
-                        if( w > 100 || h > 100) {
-                            if( w/h > 1 ) {
-                                th = (h * 100) / w;
-                                tw = 100;
-                            } else {
-                                tw = (w * 100) / w;
-                                th = 100;
-                            }
-                            if( tw > w || th > h ) {
-                                tw = w;
-                                th = h;
-                            }
-                        }
-                        return '<a target="_blank" href="http://' + u + '.'+domain+'/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
-                                height="'+th+'" alt=":thumb'+id+':" src="'+thfold+f.replace(/\:/, '/')+'" /></a>';
-                    }
-                ],
-                /**/
-                '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
-                '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
-                '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-                '&br\t': [ 0, '<br/>' ]
-            };
-        
-        },
-        
-        /* Parse tablumps!
-         * This implementation hopefully only uses simple string operations.
-         */
-        parse: function( data, sep ) {
-            if( !data )
-                return '';
-            
-            sep = sep || '\t';
-            
-            for( i = 0; i < data.length; i++ ) {
-            
-                // All tablumps start with &!
-                if( data[i] != '&' )
-                    continue;
-                
-                // We want to work on extracting the tag. First thing is split
-                // the string at the current index. We don't need to parse
-                // anything to the left of the index.
-                primer = data.substring(0, i);
-                working = data.substring(i);
-                
-                // Next make sure there is a tab character ending the tag.
-                ti = working.indexOf('\t');
-                if( ti == -1 )
-                    continue;
-                
-                // Now we can crop the tag.
-                tag = working.substring(0, ti + 1);
-                working = working.substring(ti + 1);
-                lump = this.lumps[tag];
-                
-                // If we don't know how to parse the tag, leave it be!
-                if( lump === undefined )
-                    continue;
-                
-                // Crop the rest of the tablump!
-                cropping = this.tokens(working, lump[0], sep);
-                
-                // Parse the tablump.
-                if( typeof(lump[1]) == 'string' )
-                    parsed = lump[1].format.apply(lump[1], cropping[0]);
-                else
-                    parsed = lump[1](cropping[0]);
-                
-                // Glue everything back together.
-                data = primer + parsed + cropping[1];
-                i = i + (parsed.length - 2);
-                
-            }
-            
-            // Replace the simpler tablumps which do not have arguments.
-            data = data.replace(this.repl[0], this.repl[1]);
-            
-            return data;
-        },
-        
-        /* Return n tokens from any given input.
-         * Tablumps contain arguments which are separated by tab characters. This
-         * method is used to crop a specific number of arguments from a given
-         * input.
-         */
-        tokens: function( data, limit, sep ) {
-            sep = sep || '\t';
-            tokens = [];
-            
-            for( i = limit; i > 0; i-- ) {
-                find = data.indexOf(sep);
-                
-                if( find == -1 )
-                    break;
-                
-                tokens.push( data.substring(0, find) );
-                data = data.substring(find + 1);
-                
-                if( tokens[tokens.length - 1] == '&' ) {
-                    tokens.pop();
-                    break;
-                }
-            }
-            
-            return [tokens, data];
-        },
-        
-    };
-    
-    tablumps.init(client);
-    return tablumps;
-    
+function WscTablumps(  ) {
+
+    this.lumps = this.defaultMap();
+    // This array defines the regex for replacing the simpler tablumps.
+    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|a|iframe|acro|abbr)\t/g, '<$1$2>'];
+
 }
-/* wsc protocol - photofroggy
+
+WscTablumps.prototype.registerMap = function( map ) {
+    this.lumps = map;
+};
+
+WscTablumps.prototype.defaultMap = function () {
+    /* Tablumps formatting rules.
+     * This object can be defined as follows:
+     *     lumps[tag] => [ arguments, format ]
+     * ``tag`` is the tablumps-formatted tag to process.
+     * ``arguments`` is the number of arguments contained in the tablump.
+     * ``format`` is a function which returns the tablump as valid HTML.
+     * Or it's a string template thing. Whichever.
+     */
+    return {
+        '&link\t': [ 3, function( data ) {
+            t = data[1] || '[link]';
+            return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+        } ],
+        '&acro\t': [ 1, '<acronym title="{0}">' ],
+        '&abbr\t': [ 1, '<abbr title="{0}">'],
+        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
+        '&br\t': [ 0, '<br/>' ]
+    };
+
+};
+
+/* Parse tablumps!
+ * This implementation hopefully only uses simple string operations.
+ */
+WscTablumps.prototype.parse = function( data, sep ) {
+    if( !data )
+        return '';
+    
+    sep = sep || '\t';
+    
+    for( i = 0; i < data.length; i++ ) {
+    
+        // All tablumps start with &!
+        if( data[i] != '&' )
+            continue;
+        
+        // We want to work on extracting the tag. First thing is split
+        // the string at the current index. We don't need to parse
+        // anything to the left of the index.
+        primer = data.substring(0, i);
+        working = data.substring(i);
+        
+        // Next make sure there is a tab character ending the tag.
+        ti = working.indexOf('\t');
+        if( ti == -1 )
+            continue;
+        
+        // Now we can crop the tag.
+        tag = working.substring(0, ti + 1);
+        working = working.substring(ti + 1);
+        lump = this.lumps[tag];
+        
+        // If we don't know how to parse the tag, leave it be!
+        if( lump === undefined )
+            continue;
+        
+        // Crop the rest of the tablump!
+        cropping = this.tokens(working, lump[0], sep);
+        
+        // Parse the tablump.
+        if( typeof(lump[1]) == 'string' )
+            parsed = lump[1].format.apply(lump[1], cropping[0]);
+        else
+            parsed = lump[1](cropping[0]);
+        
+        // Glue everything back together.
+        data = primer + parsed + cropping[1];
+        i = i + (parsed.length - 2);
+        
+    }
+    
+    // Replace the simpler tablumps which do not have arguments.
+    data = data.replace(this.repl[0], this.repl[1]);
+    
+    return data;
+};
+
+/* Return n tokens from any given input.
+ * Tablumps contain arguments which are separated by tab characters. This
+ * method is used to crop a specific number of arguments from a given
+ * input.
+ */
+WscTablumps.prototype.tokens = function( data, limit, sep, end ) {
+    sep = sep || '\t';
+    end = end || '&';
+    tokens = [];
+    
+    for( i = limit; i > 0; i-- ) {
+        find = data.indexOf(sep);
+        
+        if( find == -1 )
+            break;
+        
+        tokens.push( data.substring(0, find) );
+        data = data.substring(find + 1);
+        
+        if( tokens[tokens.length - 1] == end ) {
+            tokens.pop();
+            break;
+        }
+    }
+    
+    return [tokens, data];
+};
+
+var dAmn_avext = [ 'gif', 'gif', 'jpg', 'png' ];
+
+function dAmn_avatar( un, icon ) {
+    icon = parseInt(icon);
+    cachebuster = (icon >> 2) & 15;
+    icon = icon & 3;
+    ext = dAmn_avext[icon] || 'gif';
+    
+    if (cachebuster) {
+        cachebuster = '?' + cachebuster;
+    }
+    else {
+        cachebuster = '';
+    }
+    
+    if( icon == 0 ) { 
+        ico = 'default';
+    } else {
+        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+        
+        ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
+            return un[i].toLowerCase();
+        });
+        ico = ico.replacePArg( '{un}', un.toLowerCase() );
+    }
+    
+    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
+            alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
+}
+
+/**
+ * dAmn tablumps map.
+ *
+ * This function returns a map which can be used by the tablumps parser to parse
+ * dAmn's tablumps.
+ */
+function dAmnLumps( opts ) {
+    /* Tablumps formatting rules.
+     * This object can be defined as follows:
+     *     lumps[tag] => [ arguments, format ]
+     * ``tag`` is the tablumps-formatted tag to process.
+     * ``arguments`` is the number of arguments contained in the tablump.
+     * ``format`` is a function which returns the tablump as valid HTML.
+     * Or it's a string template thing. Whichever.
+     */
+    return {
+        '&avatar\t': [ 2, function( data ) { return dAmn_avatar( data[0], data[1] ); }],
+        '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
+        '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
+        '&thumb\t': [ 7, function( data ) {
+                id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
+                server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
+                if( w > 100 || h > 100) {
+                    if( w/h > 1 ) {
+                        th = (h * 100) / w;
+                        tw = 100;
+                    } else {
+                        tw = (w * 100) / w;
+                        th = 100;
+                    }
+                    if( tw > w || th > h ) {
+                        tw = w;
+                        th = h;
+                    }
+                }
+                return '<a target="_blank" href="http://' + u + '.deviantart.com/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
+                        height="'+th+'" alt=":thumb'+id+':" src="http://fc03.deviantart.net/'+f.replace(/\:/, '/')+'" /></a>';
+            }
+        ],
+    };
+
+}/* wsc protocol - photofroggy
  * Processes the chat protocol for a llama-like chat server.
  */
 
@@ -1020,7 +1325,20 @@ function wsc_protocol( client ) {
         },
         
         // Mapping callbacks!
-        mapper: {},
+        mapper: {
+            "recv": function( args, packet, mapping ) {
+                args.ns = packet.param;
+                sub = new WscPacket( packet.body );
+                
+                if( sub.cmd == 'admin' ) {
+                    ssub = new WscPacket( sub.body );
+                    return protocol.mapPacket(args, ssub, mapping);
+                }
+                
+                return protocol.mapPacket(args, sub, mapping);
+            }
+            
+        },
         
         // Messages for every packet.
         //      pkt_name: [ msg[, monitor[, global]] ]
@@ -1066,7 +1384,13 @@ function wsc_protocol( client ) {
         init: function( client ) {
             this.client = client;
             this.mapper['recv'] = this.map_recv;
-            this.tablumps = this.client.settings['tablumps'](client.settings);
+            this.tablumps = new WscTablumps();
+            
+            if ( this.client.settings['tablumps'] !== null ) {
+                lumpmap = this.client.settings['tablumps']();
+                this.client.view.extend(lumpmap, this.tablumps.lumps);
+                this.tablumps.registerMap( lumpmap );
+            }
             
             //client.bind("data.wsc", this.debug_pkt);
             client.bind('chatserver.wsc', this.chatserver);
@@ -1093,30 +1417,41 @@ function wsc_protocol( client ) {
     
         // Established a WebSocket connection.
         connected: function( evt ) {
-            this.client.trigger('connected.wsc', {name: 'connected', pkt: wsc_packet('connected\n\n')});
+            this.client.trigger('connected.wsc', {name: 'connected', pkt: new WscPacket('connected\n\n')});
             //console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
+            this.client.attempts = 0;
         },
     
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed.wsc', {name: 'closed', pkt: wsc_packet('connection closed\n\n')});
-            this.client.monitorAll("Connection closed");
+            this.client.trigger('closed.wsc', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
             
-            if(this.client.connected)
+            if(this.client.connected) {
+                this.client.monitorAll("Connection closed");
                 this.client.connected = false;
+            } else {
+                this.client.monitorAll("Connection failed");
+            }
             
             // For now we want to automatically reconnect.
             // Should probably be more intelligent about this though.
-            this.client.connect();
+            if( this.client.attempts > 2 ) {
+                this.client.monitorAll("Can't connect. Try again later.");
+                this.client.attempts = 0;
+                return;
+            }
+            
+            this.client.monitorAll("Connecting in 5 seconds...");
+            setTimeout(this.client.connect.bind(this.client), 5000);
         
         }, 
     
         // Received data from WebSocket connection.
         process_data: function( evt ) {
-            var pack = wsc_packet(evt.data);
+            var pack = new WscPacket(evt.data);
             
             if(pack == null)
                 return;
@@ -1134,7 +1469,7 @@ function wsc_protocol( client ) {
         
         // Create a wsc event based on a packet.
         packetEvent: function( name, packet ) {
-            args = { 'name': name, 'pkt': packet, 'ns': this.client.mns };
+            var args = { 'name': name, 'pkt': packet, 'ns': this.client.mns };
         
             if( !this.maps[name] )
                 return args;
@@ -1181,7 +1516,7 @@ function wsc_protocol( client ) {
                     // e.<map[event][2]> = pkt.body
                     case "2":
                         if( key instanceof Array )
-                            this.mapPacket(arguments, wsc_packet(pkt['body']), key);
+                            this.mapPacket(arguments, new WscPacket(pkt['body']), key);
                         else
                             arguments[key] = pkt['body'];
                         break;
@@ -1250,7 +1585,7 @@ function wsc_protocol( client ) {
             if(e.pkt["arg"]["e"] == "ok") {
                 //protocol.client.monitor("Logged in as " + e.pkt["param"] + '.');
                 // Use the username returned by the server!
-                info = wsc_packet('info\n' + e.data);
+                info = new WscPacket('info\n' + e.data);
                 protocol.client.settings["username"] = e.pkt["param"];
                 protocol.client.settings['symbol'] = info.arg.symbol;
                 protocol.client.settings['userinfo'] = info.arg;
@@ -1387,20 +1722,20 @@ function wsc_extdefault( client ) {
         init: function( client ) {
             this.client = client;
             // Commands.
-            this.client.bind('cmd.set.wsc', this.setter);
-            this.client.bind('cmd.connect.wsc', this.connect);
-            this.client.bind('cmd.join.wsc', this.join);
-            this.client.bind('cmd.part.wsc', this.part);
-            this.client.bind('cmd.title.wsc', this.title);
-            this.client.bind('cmd.promote.wsc', this.promote);
-            this.client.bind('cmd.me.wsc', this.action);
-            this.client.bind('cmd.kick.wsc', this.kick);
-            this.client.bind('cmd.raw.wsc', this.raw);
-            this.client.bind('cmd.say.wsc', this.say);
-            this.client.bind('cmd.npmsg.wsc', this.npmsg);
-            this.client.bind('cmd.clear.wsc', this.clear);
+            this.client.bind('cmd.set.wsc', this.setter.bind(extension) );
+            this.client.bind('cmd.connect.wsc', this.connect.bind(extension) );
+            this.client.bind('cmd.join.wsc', this.join.bind(extension) );
+            this.client.bind('cmd.part.wsc', this.part.bind(extension) );
+            this.client.bind('cmd.title.wsc', this.title.bind(extension) );
+            this.client.bind('cmd.promote.wsc', this.promote.bind(extension) );
+            this.client.bind('cmd.me.wsc', this.action.bind(extension) );
+            this.client.bind('cmd.kick.wsc', this.kick.bind(extension) );
+            this.client.bind('cmd.raw.wsc', this.raw.bind(extension) );
+            this.client.bind('cmd.say.wsc', this.say.bind(extension) );
+            this.client.bind('cmd.npmsg.wsc', this.npmsg.bind(extension) );
+            this.client.bind('cmd.clear.wsc', this.clear.bind(extension) );
             // userlistings
-            this.client.bind('set.userlist.wsc', this.setUsers);
+            this.client.bind('set.userlist.wsc', this.setUsers.bind(extension) );
         },
         
         /**
@@ -1561,8 +1896,6 @@ function wsc_extdefault( client ) {
                             chan.window.find(this).data('hover', 1);
                             rn = info.realname ? '<li>'+info.realname+'</li>' : '';
                             tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                            ico = extension.client.settings['avatarfile'].replace(ru, repl);
-                            ico = info.usericon == '0' ? extension.client.settings['defaultavatar'] : ico.replacePArg( '{un}', info.username.toLowerCase() );
                             //<div class="damncri-member">
                             //  <div class="aside-left avatar alt1">
                             //      <a target="_blank" href="http://photofroggy.deviantart.com/">
@@ -1570,10 +1903,7 @@ function wsc_extdefault( client ) {
                             //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
                             pane = '<div class="userinfo" id="'+info.username+'">\
                                 <div class="avatar">\
-                                    <a class="avatar" target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">\
-                                        <img class="avatar" alt=":icon'+info.username+':"\
-                                        src="'+extension.client.settings['avatarfolder']+ico+'" />\
-                                    </a>\
+                                    '+dAmn_avatar( info.username, info.usericon )+'\
                                 </div><div class="info">\
                                 <strong>\
                                 '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
@@ -1585,12 +1915,12 @@ function wsc_extdefault( client ) {
                             chan.window.append(pane);
                             infobox = chan.window.find('.userinfo#'+info.username);
                             pos = usertag.offset();
-                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 18 });
+                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 15 });
                             infobox.hover(function(){
                                 chan.window.find(this).data('hover', 1);
                             }, rembox);
                             infobox.data('hover', 0);
-                            box = chan.userpanel.find('div.userinfo:not(\'#'+info.username+'\')');
+                            box = chan.window.find('div.userinfo:not(\'#'+info.username+'\')');
                             box.remove();
                         },
                         function( e ) {
@@ -1663,6 +1993,7 @@ function wsc_client( view, options, mozilla ) {
         fresh: true,
         evt_chains: [["recv", "admin"]],
         events: null,
+        attempts: 0,
         settings: {
             "domain": "website.com",
             "server": "ws://website.com/wsendpoint",
@@ -1680,12 +2011,13 @@ function wsc_client( view, options, mozilla ) {
             "control": wsc_control,
             "stype": 'llama',
             "client": 'chatclient',
-            "tablumps": wsc_tablumps,
+            "tablumps": null,
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
             "emotefolder": '/emoticons/',
             "thumbfolder": '/thumbs/',
+            "theme": 'wsct_default',
         },
         // Protocol object.
         protocol: null,
@@ -1707,14 +2039,15 @@ function wsc_client( view, options, mozilla ) {
          */
         init: function( view, options, mozilla ) {
             
-            view.append('<div class="wsc"></div>');
+            view.extend( this.settings, options );
+            view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             // Set up variables.
+            this.attempts = 0;
             this.view = view.find('.wsc');
             this.mozilla = mozilla;
             this.connected = false;
             this.conn = null;
             this.events = new EventEmitter();
-            this.view.extend( this.settings, options );
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
@@ -1889,14 +2222,17 @@ function wsc_client( view, options, mozilla ) {
         connect: function( ) {
             if( client.connected )
                 return;
+            
+            this.attempts++;
+            
             // Start connecting!
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger('start.wsc', wsc_packet('client connecting\ne=ok\n\n'));
+                client.trigger('start.wsc', new WscPacket('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger('start.wsc', wsc_packet('client connecting\ne=no websockets available\n\n'));
+                client.trigger('start.wsc', new WscPacket('client connecting\ne=no websockets available\n\n'));
             }
         },
         
@@ -2169,7 +2505,7 @@ function wsc_client( view, options, mozilla ) {
                 if(cmds[0] != name)
                     continue;
                 
-                var sub = wsc_packet(pkt["body"]);
+                var sub = new WscPacket(pkt["body"]);
                 name = name + '_' + sub["cmd"];
                 
                 if(cmds.length > 1 && sub["param"] != undefined) {
@@ -2553,7 +2889,7 @@ function wsc_control( client ) {
                 if( !this.client.cchannel )
                     return;
             }
-            console.log(String(e.shiftKey));
+            
             data = (e.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
             data = data.slice(1);
             bits = data.split(' ');

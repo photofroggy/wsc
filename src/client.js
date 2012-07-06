@@ -52,6 +52,7 @@ function wsc_client( view, options, mozilla ) {
         fresh: true,
         evt_chains: [["recv", "admin"]],
         events: null,
+        attempts: 0,
         settings: {
             "domain": "website.com",
             "server": "ws://website.com/wsendpoint",
@@ -69,12 +70,13 @@ function wsc_client( view, options, mozilla ) {
             "control": wsc_control,
             "stype": 'llama',
             "client": 'chatclient',
-            "tablumps": wsc_tablumps,
+            "tablumps": null,
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
             "emotefolder": '/emoticons/',
             "thumbfolder": '/thumbs/',
+            "theme": 'wsct_default',
         },
         // Protocol object.
         protocol: null,
@@ -96,14 +98,15 @@ function wsc_client( view, options, mozilla ) {
          */
         init: function( view, options, mozilla ) {
             
-            view.append('<div class="wsc"></div>');
+            view.extend( this.settings, options );
+            view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             // Set up variables.
+            this.attempts = 0;
             this.view = view.find('.wsc');
             this.mozilla = mozilla;
             this.connected = false;
             this.conn = null;
             this.events = new EventEmitter();
-            this.view.extend( this.settings, options );
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
@@ -278,14 +281,17 @@ function wsc_client( view, options, mozilla ) {
         connect: function( ) {
             if( client.connected )
                 return;
+            
+            this.attempts++;
+            
             // Start connecting!
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger('start.wsc', wsc_packet('client connecting\ne=ok\n\n'));
+                client.trigger('start.wsc', new WscPacket('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger('start.wsc', wsc_packet('client connecting\ne=no websockets available\n\n'));
+                client.trigger('start.wsc', new WscPacket('client connecting\ne=no websockets available\n\n'));
             }
         },
         
@@ -558,7 +564,7 @@ function wsc_client( view, options, mozilla ) {
                 if(cmds[0] != name)
                     continue;
                 
-                var sub = wsc_packet(pkt["body"]);
+                var sub = new WscPacket(pkt["body"]);
                 name = name + '_' + sub["cmd"];
                 
                 if(cmds.length > 1 && sub["param"] != undefined) {

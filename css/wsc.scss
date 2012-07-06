@@ -1,0 +1,74 @@
+/**
+ * wsc css
+ * Defines the style rules for the wsc GUI.
+ * Mainly used for layout.
+ * Themes do the fancy colours. (eventually)
+ */
+
+@import "userlist";
+@import "nav";
+@import "msg";
+@import "heads";
+@import "control";
+@import "theme_template";
+
+div.wsc {
+    font: normal 12px verdana, sans-serif;
+    line-height: 1.6em;
+    clear: both;
+    
+    @include user-list;
+    @include navbar;
+    @include messages;
+    @include headers;
+    @include control;
+    
+    a {
+        text-decoration: none;
+        &.user em { font-style: normal; }
+    }
+    
+    div.chatbook {
+        margin: 0px;
+        padding: 5px;
+        padding-bottom: 0px;
+        border-top: 1px solid black;
+        
+        img {
+            display: inline;
+        }
+        
+        div.chatwindow {
+            overflow: hidden;
+            
+            div.chatlog {
+                overflow: hidden;
+                float: left;
+                width: 100%;
+                
+                a {
+                    text-decoration: none;
+                    padding: 0px;
+                    margin: 0px;
+                }
+                
+                img {
+                    padding: 0px;
+                    margin: 0px;
+                    vertical-align: middle;
+                }
+                
+                div.logwrap {
+                    border: 1px solid black;
+                    overflow: auto;
+                }
+            
+            }
+        
+        }
+        
+    }
+
+}
+
+@import "wsct_default";

@@ -17,7 +17,7 @@ div.wsc a.user em {
 
 /* Channel book lolol. */
 div.wsc div.chatbook {
-    background-color: #EDF8FF;
+    background-color: #57A0B5; /*#EDF8FF;*/
     margin: 0px;
     padding: 5px;
     padding-bottom: 0px;
@@ -30,13 +30,12 @@ div.wsc div.chatbook img {
 
 /* Chat view */
 div.wsc div.chatbook div.chatwindow {
-    background-color: #EDF8FF;
     overflow: hidden;
 }
 
 /* Chat log */
 div.wsc div.chatbook div.chatwindow div.chatlog {
-    background-color: white;
+    background-color: #74D7F4;
     color: #48779C;
     overflow: hidden;
     float: left;

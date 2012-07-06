@@ -1,0 +1,35 @@
+@mixin headers {
+
+    div.chatbook div.chatwindow header {
+    
+        width: auto;
+        height: auto;
+        overflow: hidden;
+        border-bottom: none;
+        line-height: 1.3em;
+        
+        div {
+            margin: 0px;
+            padding: 5px;
+            display: none;
+            
+            p {
+                margin: 0px;
+                padding: 0xp;
+            }
+            
+            &.title {
+                padding-top: 0px;
+            }
+            
+            &.topic {
+                border: 1px solid black;
+                border-bottom: none;
+                &.topic img { vertical-align: middle; }
+            }
+        
+        }
+    
+    }
+
+}

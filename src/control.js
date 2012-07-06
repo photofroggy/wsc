@@ -285,7 +285,7 @@ function wsc_control( client ) {
                 if( !this.client.cchannel )
                     return;
             }
-            console.log(String(e.shiftKey));
+            
             data = (e.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
             data = data.slice(1);
             bits = data.split(' ');

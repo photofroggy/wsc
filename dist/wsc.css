@@ -58,7 +58,6 @@ div.wsc form.msg input[type="submit"]:hover {
 }/* Chat headers */
 div.wsc div.chatbook div.chatwindow header {
     width: auto;
-    background-color: #EDF8FF;
     color: #48779C;
     height: auto;
     overflow: hidden;
@@ -245,12 +244,6 @@ div.wsc div.chatbook div.chatwindow div.chatusers {
     display: none;
     overflow: auto;
     background-color: #C4DAFF;
-    border: 1px solid #95B4CC;
-    border-left: none;
-    -moz-border-radius-topright: 5px;
-    border-top-right-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    border-bottom-right-radius: 5px;
     color: #2D506B;
 }
 
@@ -263,13 +256,9 @@ div.wsc div.chatusers h3,
 div.wsc div.chatusers h4 {
     margin: 0px;
     padding: 5px;
-    border: 1px solid #485875;
-    border-left: none;
     padding: 2px 10px;
     background-color: #2B58A6;
     color: #EDF8FF;
-    -moz-border-radius: none;
-    border-radius: none;
     font-size: 12px;
 }
 
@@ -281,13 +270,14 @@ div.wsc div.chatusers h4.first {
 
 div.wsc div.chatusers ul {
     list-style: none;
-    padding: 4px 10px;
+    padding: 4px 5px;
     margin: 0px;
     
 }
 
 div.wsc div.chatusers ul li {
     font-size: 11px;
+    line-height: 1.2em;
     position: relative;
 }
 
@@ -381,7 +371,7 @@ div.wsc a.user em {
 
 /* Channel book lolol. */
 div.wsc div.chatbook {
-    background-color: #EDF8FF;
+    background-color: #57A0B5; /*#EDF8FF;*/
     margin: 0px;
     padding: 5px;
     padding-bottom: 0px;
@@ -394,13 +384,12 @@ div.wsc div.chatbook img {
 
 /* Chat view */
 div.wsc div.chatbook div.chatwindow {
-    background-color: #EDF8FF;
     overflow: hidden;
 }
 
 /* Chat log */
 div.wsc div.chatbook div.chatwindow div.chatlog {
-    background-color: white;
+    background-color: #74D7F4;
     color: #48779C;
     overflow: hidden;
     float: left;

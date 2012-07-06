@@ -1,7 +1,38 @@
 /* wsc lib - photofroggy
  * Generic useful functions or something.
  */
- 
+
+// Function scope binding. Convoluted weirdness. Lol internet.
+Function.prototype.bind = function( scope ) {
+    var _function = this;
+    
+    return function () {
+        return _function.apply( scope, arguments );
+    };
+}; 
+
+// Some other constructor type thing?
+function scope_methods( scope, methods ) {
+
+    for( cbn in methods ) {
+        scope[cbn] = methods[cbn].bind( scope );
+    }
+
+}
+
+Function.prototype.scope_methods = function( scope, methods ) {
+
+    for( cbn in methods ) {
+        scope[cbn] = methods[cbn].bind( scope );
+    }
+
+};
+
+// Alternate binding interface
+function bind( scope, cb ) {
+    return cb.bind( scope );
+}
+
 // Fetch url GET variable. 
 function $_GET( q, s ) {
     s = s || window.location.search;

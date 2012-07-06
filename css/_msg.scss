@@ -1,0 +1,51 @@
+@mixin messages {
+
+    p.logmsg {
+        margin: 0px;
+        padding: 0px 5px;
+        overflow: hidden;
+        vertical-align: middle;
+        position: relative;
+        word-wrap: break-word;
+        
+        span {
+            display: table-cell;
+            padding-right: 5px;
+            vertical-align: middle;
+            margin-top: auto;
+            margin-bottom: auto;
+            
+            &.ts {
+                font-weight: bold;
+            }
+            
+            &.servermsg {
+                font-weight: bold;
+                font-style: normal;
+            }
+            
+        }
+        
+        .caction {
+            font-weight: normal;
+            font-style: italic;
+            &.user em {
+                font-style: italic;
+                font-weight: bold;
+                color: inherit;
+                vertical-align: middle;
+            }
+        }
+        
+        .cevent {
+            font-weight: bold;
+            vertical-align: middle;
+        }
+        
+        em {
+            font-weight: normal;
+        }
+    
+    }
+
+}
