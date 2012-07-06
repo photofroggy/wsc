@@ -2016,6 +2016,7 @@ function wsc_client( view, options, mozilla ) {
             "control": wsc_control,
             "stype": 'llama',
             "client": 'chatclient',
+            "clientver": '0.3',
             "tablumps": null,
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
@@ -2536,7 +2537,7 @@ function wsc_client( view, options, mozilla ) {
         
         // Send the chat user agent.
         handshake: function( ) {
-            this.send(wsc_packetstr(this.settings['client'], "0.3", {
+            this.send(wsc_packetstr(this.settings['client'], this.settings["clientver"], {
                 "agent": this.settings["agent"]
             }));
         },
