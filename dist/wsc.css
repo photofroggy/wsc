@@ -121,8 +121,7 @@ div.wsc {
     padding: 0px 5px;
     overflow: hidden;
     vertical-align: middle;
-    position: relative;
-    word-wrap: break-word; }
+    position: relative; }
     div.wsc p.logmsg span {
       display: table-cell;
       padding-right: 5px;
@@ -134,6 +133,10 @@ div.wsc {
       div.wsc p.logmsg span.servermsg {
         font-weight: bold;
         font-style: normal; }
+      div.wsc p.logmsg span.cmsg, div.wsc p.logmsg span.caction {
+        word-wrap: break-word; }
+        div.wsc p.logmsg span.cmsg.user, div.wsc p.logmsg span.caction.user {
+          word-wrap: normal; }
     div.wsc p.logmsg .caction {
       font-weight: normal;
       font-style: italic; }

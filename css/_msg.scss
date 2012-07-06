@@ -6,7 +6,6 @@
         overflow: hidden;
         vertical-align: middle;
         position: relative;
-        word-wrap: break-word;
         
         span {
             display: table-cell;
@@ -22,6 +21,12 @@
             &.servermsg {
                 font-weight: bold;
                 font-style: normal;
+            }
+            
+            &.cmsg,
+            &.caction {
+                word-wrap: break-word;
+                &.user { word-wrap: normal; }
             }
             
         }
