@@ -246,26 +246,26 @@ div.wsc.wsct_default {
       color: #990000; }
   div.wsc.wsct_default.button,
   div.wsc.wsct_default form.msg input[type="submit"] {
-    background-color: #7bc4e5;
+    background-color: #9ad7f1;
     border-color: #223740; }
     div.wsc.wsct_default.button:hover,
     div.wsc.wsct_default form.msg input[type="submit"]:hover {
       background-color: #4e99bb;
       border-color: #223740; }
   div.wsc.wsct_default nav.tabs ul li a {
-    background-color: #7bc4e5;
+    background-color: #9ad7f1;
     border-color: #40748b; }
     div.wsc.wsct_default nav.tabs ul li a.button {
       border-color: #223740; }
   div.wsc.wsct_default div.chatbook {
-    background-color: #7bc4e5;
+    background-color: #9ad7f1;
     border-color: #40748b; }
     div.wsc.wsct_default div.chatbook div.chatwindow header div.topic {
       background-color: #68a4bf;
       border-color: #40748b;
       color: #041827; }
     div.wsc.wsct_default div.chatbook div.chatwindow div.chatlog {
-      background-color: #c5edff; }
+      background-color: #dff5ff; }
       div.wsc.wsct_default div.chatbook div.chatwindow div.chatlog div.logwrap {
         border-color: #40748b; }
         div.wsc.wsct_default div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg {
@@ -275,7 +275,7 @@ div.wsc.wsct_default {
           div.wsc.wsct_default div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg span.ts, div.wsc.wsct_default div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg span.bg {
             color: #5f85a3; }
   div.wsc.wsct_default div.chatcontrol {
-    background-color: #7bc4e5; }
+    background-color: #9ad7f1; }
   div.wsc.wsct_default div.chatusers {
     border: 1px solid #40748b;
     border-left: none; }
@@ -284,4 +284,50 @@ div.wsc.wsct_default {
   div.wsc.wsct_default div.userinfo {
     background-color: #68a4bf; }
     div.wsc.wsct_default div.userinfo div.info {
-      background-color: #7bc4e5; }
+      background-color: #9ad7f1; }
+
+div.wsc.wsct_test {
+  color: #293840; }
+  div.wsc.wsct_test a {
+    color: #334db3; }
+    div.wsc.wsct_test a:hover {
+      color: #990000; }
+  div.wsc.wsct_test.button, div.wsc.wsct_test form.msg input[type="submit"] {
+    background-color: #2ccc17;
+    border-color: #293840; }
+    div.wsc.wsct_test.button:hover, div.wsc.wsct_test form.msg input[type="submit"]:hover {
+      background-color: #2ccc17;
+      border-color: #293840; }
+  div.wsc.wsct_test nav.tabs ul li a {
+    background-color: #2ccc17;
+    border-color: #40748b; }
+    div.wsc.wsct_test nav.tabs ul li a.button {
+      border-color: #293840; }
+  div.wsc.wsct_test div.chatbook {
+    background-color: #2ccc17;
+    border-color: #40748b; }
+    div.wsc.wsct_test div.chatbook div.chatwindow header div.topic {
+      background-color: #cc5d17;
+      border-color: #40748b;
+      color: #041827; }
+    div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog {
+      background-color: #75ff8f; }
+      div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap {
+        border-color: #40748b; }
+        div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg {
+          color: #293840; }
+          div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg.highlight, div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg.highlight span {
+            background-color: white; }
+          div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg span.ts, div.wsc.wsct_test div.chatbook div.chatwindow div.chatlog div.logwrap p.logmsg span.bg {
+            color: #5f85a3; }
+  div.wsc.wsct_test div.chatcontrol {
+    background-color: #2ccc17; }
+  div.wsc.wsct_test div.chatusers {
+    border: 1px solid #40748b;
+    border-left: none; }
+    div.wsc.wsct_test div.chatusers div.pc h3, div.wsc.wsct_test div.chatusers div.pc h4 {
+      background-color: #cc5d17; }
+  div.wsc.wsct_test div.userinfo {
+    background-color: #cc5d17; }
+    div.wsc.wsct_test div.userinfo div.info {
+      background-color: #2ccc17; }

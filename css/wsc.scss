@@ -72,3 +72,12 @@ div.wsc {
 }
 
 @import "wsct_default";
+div.wsc.wsct_test {
+    @include wsc-theme(
+        #293840,
+        #2CCC17,
+        #2CCC17,
+        #75FF8F,
+        $heading-bg: #CC5D17
+    );
+}

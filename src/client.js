@@ -214,7 +214,7 @@ function wsc_client( view, options, mozilla ) {
          */
         trigger: function( event, data ) {
             //console.log("emitting "+ event);
-            this.events.emit(event, data);
+            this.events.emit(event, data, client);
         },
         
         /**
