@@ -26,7 +26,10 @@
             &.cmsg,
             &.caction {
                 word-wrap: break-word;
-                &.user { word-wrap: normal; }
+                &.user {
+                    word-wrap: normal;
+                    white-space: nowrap;
+                }
             }
             
         }

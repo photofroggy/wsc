@@ -246,7 +246,13 @@ function wsc_control( client ) {
                 this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
                 return;
             }
-            suf = this.input.val() == '' && this.tab.type == 0 ? ': ' : '';
+            
+            suf = '';
+            
+            if( this.input.val() == '' ) {
+                suf = this.tab.type == 0 ? ': ' : ' ';
+            }
+            
             this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
         },
         

@@ -136,7 +136,8 @@ div.wsc {
       div.wsc p.logmsg span.cmsg, div.wsc p.logmsg span.caction {
         word-wrap: break-word; }
         div.wsc p.logmsg span.cmsg.user, div.wsc p.logmsg span.caction.user {
-          word-wrap: normal; }
+          word-wrap: normal;
+          white-space: nowrap; }
     div.wsc p.logmsg .caction {
       font-weight: normal;
       font-style: italic; }
