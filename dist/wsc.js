@@ -1450,8 +1450,8 @@ function wsc_protocol( client ) {
                 return;
             }
             
-            this.client.monitorAll("Connecting in 5 seconds...");
-            setTimeout(this.client.connect.bind(this.client), 5000);
+            this.client.monitorAll("Connecting in 2 seconds...");
+            setTimeout(this.client.connect.bind(this.client), 2000);
         
         }, 
     
@@ -1707,6 +1707,28 @@ function wsc_protocol( client ) {
  * Commands for the user to use.
  */
 
+function hovering( elem, x, y, flag ) {
+    o = elem.offset();
+    eb = elem.outerHeight(true) + o.top;
+    er = elem.outerWidth(true) + o.left;
+    
+    if( x >= o.left
+        && x <= er
+        && y >= o.top
+        && y <= eb)
+        return true;
+        
+    if( flag === true ) {
+        if( x <= (er + 30)
+            && x >= o.left
+            && y >= o.top
+            && y <= (o.top + 30) )
+            return true;
+    }
+    
+    return false;
+}
+
 /**
  * @constructor wsc_extdefault
  * Create our extension and return it.
@@ -1869,28 +1891,6 @@ function wsc_extdefault( client ) {
                     var info = chan.info['members'][username];
                     var infobox = null;
                     usertag.data('hover', 0);
-                    
-                    function hovering( elem, x, y, flag ) {
-                        o = elem.offset();
-                        eb = elem.outerHeight(true) + o.top;
-                        er = elem.outerWidth(true) + o.left;
-                        
-                        if( x >= o.left
-                            && x <= er
-                            && y >= o.top
-                            && y <= eb)
-                            return true;
-                            
-                        if( flag === true ) {
-                            if( x <= (er + 30)
-                                && x >= o.left
-                                && y >= o.top
-                                && y <= (o.top + 30) )
-                                return true;
-                        }
-                        
-                        return false;
-                    }
                     
                     function rembox( e ) {
                         if(hovering( infobox, e.pageX, e.pageY, true ))
@@ -2857,7 +2857,7 @@ function wsc_control( client ) {
                 this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
                 return;
             }
-            suf = this.input.val() == '' && this.tab.type == 0 ? ': ' : ' ';
+            suf = this.input.val() == '' && this.tab.type == 0 ? ': ' : '';
             this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
         },
         

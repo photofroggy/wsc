@@ -168,8 +168,8 @@ function wsc_protocol( client ) {
                 return;
             }
             
-            this.client.monitorAll("Connecting in 5 seconds...");
-            setTimeout(this.client.connect.bind(this.client), 5000);
+            this.client.monitorAll("Connecting in 2 seconds...");
+            setTimeout(this.client.connect.bind(this.client), 2000);
         
         }, 
     
