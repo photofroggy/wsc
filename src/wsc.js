@@ -19,10 +19,10 @@
     //var client = null;
     
     $('*').hover(
-        function( ) {
+        function( e ) {
             $(this).data('hover', true);
         },
-        function( ) {
+        function( e ) {
             $(this).data('hover', false);
         }
     );

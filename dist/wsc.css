@@ -260,6 +260,16 @@ div.wsc.wsct_default {
     border-color: #40748b; }
     div.wsc.wsct_default nav.tabs ul li a.button {
       border-color: #223740; }
+  div.wsc.wsct_default nav.tabs ul li.noise a {
+    font-weight: bold; }
+  div.wsc.wsct_default nav.tabs ul li.tabbed a {
+    color: #990000;
+    border-color: #990000;
+    border-width: 2px;
+    font-weight: bold; }
+  div.wsc.wsct_default nav.tabs ul li.tabbed.fill a {
+    background-color: #c93838;
+    color: #9ad7f1; }
   div.wsc.wsct_default div.chatbook {
     background-color: #9ad7f1;
     border-color: #40748b; }
@@ -306,6 +316,16 @@ div.wsc.wsct_test {
     border-color: #40748b; }
     div.wsc.wsct_test nav.tabs ul li a.button {
       border-color: #293840; }
+  div.wsc.wsct_test nav.tabs ul li.noise a {
+    font-weight: bold; }
+  div.wsc.wsct_test nav.tabs ul li.tabbed a {
+    color: #990000;
+    border-color: #990000;
+    border-width: 2px;
+    font-weight: bold; }
+  div.wsc.wsct_test nav.tabs ul li.tabbed.fill a {
+    background-color: #c93838;
+    color: #9ad7f1; }
   div.wsc.wsct_test div.chatbook {
     background-color: #2ccc17;
     border-color: #40748b; }

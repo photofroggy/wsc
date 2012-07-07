@@ -343,7 +343,7 @@ function wsc_channel( client, ns ) {
             //console.log("show  " + this.info.selector);
             this.window.css({'display': 'block'});
             this.tab.addClass('active');
-            this.tab.find('a').css({'font-weight': 'normal'});
+            this.tab.removeClass('noise tabbed fill');
             this.resize();
         },
         
@@ -508,7 +508,7 @@ function wsc_channel( client, ns ) {
         setUserList: function( ) {
             if( Object.size(this.info['members']) == 0 )
                 return;
-                
+            
             ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
             
             //console.log(this.info["pc_order"])
@@ -649,10 +649,10 @@ function wsc_channel( client, ns ) {
         // Display a message sent by a user.
         recv_msg: function( e ) {
         
-            tabl = this.tab.find('a');
+            var tabl = this.tab;
             
             if( !this.tab.hasClass('active') )
-                tabl.css({'font-weight': 'bold'});
+                tabl.addClass('noise');
             
             u = channel.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
@@ -663,18 +663,24 @@ function wsc_channel( client, ns ) {
             
             p.addClass('highlight');
             
-            if( this.tab.hasClass('active') )
+            if( tabl.hasClass('active') )
                 return;
             
-            console.log(tabl);
-            tabl
-                .animate( { 'backgroundColor': '#990000' }, 500)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250);
+            if( tabl.hasClass('tabbed') )
+                return;
+            
+            var runs = 0;
+            tabl.addClass('tabbed');
+            
+            function toggles() {
+                runs++;
+                tabl.toggleClass('fill');
+                if( runs == 6 )
+                    return;
+                setTimeout( toggles, 1000 );
+            }
+            
+            toggles();
         
         },
         

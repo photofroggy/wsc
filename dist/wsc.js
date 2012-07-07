@@ -707,7 +707,7 @@ function wsc_channel( client, ns ) {
             //console.log("show  " + this.info.selector);
             this.window.css({'display': 'block'});
             this.tab.addClass('active');
-            this.tab.find('a').css({'font-weight': 'normal'});
+            this.tab.removeClass('noise tabbed fill');
             this.resize();
         },
         
@@ -872,7 +872,7 @@ function wsc_channel( client, ns ) {
         setUserList: function( ) {
             if( Object.size(this.info['members']) == 0 )
                 return;
-                
+            
             ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
             
             //console.log(this.info["pc_order"])
@@ -1013,10 +1013,10 @@ function wsc_channel( client, ns ) {
         // Display a message sent by a user.
         recv_msg: function( e ) {
         
-            tabl = this.tab.find('a');
+            var tabl = this.tab;
             
             if( !this.tab.hasClass('active') )
-                tabl.css({'font-weight': 'bold'});
+                tabl.addClass('noise');
             
             u = channel.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
@@ -1027,18 +1027,24 @@ function wsc_channel( client, ns ) {
             
             p.addClass('highlight');
             
-            if( this.tab.hasClass('active') )
+            if( tabl.hasClass('active') )
                 return;
             
-            console.log(tabl);
-            tabl
-                .animate( { 'backgroundColor': '#990000' }, 500)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250)
-                .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-                .animate( { 'backgroundColor': '#990000' }, 250);
+            if( tabl.hasClass('tabbed') )
+                return;
+            
+            var runs = 0;
+            tabl.addClass('tabbed');
+            
+            function toggles() {
+                runs++;
+                tabl.toggleClass('fill');
+                if( runs == 6 )
+                    return;
+                setTimeout( toggles, 1000 );
+            }
+            
+            toggles();
         
         },
         
@@ -1886,7 +1892,9 @@ function wsc_extdefault( client ) {
                         return false;
                     }
                     
-                    function rembox( ) {
+                    function rembox( e ) {
+                        if(hovering( infobox, e.pageX, e.pageY, true ))
+                            return;
                         infobox.remove();
                     }
                     
@@ -1901,11 +1909,6 @@ function wsc_extdefault( client ) {
                             chan.window.find(this).data('hover', 1);
                             rn = info.realname ? '<li>'+info.realname+'</li>' : '';
                             tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                            //<div class="damncri-member">
-                            //  <div class="aside-left avatar alt1">
-                            //      <a target="_blank" href="http://photofroggy.deviantart.com/">
-                            //         <img class="avvie" alt=":iconphotofroggy:" src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1" title="photofroggy">
-                            //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
                             pane = '<div class="userinfo" id="'+info.username+'">\
                                 <div class="avatar">\
                                     '+dAmn_avatar( info.username, info.usericon )+'\
@@ -1930,9 +1933,7 @@ function wsc_extdefault( client ) {
                         },
                         function( e ) {
                             chan.window.find(this).data('hover', 0);
-                            if(hovering( infobox, e.pageX, e.pageY, true ))
-                                return;
-                            rembox();
+                            rembox(e);
                         }
                     );
                 }
@@ -2947,10 +2948,10 @@ function wsc_control( client ) {
     //var client = null;
     
     $('*').hover(
-        function( ) {
+        function( e ) {
             $(this).data('hover', true);
         },
-        function( ) {
+        function( e ) {
             $(this).data('hover', false);
         }
     );

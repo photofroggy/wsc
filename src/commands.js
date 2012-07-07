@@ -187,7 +187,9 @@ function wsc_extdefault( client ) {
                         return false;
                     }
                     
-                    function rembox( ) {
+                    function rembox( e ) {
+                        if(hovering( infobox, e.pageX, e.pageY, true ))
+                            return;
                         infobox.remove();
                     }
                     
@@ -202,11 +204,6 @@ function wsc_extdefault( client ) {
                             chan.window.find(this).data('hover', 1);
                             rn = info.realname ? '<li>'+info.realname+'</li>' : '';
                             tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                            //<div class="damncri-member">
-                            //  <div class="aside-left avatar alt1">
-                            //      <a target="_blank" href="http://photofroggy.deviantart.com/">
-                            //         <img class="avvie" alt=":iconphotofroggy:" src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1" title="photofroggy">
-                            //      </a></div><div class="bodyarea alt1-border"><div class="b pp"><strong>~<a target="_blank" href="http://photofroggy.deviantart.com/">photofroggy</a></strong><div><ul><li>Procrastination is my name...</li></ul></div></div></div></div>
                             pane = '<div class="userinfo" id="'+info.username+'">\
                                 <div class="avatar">\
                                     '+dAmn_avatar( info.username, info.usericon )+'\
@@ -231,9 +228,7 @@ function wsc_extdefault( client ) {
                         },
                         function( e ) {
                             chan.window.find(this).data('hover', 0);
-                            if(hovering( infobox, e.pageX, e.pageY, true ))
-                                return;
-                            rembox();
+                            rembox(e);
                         }
                     );
                 }

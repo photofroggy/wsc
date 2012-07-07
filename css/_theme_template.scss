@@ -9,7 +9,11 @@
     $inner-border: #40748B,
     $heading-bg: #68A4BF,
     $highlight: white,
-    $topic-color: #041827) {
+    $topic-color: #041827,
+    $tabbed: #990000,
+    $tabbed-fill: #9AD7F1,
+    $tabbed-fill-bg: #C93838,
+    $noise: #223740) {
     
     color: $base;
     a {
@@ -27,11 +31,26 @@
     }
     
     nav.tabs {
-        ul li a {
-            background-color: $chrome;
-            border-color: $outer-border;
-            &.button {
-                border-color: $base;
+        ul li {
+            a {
+                background-color: $chrome;
+                border-color: $outer-border;
+                &.button {
+                    border-color: $base;
+                }
+            }
+            &.noise a { font-weight: bold; }
+            &.tabbed {
+                a {
+                    color: $tabbed;
+                    border-color: $tabbed;
+                    border-width: 2px;
+                    font-weight: bold;
+                }
+                &.fill a {
+                    background-color: $tabbed-fill-bg;
+                    color: $tabbed-fill;
+                }
             }
         }
     }
