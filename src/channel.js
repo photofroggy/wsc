@@ -539,7 +539,7 @@ function wsc_channel( client, ns, hidden ) {
                         continue;
                     conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
                     s = member.symbol;
-                    pcl = pcl + '<li>' + s + '<a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'">' + un + '</a>'+ conn + '</li>';
+                    pcl = pcl + '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
                 }
                 
                 if( pcl.length > 0 )

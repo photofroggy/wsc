@@ -7,17 +7,17 @@ function hovering( elem, x, y, flag ) {
     eb = elem.outerHeight(true) + o.top;
     er = elem.outerWidth(true) + o.left;
     
-    if( x >= o.left
-        && x <= er
-        && y >= o.top
-        && y <= eb)
+    if( x > o.left
+        && x < er
+        && y > o.top
+        && y < eb)
         return true;
         
     if( flag === true ) {
-        if( x <= (er + 30)
-            && x >= o.left
-            && y >= o.top
-            && y <= (o.top + 30) )
+        if( x < (er + 10)
+            && x > o.left
+            && y > o.top
+            && y < (o.top + 10) )
             return true;
     }
     
@@ -193,7 +193,7 @@ function wsc_extdefault( client ) {
             users.each(
                 function( index, item ) {
                     var usertag = chan.userpanel.find(item);
-                    var username = usertag.html();
+                    var username = usertag.html().substr(10);
                     var info = chan.info['members'][username];
                     var infobox = null;
                     usertag.data('hover', 0);
@@ -229,7 +229,7 @@ function wsc_extdefault( client ) {
                             chan.window.append(pane);
                             infobox = chan.window.find('.userinfo#'+info.username);
                             pos = usertag.offset();
-                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 15 });
+                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 6 });
                             infobox.hover(function(){
                                 chan.window.find(this).data('hover', 1);
                             }, rembox);
