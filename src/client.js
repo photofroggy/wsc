@@ -53,6 +53,7 @@ function wsc_client( view, options, mozilla ) {
         evt_chains: [["recv", "admin"]],
         events: null,
         attempts: 0,
+        default_themes: [ 'wsct_default', 'wsct_test' ],
         settings: {
             "domain": "website.com",
             "server": "ws://website.com/wsendpoint",
@@ -117,14 +118,14 @@ function wsc_client( view, options, mozilla ) {
             // Debug!
             //console.log(this);
             
+            // Prepare the UI.
+            this.buildUI();
+            
             // Load in extensions
             this.cmds = [];
             for(var index in this.settings["extend"]) {
                 this.settings["extend"][index](this);
             }
-            
-            // Prepare the UI.
-            this.buildUI();
             
             // Welcome!
             this.monitor(this.settings["welcome"]);
@@ -143,7 +144,7 @@ function wsc_client( view, options, mozilla ) {
          *  // The above uses an example 'my_constructor', which can be as simple
          *  // as the following.
          *  function my_constructor( client ) {
-         *      client.addListener( 'cmd.slap.wsc',
+         *      client.addListener( 'cmd.slap',
          *          function( e ) {
          *              // Slap your victim or something.
          *              client.action( e.target, 'slaps ' + ( e.args || e.user ) );
@@ -179,13 +180,12 @@ function wsc_client( view, options, mozilla ) {
          * @param [Function] handler Event handling function.
          */
         bind: function( event, handler ) {
-            this.events.addListener(event, function( e ) { handler( e ); });
-            jqi = event.indexOf('.wsc');
+            this.events.addListener(event, handler);
             
-            if( event.indexOf('cmd.') != 0 || jqi == -1 || jqi == 4 )
+            if( event.indexOf('cmd.') != 0 || event.length <= 4 )
                 return;
             
-            cmd = event.slice(4, jqi).toLowerCase();
+            cmd = event.slice(4).toLowerCase();
             this.cmds.push(cmd);
         },
         
@@ -215,7 +215,7 @@ function wsc_client( view, options, mozilla ) {
          */
         trigger: function( event, data ) {
             //console.log("emitting "+ event);
-            this.events.emit(event, data, client);
+            client.events.emit(event, data, client);
         },
         
         /**
@@ -289,10 +289,10 @@ function wsc_client( view, options, mozilla ) {
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger('start.wsc', new WscPacket('client connecting\ne=ok\n\n'));
+                client.trigger('start', new WscPacket('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger('start.wsc', new WscPacket('client connecting\ne=no websockets available\n\n'));
+                client.trigger('start', new WscPacket('client connecting\ne=no websockets available\n\n'));
             }
         },
         
@@ -332,22 +332,6 @@ function wsc_client( view, options, mozilla ) {
             this.createChannel(this.mns, hide);
             this.control.setInput();
             this.control.focus();
-            /*
-            this.cchannel.setHeader('title', { pkt: {
-                        "arg": { "by": "", "ts": "" },
-                        "body": '<p>sample title</p>'
-                    }
-                }
-            );
-            /**/
-            /*
-            this.cchannel.setHeader('topic', { pkt: {
-                        'arg': { 'by': '', 'ts': '' },
-                        'body': '<p>sample topic</p>'
-                    }
-                }
-            );
-            /**/
             // For testing purposes only.
             // this.createChannel("llama2", "~Llama2", "server:llama2");
             this.resizeUI();
@@ -392,10 +376,10 @@ function wsc_client( view, options, mozilla ) {
                 c = this.channelo[key];
                 msgs = c.logpanel.find( '.logmsg' );
                 
-                if( msgs.length < 100 )
+                if( msgs.length < 200 )
                     continue;
                 
-                while( msgs.length > 100 ) {
+                while( msgs.length > 200 ) {
                     msgs.slice(0, 10).remove();
                     msgs = c.logpanel.find( '.logmsg' );
                 }
@@ -409,11 +393,10 @@ function wsc_client( view, options, mozilla ) {
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         createChannel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns));
+            chan = this.channel(ns, wsc_channel(this, ns, toggle));
             chan.build();
             this.toggleChannel(ns);
-            if( toggle )
-                chan.invisible();
+            this.resizeUI();
         },
         
         // Remove a channel from the client and the GUI.
@@ -464,7 +447,7 @@ function wsc_client( view, options, mozilla ) {
                 mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
                 mt.addClass(this.settings['monitor'][1]);
             }
-            this.resizeUI();
+            //this.resizeUI();
         },
     
         // Write a message to the UI.
@@ -625,6 +608,7 @@ function wsc_client( view, options, mozilla ) {
         
         // Send a message to a channel.
         say: function( ns, msg ) {
+            this.trigger( { name: 'send.msg.before', 'msg': msg, 'ns': ns } );
             this.send(wsc_packetstr('send', this.format_ns(ns), {},
                 wsc_packetstr('msg', 'main', {}, msg)
             ));

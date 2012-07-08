@@ -247,12 +247,7 @@ function wsc_control( client ) {
                 return;
             }
             
-            suf = '';
-            
-            if( this.input.val() == '' ) {
-                suf = this.tab.type == 0 ? ': ' : ' ';
-            }
-            
+            suf = this.input.val() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
             this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
         },
         
@@ -308,7 +303,7 @@ function wsc_control( client ) {
             
             arg = bits.join(' ');
             
-            this.client.trigger('cmd.' + cmdn + '.wsc', {
+            this.client.trigger('cmd.' + cmdn, {
                 name: 'cmd',
                 cmd: cmdn,
                 args: arg,

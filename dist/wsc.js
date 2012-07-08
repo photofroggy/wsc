@@ -367,11 +367,11 @@ function wsc_packet_serialze(pkt) {
  * for the channel.
  */
 
-function WscChannel( client, ns ) {
+function WscChannel( client, ns, hidden ) {
 
     var selector = client.deform_ns(ns).slice(1).toLowerCase();
     this.client = client;
-    //this.hidden = hidden;
+    this.hidden = hidden;
     
     this.info = {
         'raw': null,
@@ -586,7 +586,7 @@ WscChannel.prototype.recv_kicked = function( e ) {
 // structures or some shit idk. The `selector` parameter defines the
 // channel without the `chat:` or `#` style prefixes. The `ns`
 // parameter is the string to use for the tab.
-function wsc_channel( client, ns ) {
+function wsc_channel( client, ns, hidden ) {
     
     var channel = {
         
@@ -617,6 +617,8 @@ function wsc_channel( client, ns ) {
         tab: null,
         built: false,
         hidden: false,
+        monitor: false,
+        thresh: null,
         
         // Initialise! Create a new channel mofo!
         init: function( client, ns, hidden ) {
@@ -627,6 +629,9 @@ function wsc_channel( client, ns ) {
             this.info["raw"] = client.format_ns(ns);
             this.info["selector"] = selector;
             this.info["namespace"] = client.deform_ns(ns);
+            
+            this.monitor = Object.size(this.client.channelo) == 0;
+            this.thresh = 6;
             
             /*
             console.log(this.window);
@@ -639,6 +644,8 @@ function wsc_channel( client, ns ) {
         
         // Draw channel on screen and store the different elements in attributes.
         build: function( ) {
+            this.info['members'] = {};
+            
             if( this.built )
                 return;
             
@@ -788,6 +795,11 @@ function wsc_channel( client, ns ) {
         
         // Send a message to the log window.
         logItem: function( msg ) {
+            if( this.hidden ) {
+                if( this.thresh <= 0 )
+                    return;
+                this.thresh--;
+            }
             //console.log('logging in channel ' + this.info["namespace"]);
             var ts = new Date().toTimeString().slice(0, 8);
             // Add content.
@@ -924,7 +936,7 @@ function wsc_channel( client, ns ) {
             //console.log(h);
             //this.window.find("div.chatlog").width(h - 50);
             this.resize();
-            this.client.trigger('set.userlist.wsc', {
+            this.client.trigger('set.userlist', {
                 name: 'set.userlist',
                 ns: this.info['namespace']
             });
@@ -956,7 +968,6 @@ function wsc_channel( client, ns ) {
         // TODO: GUI stuffs!
         setMembers: function( e ) {
             pack = new WscPacket(e.pkt["body"]);
-            this.info['members'] = {};
             
             while(pack["cmd"] == "member") {
                 this.registerUser(pack);
@@ -1070,7 +1081,7 @@ function wsc_channel( client, ns ) {
         
     };
     
-    channel.init(client, ns);
+    channel.init(client, ns, hidden);
     return channel;
 }/* wsc tablumps - photofroggy
  * Processes the chat tablumps for a llama-like chat server.
@@ -1287,7 +1298,7 @@ function dAmnLumps( opts ) {
 // Create a protocol object that will process all incoming packets.
 // Protocol constructers are given a wsc object as input.
 // Bind events to the `wsc client` object.
-// Events have the namespace `<packet_event>.wsc`.
+// Events have the namespace `pkt.<packet_event>`.
 function wsc_protocol( client ) {
     
     var protocol = {
@@ -1360,7 +1371,7 @@ function wsc_protocol( client ) {
             'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
             'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
             'property': ['<span class="servermsg">** Got {p} for {ns} *</span>', true],
-            'recv_msg': ['<span><strong class="user">&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
+            'recv_msg': ['<span class="cmsg user"><strong>&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
             'recv_action': ['<span class="caction user"><em>* {user}</em></span><span class="caction">{message}</span>'],
             'recv_join': ['<span class="cevent bg">** {user} has joined *</span>'],
             'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
@@ -1398,21 +1409,21 @@ function wsc_protocol( client ) {
                 this.tablumps.registerMap( lumpmap );
             }
             
-            //client.bind("data.wsc", this.debug_pkt);
-            client.bind('chatserver.wsc', this.chatserver);
-            client.bind('dAmnServer.wsc', this.chatserver);
-            client.bind('login.wsc', this.login);
-            client.bind('join.wsc', this.join);
-            client.bind('part.wsc', this.part);
-            //client.bind('kicked.wsc', this.kicked);
-            client.bind('ping.wsc', this.ping);
-            client.bind('property.wsc', this.property);
-            client.bind('recv_join.wsc', this.recv_joinpart);
-            client.bind('recv_part.wsc', this.recv_joinpart);
-            client.bind('recv_msg.wsc', this.recv_msg);
-            client.bind('recv_action.wsc', this.recv_msg);
-            client.bind('recv_privchg.wsc', this.recv_privchg);
-            client.bind('recv_kicked.wsc', this.recv_kicked);
+            //client.bind("pkt", this.debug_pkt);
+            client.bind('pkt.chatserver', this.chatserver);
+            client.bind('pkt.dAmnServer', this.chatserver);
+            client.bind('pkt.login', this.login);
+            client.bind('pkt.join', this.join);
+            client.bind('pkt.part', this.part);
+            //client.bind('pkt.kicked', this.kicked);
+            client.bind('pkt.ping', this.ping);
+            client.bind('pkt.property', this.property);
+            client.bind('pkt.recv_join', this.recv_joinpart);
+            client.bind('pkt.recv_part', this.recv_joinpart);
+            client.bind('pkt.recv_msg', this.recv_msg);
+            client.bind('pkt.recv_action', this.recv_msg);
+            client.bind('pkt.recv_privchg', this.recv_privchg);
+            client.bind('pkt.recv_kicked', this.recv_kicked);
         },
         
         // What to do with every packet.
@@ -1423,7 +1434,7 @@ function wsc_protocol( client ) {
     
         // Established a WebSocket connection.
         connected: function( evt ) {
-            this.client.trigger('connected.wsc', {name: 'connected', pkt: new WscPacket('connected\n\n')});
+            this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
             //console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
@@ -1433,7 +1444,7 @@ function wsc_protocol( client ) {
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed.wsc', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
+            this.client.trigger('closed', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
             
             if(this.client.connected) {
                 this.client.monitorAll("Connection closed");
@@ -1464,12 +1475,12 @@ function wsc_protocol( client ) {
             
             var event = this.client.event_name(pack);
             // Uncomment if you want everything ever in the console.
-            //console.log(event + '.wsc');
+            //console.log(event + '');
             //console.log(JSON.stringify(pack));
             pevt = this.packetEvent(event, pack);
             this.log(pevt);
-            this.client.trigger('data.wsc', pevt);
-            this.client.trigger(event + '.wsc', pevt);
+            this.client.trigger('pkt', pevt);
+            this.client.trigger('pkt.'+event, pevt);
             //this.monitor(data);
         },
         
@@ -1755,20 +1766,31 @@ function wsc_extdefault( client ) {
         init: function( client ) {
             this.client = client;
             // Commands.
-            this.client.bind('cmd.set.wsc', this.setter.bind(extension) );
-            this.client.bind('cmd.connect.wsc', this.connect.bind(extension) );
-            this.client.bind('cmd.join.wsc', this.join.bind(extension) );
-            this.client.bind('cmd.part.wsc', this.part.bind(extension) );
-            this.client.bind('cmd.title.wsc', this.title.bind(extension) );
-            this.client.bind('cmd.promote.wsc', this.promote.bind(extension) );
-            this.client.bind('cmd.me.wsc', this.action.bind(extension) );
-            this.client.bind('cmd.kick.wsc', this.kick.bind(extension) );
-            this.client.bind('cmd.raw.wsc', this.raw.bind(extension) );
-            this.client.bind('cmd.say.wsc', this.say.bind(extension) );
-            this.client.bind('cmd.npmsg.wsc', this.npmsg.bind(extension) );
-            this.client.bind('cmd.clear.wsc', this.clear.bind(extension) );
+            this.client.bind('cmd.set', this.setter.bind(extension) );
+            this.client.bind('cmd.connect', this.connect.bind(extension) );
+            this.client.bind('cmd.join', this.join.bind(extension) );
+            this.client.bind('cmd.part', this.part.bind(extension) );
+            this.client.bind('cmd.title', this.title.bind(extension) );
+            this.client.bind('cmd.promote', this.promote.bind(extension) );
+            this.client.bind('cmd.me', this.action.bind(extension) );
+            this.client.bind('cmd.kick', this.kick.bind(extension) );
+            this.client.bind('cmd.raw', this.raw.bind(extension) );
+            this.client.bind('cmd.say', this.say.bind(extension) );
+            this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
+            this.client.bind('cmd.clear', this.clear.bind(extension) );
             // userlistings
-            this.client.bind('set.userlist.wsc', this.setUsers.bind(extension) );
+            this.client.bind('set.userlist', this.setUsers.bind(extension) );
+            // lol themes
+            this.client.bind('cmd.theme', this.theme.bind(extension));
+        },
+        
+        theme: function( e, client) {
+            theme = client.settings.theme;
+            select = e.args.split(' ').shift();
+            if( client.default_themes.indexOf(select) == -1 || theme == select)
+                return;
+            client.view.removeClass( theme ).addClass( select );
+            client.settings.theme = select;
         },
         
         /**
@@ -2000,6 +2022,7 @@ function wsc_client( view, options, mozilla ) {
         evt_chains: [["recv", "admin"]],
         events: null,
         attempts: 0,
+        default_themes: [ 'wsct_default', 'wsct_test' ],
         settings: {
             "domain": "website.com",
             "server": "ws://website.com/wsendpoint",
@@ -2064,14 +2087,14 @@ function wsc_client( view, options, mozilla ) {
             // Debug!
             //console.log(this);
             
+            // Prepare the UI.
+            this.buildUI();
+            
             // Load in extensions
             this.cmds = [];
             for(var index in this.settings["extend"]) {
                 this.settings["extend"][index](this);
             }
-            
-            // Prepare the UI.
-            this.buildUI();
             
             // Welcome!
             this.monitor(this.settings["welcome"]);
@@ -2090,7 +2113,7 @@ function wsc_client( view, options, mozilla ) {
          *  // The above uses an example 'my_constructor', which can be as simple
          *  // as the following.
          *  function my_constructor( client ) {
-         *      client.addListener( 'cmd.slap.wsc',
+         *      client.addListener( 'cmd.slap',
          *          function( e ) {
          *              // Slap your victim or something.
          *              client.action( e.target, 'slaps ' + ( e.args || e.user ) );
@@ -2126,13 +2149,12 @@ function wsc_client( view, options, mozilla ) {
          * @param [Function] handler Event handling function.
          */
         bind: function( event, handler ) {
-            this.events.addListener(event, function( e ) { handler( e ); });
-            jqi = event.indexOf('.wsc');
+            this.events.addListener(event, handler);
             
-            if( event.indexOf('cmd.') != 0 || jqi == -1 || jqi == 4 )
+            if( event.indexOf('cmd.') != 0 || event.length <= 4 )
                 return;
             
-            cmd = event.slice(4, jqi).toLowerCase();
+            cmd = event.slice(4).toLowerCase();
             this.cmds.push(cmd);
         },
         
@@ -2162,7 +2184,7 @@ function wsc_client( view, options, mozilla ) {
          */
         trigger: function( event, data ) {
             //console.log("emitting "+ event);
-            this.events.emit(event, data, client);
+            client.events.emit(event, data, client);
         },
         
         /**
@@ -2236,10 +2258,10 @@ function wsc_client( view, options, mozilla ) {
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
                 //console.log("connecting");
-                client.trigger('start.wsc', new WscPacket('client connecting\ne=ok\n\n'));
+                client.trigger('start', new WscPacket('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger('start.wsc', new WscPacket('client connecting\ne=no websockets available\n\n'));
+                client.trigger('start', new WscPacket('client connecting\ne=no websockets available\n\n'));
             }
         },
         
@@ -2279,22 +2301,6 @@ function wsc_client( view, options, mozilla ) {
             this.createChannel(this.mns, hide);
             this.control.setInput();
             this.control.focus();
-            /*
-            this.cchannel.setHeader('title', { pkt: {
-                        "arg": { "by": "", "ts": "" },
-                        "body": '<p>sample title</p>'
-                    }
-                }
-            );
-            /**/
-            /*
-            this.cchannel.setHeader('topic', { pkt: {
-                        'arg': { 'by': '', 'ts': '' },
-                        'body': '<p>sample topic</p>'
-                    }
-                }
-            );
-            /**/
             // For testing purposes only.
             // this.createChannel("llama2", "~Llama2", "server:llama2");
             this.resizeUI();
@@ -2339,10 +2345,10 @@ function wsc_client( view, options, mozilla ) {
                 c = this.channelo[key];
                 msgs = c.logpanel.find( '.logmsg' );
                 
-                if( msgs.length < 100 )
+                if( msgs.length < 200 )
                     continue;
                 
-                while( msgs.length > 100 ) {
+                while( msgs.length > 200 ) {
                     msgs.slice(0, 10).remove();
                     msgs = c.logpanel.find( '.logmsg' );
                 }
@@ -2356,11 +2362,10 @@ function wsc_client( view, options, mozilla ) {
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         createChannel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns));
+            chan = this.channel(ns, wsc_channel(this, ns, toggle));
             chan.build();
             this.toggleChannel(ns);
-            if( toggle )
-                chan.invisible();
+            this.resizeUI();
         },
         
         // Remove a channel from the client and the GUI.
@@ -2411,7 +2416,7 @@ function wsc_client( view, options, mozilla ) {
                 mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
                 mt.addClass(this.settings['monitor'][1]);
             }
-            this.resizeUI();
+            //this.resizeUI();
         },
     
         // Write a message to the UI.
@@ -2572,6 +2577,7 @@ function wsc_client( view, options, mozilla ) {
         
         // Send a message to a channel.
         say: function( ns, msg ) {
+            this.trigger( { name: 'send.msg.before', 'msg': msg, 'ns': ns } );
             this.send(wsc_packetstr('send', this.format_ns(ns), {},
                 wsc_packetstr('msg', 'main', {}, msg)
             ));
@@ -2858,12 +2864,7 @@ function wsc_control( client ) {
                 return;
             }
             
-            suf = '';
-            
-            if( this.input.val() == '' ) {
-                suf = this.tab.type == 0 ? ': ' : ' ';
-            }
-            
+            suf = this.input.val() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
             this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
         },
         
@@ -2919,7 +2920,7 @@ function wsc_control( client ) {
             
             arg = bits.join(' ');
             
-            this.client.trigger('cmd.' + cmdn + '.wsc', {
+            this.client.trigger('cmd.' + cmdn, {
                 name: 'cmd',
                 cmd: cmdn,
                 args: arg,

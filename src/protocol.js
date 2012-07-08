@@ -5,7 +5,7 @@
 // Create a protocol object that will process all incoming packets.
 // Protocol constructers are given a wsc object as input.
 // Bind events to the `wsc client` object.
-// Events have the namespace `<packet_event>.wsc`.
+// Events have the namespace `pkt.<packet_event>`.
 function wsc_protocol( client ) {
     
     var protocol = {
@@ -78,7 +78,7 @@ function wsc_protocol( client ) {
             'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
             'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
             'property': ['<span class="servermsg">** Got {p} for {ns} *</span>', true],
-            'recv_msg': ['<span><strong class="user">&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
+            'recv_msg': ['<span class="cmsg user"><strong>&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
             'recv_action': ['<span class="caction user"><em>* {user}</em></span><span class="caction">{message}</span>'],
             'recv_join': ['<span class="cevent bg">** {user} has joined *</span>'],
             'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
@@ -116,21 +116,21 @@ function wsc_protocol( client ) {
                 this.tablumps.registerMap( lumpmap );
             }
             
-            //client.bind("data.wsc", this.debug_pkt);
-            client.bind('chatserver.wsc', this.chatserver);
-            client.bind('dAmnServer.wsc', this.chatserver);
-            client.bind('login.wsc', this.login);
-            client.bind('join.wsc', this.join);
-            client.bind('part.wsc', this.part);
-            //client.bind('kicked.wsc', this.kicked);
-            client.bind('ping.wsc', this.ping);
-            client.bind('property.wsc', this.property);
-            client.bind('recv_join.wsc', this.recv_joinpart);
-            client.bind('recv_part.wsc', this.recv_joinpart);
-            client.bind('recv_msg.wsc', this.recv_msg);
-            client.bind('recv_action.wsc', this.recv_msg);
-            client.bind('recv_privchg.wsc', this.recv_privchg);
-            client.bind('recv_kicked.wsc', this.recv_kicked);
+            //client.bind("pkt", this.debug_pkt);
+            client.bind('pkt.chatserver', this.chatserver);
+            client.bind('pkt.dAmnServer', this.chatserver);
+            client.bind('pkt.login', this.login);
+            client.bind('pkt.join', this.join);
+            client.bind('pkt.part', this.part);
+            //client.bind('pkt.kicked', this.kicked);
+            client.bind('pkt.ping', this.ping);
+            client.bind('pkt.property', this.property);
+            client.bind('pkt.recv_join', this.recv_joinpart);
+            client.bind('pkt.recv_part', this.recv_joinpart);
+            client.bind('pkt.recv_msg', this.recv_msg);
+            client.bind('pkt.recv_action', this.recv_msg);
+            client.bind('pkt.recv_privchg', this.recv_privchg);
+            client.bind('pkt.recv_kicked', this.recv_kicked);
         },
         
         // What to do with every packet.
@@ -141,7 +141,7 @@ function wsc_protocol( client ) {
     
         // Established a WebSocket connection.
         connected: function( evt ) {
-            this.client.trigger('connected.wsc', {name: 'connected', pkt: new WscPacket('connected\n\n')});
+            this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
             //console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
@@ -151,7 +151,7 @@ function wsc_protocol( client ) {
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed.wsc', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
+            this.client.trigger('closed', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
             
             if(this.client.connected) {
                 this.client.monitorAll("Connection closed");
@@ -182,12 +182,12 @@ function wsc_protocol( client ) {
             
             var event = this.client.event_name(pack);
             // Uncomment if you want everything ever in the console.
-            //console.log(event + '.wsc');
+            //console.log(event + '');
             //console.log(JSON.stringify(pack));
             pevt = this.packetEvent(event, pack);
             this.log(pevt);
-            this.client.trigger('data.wsc', pevt);
-            this.client.trigger(event + '.wsc', pevt);
+            this.client.trigger('pkt', pevt);
+            this.client.trigger('pkt.'+event, pevt);
             //this.monitor(data);
         },
         

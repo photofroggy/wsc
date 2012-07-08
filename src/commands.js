@@ -50,20 +50,31 @@ function wsc_extdefault( client ) {
         init: function( client ) {
             this.client = client;
             // Commands.
-            this.client.bind('cmd.set.wsc', this.setter.bind(extension) );
-            this.client.bind('cmd.connect.wsc', this.connect.bind(extension) );
-            this.client.bind('cmd.join.wsc', this.join.bind(extension) );
-            this.client.bind('cmd.part.wsc', this.part.bind(extension) );
-            this.client.bind('cmd.title.wsc', this.title.bind(extension) );
-            this.client.bind('cmd.promote.wsc', this.promote.bind(extension) );
-            this.client.bind('cmd.me.wsc', this.action.bind(extension) );
-            this.client.bind('cmd.kick.wsc', this.kick.bind(extension) );
-            this.client.bind('cmd.raw.wsc', this.raw.bind(extension) );
-            this.client.bind('cmd.say.wsc', this.say.bind(extension) );
-            this.client.bind('cmd.npmsg.wsc', this.npmsg.bind(extension) );
-            this.client.bind('cmd.clear.wsc', this.clear.bind(extension) );
+            this.client.bind('cmd.set', this.setter.bind(extension) );
+            this.client.bind('cmd.connect', this.connect.bind(extension) );
+            this.client.bind('cmd.join', this.join.bind(extension) );
+            this.client.bind('cmd.part', this.part.bind(extension) );
+            this.client.bind('cmd.title', this.title.bind(extension) );
+            this.client.bind('cmd.promote', this.promote.bind(extension) );
+            this.client.bind('cmd.me', this.action.bind(extension) );
+            this.client.bind('cmd.kick', this.kick.bind(extension) );
+            this.client.bind('cmd.raw', this.raw.bind(extension) );
+            this.client.bind('cmd.say', this.say.bind(extension) );
+            this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
+            this.client.bind('cmd.clear', this.clear.bind(extension) );
             // userlistings
-            this.client.bind('set.userlist.wsc', this.setUsers.bind(extension) );
+            this.client.bind('set.userlist', this.setUsers.bind(extension) );
+            // lol themes
+            this.client.bind('cmd.theme', this.theme.bind(extension));
+        },
+        
+        theme: function( e, client) {
+            theme = client.settings.theme;
+            select = e.args.split(' ').shift();
+            if( client.default_themes.indexOf(select) == -1 || theme == select)
+                return;
+            client.view.removeClass( theme ).addClass( select );
+            client.settings.theme = select;
         },
         
         /**

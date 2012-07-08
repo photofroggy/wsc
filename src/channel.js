@@ -3,11 +3,11 @@
  * for the channel.
  */
 
-function WscChannel( client, ns ) {
+function WscChannel( client, ns, hidden ) {
 
     var selector = client.deform_ns(ns).slice(1).toLowerCase();
     this.client = client;
-    //this.hidden = hidden;
+    this.hidden = hidden;
     
     this.info = {
         'raw': null,
@@ -222,7 +222,7 @@ WscChannel.prototype.recv_kicked = function( e ) {
 // structures or some shit idk. The `selector` parameter defines the
 // channel without the `chat:` or `#` style prefixes. The `ns`
 // parameter is the string to use for the tab.
-function wsc_channel( client, ns ) {
+function wsc_channel( client, ns, hidden ) {
     
     var channel = {
         
@@ -253,6 +253,8 @@ function wsc_channel( client, ns ) {
         tab: null,
         built: false,
         hidden: false,
+        monitor: false,
+        thresh: null,
         
         // Initialise! Create a new channel mofo!
         init: function( client, ns, hidden ) {
@@ -263,6 +265,9 @@ function wsc_channel( client, ns ) {
             this.info["raw"] = client.format_ns(ns);
             this.info["selector"] = selector;
             this.info["namespace"] = client.deform_ns(ns);
+            
+            this.monitor = Object.size(this.client.channelo) == 0;
+            this.thresh = 6;
             
             /*
             console.log(this.window);
@@ -275,6 +280,8 @@ function wsc_channel( client, ns ) {
         
         // Draw channel on screen and store the different elements in attributes.
         build: function( ) {
+            this.info['members'] = {};
+            
             if( this.built )
                 return;
             
@@ -424,6 +431,11 @@ function wsc_channel( client, ns ) {
         
         // Send a message to the log window.
         logItem: function( msg ) {
+            if( this.hidden ) {
+                if( this.thresh <= 0 )
+                    return;
+                this.thresh--;
+            }
             //console.log('logging in channel ' + this.info["namespace"]);
             var ts = new Date().toTimeString().slice(0, 8);
             // Add content.
@@ -560,7 +572,7 @@ function wsc_channel( client, ns ) {
             //console.log(h);
             //this.window.find("div.chatlog").width(h - 50);
             this.resize();
-            this.client.trigger('set.userlist.wsc', {
+            this.client.trigger('set.userlist', {
                 name: 'set.userlist',
                 ns: this.info['namespace']
             });
@@ -592,7 +604,6 @@ function wsc_channel( client, ns ) {
         // TODO: GUI stuffs!
         setMembers: function( e ) {
             pack = new WscPacket(e.pkt["body"]);
-            this.info['members'] = {};
             
             while(pack["cmd"] == "member") {
                 this.registerUser(pack);
@@ -706,6 +717,6 @@ function wsc_channel( client, ns ) {
         
     };
     
-    channel.init(client, ns);
+    channel.init(client, ns, hidden);
     return channel;
 }
