@@ -316,7 +316,7 @@ function wsc_client( view, options, mozilla ) {
                 // Received a message from the server! Process!
                 function( evt ) { client.protocol.process_data( evt ); },
                 // Connection opened.
-                function( evt ) { client.protocol.connected( evt ); }
+                function( evt, sock ) { client.protocol.connected( evt, sock ); }
             );
             
         },
@@ -334,13 +334,12 @@ function wsc_client( view, options, mozilla ) {
             this.control.focus();
             // For testing purposes only.
             // this.createChannel("llama2", "~Llama2", "server:llama2");
-            this.resizeUI();
+            //this.resizeUI();
         },
         
         resizeUI: function( ) {
             // Resize control panel.
             client.control.resize();
-            
             
             // Main view dimensions.
             //console.log('>> pH:',client.view.parent().height());
@@ -509,6 +508,9 @@ function wsc_client( view, options, mozilla ) {
                     }
                 }
             }
+            
+            if( ns.indexOf('login:') == 0 )
+                return '@' + ns.slice(6);
             
             if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
                 return '#' + ns;

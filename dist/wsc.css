@@ -7,7 +7,8 @@
 div.wsc {
   font: normal 12px verdana, sans-serif;
   line-height: 1.6em;
-  clear: both; }
+  clear: both;
+  height: 100%; }
   div.wsc nav.tabs {
     width: 100%;
     height: 32px; }
@@ -56,43 +57,44 @@ div.wsc {
     margin: 0px;
     padding: 5px;
     padding-bottom: 0px;
-    border-top: 1px solid black; }
+    border-top: 1px solid black;
+    height: 88%; }
     div.wsc div.chatbook img {
       display: inline; }
-    div.wsc div.chatbook p.logmsg {
+    div.wsc div.chatbook .logmsg {
       margin: 0px;
       padding: 0px 5px;
       overflow: hidden;
       vertical-align: middle;
       position: relative; }
-      div.wsc div.chatbook p.logmsg span {
+      div.wsc div.chatbook .logmsg span {
         display: table-cell;
         padding-right: 5px;
         vertical-align: middle;
         margin-top: auto;
         margin-bottom: auto; }
-        div.wsc div.chatbook p.logmsg span.ts {
+        div.wsc div.chatbook .logmsg span.ts {
           font-weight: bold; }
-        div.wsc div.chatbook p.logmsg span.servermsg {
+        div.wsc div.chatbook .logmsg span.servermsg {
           font-weight: bold;
           font-style: normal; }
-        div.wsc div.chatbook p.logmsg span.cmsg, div.wsc div.chatbook p.logmsg span.caction {
+        div.wsc div.chatbook .logmsg span.cmsg, div.wsc div.chatbook .logmsg span.caction {
           word-wrap: break-word; }
-          div.wsc div.chatbook p.logmsg span.cmsg.user, div.wsc div.chatbook p.logmsg span.caction.user {
+          div.wsc div.chatbook .logmsg span.cmsg.user, div.wsc div.chatbook .logmsg span.caction.user {
             word-wrap: normal;
             white-space: nowrap; }
-      div.wsc div.chatbook p.logmsg .caction {
+      div.wsc div.chatbook .logmsg .caction {
         font-weight: normal;
         font-style: italic; }
-        div.wsc div.chatbook p.logmsg .caction.user em {
+        div.wsc div.chatbook .logmsg .caction.user em {
           font-style: italic;
           font-weight: bold;
           color: inherit;
           vertical-align: middle; }
-      div.wsc div.chatbook p.logmsg .cevent {
+      div.wsc div.chatbook .logmsg .cevent {
         font-weight: bold;
         vertical-align: middle; }
-      div.wsc div.chatbook p.logmsg em {
+      div.wsc div.chatbook .logmsg em {
         font-weight: normal; }
   div.wsc div.chatwindow {
     overflow: hidden; }
@@ -217,7 +219,7 @@ div.wsc {
       margin-bottom: 5px;
       width: 100%; }
     div.wsc div.chatcontrol form.msg input.msg {
-      width: 60%;
+      width: 90%;
       line-height: 1.6em; }
   div.wsc a.button,
   div.wsc form.msg input[type="submit"] {

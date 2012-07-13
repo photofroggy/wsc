@@ -1,99 +1,65 @@
-/* wsc packets - plaguethenet
+/* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
 
+var chains = [["recv", "admin"]];
+
 function WscPacket( data, separator ) {
 
-    this.raw = data;
-    /*this.parse = bind( this, this.parse );
-    this.parseArgs = bind( this, this.parseArgs );
-    this.setNull = bind( this, this.setNull );
-    this.serialize = bind( this, this.serialize );
-    this.toString = bind( this, this.toString );*/
-    //scope_methods( this, WscPacket.prototype );
-    this.setNull();
-    this.parse(separator);
-    this.raw = this.serialize();
-
-}
-
-WscPacket.prototype.parse = function( separator ) {
-
-    if(!( this.raw )) {
+    if(!( data )) {
         return null;
     }
     
+    var pkt = { cmd: null, param: null, arg: [], body: null, sub: [], raw: data };
     separator = separator || '=';
-    var data = this.raw;
     
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
         if( idx > -1 ) {
-            this.body = data.substr(idx + 2);
+            pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
         }
         
-        cmdline = null;
-        idx = data.indexOf('\n');
-        sidx = data.indexOf( separator );
+        args = data.split('\n');
         
-        if( idx > -1 && ( sidx == -1 || sidx > idx ) ) {
-            cmdline = data.substr( 0, idx );
-            data = data.substr( idx + 1 );
-        } else if( sidx == -1 ) {
-            cmdline = data;
-            data = '';
+        if( args[0].indexOf( separator ) == -1 ) {
+            cline = args.shift().split(' ');
+            pkt.cmd = cline.shift() || null;
+            if( cline.length > 0 )
+                pkt.param = cline.join(' ');
         }
         
-        if( cmdline ) {
-            seg = cmdline.split(' ');
-            this.cmd = seg[0];
-            this.param = seg[1] ? seg[1] : null;
+        for( n in args ) {
+            arg = args[n];
+            si = arg.search(separator);
+            
+            if( si == -1 )
+                continue;
+            
+            pkt.arg[arg.substr( 0, si )] = arg.substr( si + separator.length ) || '';
         }
         
-        this.arg = this.parseArgs(data, separator);
+        if( pkt.body != null ) {
+            subs = pkt.body.split('\n\n');
+            for(i in subs) {
+                sub = WscPacket( subs[i], separator );
+                if( sub == null )
+                    break;
+                pkt.sub.push( sub );
+            }
+        }
         
     } catch(e) {
-        alert('parser exception:' + e);
-        this.setNull();
-    }
-
-};
-
-WscPacket.prototype.parseArgs = function ( data, separator ) {    
-    separator = separator || '=';
-    args = {};
-    lines = data.split('\n');
-    for( n in lines ) {
-        line = lines[n];
-        si = line.search(separator);
-        
-        if( si == -1 )
-            continue;
-        
-        args[line.substr( 0, si )] = line.substr( si + separator.length ) || '';
+        return null;
     }
     
-    return args;
-};
+    pkt.toString = function() { return packetToString(pkt); };
+    pkt.name = packetEvtName(pkt);
+    
+    return pkt;
 
-WscPacket.prototype.setNull = function(  ) {
-
-    this.cmd = null;
-    this.param = null;
-    this.arg = null;
-    this.body = null;
-
-};
-
-WscPacket.prototype.toString = function(  ) {
-    return this.raw;
-};
-
-WscPacket.prototype.serialize = function(  ) {
-    return wsc_packetstr( this.cmd, this.param, this.arg, this.body );
-};
+}
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {
@@ -116,6 +82,31 @@ function wsc_packetstr( cmd, param, args, body ) {
     return ret;
 }
 
-function wsc_packet_serialze(pkt) {
+function packetToString(pkt) {
     return wsc_packetstr(pkt.cmd, pkt.param, pkt.arg, pkt.body);
+}
+
+// Get the event name of a given packet.
+function packetEvtName( pkt ) {
+    
+    var name = pkt["cmd"];
+    var cmds = null;
+    for(var index in chains) {
+        
+        cmds = chains[index];
+        
+        if(cmds[0] != name)
+            continue;
+        
+        var sub = pkt.sub[0];
+        name = name + '_' + sub["cmd"];
+        
+        if(cmds.length > 1 && sub["param"] != undefined) {
+            if(cmds[1] == sub["cmd"])
+                return name + '_' + sub["param"];
+        }
+    
+    }
+    
+    return name;
 }

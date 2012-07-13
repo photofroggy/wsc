@@ -44,7 +44,7 @@ var wsc_html_cheader = '<div class="{head}">{content}</div>';
 var wsc_html_logmsg = '<span class="message">{message}</span>';
 
 // Simple log template.
-var wsc_html_logitem = '<p class="logmsg"><span class="ts">{ts}</span> {message}</p>';
+var wsc_html_logitem = '<div class="logmsg"><span class="ts">{ts}</span> {message}</div>';
 
 // Server message template.
 var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';

@@ -19,7 +19,7 @@ function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
     // This array defines the regex for replacing the simpler tablumps.
-    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|a|iframe|acro|abbr)\t/g, '<$1$2>'];
+    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
 }
 
@@ -46,7 +46,9 @@ WscTablumps.prototype.defaultMap = function () {
         '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
         '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
         '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-        '&br\t': [ 0, '<br/>' ]
+        '&br\t': [ 0, '<br/>' ],
+        '&bcode\t': [0, '<span><pre><code>'],
+        '&/bcode\t': [0, '</code></pre></span>']
     };
 
 };
@@ -185,23 +187,65 @@ function dAmnLumps( opts ) {
         '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
         '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
         '&thumb\t': [ 7, function( data ) {
-                id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
-                server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
-                if( w > 100 || h > 100) {
-                    if( w/h > 1 ) {
-                        th = (h * 100) / w;
-                        tw = 100;
-                    } else {
-                        tw = (w * 100) / w;
-                        th = 100;
-                    }
-                    if( tw > w || th > h ) {
-                        tw = w;
-                        th = h;
-                    }
+                id = data[0]; s = data[2][0]; u = data[2].substring(1); f = data[5];
+                dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
+                lu = u.replace(/^[^a-zA-Z0-9\-_]/, '');
+                flags = data[6].split(':');
+                // Deviation title.
+                t = data[1];
+                ut = t.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+                // Deviation link tag. First segment only.
+                title = t + ' by ' + s + u + ', ' + w + 'x' + h;
+                dal = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' +
+                    ( ut ? ut : '-' )  + '-' + id + '" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '"';
+                
+                // Time to go through the flags.
+                if( flags[1] != '0' )
+                    return dal + '>[mature deviation: ' + t + ']</a>';
+                
+                if( flags[2] != '0' )
+                    return dal + '>[deviation: ' + t + ']</a>';
+                
+                shadow = flags[0] == '0';
+                isgif = f.match( /\.gif$/i );
+                
+                if( isgif && ( w > 100 || h > 100 ) )
+                    return dal + '>[deviation: ' + t + ']</a>';
+                
+                server = parseInt(data[4]);
+                
+                if( w/h > 1) {
+                    th = parseInt((h * 100) / w);
+                    tw = 100;
+                } else {
+                    tw = parseInt((w * 100) / h);
+                    th = 100;
                 }
-                return '<a target="_blank" href="http://' + u + '.deviantart.com/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
-                        height="'+th+'" alt=":thumb'+id+':" src="http://fc03.deviantart.net/'+f.replace(/\:/, '/')+'" /></a>';
+                
+                if( tw > w || th > h ) {
+                    tw = w;
+                    th = h;
+                }
+                
+                if( isgif ) {
+                    f = f.replace(/:/, '/');
+                    path = 'http://fc0' + server + '.deviantart.net/' + f;
+                    det = f.split('/');
+                    if( det.length > 1 ) {
+                        det = det['.'];
+                        if( det && det.length > 2 )
+                            path = 'http://' + file;
+                    }
+                    return dal + '><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h +
+                        '" width="'+tw+'" height="'+th+'" alt=":thumb'+id+':" src="' + path +'" /></a>';
+                }
+                path = 'http://backend.deviantart.com/oembed?url=http://www.deviantart.com/deviation/'+id+'&format=thumb150';
+                
+                if( f.match(/.png$/i) )
+                    shadow = false;
+                
+                return dal + '><img class="thumb' + ( shadow ? ' shadow' : '' ) + '" width="'+tw+'" height="'+
+                    th+'" alt=":thumb'+id+':" src="'+path+'" /></a>';
             }
         ],
     };

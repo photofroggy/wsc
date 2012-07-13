@@ -140,9 +140,12 @@ function wsc_protocol( client ) {
         },
     
         // Established a WebSocket connection.
-        connected: function( evt ) {
+        connected: function( evt, sock ) {
+            console.log( sock == undefined );
+            if( sock  )
+                this.client.conn = sock;
             this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
-            //console.log("Connection opened");
+            console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
             this.client.attempts = 0;
@@ -168,8 +171,12 @@ function wsc_protocol( client ) {
                 return;
             }
             
-            this.client.monitorAll("Connecting in 2 seconds...");
-            setTimeout(this.client.connect.bind(this.client), 2000);
+            this.client.monitorAll("Connecting in 2 seconds");
+            c=this.client;
+            setTimeout(function () {
+                c.connect();
+                c.monitorAll('Opening connection');
+            }, 2000);
         
         }, 
     
@@ -225,16 +232,23 @@ function wsc_protocol( client ) {
                         break;
                     // for n in map[event][1]: e.<map[event][1][n]> = pkt.arg.<map[event][1][n]>
                     case "1":
-                        for( n in mapping[1] ) {
-                            key = mapping[1][n];
-                            if( key instanceof Array ) {
-                                arguments[key[1]] = pkt['arg'][key[0]];
-                                skey = key[1];
-                            } else {
-                                k = key[0] == '*' ? key.slice(1) : key;
-                                arguments[key] = pkt['arg'][k] || '';
-                                skey = key;
+                        if( mapping[1] instanceof Array ) {
+                            for( n in mapping[1] ) {
+                                key = mapping[1][n];
+                                if( key instanceof Array ) {
+                                    arguments[key[1]] = pkt['arg'][key[0]];
+                                    skey = key[1];
+                                } else {
+                                    k = key[0] == '*' ? key.slice(1) : key;
+                                    arguments[key] = pkt['arg'][k] || '';
+                                    skey = key;
+                                }
                             }
+                        }
+                        
+                        if( typeof mapping[1] == 'string' ) {
+                            // Here we want to accept the packet args as they are. All of them.
+                            arguments[key] = pkt.arg.slice(0);
                         }
                         break;
                     // e.<map[event][2]> = pkt.body

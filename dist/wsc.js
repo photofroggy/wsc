@@ -93,7 +93,7 @@ var wsc_html_cheader = '<div class="{head}">{content}</div>';
 var wsc_html_logmsg = '<span class="message">{message}</span>';
 
 // Simple log template.
-var wsc_html_logitem = '<p class="logmsg"><span class="ts">{ts}</span> {message}</p>';
+var wsc_html_logitem = '<div class="logmsg"><span class="ts">{ts}</span> {message}</div>';
 
 // Server message template.
 var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
@@ -168,8 +168,8 @@ function DateStamp(ts) {
 
 // Case insensitive sort function.
 function caseInsensitiveSort( a, b ) {
-    x = String(a).toLowerCase(); y = String(b).toLowerCase();
-    return ( ( x > y ) ? 1 : ( x == y ? 0 : -1 ) );
+    a = a.toLowerCase(); b = b.toLowerCase();
+    return ( ( a > b ) ? 1 : ( a < b ? -1 : 0 ) );
 }
 
 function CanCreateWebsocket() {
@@ -184,14 +184,19 @@ function CreateWebSocket(url, onclose, onmessage, onopen) {
     if(!CanCreateWebsocket()) {
         throw "This browser does not support websockets.";
     }
-    ret = new WebSocket(url)
-    if(onclose)
-        ret.onclose = onclose;
-    if(onmessage)
-        ret.onmessage = onmessage;
-    if(onopen)
-        ret.onopen = onopen;
-    return ret
+    var sock = null;
+    if( typeof io === 'undefined' ) {
+        sock = new WebSocket(url)
+        sock.onclose = onclose;
+        sock.onmessage = onmessage;
+        sock.onopen = onopen;
+    } else {
+        sock = io.connect();
+        onopen({}, sock);
+        sock.on('message', onmessage);
+        sock.on('disconnect', onclose);
+    }
+    return sock;
 }
 
 // Escape special characters for regexes.
@@ -242,102 +247,68 @@ Object.size = function(obj) {
     }
     return size;
 };
-/* wsc packets - plaguethenet
+/* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
 
+var chains = [["recv", "admin"]];
+
 function WscPacket( data, separator ) {
 
-    this.raw = data;
-    /*this.parse = bind( this, this.parse );
-    this.parseArgs = bind( this, this.parseArgs );
-    this.setNull = bind( this, this.setNull );
-    this.serialize = bind( this, this.serialize );
-    this.toString = bind( this, this.toString );*/
-    //scope_methods( this, WscPacket.prototype );
-    this.setNull();
-    this.parse(separator);
-    this.raw = this.serialize();
-
-}
-
-WscPacket.prototype.parse = function( separator ) {
-
-    if(!( this.raw )) {
+    if(!( data )) {
         return null;
     }
     
+    var pkt = { cmd: null, param: null, arg: [], body: null, sub: [], raw: data };
     separator = separator || '=';
-    var data = this.raw;
     
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
         if( idx > -1 ) {
-            this.body = data.substr(idx + 2);
+            pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
         }
         
-        cmdline = null;
-        idx = data.indexOf('\n');
-        sidx = data.indexOf( separator );
+        args = data.split('\n');
         
-        if( idx > -1 && ( sidx == -1 || sidx > idx ) ) {
-            cmdline = data.substr( 0, idx );
-            data = data.substr( idx + 1 );
-        } else if( sidx == -1 ) {
-            cmdline = data;
-            data = '';
+        if( args[0].indexOf( separator ) == -1 ) {
+            cline = args.shift().split(' ');
+            pkt.cmd = cline.shift() || null;
+            if( cline.length > 0 )
+                pkt.param = cline.join(' ');
         }
         
-        if( cmdline ) {
-            seg = cmdline.split(' ');
-            this.cmd = seg[0];
-            this.param = seg[1] ? seg[1] : null;
+        for( n in args ) {
+            arg = args[n];
+            si = arg.search(separator);
+            
+            if( si == -1 )
+                continue;
+            
+            pkt.arg[arg.substr( 0, si )] = arg.substr( si + separator.length ) || '';
         }
         
-        this.arg = this.parseArgs(data, separator);
+        if( pkt.body != null ) {
+            subs = pkt.body.split('\n\n');
+            for(i in subs) {
+                sub = WscPacket( subs[i], separator );
+                if( sub == null )
+                    break;
+                pkt.sub.push( sub );
+            }
+        }
         
     } catch(e) {
-        alert('parser exception:' + e);
-        this.setNull();
-    }
-
-};
-
-WscPacket.prototype.parseArgs = function ( data, separator ) {    
-    separator = separator || '=';
-    args = {};
-    lines = data.split('\n');
-    for( n in lines ) {
-        line = lines[n];
-        si = line.search(separator);
-        
-        if( si == -1 )
-            continue;
-        
-        args[line.substr( 0, si )] = line.substr( si + separator.length ) || '';
+        return null;
     }
     
-    return args;
-};
+    pkt.toString = function() { return packetToString(pkt); };
+    pkt.name = packetEvtName(pkt);
+    
+    return pkt;
 
-WscPacket.prototype.setNull = function(  ) {
-
-    this.cmd = null;
-    this.param = null;
-    this.arg = null;
-    this.body = null;
-
-};
-
-WscPacket.prototype.toString = function(  ) {
-    return this.raw;
-};
-
-WscPacket.prototype.serialize = function(  ) {
-    return wsc_packetstr( this.cmd, this.param, this.arg, this.body );
-};
+}
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {
@@ -360,9 +331,35 @@ function wsc_packetstr( cmd, param, args, body ) {
     return ret;
 }
 
-function wsc_packet_serialze(pkt) {
+function packetToString(pkt) {
     return wsc_packetstr(pkt.cmd, pkt.param, pkt.arg, pkt.body);
-}/* wsc channel - photofroggy
+}
+
+// Get the event name of a given packet.
+function packetEvtName( pkt ) {
+    
+    var name = pkt["cmd"];
+    var cmds = null;
+    for(var index in chains) {
+        
+        cmds = chains[index];
+        
+        if(cmds[0] != name)
+            continue;
+        
+        var sub = pkt.sub[0];
+        name = name + '_' + sub["cmd"];
+        
+        if(cmds.length > 1 && sub["param"] != undefined) {
+            if(cmds[1] == sub["cmd"])
+                return name + '_' + sub["param"];
+        }
+    
+    }
+    
+    return name;
+}
+/* wsc channel - photofroggy
  * Provides a JavaScript representation of a chat channel and handles the UI
  * for the channel.
  */
@@ -596,6 +593,7 @@ function wsc_channel( client, ns, hidden ) {
             "selector": "",
             "namespace": "",
             "members": {},
+            "users": [],
             "pc": {},
             "pc_order": [],
             "title": {
@@ -631,7 +629,7 @@ function wsc_channel( client, ns, hidden ) {
             this.info["namespace"] = client.deform_ns(ns);
             
             this.monitor = Object.size(this.client.channelo) == 0;
-            this.thresh = 6;
+            this.thresh = 10;
             
             /*
             console.log(this.window);
@@ -886,29 +884,29 @@ function wsc_channel( client, ns, hidden ) {
                 return;
             
             ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
+            pcs = {};
             
+            for( i in this.info['users'] ) {
+                un = this.info['users'][i];
+                member = this.info['members'][un];
+                
+                if( !( member['pc'] in pcs ) )
+                    pcs[member['pc']] = '';
+                
+                conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+                s = member.symbol;
+                pcs[member['pc']]+= '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
+            }
+            
+            //this.info['members'].sort( caseInsensitiveSort );
             //console.log(this.info["pc_order"])
             for(var index in this.info["pc_order"]) {
-                pco = this.info["pc_order"][index];
-                pc = this.info['pc'][pco];
-                pcl = '';
-                /* 
-                console.log(pco);
-                console.log("set users " + pc);
-                /* */
+                pc = this.info['pc'][this.info["pc_order"][index]];
                 
-                for(var un in this.info["members"]) {
-                    member = this.info['members'][un];
-                    if( member['pc'] != pc )
-                        continue;
-                    conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-                    s = member.symbol;
-                    pcl = pcl + '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
-                }
+                if( !( pc in pcs ) )
+                    continue;
                 
-                if( pcl.length > 0 )
-                    ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcl + '</ul></div>';
-                
+                ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcs[pc] + '</ul></div>';
             }
             ulist = ulist + '</div>'
             
@@ -976,6 +974,13 @@ function wsc_channel( client, ns, hidden ) {
                     break;
             }
             //console.log("registered users");
+            
+            this.info['users'] = [];
+            
+            for( i in this.info['members'] )
+                this.info['users'].push(i);
+            
+            this.info['users'].sort( caseInsensitiveSort );
             this.setUserList();
         },
         
@@ -1031,7 +1036,7 @@ function wsc_channel( client, ns, hidden ) {
             
             u = channel.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
-            p = channel.window.find('p.logmsg').last();
+            p = channel.window.find('.logmsg').last();
             
             if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
                 return;
@@ -1104,7 +1109,7 @@ function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
     // This array defines the regex for replacing the simpler tablumps.
-    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|bcode|a|iframe|acro|abbr)\t/g, '<$1$2>'];
+    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
 }
 
@@ -1131,7 +1136,9 @@ WscTablumps.prototype.defaultMap = function () {
         '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
         '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
         '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-        '&br\t': [ 0, '<br/>' ]
+        '&br\t': [ 0, '<br/>' ],
+        '&bcode\t': [0, '<span><pre><code>'],
+        '&/bcode\t': [0, '</code></pre></span>']
     };
 
 };
@@ -1270,23 +1277,65 @@ function dAmnLumps( opts ) {
         '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
         '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
         '&thumb\t': [ 7, function( data ) {
-                id = data[0]; t = data[1]; s = data[2][0]; u = data[2].substring(1); dim = data[3].split('x'); b = data[6]; f = data[5];
-                server = parseInt(data[4]); tw = w = parseInt(dim[0]); th = h = parseInt(dim[1]);
-                if( w > 100 || h > 100) {
-                    if( w/h > 1 ) {
-                        th = (h * 100) / w;
-                        tw = 100;
-                    } else {
-                        tw = (w * 100) / w;
-                        th = 100;
-                    }
-                    if( tw > w || th > h ) {
-                        tw = w;
-                        th = h;
-                    }
+                id = data[0]; s = data[2][0]; u = data[2].substring(1); f = data[5];
+                dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
+                lu = u.replace(/^[^a-zA-Z0-9\-_]/, '');
+                flags = data[6].split(':');
+                // Deviation title.
+                t = data[1];
+                ut = t.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+                // Deviation link tag. First segment only.
+                title = t + ' by ' + s + u + ', ' + w + 'x' + h;
+                dal = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' +
+                    ( ut ? ut : '-' )  + '-' + id + '" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '"';
+                
+                // Time to go through the flags.
+                if( flags[1] != '0' )
+                    return dal + '>[mature deviation: ' + t + ']</a>';
+                
+                if( flags[2] != '0' )
+                    return dal + '>[deviation: ' + t + ']</a>';
+                
+                shadow = flags[0] == '0';
+                isgif = f.match( /\.gif$/i );
+                
+                if( isgif && ( w > 100 || h > 100 ) )
+                    return dal + '>[deviation: ' + t + ']</a>';
+                
+                server = parseInt(data[4]);
+                
+                if( w/h > 1) {
+                    th = parseInt((h * 100) / w);
+                    tw = 100;
+                } else {
+                    tw = parseInt((w * 100) / h);
+                    th = 100;
                 }
-                return '<a target="_blank" href="http://' + u + '.deviantart.com/art/' + t.replacePArg(' ', '-') + '-' + id + '"><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h + '" width="'+tw+'"\
-                        height="'+th+'" alt=":thumb'+id+':" src="http://fc03.deviantart.net/'+f.replace(/\:/, '/')+'" /></a>';
+                
+                if( tw > w || th > h ) {
+                    tw = w;
+                    th = h;
+                }
+                
+                if( isgif ) {
+                    f = f.replace(/:/, '/');
+                    path = 'http://fc0' + server + '.deviantart.net/' + f;
+                    det = f.split('/');
+                    if( det.length > 1 ) {
+                        det = det['.'];
+                        if( det && det.length > 2 )
+                            path = 'http://' + file;
+                    }
+                    return dal + '><img class="thumb" title="' + t + ' by ' + s + u + ', ' + w + 'x' + h +
+                        '" width="'+tw+'" height="'+th+'" alt=":thumb'+id+':" src="' + path +'" /></a>';
+                }
+                path = 'http://backend.deviantart.com/oembed?url=http://www.deviantart.com/deviation/'+id+'&format=thumb150';
+                
+                if( f.match(/.png$/i) )
+                    shadow = false;
+                
+                return dal + '><img class="thumb' + ( shadow ? ' shadow' : '' ) + '" width="'+tw+'" height="'+
+                    th+'" alt=":thumb'+id+':" src="'+path+'" /></a>';
             }
         ],
     };
@@ -1433,9 +1482,12 @@ function wsc_protocol( client ) {
         },
     
         // Established a WebSocket connection.
-        connected: function( evt ) {
+        connected: function( evt, sock ) {
+            console.log( sock == undefined );
+            if( sock  )
+                this.client.conn = sock;
             this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
-            //console.log("Connection opened");
+            console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
             this.client.attempts = 0;
@@ -1461,8 +1513,12 @@ function wsc_protocol( client ) {
                 return;
             }
             
-            this.client.monitorAll("Connecting in 2 seconds...");
-            setTimeout(this.client.connect.bind(this.client), 2000);
+            this.client.monitorAll("Connecting in 2 seconds");
+            c=this.client;
+            setTimeout(function () {
+                c.connect();
+                c.monitorAll('Opening connection');
+            }, 2000);
         
         }, 
     
@@ -1518,16 +1574,23 @@ function wsc_protocol( client ) {
                         break;
                     // for n in map[event][1]: e.<map[event][1][n]> = pkt.arg.<map[event][1][n]>
                     case "1":
-                        for( n in mapping[1] ) {
-                            key = mapping[1][n];
-                            if( key instanceof Array ) {
-                                arguments[key[1]] = pkt['arg'][key[0]];
-                                skey = key[1];
-                            } else {
-                                k = key[0] == '*' ? key.slice(1) : key;
-                                arguments[key] = pkt['arg'][k] || '';
-                                skey = key;
+                        if( mapping[1] instanceof Array ) {
+                            for( n in mapping[1] ) {
+                                key = mapping[1][n];
+                                if( key instanceof Array ) {
+                                    arguments[key[1]] = pkt['arg'][key[0]];
+                                    skey = key[1];
+                                } else {
+                                    k = key[0] == '*' ? key.slice(1) : key;
+                                    arguments[key] = pkt['arg'][k] || '';
+                                    skey = key;
+                                }
                             }
+                        }
+                        
+                        if( typeof mapping[1] == 'string' ) {
+                            // Here we want to accept the packet args as they are. All of them.
+                            arguments[key] = pkt.arg.slice(0);
                         }
                         break;
                     // e.<map[event][2]> = pkt.body
@@ -2285,7 +2348,7 @@ function wsc_client( view, options, mozilla ) {
                 // Received a message from the server! Process!
                 function( evt ) { client.protocol.process_data( evt ); },
                 // Connection opened.
-                function( evt ) { client.protocol.connected( evt ); }
+                function( evt, sock ) { client.protocol.connected( evt, sock ); }
             );
             
         },
@@ -2303,13 +2366,12 @@ function wsc_client( view, options, mozilla ) {
             this.control.focus();
             // For testing purposes only.
             // this.createChannel("llama2", "~Llama2", "server:llama2");
-            this.resizeUI();
+            //this.resizeUI();
         },
         
         resizeUI: function( ) {
             // Resize control panel.
             client.control.resize();
-            
             
             // Main view dimensions.
             //console.log('>> pH:',client.view.parent().height());
@@ -2478,6 +2540,9 @@ function wsc_client( view, options, mozilla ) {
                     }
                 }
             }
+            
+            if( ns.indexOf('login:') == 0 )
+                return '@' + ns.slice(6);
             
             if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
                 return '#' + ns;

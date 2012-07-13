@@ -16,6 +16,7 @@ div.wsc {
     font: normal 12px verdana, sans-serif;
     line-height: 1.6em;
     clear: both;
+    height: 100%;
     
     @include navbar;
     
@@ -29,6 +30,7 @@ div.wsc {
         padding: 5px;
         padding-bottom: 0px;
         border-top: 1px solid black;
+        height: 88%;
         
         img {
             display: inline;

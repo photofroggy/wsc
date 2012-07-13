@@ -66,8 +66,8 @@ function DateStamp(ts) {
 
 // Case insensitive sort function.
 function caseInsensitiveSort( a, b ) {
-    x = String(a).toLowerCase(); y = String(b).toLowerCase();
-    return ( ( x > y ) ? 1 : ( x == y ? 0 : -1 ) );
+    a = a.toLowerCase(); b = b.toLowerCase();
+    return ( ( a > b ) ? 1 : ( a < b ? -1 : 0 ) );
 }
 
 function CanCreateWebsocket() {
@@ -82,14 +82,19 @@ function CreateWebSocket(url, onclose, onmessage, onopen) {
     if(!CanCreateWebsocket()) {
         throw "This browser does not support websockets.";
     }
-    ret = new WebSocket(url)
-    if(onclose)
-        ret.onclose = onclose;
-    if(onmessage)
-        ret.onmessage = onmessage;
-    if(onopen)
-        ret.onopen = onopen;
-    return ret
+    var sock = null;
+    if( typeof io === 'undefined' ) {
+        sock = new WebSocket(url)
+        sock.onclose = onclose;
+        sock.onmessage = onmessage;
+        sock.onopen = onopen;
+    } else {
+        sock = io.connect();
+        onopen({}, sock);
+        sock.on('message', onmessage);
+        sock.on('disconnect', onclose);
+    }
+    return sock;
 }
 
 // Escape special characters for regexes.

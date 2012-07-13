@@ -232,6 +232,7 @@ function wsc_channel( client, ns, hidden ) {
             "selector": "",
             "namespace": "",
             "members": {},
+            "users": [],
             "pc": {},
             "pc_order": [],
             "title": {
@@ -267,7 +268,7 @@ function wsc_channel( client, ns, hidden ) {
             this.info["namespace"] = client.deform_ns(ns);
             
             this.monitor = Object.size(this.client.channelo) == 0;
-            this.thresh = 6;
+            this.thresh = 10;
             
             /*
             console.log(this.window);
@@ -522,29 +523,29 @@ function wsc_channel( client, ns, hidden ) {
                 return;
             
             ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
+            pcs = {};
             
+            for( i in this.info['users'] ) {
+                un = this.info['users'][i];
+                member = this.info['members'][un];
+                
+                if( !( member['pc'] in pcs ) )
+                    pcs[member['pc']] = '';
+                
+                conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+                s = member.symbol;
+                pcs[member['pc']]+= '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
+            }
+            
+            //this.info['members'].sort( caseInsensitiveSort );
             //console.log(this.info["pc_order"])
             for(var index in this.info["pc_order"]) {
-                pco = this.info["pc_order"][index];
-                pc = this.info['pc'][pco];
-                pcl = '';
-                /* 
-                console.log(pco);
-                console.log("set users " + pc);
-                /* */
+                pc = this.info['pc'][this.info["pc_order"][index]];
                 
-                for(var un in this.info["members"]) {
-                    member = this.info['members'][un];
-                    if( member['pc'] != pc )
-                        continue;
-                    conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-                    s = member.symbol;
-                    pcl = pcl + '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
-                }
+                if( !( pc in pcs ) )
+                    continue;
                 
-                if( pcl.length > 0 )
-                    ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcl + '</ul></div>';
-                
+                ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcs[pc] + '</ul></div>';
             }
             ulist = ulist + '</div>'
             
@@ -612,6 +613,13 @@ function wsc_channel( client, ns, hidden ) {
                     break;
             }
             //console.log("registered users");
+            
+            this.info['users'] = [];
+            
+            for( i in this.info['members'] )
+                this.info['users'].push(i);
+            
+            this.info['users'].sort( caseInsensitiveSort );
             this.setUserList();
         },
         
@@ -667,7 +675,7 @@ function wsc_channel( client, ns, hidden ) {
             
             u = channel.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
-            p = channel.window.find('p.logmsg').last();
+            p = channel.window.find('.logmsg').last();
             
             if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
                 return;
