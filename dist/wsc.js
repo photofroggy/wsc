@@ -247,6 +247,18 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+Object.steal = function( a, b ) {
+    for( index in b )
+        a[index] = b[index];
+};
+
+Object.extend = function( a, b ) {
+    obj = {};
+    Object.steal(obj, a);
+    Object.steal(obj, b);
+    return obj;
+};
 /* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
@@ -1120,7 +1132,7 @@ with(TablumpString.prototype = new String) {
 
 TablumpString.prototype.html = function() {
     if(this._html == null)
-        this._html = this._parser.render(2, this.raw);
+        this._html = this._parser.render(1, this.raw);
     return this._html;
 };
 
@@ -1132,7 +1144,7 @@ TablumpString.prototype.text = function() {
 
 TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
-        this._ansi = this._parser.render(1, this.raw);
+        this._ansi = this._parser.render(2, this.raw);
     return this._ansi;
 };
 
@@ -1149,6 +1161,10 @@ WscTablumps.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
+WscTablumps.prototype.extend = function( map ) {
+    this.lumps = Object.extend(this.lumps, map);
+};
+
 WscTablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
@@ -1159,16 +1175,21 @@ WscTablumps.prototype.defaultMap = function () {
      * Or it's a string template thing. Whichever.
      */
     return {
-        '&link\t': [ 3, function( data ) {
-            t = data[1] || '[link]';
-            return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
-        } ],
+        '&link\t': [ 3,
+            function( data ) {
+                return '[' + (data[1] || 'link') + '](' + data[0] + ')';
+            },
+            function( data ) {
+                t = data[1] || '[link]';
+                return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+            }
+        ],
         '&acro\t': [ 1, '<acronym title="{0}">' ],
         '&abbr\t': [ 1, '<abbr title="{0}">'],
-        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-        '&br\t': [ 0, '<br/>' ],
+        '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '[iframe {0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&a\t': [ 2, '<a href="{0}" title="{1}">', '<a target="_blank" href="{0}" title="{1}">' ],
+        '&br\t': [ 0, '\n', '<br/>' ],
         '&bcode\t': [0, '<span><pre><code>'],
         '&/bcode\t': [0, '</code></pre></span>']
     };
@@ -1181,19 +1202,19 @@ WscTablumps.prototype.parse = function( data, sep ) {
 };
 
 WscTablumps.prototype.render = function( flag, data ) {
-    return this._parse(data);
+    return this._parse(flag + 1, data);
 };
 
 /* Parse tablumps!
  * This implementation hopefully only uses simple string operations.
  */
-WscTablumps.prototype._parse = function( data, sep ) {
+WscTablumps.prototype._parse = function( flag, data, sep ) {
     if( !data )
         return '';
     
     sep = sep || '\t';
     
-    for( i = 0; i < data.length; i++ ) {
+    for( var i = 0; i < data.length; i++ ) {
     
         // All tablumps start with &!
         if( data[i] != '&' )
@@ -1222,11 +1243,14 @@ WscTablumps.prototype._parse = function( data, sep ) {
         // Crop the rest of the tablump!
         cropping = this.tokens(working, lump[0], sep);
         
-        // Parse the tablump.
-        if( typeof(lump[1]) == 'string' )
-            parsed = lump[1].format.apply(lump[1], cropping[0]);
+        // Get our renderer.
+        renderer = lump[flag] || lump[1];
+        
+        // Parse the tablump if we can.
+        if( typeof(renderer) == 'string' )
+            parsed = renderer.format.apply(lump[1], cropping[0]);
         else
-            parsed = lump[1](cropping[0]);
+            parsed = renderer(cropping[0]);
         
         // Glue everything back together.
         data = primer + parsed + cropping[1];
@@ -1314,10 +1338,21 @@ function dAmnLumps( opts ) {
      * Or it's a string template thing. Whichever.
      */
     return {
-        '&avatar\t': [ 2, function( data ) { return dAmn_avatar( data[0], data[1] ); }],
-        '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
-        '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
-        '&thumb\t': [ 7, function( data ) {
+        '&avatar\t': [ 2,
+            ':icon{0}:',
+            function( data ) { return dAmn_avatar( data[0], data[1] ); }
+        ],
+        '&emote\t': [ 5,
+            '{0}',
+            '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />'
+        ],
+        '&dev\t': [ 2,
+            ':dev{1}:',
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>'
+        ],
+        '&thumb\t': [ 7,
+            ':thumb{0}:',
+            function( data ) {
                 id = data[0];
                 user = data[2];
                 dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
@@ -1491,7 +1526,7 @@ function wsc_protocol( client ) {
         // Initialise!
         init: function( client ) {
             this.client = client;
-            this.mapper['recv'] = this.map_recv;
+            //this.mapper['recv'] = this.map_recv;
             this.tablumps = new WscTablumps();
             
             if ( this.client.settings['tablumps'] !== null ) {
@@ -1603,19 +1638,19 @@ function wsc_protocol( client ) {
         
         // Map packet data.
         mapPacket: function( arguments, pkt, mapping ) {
-            for(i in mapping) {
+            for(var i in mapping) {
                 if( mapping[i] == null)
                     continue;
                 
                 key = mapping[i];
                 skey = key;
-                switch(i) {
+                switch(parseInt(i)) {
                     // e.<map[event][0]> = pkt.param
-                    case "0":
+                    case 0:
                         arguments[key] = pkt['param'];
                         break;
                     // for n in map[event][1]: e.<map[event][1][n]> = pkt.arg.<map[event][1][n]>
-                    case "1":
+                    case 1:
                         if( mapping[1] instanceof Array ) {
                             for( n in mapping[1] ) {
                                 key = mapping[1][n];
@@ -1636,11 +1671,12 @@ function wsc_protocol( client ) {
                         }
                         break;
                     // e.<map[event][2]> = pkt.body
-                    case "2":
-                        if( key instanceof Array )
+                    case 2:
+                        if( key instanceof Array ) {
                             this.mapPacket(arguments, new WscPacket(pkt['body']), key);
-                        else
+                        } else {
                             arguments[key] = pkt['body'];
+                        }
                         break;
                 }
                 
@@ -1648,13 +1684,14 @@ function wsc_protocol( client ) {
                     continue;
                 
                 k = skey.slice(1);
-                arguments[k] = this.tablumps.parse( arguments[skey] ).html();
+                val = this.tablumps.parse( arguments[skey] );
+                arguments[k] = val.html();
             }
         },
         
         // Map all recv_* packets.
         map_recv: function( arguments, pkt, mapping ) {
-            protocol.mapPacket(arguments, pkt, ['ns', null, mapping]);
+            //protocol.mapPacket(arguments, pkt, ['ns', null, mapping]);
         },
         
         // Log a protocol message somewhere.

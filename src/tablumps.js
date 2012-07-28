@@ -13,9 +13,27 @@
  * We refer to these items as "tablumps" because of the tab
  * characters being used as delimeters. The job of this class is to
  * replace tablumps with readable strings.
+ *  
+ * Here's an example of how to use the parser:
+ *      // Create new parser.
+ *      parser = new WscTablumps();
+ *      // Add support for dAmn's tablumps.
+ *      parser.extend( dAmnLumps() );
+ *      // This really just creates a TablumpString object.
+ *      message = parser.parse(data);
+ *      // Show different renders.
+ *      console.log(message.text());
+ *      console.log(message.html());
+ *      console.log(message.ansi());
  */
 
 
+/**
+ * @function TablumpString
+ * 
+ * Represents a string that possibly contains tablumps.
+ * Use different object methods to render the tablumps differently.
+ */
 function TablumpString(data, parser) {
     this._parser = parser || new WscTablumps();
     this.raw = data;
@@ -28,21 +46,40 @@ with(TablumpString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+/**
+ * @function html
+ * 
+ * Render the tablumps as HTML entities.
+ */
 TablumpString.prototype.html = function() {
     if(this._html == null)
-        this._html = this._parser.render(2, this.raw);
+        this._html = this._parser.render(1, this.raw);
     return this._html;
 };
 
+/**
+ * @function text
+ *
+ * Render the tablumps in plain text where possible. Some tablumps appear as
+ * HTML entities even through this.
+ */
 TablumpString.prototype.text = function() {
     if(this._text == null)
         this._text = this._parser.render(0, this.raw);
     return this._text;
 };
 
+/**
+ * @function ansi
+ * 
+ * Render the tablumps with ANSI escape sequences.
+ * 
+ * For this rendering method to really be worth it, I'll actually have to move
+ * away from the simple regex.
+ */
 TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
-        this._ansi = this._parser.render(1, this.raw);
+        this._ansi = this._parser.render(2, this.raw);
     return this._ansi;
 };
 
@@ -59,6 +96,10 @@ WscTablumps.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
+WscTablumps.prototype.extend = function( map ) {
+    this.lumps = Object.extend(this.lumps, map);
+};
+
 WscTablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
@@ -69,16 +110,21 @@ WscTablumps.prototype.defaultMap = function () {
      * Or it's a string template thing. Whichever.
      */
     return {
-        '&link\t': [ 3, function( data ) {
-            t = data[1] || '[link]';
-            return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
-        } ],
+        '&link\t': [ 3,
+            function( data ) {
+                return '[' + (data[1] || 'link') + '](' + data[0] + ')';
+            },
+            function( data ) {
+                t = data[1] || '[link]';
+                return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+            }
+        ],
         '&acro\t': [ 1, '<acronym title="{0}">' ],
         '&abbr\t': [ 1, '<abbr title="{0}">'],
-        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&a\t': [ 2, '<a target="_blank" href="{0}" title="{1}">' ],
-        '&br\t': [ 0, '<br/>' ],
+        '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '[iframe {0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&a\t': [ 2, '<a href="{0}" title="{1}">', '<a target="_blank" href="{0}" title="{1}">' ],
+        '&br\t': [ 0, '\n', '<br/>' ],
         '&bcode\t': [0, '<span><pre><code>'],
         '&/bcode\t': [0, '</code></pre></span>']
     };
@@ -91,19 +137,19 @@ WscTablumps.prototype.parse = function( data, sep ) {
 };
 
 WscTablumps.prototype.render = function( flag, data ) {
-    return this._parse(data);
+    return this._parse(flag + 1, data);
 };
 
 /* Parse tablumps!
  * This implementation hopefully only uses simple string operations.
  */
-WscTablumps.prototype._parse = function( data, sep ) {
+WscTablumps.prototype._parse = function( flag, data, sep ) {
     if( !data )
         return '';
     
     sep = sep || '\t';
     
-    for( i = 0; i < data.length; i++ ) {
+    for( var i = 0; i < data.length; i++ ) {
     
         // All tablumps start with &!
         if( data[i] != '&' )
@@ -132,11 +178,14 @@ WscTablumps.prototype._parse = function( data, sep ) {
         // Crop the rest of the tablump!
         cropping = this.tokens(working, lump[0], sep);
         
-        // Parse the tablump.
-        if( typeof(lump[1]) == 'string' )
-            parsed = lump[1].format.apply(lump[1], cropping[0]);
+        // Get our renderer.
+        renderer = lump[flag] || lump[1];
+        
+        // Parse the tablump if we can.
+        if( typeof(renderer) == 'string' )
+            parsed = renderer.format.apply(lump[1], cropping[0]);
         else
-            parsed = lump[1](cropping[0]);
+            parsed = renderer(cropping[0]);
         
         // Glue everything back together.
         data = primer + parsed + cropping[1];
@@ -213,6 +262,14 @@ function dAmn_avatar( un, icon ) {
  *
  * This function returns a map which can be used by the tablumps parser to parse
  * dAmn's tablumps.
+ *
+ * Example:
+ *      parser = new WscTablumps();
+ *      parser.extend( dAmnLumps() );
+ *      message = parser.parse(data);
+ *      console.log(message.text());
+ *      console.log(message.html());
+ *      console.log(message.ansi());
  */
 function dAmnLumps( opts ) {
     /* Tablumps formatting rules.
@@ -224,10 +281,21 @@ function dAmnLumps( opts ) {
      * Or it's a string template thing. Whichever.
      */
     return {
-        '&avatar\t': [ 2, function( data ) { return dAmn_avatar( data[0], data[1] ); }],
-        '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
-        '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
-        '&thumb\t': [ 7, function( data ) {
+        '&avatar\t': [ 2,
+            ':icon{0}:',
+            function( data ) { return dAmn_avatar( data[0], data[1] ); }
+        ],
+        '&emote\t': [ 5,
+            '{0}',
+            '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />'
+        ],
+        '&dev\t': [ 2,
+            ':dev{1}:',
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>'
+        ],
+        '&thumb\t': [ 7,
+            ':thumb{0}:',
+            function( data ) {
                 id = data[0];
                 user = data[2];
                 dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
