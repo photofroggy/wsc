@@ -15,6 +15,38 @@
  * replace tablumps with readable strings.
  */
 
+
+function TablumpString(data, parser) {
+    this._parser = parser || new WscTablumps();
+    this.raw = data;
+    this._html = null;
+    this._text = null;
+    this._ansi = null;
+}
+
+with(TablumpString.prototype = new String) {
+    toString = valueOf = function() { return this.raw; };
+}
+
+TablumpString.prototype.html = function() {
+    if(this._html == null)
+        this._html = this._parser.render(2, this.raw);
+    return this._html;
+};
+
+TablumpString.prototype.text = function() {
+    if(this._text == null)
+        this._text = this._parser.render(0, this.raw);
+    return this._text;
+};
+
+TablumpString.prototype.ansi = function() {
+    if(this._ansi == null)
+        this._ansi = this._parser.render(1, this.raw);
+    return this._ansi;
+};
+
+
 function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
@@ -53,10 +85,19 @@ WscTablumps.prototype.defaultMap = function () {
 
 };
 
+
+WscTablumps.prototype.parse = function( data, sep ) {
+    return new TablumpString(data, this);
+};
+
+WscTablumps.prototype.render = function( flag, data ) {
+    return this._parse(data);
+};
+
 /* Parse tablumps!
  * This implementation hopefully only uses simple string operations.
  */
-WscTablumps.prototype.parse = function( data, sep ) {
+WscTablumps.prototype._parse = function( data, sep ) {
     if( !data )
         return '';
     

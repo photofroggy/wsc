@@ -264,7 +264,7 @@ function wsc_protocol( client ) {
                     continue;
                 
                 k = skey.slice(1);
-                arguments[k] = this.tablumps.parse( arguments[skey] );
+                arguments[k] = this.tablumps.parse( arguments[skey] ).html();
             }
         },
         

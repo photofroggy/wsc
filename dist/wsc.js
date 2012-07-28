@@ -1105,6 +1105,38 @@ function wsc_channel( client, ns, hidden ) {
  * replace tablumps with readable strings.
  */
 
+
+function TablumpString(data, parser) {
+    this._parser = parser || new WscTablumps();
+    this.raw = data;
+    this._html = null;
+    this._text = null;
+    this._ansi = null;
+}
+
+with(TablumpString.prototype = new String) {
+    toString = valueOf = function() { return this.raw; };
+}
+
+TablumpString.prototype.html = function() {
+    if(this._html == null)
+        this._html = this._parser.render(2, this.raw);
+    return this._html;
+};
+
+TablumpString.prototype.text = function() {
+    if(this._text == null)
+        this._text = this._parser.render(0, this.raw);
+    return this._text;
+};
+
+TablumpString.prototype.ansi = function() {
+    if(this._ansi == null)
+        this._ansi = this._parser.render(1, this.raw);
+    return this._ansi;
+};
+
+
 function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
@@ -1143,10 +1175,19 @@ WscTablumps.prototype.defaultMap = function () {
 
 };
 
+
+WscTablumps.prototype.parse = function( data, sep ) {
+    return new TablumpString(data, this);
+};
+
+WscTablumps.prototype.render = function( flag, data ) {
+    return this._parse(data);
+};
+
 /* Parse tablumps!
  * This implementation hopefully only uses simple string operations.
  */
-WscTablumps.prototype.parse = function( data, sep ) {
+WscTablumps.prototype._parse = function( data, sep ) {
     if( !data )
         return '';
     
@@ -1277,15 +1318,17 @@ function dAmnLumps( opts ) {
         '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
         '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
         '&thumb\t': [ 7, function( data ) {
-                id = data[0]; u = data[2]; f = data[5];
+                id = data[0];
+                user = data[2];
                 dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
-                lu = u.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
+                f = data[5];
                 flags = data[6].split(':');
+                lu = user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
                 // Deviation title.
                 t = data[1];
                 ut = (t.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+/, '').replace(/-+$/, '') || '-') + '-' + id;
                 // Deviation link tag. First segment only.
-                title = t + ' by ' + u + ', ' + w + 'x' + h;
+                title = t + ' by ' + user + ', ' + w + 'x' + h;
                 dal = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + title + '"';
                 
                 // Time to go through the flags.
@@ -1605,7 +1648,7 @@ function wsc_protocol( client ) {
                     continue;
                 
                 k = skey.slice(1);
-                arguments[k] = this.tablumps.parse( arguments[skey] );
+                arguments[k] = this.tablumps.parse( arguments[skey] ).html();
             }
         },
         
