@@ -379,8 +379,7 @@ WscTablumps.prototype.renderOne = function( type, tag, working ) {
     else
         parsed = renderer.apply(this, cropping[0]);
     
-    l = parsed.length;
-    return [parsed + cropping[1], l];
+    return [parsed + cropping[1], parsed.length];
 };
 
 /**
