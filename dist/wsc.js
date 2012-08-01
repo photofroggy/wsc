@@ -1115,14 +1115,32 @@ function wsc_channel( client, ns, hidden ) {
  * We refer to these items as "tablumps" because of the tab
  * characters being used as delimeters. The job of this class is to
  * replace tablumps with readable strings.
+ *  
+ * Here's an example of how to use the parser:
+ *      // Create new parser.
+ *      parser = new WscTablumps();
+ *      // Add support for dAmn's tablumps.
+ *      parser.extend( dAmnLumps() );
+ *      // This really just creates a TablumpString object.
+ *      message = parser.parse(data);
+ *      // Show different renders.
+ *      console.log(message.text());
+ *      console.log(message.html());
+ *      console.log(message.ansi());
  */
 
 
+/**
+ * @function TablumpString
+ * 
+ * Represents a string that possibly contains tablumps.
+ * Use different object methods to render the tablumps differently.
+ */
 function TablumpString(data, parser) {
     this._parser = parser || new WscTablumps();
     this.raw = data;
-    this._html = null;
     this._text = null;
+    this._html = null;
     this._ansi = null;
 }
 
@@ -1130,18 +1148,37 @@ with(TablumpString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+/**
+ * @function html
+ * 
+ * Render the tablumps as HTML entities.
+ */
 TablumpString.prototype.html = function() {
     if(this._html == null)
         this._html = this._parser.render(1, this.raw);
     return this._html;
 };
 
+/**
+ * @function text
+ *
+ * Render the tablumps in plain text where possible. Some tablumps appear as
+ * HTML entities even through this.
+ */
 TablumpString.prototype.text = function() {
     if(this._text == null)
         this._text = this._parser.render(0, this.raw);
     return this._text;
 };
 
+/**
+ * @function ansi
+ * 
+ * Render the tablumps with ANSI escape sequences.
+ * 
+ * For this rendering method to really be worth it, I'll actually have to move
+ * away from the simple regex.
+ */
 TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
         this._ansi = this._parser.render(2, this.raw);
@@ -1149,22 +1186,45 @@ TablumpString.prototype.ansi = function() {
 };
 
 
+/**
+ * @object WscTablumps
+ *
+ * Constructor for the tablumps parser.
+ */
 function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
+    this._lic = -1;
+    this._licb = [];
+    this._dent = 0;
     // This array defines the regex for replacing the simpler tablumps.
     this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
 }
 
+/**
+ * @function registerMap
+ *
+ * I should probably deprecate this. Sets the rendering map to the given map.
+ */
 WscTablumps.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
+/**
+ * @function extend
+ *
+ * Add the given rendering items to the parser's render map.
+ */
 WscTablumps.prototype.extend = function( map ) {
     this.lumps = Object.extend(this.lumps, map);
 };
 
+/**
+ * @function defaultMap
+ * 
+ * Get all the default nonsense.
+ */
 WscTablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
@@ -1174,38 +1234,135 @@ WscTablumps.prototype.defaultMap = function () {
      * ``format`` is a function which returns the tablump as valid HTML.
      * Or it's a string template thing. Whichever.
      */
+    
+    var start_ol = function() {
+        if( this._lic == -1 ) {
+            this._lic = 0;
+            return;
+        }
+        this._licb.unshift(this._lic);
+        this._lic = 0;
+        return;
+    };
+    
+    var end_ol = function() {
+        if( this._licb.length == 0 ) {
+            this._lic = -1;
+            return;
+        }
+        
+        this._lic = this._licb.shift();
+    };
+    
+    var start_list = function( ol ) {
+        if( (ol || false) )
+            start_ol();
+        this._dent++;
+        return '\n';
+    };
+    
+    var end_list = function( ol ) {
+        if( (ol || false) )
+            end_ol();
+        this._dent--;
+        return '\n';
+    };
+    
+    //this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
     return {
+        // There are a lot of 0 arg things here...
+        // Would use regex but that'd be less flexible.
+        '&b\t': [0, '', '<b>', '\1xb[1m'],
+        '&/b\t': [0, '', '</b>', '\x1b[22m'],
+        '&i\t': [0, '', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '', '</i>', '\x1b[23m'],
+        '&u\t': [0, '', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '', '</u>', '\x1b[24m'],
+        '&s\t': [0, '', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '', '</s>', '\x1b[29m'],
+        '&sup\t': [0, '', '<sup>'],
+        '&/sup\t': [0, '', '</sup>'],
+        '&sup\t': [0, '', '<sub>'],
+        '&/sup\t': [0, '', '</sub>'],
+        '&code\t': [0, '', '<code>'],
+        '&/code\t': [0, '', '</code>'],
+        '&p\t': [0, '\n', '<p>'],
+        '&/p\t': [0, '\n', '</p>'],
+        '&ul\t': [0, function( data ) { return start_list(false); }, '<ul>'],
+        '&/ul\t': [0, function( data ) { return end_list(false); }, '</ul>'],
+        '&ol\t': [0, function( data ) { return start_list(true); }, '<ol>'],
+        '&li\t': [0, function( data ) {
+                buf = '\n    ';
+                for(var ind = 0; ind < this._dent; ind++) {
+                    buf = buf + '  ';
+                }
+                if(this._lic == -1) {
+                    buf = buf + '*.';
+                } else {
+                    this._lic++;
+                    buf = buf + String(this._lic) + '.';
+                }
+                return buf + ' ';
+            }, '<li>' ],
+        '&/li\t': [0, '\n', '</li>'],
+        '&/ol\t': [0, function( data ) { return end_list(true); }, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return '[' + (data[1] || 'link') + '](' + data[0] + ')';
+                return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
             },
             function( data ) {
                 t = data[1] || '[link]';
                 return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
             }
         ],
-        '&acro\t': [ 1, '<acronym title="{0}">' ],
-        '&abbr\t': [ 1, '<abbr title="{0}">'],
+        '&acro\t': [ 1, '[acro:{0}]', '<acronym title="{0}">' ],
+        '&/acro\t': [0, '[/acro]', '</acronym>'],
+        '&abbr\t': [ 1, '[abbr:{0}]', '<abbr title="{0}">'],
+        '&/abbr\t': [ 0, '[/abbr]', '</abbr>'],
         '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '[iframe {0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&a\t': [ 2, '<a href="{0}" title="{1}">', '<a target="_blank" href="{0}" title="{1}">' ],
+        '&iframe\t': [ 3, '[iframe:{0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&/iframe\t': [ 0, '', '</iframe>'],
+        '&a\t': [ 2, '[link:{0}]', '<a href="{0}" title="{1}">', '<a target="_blank" href="{0}" title="{1}">' ],
+        '&/a\t': [ 0, '[/link]', '</a>'],
         '&br\t': [ 0, '\n', '<br/>' ],
-        '&bcode\t': [0, '<span><pre><code>'],
-        '&/bcode\t': [0, '</code></pre></span>']
+        '&bcode\t': [0, '\n', '<span><pre><code>'],
+        '&/bcode\t': [0, '\n', '</code></pre></span>']
     };
 
 };
 
 
+/**
+ * @function parse
+ *
+ * Create a TablumpString obejct and return it.
+ */
 WscTablumps.prototype.parse = function( data, sep ) {
     return new TablumpString(data, this);
 };
 
+/**
+ * @function render
+ *
+ * Render tablumps in a given format.
+ * 
+ * Here, the flag should be a number, and defines the index of the renderer
+ * to use when rendering a tablump. Setting `flag` to 0 will result in the
+ * first renderer being used. In the render map, the plain text renderers come
+ * first, and also act as a default.
+ * 
+ * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
+ * where possible. Setting `flag` to 2 causes the parser to render tablumps as
+ * ANSI escape sequence formatted strings where possible.
+ */
 WscTablumps.prototype.render = function( flag, data ) {
     return this._parse(flag + 1, data);
 };
 
-/* Parse tablumps!
+/**
+ * @function _parse
+ * Parse tablumps!
+ * 
  * This implementation hopefully only uses simple string operations.
  */
 WscTablumps.prototype._parse = function( flag, data, sep ) {
@@ -1264,7 +1421,10 @@ WscTablumps.prototype._parse = function( flag, data, sep ) {
     return data;
 };
 
-/* Return n tokens from any given input.
+/**
+ * @function tokens
+ * Return n tokens from any given input.
+ *
  * Tablumps contain arguments which are separated by tab characters. This
  * method is used to crop a specific number of arguments from a given
  * input.
@@ -1327,6 +1487,14 @@ function dAmn_avatar( un, icon ) {
  *
  * This function returns a map which can be used by the tablumps parser to parse
  * dAmn's tablumps.
+ *
+ * Example:
+ *      parser = new WscTablumps();
+ *      parser.extend( dAmnLumps() );
+ *      message = parser.parse(data);
+ *      console.log(message.text());
+ *      console.log(message.html());
+ *      console.log(message.ansi());
  */
 function dAmnLumps( opts ) {
     /* Tablumps formatting rules.
