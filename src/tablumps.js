@@ -115,10 +115,8 @@ TablumpString.prototype.ansi = function() {
 function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
-    this._lic = -1;
-    this._licb = [];
+    this._list = [];
     this._dent = 0;
-    this._eli = true;
     // This array defines the regex for replacing the simpler tablumps.
     this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
@@ -144,57 +142,32 @@ WscTablumps.prototype.extend = function( map ) {
     }
 };
 
-
-/**
- * @function _start_ol
- * Initiate an ordered list.
- */
-WscTablumps.prototype._start_ol = function() {
-    if( this._lic == -1 ) {
-        this._lic = 0;
-        return;
-    }
-    this._licb.unshift(this._lic);
-    this._lic = 0;
-    return;
-};
-
-
-/**
- * @function _end_ol
- * Finish an ordered list.
- */
-WscTablumps.prototype._end_ol = function() {
-    if( this._licb.length == 0 ) {
-        this._lic = -1;
-        return;
-    }
-    
-    this._lic = this._licb.shift();
-};
-
 /**
  * @function _list_start
  * Initiate a list.
  */
 WscTablumps.prototype._list_start = function( ol ) {
-    if( this._dent == 0 )
-        this._eli = true;
-    if( (ol || false) )
-        this._start_ol();
+    list = {};
+    list.ol = ol || false;
+    list.count = 0;
+    ret = this._list[0] ? '' : '\n';
     this._dent++;
-    return '\n';
+    this._list.unshift(list);
+    return ret;
 };
 
 /**
  * @function _list_end
  * Finish a list.
  */
-WscTablumps.prototype._list_end = function( ol ) {
-    if( (ol || false) )
-        this._end_ol();
+WscTablumps.prototype._list_end = function( ) {
+    if( this._list.length == 0 ) {
+        return '';
+    }
+    
+    list = this._list.shift();
     this._dent--;
-    return ( this._dent == 0 && this._eli ) ? '\n' : '';
+    return ( this._dent == 0 && list.count == 0 ) ? '\n' : '';
 };
 
 /**
@@ -236,16 +209,16 @@ WscTablumps.prototype.defaultMap = function () {
         '&/ul\t': [0, function( data ) { return this._list_end(); }, '</ul>'],
         '&ol\t': [0, function( data ) { return this._list_start(true); }, '<ol>'],
         '&li\t': [0, function( data ) {
-                this._eli = false;
-                buf = '\n    ';
+                list = this._list[0] || {count: 0, ol: false};
+                list.count++;
+                buf = '\n';
                 for(var ind = 0; ind < this._dent; ind++) {
                     buf = buf + '  ';
                 }
-                if(this._lic == -1) {
-                    buf = buf + '*';
+                if( list.ol ) {
+                    buf = buf + String(list.count) + '.';
                 } else {
-                    this._lic++;
-                    buf = buf + String(this._lic) + '.';
+                    buf = buf + '*';
                 }
                 return buf + ' ';
             }, '<li>' ],
