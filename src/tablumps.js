@@ -28,6 +28,29 @@
  */
 
 
+exports = exports || {};
+exports.String = TablumpString;
+exports.Parser = WscTablumps;
+exports.dAmn_avatar = dAmn_avatar;
+exports.dAmnLumps = dAmnLumps;
+
+var lib = null;
+try {
+    lib = require('./src/lib');
+} catch(err) {}
+
+
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};
+
+
 /**
  * @function TablumpString
  * 
@@ -95,6 +118,7 @@ function WscTablumps(  ) {
     this._lic = -1;
     this._licb = [];
     this._dent = 0;
+    this._eli = true;
     // This array defines the regex for replacing the simpler tablumps.
     this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
@@ -115,7 +139,62 @@ WscTablumps.prototype.registerMap = function( map ) {
  * Add the given rendering items to the parser's render map.
  */
 WscTablumps.prototype.extend = function( map ) {
-    this.lumps = Object.extend(this.lumps, map);
+    for(index in map) {
+        this.lumps[index] = map[index];
+    }
+};
+
+
+/**
+ * @function _start_ol
+ * Initiate an ordered list.
+ */
+WscTablumps.prototype._start_ol = function() {
+    if( this._lic == -1 ) {
+        this._lic = 0;
+        return;
+    }
+    this._licb.unshift(this._lic);
+    this._lic = 0;
+    return;
+};
+
+
+/**
+ * @function _end_ol
+ * Finish an ordered list.
+ */
+WscTablumps.prototype._end_ol = function() {
+    if( this._licb.length == 0 ) {
+        this._lic = -1;
+        return;
+    }
+    
+    this._lic = this._licb.shift();
+};
+
+/**
+ * @function _list_start
+ * Initiate a list.
+ */
+WscTablumps.prototype._list_start = function( ol ) {
+    if( this._dent == 0 )
+        this._eli = true;
+    if( (ol || false) )
+        this._start_ol();
+    this._dent++;
+    return '\n';
+};
+
+/**
+ * @function _list_end
+ * Finish a list.
+ */
+WscTablumps.prototype._list_end = function( ol ) {
+    if( (ol || false) )
+        this._end_ol();
+    this._dent--;
+    return ( this._dent == 0 && this._eli ) ? '\n' : '';
 };
 
 /**
@@ -133,39 +212,6 @@ WscTablumps.prototype.defaultMap = function () {
      * Or it's a string template thing. Whichever.
      */
     
-    var start_ol = function() {
-        if( this._lic == -1 ) {
-            this._lic = 0;
-            return;
-        }
-        this._licb.unshift(this._lic);
-        this._lic = 0;
-        return;
-    };
-    
-    var end_ol = function() {
-        if( this._licb.length == 0 ) {
-            this._lic = -1;
-            return;
-        }
-        
-        this._lic = this._licb.shift();
-    };
-    
-    var start_list = function( ol ) {
-        if( (ol || false) )
-            start_ol();
-        this._dent++;
-        return '\n';
-    };
-    
-    var end_list = function( ol ) {
-        if( (ol || false) )
-            end_ol();
-        this._dent--;
-        return '\n';
-    };
-    
     //this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
     return {
         // There are a lot of 0 arg things here...
@@ -178,24 +224,25 @@ WscTablumps.prototype.defaultMap = function () {
         '&/u\t': [0, '', '</u>', '\x1b[24m'],
         '&s\t': [0, '', '<s>', '\x1b[9m'],
         '&/s\t': [0, '', '</s>', '\x1b[29m'],
-        '&sup\t': [0, '', '<sup>'],
-        '&/sup\t': [0, '', '</sup>'],
-        '&sup\t': [0, '', '<sub>'],
-        '&/sup\t': [0, '', '</sub>'],
-        '&code\t': [0, '', '<code>'],
-        '&/code\t': [0, '', '</code>'],
+        '&sup\t': [0, '/', '<sup>'],
+        '&/sup\t': [0, '/', '</sup>'],
+        '&sup\t': [0, '\\', '<sub>'],
+        '&/sup\t': [0, '\\', '</sub>'],
+        '&code\t': [0, '``', '<code>'],
+        '&/code\t': [0, '``', '</code>'],
         '&p\t': [0, '\n', '<p>'],
         '&/p\t': [0, '\n', '</p>'],
-        '&ul\t': [0, function( data ) { return start_list(false); }, '<ul>'],
-        '&/ul\t': [0, function( data ) { return end_list(false); }, '</ul>'],
-        '&ol\t': [0, function( data ) { return start_list(true); }, '<ol>'],
+        '&ul\t': [0, function( data ) { return this._list_start(); }, '<ul>'],
+        '&/ul\t': [0, function( data ) { return this._list_end(); }, '</ul>'],
+        '&ol\t': [0, function( data ) { return this._list_start(true); }, '<ol>'],
         '&li\t': [0, function( data ) {
+                this._eli = false;
                 buf = '\n    ';
                 for(var ind = 0; ind < this._dent; ind++) {
                     buf = buf + '  ';
                 }
                 if(this._lic == -1) {
-                    buf = buf + '*.';
+                    buf = buf + '*';
                 } else {
                     this._lic++;
                     buf = buf + String(this._lic) + '.';
@@ -203,7 +250,7 @@ WscTablumps.prototype.defaultMap = function () {
                 return buf + ' ';
             }, '<li>' ],
         '&/li\t': [0, '\n', '</li>'],
-        '&/ol\t': [0, function( data ) { return end_list(true); }, '</ol>'],
+        '&/ol\t': [0, function( data ) { return this._list_end(true); }, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
                 return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
@@ -224,7 +271,10 @@ WscTablumps.prototype.defaultMap = function () {
         '&/a\t': [ 0, '[/link]', '</a>'],
         '&br\t': [ 0, '\n', '<br/>' ],
         '&bcode\t': [0, '\n', '<span><pre><code>'],
-        '&/bcode\t': [0, '\n', '</code></pre></span>']
+        '&/bcode\t': [0, '\n', '</code></pre></span>'],
+        // Used to terminate a line.
+        // Allows us to reset graphic rendition parameters.
+        'EOF': [0, '', null, '\1xb[m']
     };
 
 };
@@ -254,23 +304,14 @@ WscTablumps.prototype.parse = function( data, sep ) {
  * ANSI escape sequence formatted strings where possible.
  */
 WscTablumps.prototype.render = function( flag, data ) {
-    return this._parse(flag + 1, data);
-};
-
-/**
- * @function _parse
- * Parse tablumps!
- * 
- * This implementation hopefully only uses simple string operations.
- */
-WscTablumps.prototype._parse = function( flag, data, sep ) {
     if( !data )
         return '';
     
-    sep = sep || '\t';
+    sep = '\t';
+    flag = flag + 1;
     
     for( var i = 0; i < data.length; i++ ) {
-    
+        
         // All tablumps start with &!
         if( data[i] != '&' )
             continue;
@@ -289,34 +330,57 @@ WscTablumps.prototype._parse = function( flag, data, sep ) {
         // Now we can crop the tag.
         tag = working.substring(0, ti + 1);
         working = working.substring(ti + 1);
-        lump = this.lumps[tag];
         
-        // If we don't know how to parse the tag, leave it be!
-        if( lump === undefined )
+        // Render the tablump.
+        rendered = this.renderOne(flag, tag, working);
+        
+        // Didn't manage to render?
+        if( rendered === null ) {
+            i++;
             continue;
-        
-        // Crop the rest of the tablump!
-        cropping = this.tokens(working, lump[0], sep);
-        
-        // Get our renderer.
-        renderer = lump[flag] || lump[1];
-        
-        // Parse the tablump if we can.
-        if( typeof(renderer) == 'string' )
-            parsed = renderer.format.apply(lump[1], cropping[0]);
-        else
-            parsed = renderer(cropping[0]);
+        }
         
         // Glue everything back together.
-        data = primer + parsed + cropping[1];
-        i = i + (parsed.length - 2);
+        data = primer + rendered[0];
+        i = i + (rendered[1] - 1);
         
     }
     
     // Replace the simpler tablumps which do not have arguments.
-    data = data.replace(this.repl[0], this.repl[1]);
+    //data = data.replace(this.repl[0], this.repl[1]);
     
-    return data;
+    return data + this.renderOne( flag, 'EOF', '' )[0];
+};
+
+/**
+ * @function renderOne
+ * Render a single tablump.
+ */
+WscTablumps.prototype.renderOne = function( type, tag, working ) {
+    lump = this.lumps[tag];
+    
+    // If we don't know how to parse the tag, leave it be!
+    if( lump === undefined ) {
+        return null;
+    }
+
+    // Crop the rest of the tablump!
+    if( lump[0] == 0 )
+        cropping = [[], working];
+    else
+        cropping = this.tokens(working, lump[0], sep);
+
+    // Get our renderer.
+    renderer = lump[type] || lump[1];
+    
+    // Parse the tablump if we can.
+    if( typeof(renderer) == 'string' )
+        parsed = renderer.format.apply(renderer, cropping[0]);
+    else
+        parsed = renderer.apply(this, cropping[0]);
+    
+    l = parsed.length;
+    return [parsed + cropping[1], l];
 };
 
 /**
