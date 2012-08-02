@@ -484,7 +484,7 @@ function dAmnLumps( opts ) {
                 }
                 
                 if( isgif ) {
-                    f = f.replace(/:/, '/');
+                    f = f.replace(/:/, '/150/');
                     path = 'http://fc0' + server + '.deviantart.net/' + f;
                     det = f.split('/');
                     if( det.length > 1 ) {
