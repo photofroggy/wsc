@@ -34,6 +34,8 @@ exports.Parser = WscTablumps;
 exports.dAmn_avatar = dAmn_avatar;
 exports.dAmnLumps = dAmnLumps;
 
+var ESC = String.fromCharCode(0x1B);
+
 var lib = null;
 try {
     lib = require('./src/lib');
@@ -117,8 +119,6 @@ function WscTablumps(  ) {
     this.lumps = this.defaultMap();
     this._list = [];
     this._dent = 0;
-    // This array defines the regex for replacing the simpler tablumps.
-    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
 }
 
@@ -178,18 +178,19 @@ WscTablumps.prototype._list_end = function( ) {
 WscTablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
-     *     lumps[tag] => [ arguments, format ]
+     *     lumps[tag] => [ arguments, render[, render[, ...]] ]
      * ``tag`` is the tablumps-formatted tag to process.
      * ``arguments`` is the number of arguments contained in the tablump.
-     * ``format`` is a function which returns the tablump as valid HTML.
-     * Or it's a string template thing. Whichever.
+     * ``render`` defines a rendering for the tablump. The render argument
+     *            can be a formatting string or a function that returns a
+     *            string. The first render method should render plain text;
+     *            the second, html; the third, ansi escape sequences.
      */
     
-    //this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '', '<b>', '\1xb[1m'],
+        '&b\t': [0, '', '<b>', '\x1b[1m'],
         '&/b\t': [0, '', '</b>', '\x1b[22m'],
         '&i\t': [0, '', '<i>', '\x1b[3m'],
         '&/i\t': [0, '', '</i>', '\x1b[23m'],
@@ -247,7 +248,7 @@ WscTablumps.prototype.defaultMap = function () {
         '&/bcode\t': [0, '\n', '</code></pre></span>'],
         // Used to terminate a line.
         // Allows us to reset graphic rendition parameters.
-        'EOF': [0, '', null, '\1xb[m']
+        'EOF': [0, '', null, '\x1b[m']
     };
 
 };
@@ -417,28 +418,13 @@ function dAmn_avatar( un, icon ) {
 }
 
 /**
+ * @function dAmnLumps
  * dAmn tablumps map.
  *
  * This function returns a map which can be used by the tablumps parser to parse
  * dAmn's tablumps.
- *
- * Example:
- *      parser = new WscTablumps();
- *      parser.extend( dAmnLumps() );
- *      message = parser.parse(data);
- *      console.log(message.text());
- *      console.log(message.html());
- *      console.log(message.ansi());
  */
 function dAmnLumps( opts ) {
-    /* Tablumps formatting rules.
-     * This object can be defined as follows:
-     *     lumps[tag] => [ arguments, format ]
-     * ``tag`` is the tablumps-formatted tag to process.
-     * ``arguments`` is the number of arguments contained in the tablump.
-     * ``format`` is a function which returns the tablump as valid HTML.
-     * Or it's a string template thing. Whichever.
-     */
     return {
         '&avatar\t': [ 2,
             ':icon{0}:',
@@ -450,7 +436,8 @@ function dAmnLumps( opts ) {
         ],
         '&dev\t': [ 2,
             ':dev{1}:',
-            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>'
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
+            '{0}\x1b[36m{1}\x1b[39m'
         ],
         '&thumb\t': [ 7,
             ':thumb{0}:',
