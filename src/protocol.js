@@ -107,7 +107,7 @@ function wsc_protocol( client ) {
         // Initialise!
         init: function( client ) {
             this.client = client;
-            this.mapper['recv'] = this.map_recv;
+            //this.mapper['recv'] = this.map_recv;
             this.tablumps = new WscTablumps();
             
             if ( this.client.settings['tablumps'] !== null ) {
@@ -219,19 +219,19 @@ function wsc_protocol( client ) {
         
         // Map packet data.
         mapPacket: function( arguments, pkt, mapping ) {
-            for(i in mapping) {
+            for(var i in mapping) {
                 if( mapping[i] == null)
                     continue;
                 
                 key = mapping[i];
                 skey = key;
-                switch(i) {
+                switch(parseInt(i)) {
                     // e.<map[event][0]> = pkt.param
-                    case "0":
+                    case 0:
                         arguments[key] = pkt['param'];
                         break;
                     // for n in map[event][1]: e.<map[event][1][n]> = pkt.arg.<map[event][1][n]>
-                    case "1":
+                    case 1:
                         if( mapping[1] instanceof Array ) {
                             for( n in mapping[1] ) {
                                 key = mapping[1][n];
@@ -252,11 +252,12 @@ function wsc_protocol( client ) {
                         }
                         break;
                     // e.<map[event][2]> = pkt.body
-                    case "2":
-                        if( key instanceof Array )
+                    case 2:
+                        if( key instanceof Array ) {
                             this.mapPacket(arguments, new WscPacket(pkt['body']), key);
-                        else
+                        } else {
                             arguments[key] = pkt['body'];
+                        }
                         break;
                 }
                 
@@ -264,13 +265,14 @@ function wsc_protocol( client ) {
                     continue;
                 
                 k = skey.slice(1);
-                arguments[k] = this.tablumps.parse( arguments[skey] );
+                val = this.tablumps.parse( arguments[skey] );
+                arguments[k] = val.html();
             }
         },
         
         // Map all recv_* packets.
         map_recv: function( arguments, pkt, mapping ) {
-            protocol.mapPacket(arguments, pkt, ['ns', null, mapping]);
+            //protocol.mapPacket(arguments, pkt, ['ns', null, mapping]);
         },
         
         // Log a protocol message somewhere.

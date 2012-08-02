@@ -2,6 +2,12 @@
  * Generic useful functions or something.
  */
 
+
+exports = exports || {};
+exports.$_GET = $_GET;
+
+
+
 // Function scope binding. Convoluted weirdness. Lol internet.
 Function.prototype.bind = function( scope ) {
     var _function = this;
@@ -144,4 +150,16 @@ Object.size = function(obj) {
         if (obj.hasOwnProperty(key)) size++;
     }
     return size;
+};
+
+Object.steal = function( a, b ) {
+    for( index in b )
+        a[index] = b[index];
+};
+
+Object.extend = function( a, b ) {
+    obj = {};
+    Object.steal(obj, a);
+    Object.steal(obj, b);
+    return obj;
 };
