@@ -189,7 +189,7 @@ WscTablumps.prototype.defaultMap = function () {
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '', '<b>', '\1xb[1m'],
+        '&b\t': [0, '', '<b>', '\x1b[1m'],
         '&/b\t': [0, '', '</b>', '\x1b[22m'],
         '&i\t': [0, '', '<i>', '\x1b[3m'],
         '&/i\t': [0, '', '</i>', '\x1b[23m'],
@@ -247,7 +247,7 @@ WscTablumps.prototype.defaultMap = function () {
         '&/bcode\t': [0, '\n', '</code></pre></span>'],
         // Used to terminate a line.
         // Allows us to reset graphic rendition parameters.
-        'EOF': [0, '', null, '\1xb[m']
+        'EOF': [0, '', null, '\x1b[m']
     };
 
 };
