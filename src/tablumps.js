@@ -28,11 +28,12 @@
  */
 
 
-exports = exports || {};
-exports.String = TablumpString;
-exports.Parser = WscTablumps;
-exports.dAmn_avatar = dAmn_avatar;
-exports.dAmnLumps = dAmnLumps;
+try {
+    exports.String = TablumpString;
+    exports.Parser = WscTablumps;
+    exports.dAmn_avatar = dAmn_avatar;
+    exports.dAmnLumps = dAmnLumps;
+} catch(err) {}
 
 var ESC = String.fromCharCode(0x1B);
 
@@ -343,7 +344,7 @@ WscTablumps.prototype.renderOne = function( type, tag, working ) {
         cropping = [[], working];
     else
         cropping = this.tokens(working, lump[0], sep);
-
+    
     // Get our renderer.
     renderer = lump[type] || lump[1];
     
@@ -351,7 +352,7 @@ WscTablumps.prototype.renderOne = function( type, tag, working ) {
     if( typeof(renderer) == 'string' )
         parsed = renderer.format.apply(renderer, cropping[0]);
     else
-        parsed = renderer.apply(this, cropping[0]);
+        parsed = renderer.call(this, cropping[0]);
     
     return [parsed + cropping[1], parsed.length];
 };

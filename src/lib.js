@@ -2,10 +2,10 @@
  * Generic useful functions or something.
  */
 
-
-exports = exports || {};
-exports.$_GET = $_GET;
-
+try {
+    exports = exports || {};
+    exports.$_GET = $_GET;
+} catch(err) {}
 
 
 // Function scope binding. Convoluted weirdness. Lol internet.

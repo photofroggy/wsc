@@ -104,6 +104,12 @@ var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
  * Generic useful functions or something.
  */
 
+try {
+    exports = exports || {};
+    exports.$_GET = $_GET;
+} catch(err) {}
+
+
 // Function scope binding. Convoluted weirdness. Lol internet.
 Function.prototype.bind = function( scope ) {
     var _function = this;
@@ -1130,6 +1136,32 @@ function wsc_channel( client, ns, hidden ) {
  */
 
 
+try {
+    exports.String = TablumpString;
+    exports.Parser = WscTablumps;
+    exports.dAmn_avatar = dAmn_avatar;
+    exports.dAmnLumps = dAmnLumps;
+} catch(err) {}
+
+var ESC = String.fromCharCode(0x1B);
+
+var lib = null;
+try {
+    lib = require('./src/lib');
+} catch(err) {}
+
+
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};
+
+
 /**
  * @function TablumpString
  * 
@@ -1194,11 +1226,8 @@ TablumpString.prototype.ansi = function() {
 function WscTablumps(  ) {
 
     this.lumps = this.defaultMap();
-    this._lic = -1;
-    this._licb = [];
+    this._list = [];
     this._dent = 0;
-    // This array defines the regex for replacing the simpler tablumps.
-    this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
 
 }
 
@@ -1217,7 +1246,37 @@ WscTablumps.prototype.registerMap = function( map ) {
  * Add the given rendering items to the parser's render map.
  */
 WscTablumps.prototype.extend = function( map ) {
-    this.lumps = Object.extend(this.lumps, map);
+    for(index in map) {
+        this.lumps[index] = map[index];
+    }
+};
+
+/**
+ * @function _list_start
+ * Initiate a list.
+ */
+WscTablumps.prototype._list_start = function( ol ) {
+    list = {};
+    list.ol = ol || false;
+    list.count = 0;
+    ret = this._list[0] ? '' : '\n';
+    this._dent++;
+    this._list.unshift(list);
+    return ret;
+};
+
+/**
+ * @function _list_end
+ * Finish a list.
+ */
+WscTablumps.prototype._list_end = function( ) {
+    if( this._list.length == 0 ) {
+        return '';
+    }
+    
+    list = this._list.shift();
+    this._dent--;
+    return ( this._dent == 0 && list.count == 0 ) ? '\n' : '';
 };
 
 /**
@@ -1228,51 +1287,19 @@ WscTablumps.prototype.extend = function( map ) {
 WscTablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
-     *     lumps[tag] => [ arguments, format ]
+     *     lumps[tag] => [ arguments, render[, render[, ...]] ]
      * ``tag`` is the tablumps-formatted tag to process.
      * ``arguments`` is the number of arguments contained in the tablump.
-     * ``format`` is a function which returns the tablump as valid HTML.
-     * Or it's a string template thing. Whichever.
+     * ``render`` defines a rendering for the tablump. The render argument
+     *            can be a formatting string or a function that returns a
+     *            string. The first render method should render plain text;
+     *            the second, html; the third, ansi escape sequences.
      */
     
-    var start_ol = function() {
-        if( this._lic == -1 ) {
-            this._lic = 0;
-            return;
-        }
-        this._licb.unshift(this._lic);
-        this._lic = 0;
-        return;
-    };
-    
-    var end_ol = function() {
-        if( this._licb.length == 0 ) {
-            this._lic = -1;
-            return;
-        }
-        
-        this._lic = this._licb.shift();
-    };
-    
-    var start_list = function( ol ) {
-        if( (ol || false) )
-            start_ol();
-        this._dent++;
-        return '\n';
-    };
-    
-    var end_list = function( ol ) {
-        if( (ol || false) )
-            end_ol();
-        this._dent--;
-        return '\n';
-    };
-    
-    //this.repl = [/&(\/|)(b|i|u|s|sup|sub|code|p|ul|ol|li|a|iframe|acro|abbr)\t/g, '<$1$2>'];
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '', '<b>', '\1xb[1m'],
+        '&b\t': [0, '', '<b>', '\x1b[1m'],
         '&/b\t': [0, '', '</b>', '\x1b[22m'],
         '&i\t': [0, '', '<i>', '\x1b[3m'],
         '&/i\t': [0, '', '</i>', '\x1b[23m'],
@@ -1280,32 +1307,33 @@ WscTablumps.prototype.defaultMap = function () {
         '&/u\t': [0, '', '</u>', '\x1b[24m'],
         '&s\t': [0, '', '<s>', '\x1b[9m'],
         '&/s\t': [0, '', '</s>', '\x1b[29m'],
-        '&sup\t': [0, '', '<sup>'],
-        '&/sup\t': [0, '', '</sup>'],
-        '&sup\t': [0, '', '<sub>'],
-        '&/sup\t': [0, '', '</sub>'],
-        '&code\t': [0, '', '<code>'],
-        '&/code\t': [0, '', '</code>'],
+        '&sup\t': [0, '/', '<sup>'],
+        '&/sup\t': [0, '/', '</sup>'],
+        '&sup\t': [0, '\\', '<sub>'],
+        '&/sup\t': [0, '\\', '</sub>'],
+        '&code\t': [0, '``', '<code>'],
+        '&/code\t': [0, '``', '</code>'],
         '&p\t': [0, '\n', '<p>'],
         '&/p\t': [0, '\n', '</p>'],
-        '&ul\t': [0, function( data ) { return start_list(false); }, '<ul>'],
-        '&/ul\t': [0, function( data ) { return end_list(false); }, '</ul>'],
-        '&ol\t': [0, function( data ) { return start_list(true); }, '<ol>'],
+        '&ul\t': [0, function( data ) { return this._list_start(); }, '<ul>'],
+        '&/ul\t': [0, function( data ) { return this._list_end(); }, '</ul>'],
+        '&ol\t': [0, function( data ) { return this._list_start(true); }, '<ol>'],
         '&li\t': [0, function( data ) {
-                buf = '\n    ';
+                list = this._list[0] || {count: 0, ol: false};
+                list.count++;
+                buf = '\n';
                 for(var ind = 0; ind < this._dent; ind++) {
                     buf = buf + '  ';
                 }
-                if(this._lic == -1) {
-                    buf = buf + '*.';
+                if( list.ol ) {
+                    buf = buf + String(list.count) + '.';
                 } else {
-                    this._lic++;
-                    buf = buf + String(this._lic) + '.';
+                    buf = buf + '*';
                 }
                 return buf + ' ';
             }, '<li>' ],
         '&/li\t': [0, '\n', '</li>'],
-        '&/ol\t': [0, function( data ) { return end_list(true); }, '</ol>'],
+        '&/ol\t': [0, function( data ) { return this._list_end(true); }, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
                 return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
@@ -1326,7 +1354,10 @@ WscTablumps.prototype.defaultMap = function () {
         '&/a\t': [ 0, '[/link]', '</a>'],
         '&br\t': [ 0, '\n', '<br/>' ],
         '&bcode\t': [0, '\n', '<span><pre><code>'],
-        '&/bcode\t': [0, '\n', '</code></pre></span>']
+        '&/bcode\t': [0, '\n', '</code></pre></span>'],
+        // Used to terminate a line.
+        // Allows us to reset graphic rendition parameters.
+        'EOF': [0, '', null, '\x1b[m']
     };
 
 };
@@ -1356,23 +1387,14 @@ WscTablumps.prototype.parse = function( data, sep ) {
  * ANSI escape sequence formatted strings where possible.
  */
 WscTablumps.prototype.render = function( flag, data ) {
-    return this._parse(flag + 1, data);
-};
-
-/**
- * @function _parse
- * Parse tablumps!
- * 
- * This implementation hopefully only uses simple string operations.
- */
-WscTablumps.prototype._parse = function( flag, data, sep ) {
     if( !data )
         return '';
     
-    sep = sep || '\t';
+    sep = '\t';
+    flag = flag + 1;
     
     for( var i = 0; i < data.length; i++ ) {
-    
+        
         // All tablumps start with &!
         if( data[i] != '&' )
             continue;
@@ -1391,34 +1413,56 @@ WscTablumps.prototype._parse = function( flag, data, sep ) {
         // Now we can crop the tag.
         tag = working.substring(0, ti + 1);
         working = working.substring(ti + 1);
-        lump = this.lumps[tag];
         
-        // If we don't know how to parse the tag, leave it be!
-        if( lump === undefined )
+        // Render the tablump.
+        rendered = this.renderOne(flag, tag, working);
+        
+        // Didn't manage to render?
+        if( rendered === null ) {
+            i++;
             continue;
-        
-        // Crop the rest of the tablump!
-        cropping = this.tokens(working, lump[0], sep);
-        
-        // Get our renderer.
-        renderer = lump[flag] || lump[1];
-        
-        // Parse the tablump if we can.
-        if( typeof(renderer) == 'string' )
-            parsed = renderer.format.apply(lump[1], cropping[0]);
-        else
-            parsed = renderer(cropping[0]);
+        }
         
         // Glue everything back together.
-        data = primer + parsed + cropping[1];
-        i = i + (parsed.length - 2);
+        data = primer + rendered[0];
+        i = i + (rendered[1] - 1);
         
     }
     
     // Replace the simpler tablumps which do not have arguments.
-    data = data.replace(this.repl[0], this.repl[1]);
+    //data = data.replace(this.repl[0], this.repl[1]);
     
-    return data;
+    return data + this.renderOne( flag, 'EOF', '' )[0];
+};
+
+/**
+ * @function renderOne
+ * Render a single tablump.
+ */
+WscTablumps.prototype.renderOne = function( type, tag, working ) {
+    lump = this.lumps[tag];
+    
+    // If we don't know how to parse the tag, leave it be!
+    if( lump === undefined ) {
+        return null;
+    }
+
+    // Crop the rest of the tablump!
+    if( lump[0] == 0 )
+        cropping = [[], working];
+    else
+        cropping = this.tokens(working, lump[0], sep);
+    
+    // Get our renderer.
+    renderer = lump[type] || lump[1];
+    
+    // Parse the tablump if we can.
+    if( typeof(renderer) == 'string' )
+        parsed = renderer.format.apply(renderer, cropping[0]);
+    else
+        parsed = renderer.call(this, cropping[0]);
+    
+    return [parsed + cropping[1], parsed.length];
 };
 
 /**
@@ -1483,28 +1527,13 @@ function dAmn_avatar( un, icon ) {
 }
 
 /**
+ * @function dAmnLumps
  * dAmn tablumps map.
  *
  * This function returns a map which can be used by the tablumps parser to parse
  * dAmn's tablumps.
- *
- * Example:
- *      parser = new WscTablumps();
- *      parser.extend( dAmnLumps() );
- *      message = parser.parse(data);
- *      console.log(message.text());
- *      console.log(message.html());
- *      console.log(message.ansi());
  */
 function dAmnLumps( opts ) {
-    /* Tablumps formatting rules.
-     * This object can be defined as follows:
-     *     lumps[tag] => [ arguments, format ]
-     * ``tag`` is the tablumps-formatted tag to process.
-     * ``arguments`` is the number of arguments contained in the tablump.
-     * ``format`` is a function which returns the tablump as valid HTML.
-     * Or it's a string template thing. Whichever.
-     */
     return {
         '&avatar\t': [ 2,
             ':icon{0}:',
@@ -1516,7 +1545,8 @@ function dAmnLumps( opts ) {
         ],
         '&dev\t': [ 2,
             ':dev{1}:',
-            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>'
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
+            '{0}\x1b[36m{1}\x1b[39m'
         ],
         '&thumb\t': [ 7,
             ':thumb{0}:',
@@ -1563,7 +1593,7 @@ function dAmnLumps( opts ) {
                 }
                 
                 if( isgif ) {
-                    f = f.replace(/:/, '/');
+                    f = f.replace(/:/, '/150/');
                     path = 'http://fc0' + server + '.deviantart.net/' + f;
                     det = f.split('/');
                     if( det.length > 1 ) {
