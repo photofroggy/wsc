@@ -141,11 +141,9 @@ function wsc_protocol( client ) {
     
         // Established a WebSocket connection.
         connected: function( evt, sock ) {
-            console.log( sock == undefined );
             if( sock  )
                 this.client.conn = sock;
             this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
-            console.log("Connection opened");
             this.client.connected = true;
             this.client.handshake();
             this.client.attempts = 0;
