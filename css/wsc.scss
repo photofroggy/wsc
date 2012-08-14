@@ -5,6 +5,7 @@
  * Themes do the fancy colours. (eventually)
  */
 
+/*@import "defaults";*/
 @import "userlist";
 @import "nav";
 @import "msg";
@@ -12,11 +13,17 @@
 @import "control";
 @import "theme_template";
 
+
 div.wsc {
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
     font: normal 12px verdana, sans-serif;
     line-height: 1.6em;
     clear: both;
-    height: 100%;
     
     @include navbar;
     
@@ -30,7 +37,6 @@ div.wsc {
         padding: 5px;
         padding-bottom: 0px;
         border-top: 1px solid black;
-        height: 88%;
         
         img {
             display: inline;
@@ -61,6 +67,7 @@ div.wsc {
             div.logwrap {
                 border: 1px solid black;
                 overflow: auto;
+                padding-bottom: 4px;
             }
         
         }
