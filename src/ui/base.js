@@ -76,13 +76,12 @@ WscUI.prototype.build = function() {
     
     this.view.append( wsc_html_ui );
     this.control = new WscUIControl( this );
-    this.resize();
     this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
     this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
     this.chatbook.create_channel(this.mns, hide);
-    this.control.setInput();
+    //this.control.setInput();
     this.control.focus();
     
 };
@@ -126,31 +125,7 @@ WscUI.prototype.remove_channel = function( ns ) {
 
 // Select which channel is currently being viewed.
 WscUI.prototype.toggle_channel = function( ns ) {
-    //console.log("out: "+previous+"; in: "+ns);
-    chan = this.channel(ns);
-    
-    if( !chan )
-        return;
-    
-    if(this.cchannel) {
-        if(this.cchannel == chan)
-            return;
-        // Hide previous channel, if any.
-        //console.log("prevshift ", previous);
-        this.cchannel.hide_channel();
-        this.control.cacheInput();
-    }
-    
-    // Show clicked channel.
-    chan.show_channel();
-    this.control.focus();
-    this.cchannel = chan;
-    this.control.setLabel();
-    if( this.settings['monitor'][1] ) {
-        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-        mt.addClass(this.settings['monitor'][1]);
-    }
-    //this.resizeUI();
+    return this.chatbook.toggle_channel(ns);
 };
 
 /**

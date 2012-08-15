@@ -3267,13 +3267,12 @@ WscUI.prototype.build = function() {
     
     this.view.append( wsc_html_ui );
     this.control = new WscUIControl( this );
-    this.resize();
     this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
     this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
     this.chatbook.create_channel(this.mns, hide);
-    this.control.setInput();
+    //this.control.setInput();
     this.control.focus();
     
 };
@@ -3317,31 +3316,7 @@ WscUI.prototype.remove_channel = function( ns ) {
 
 // Select which channel is currently being viewed.
 WscUI.prototype.toggle_channel = function( ns ) {
-    //console.log("out: "+previous+"; in: "+ns);
-    chan = this.channel(ns);
-    
-    if( !chan )
-        return;
-    
-    if(this.cchannel) {
-        if(this.cchannel == chan)
-            return;
-        // Hide previous channel, if any.
-        //console.log("prevshift ", previous);
-        this.cchannel.hide_channel();
-        this.control.cacheInput();
-    }
-    
-    // Show clicked channel.
-    chan.show_channel();
-    this.control.focus();
-    this.cchannel = chan;
-    this.control.setLabel();
-    if( this.settings['monitor'][1] ) {
-        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-        mt.addClass(this.settings['monitor'][1]);
-    }
-    //this.resizeUI();
+    return this.chatbook.toggle_channel(ns);
 };
 
 /**
@@ -3380,7 +3355,6 @@ WscUI.prototype.channels = function( ) {
 function WscUIChannel( ui, ns, hidden ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
-    this.window = this.manager.view.find('#'+selector+'-window');
     this.manager = ui;
     this.hidden = hidden;
     this.selector = selector;
@@ -3389,16 +3363,66 @@ function WscUIChannel( ui, ns, hidden ) {
 
 }
 
+// Draw channel on screen and store the different elements in attributes.
+WscUIChannel.prototype.build = function( ) {
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    ns = this.namespace;
+    
+    // Draw.
+    this.tab = this.manager.nav.add_tab( selector, ns );
+    this.manager.chatbook.view.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
+    // Store
+    this.window = this.manager.chatbook.view.find('#' + selector + '-window')
+    this.logpanel = this.window.find('#' + selector + "-log");
+    this.wrap = this.logpanel.find('ul.logwrap');
+    this.userpanel = this.window.find('#' + selector + "-users");
+    var chan = this;
+    
+    this.manager.view.find('a[href="#' + selector + '"]').click(function () {
+        chan.manager.toggle_channel(selector);
+        return false;
+    });
+    
+    var focus = true;
+    
+    this.window.click(
+        function( e ) {
+            if( focus )
+                chan.manager.control.focus();
+            else
+                focus = true;
+        }
+    );
+    
+    this.logpanel.select(
+        function( ) {
+            focus = false;
+        }
+    );
+    
+    if( this.hidden ) {
+        this.tab.toggleClass('hidden');
+    }
+    
+    this.built = true;
+};
 
+WscUIChannel.prototype.resize = function(  ) {
+    
+};
 
 // Toggle the visibility of the channel.
-WscUIChannel.prototype.hideChannel = function( ) {
+WscUIChannel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
 };
 
-WscUIChannel.prototype.showChannel = function( ) {
+WscUIChannel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
@@ -3469,9 +3493,38 @@ WscUIChatbook.prototype.channels = function( ) {
  * Create a channel in the UI.
  */
 WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
-    chan = this.channel(ns, new WscUIChannel(this, ns, toggle));
+    chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
     chan.build();
     this.toggle_channel(ns);
+    this.manager.resize();
+};
+
+// Select which channel is currently being viewed.
+WscUIChatbook.prototype.toggle_channel = function( ns ) {
+    chan = this.channel(ns);
+    
+    if( !chan )
+        return;
+    
+    if(this.current) {
+        if(this.current == chan)
+            return;
+        // Hide previous channel, if any.
+        //console.log("prevshift ", previous);
+        this.current.hide();
+        //this.control.cacheInput();
+    }
+    
+    // Show clicked channel.
+    chan.show();
+    //this.control.focus();
+    this.current = chan;
+    //this.control.setLabel();
+    /*if( this.settings['monitor'][1] ) {
+        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
+        mt.addClass(this.settings['monitor'][1]);
+    }*/
+    //this.resizeUI();
 };
 
 /**
@@ -3537,6 +3590,11 @@ function WscUINavigation( ui ) {
     this.tabs = this.manager.view.find('#chattabs');
 
 }
+
+WscUINavigation.prototype.add_tab = function( selector, ns ) {
+    this.tabs.append(wsc_html_chattab.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
+    return this.tabs.find('#' + selector + '-tab');
+};
 /* wsc html - photofroggy
  * Provides HTML5 templates for the chat UI.
  */

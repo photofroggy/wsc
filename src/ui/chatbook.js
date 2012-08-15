@@ -62,8 +62,37 @@ WscUIChatbook.prototype.channels = function( ) {
  * Create a channel in the UI.
  */
 WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
-    chan = this.channel(ns, new WscUIChannel(this, ns, toggle));
+    chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
     chan.build();
     this.toggle_channel(ns);
+    this.manager.resize();
+};
+
+// Select which channel is currently being viewed.
+WscUIChatbook.prototype.toggle_channel = function( ns ) {
+    chan = this.channel(ns);
+    
+    if( !chan )
+        return;
+    
+    if(this.current) {
+        if(this.current == chan)
+            return;
+        // Hide previous channel, if any.
+        //console.log("prevshift ", previous);
+        this.current.hide();
+        //this.control.cacheInput();
+    }
+    
+    // Show clicked channel.
+    chan.show();
+    //this.control.focus();
+    this.current = chan;
+    //this.control.setLabel();
+    /*if( this.settings['monitor'][1] ) {
+        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
+        mt.addClass(this.settings['monitor'][1]);
+    }*/
+    //this.resizeUI();
 };
 
