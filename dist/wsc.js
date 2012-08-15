@@ -3196,12 +3196,13 @@ function wsc_control( client ) {
 
 function WscUI( view, options, mozilla, events ) {
     
-    this.events = events || null;
+    this.handle_evt = events || this._handle_evt;
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
+        'domain': 'website.com'
     };
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
@@ -3210,6 +3211,20 @@ function WscUI( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     
 }
+
+WscUI.prototype.set_handler = function( events ) {
+
+    this.handle_evt = events || this._handle_evt;
+
+};
+
+WscUI.prototype.trigger = function( event, data ) {
+
+    this.handle_evt( event, data );
+
+};
+
+WscUI.prototype._handle_evt = function( event, data ) {};
 
 // Deform a channel namespace.
 WscUI.prototype.deform_ns = function( ns ) {
@@ -3278,8 +3293,19 @@ WscUI.prototype.build = function() {
 };
 
 WscUI.prototype.resize = function() {
-    
+
     this.control.resize();
+    
+    // Main view dimensions.
+    //console.log('>> pH:',client.view.parent().height());
+    this.view.height( this.view.parent().height() );
+    this.view.width( '100%' );
+    
+    h = (this.view.parent().height() - this.nav.height() - this.control.height());
+    //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
+    //console.log('>> rUI h:', h);
+    // Chatbook dimensions.
+    this.chatbook.resize(h);
 
 };
 
@@ -3411,10 +3437,6 @@ WscUIChannel.prototype.build = function( ) {
     this.built = true;
 };
 
-WscUIChannel.prototype.resize = function(  ) {
-    
-};
-
 // Toggle the visibility of the channel.
 WscUIChannel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
@@ -3429,6 +3451,153 @@ WscUIChannel.prototype.show = function( ) {
     this.tab.removeClass('noise tabbed fill');
     this.resize();
 };
+
+// Scroll the log panel downwards.
+WscUIChannel.prototype.scroll = function( ) {
+    this.pad();
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+};
+
+WscUIChannel.prototype.pad = function ( ) {
+    // Add padding.
+    this.wrap.css({'padding-top': 0});
+    wh = this.wrap.innerHeight();
+    lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
+    pad = lh - wh;
+    /*
+    console.log(ns + ' log');
+    console.log('> log wrap height ' + wh);
+    console.log('> window height ' + this.logpanel.innerHeight());
+    console.log('> add padding ' + pad);
+    /* */
+    /* */
+    if( pad > 0 )
+        this.wrap.css({'padding-top': pad});
+    else
+        this.wrap.css({
+            'padding-top': 0,
+            'height': lh});
+    /* */
+};
+
+// Fix the dimensions of the log window.
+WscUIChannel.prototype.resize = function( ) {
+    this.wrap.css({'padding-top': 0});
+    // Height.
+    //console.log('head height: ' + this.window.find("header").height() + '; outer: ' + this.window.find("header").outerHeight());
+    wh = this.manager.chatbook.height();
+    //console.log(h);
+    this.window.height(wh);
+    // Width.
+    cw = this.window.width();
+    cu = this.window.find('div.chatusers');
+    // Header height
+    title = this.window.find('header div.title');
+    topic = this.window.find('header div.topic');
+    
+    // Log width.
+    if( cu.css('display') != 'none')
+        cw = cw - cu.outerWidth();
+    
+    //console.log('> lheight',wh);
+    
+    if( title.css('display') == 'block' )
+        wh = wh - title.outerHeight(true);
+    //console.log('> wh - th',wh);
+        
+    // Log panel dimensions
+    this.logpanel.css({
+        height: wh + 1,
+        width: cw});
+    
+    // Scroll again just to make sure.
+    this.scroll();
+    
+    // User list dimensions
+    cu.css({height: this.logpanel.innerHeight() - 3});
+};
+
+// Display a log message.
+WscUIChannel.prototype.log = function( msg ) {
+    this.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+};
+
+// Send a message to the log window.
+WscUIChannel.prototype.log_item = function( msg ) {
+    if( this.hidden ) {
+        if( this.thresh <= 0 )
+            return;
+        this.thresh--;
+    }
+    //console.log('logging in channel ' + this.info["namespace"]);
+    var ts = new Date().toTimeString().slice(0, 8);
+    // Add content.
+    this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
+    // Scrollio
+    this.scroll();
+};
+
+// Send a server message to the log window.
+WscUIChannel.prototype.server_message = function( msg, info ) {
+    this.log_item(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
+};
+
+// Set the channel header.
+// This can be the title or topic, determined by `head`.
+WscUIChannel.prototype.set_header = function( head, content ) {
+    headd = this.window.find("header div." + head);
+    headd.replaceWith(
+        wsc_html_cheader.replacePArg('{head}', head).replacePArg('{content}', content || '')
+    );
+    headd = this.window.find('header div.' + head);
+    
+    if( content ) {
+        headd.css({display: 'block'});
+    } else {
+        this.window.find('header div.' + head).css({display: 'none'});
+    }
+        
+    this.resize();
+};
+
+WscUIChannel.prototype.set_user_list = function( userlist ) {
+    
+    if( Object.size(userlist) == 0 )
+        return;
+    
+    html = '<div class="chatusers" id="' + this.selector + '-users">';
+    
+    for( order in userlist ) {
+        pc = userlist[order];
+        html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
+        for( un in pc.users ) {
+            user = pc.users[un];
+            conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+            html+= '<li><a target="_blank" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
+        }
+        html+= '</ul></div>';
+    }
+    html+= '</div>';
+    
+    this.window.find('div.chatusers').replaceWith(html);
+    this.userpanel = this.window.find('div.chatusers');
+    this.userpanel.css({display: 'block'});
+    /*
+    pcs = this.userpanel.find('h3');
+    if(typeof(pcs) == 'object') {
+        pcs.addClass('first');
+    } else {
+        for( index in pcs ) {
+            if( index == 0 ) {
+                pcs[0].addClass('first');
+                continue;
+            }
+            pcs[index].removeClass('first');
+        }
+    }*/
+    this.resize();
+    
+};
 /**
  * wsc/ui/chatbook.js - photofroggy
  * Object for managing the UI's chatbook.
@@ -3442,6 +3611,32 @@ function WscUIChatbook( ui ) {
     this.current = null;
     
 }
+
+/**
+ * @function height
+ *
+ * Return the height of the chatbook.
+ */
+WscUIChatbook.prototype.height = function() {
+    return this.view.height();
+};
+
+/**
+ * @function resize
+ * 
+ * Resize the chatbook view pane.
+ * 
+ * @param [Integer] height The height to set the view pane to. Defaults to 600px.
+ */
+WscUIChatbook.prototype.resize = function( height ) {
+    height = height || 600;
+    this.view.height(height);
+    
+    for( select in this.chan ) {
+        chan = this.chan[select];
+        chan.resize();
+    }
+};
 
 /**
  * @function channel
@@ -3587,9 +3782,14 @@ WscUIControl.prototype._onsubmit = function( event ) {};
 function WscUINavigation( ui ) {
 
     this.manager = ui;
+    this.nav = this.manager.view.find('nav.tabs');
     this.tabs = this.manager.view.find('#chattabs');
 
 }
+
+WscUINavigation.prototype.height = function(  ) {
+    return this.nav.outerHeight(true);
+};
 
 WscUINavigation.prototype.add_tab = function( selector, ns ) {
     this.tabs.append(wsc_html_chattab.replacePArg('{selector}', selector).replacePArg('{ns}', ns));

@@ -13,6 +13,32 @@ function WscUIChatbook( ui ) {
 }
 
 /**
+ * @function height
+ *
+ * Return the height of the chatbook.
+ */
+WscUIChatbook.prototype.height = function() {
+    return this.view.height();
+};
+
+/**
+ * @function resize
+ * 
+ * Resize the chatbook view pane.
+ * 
+ * @param [Integer] height The height to set the view pane to. Defaults to 600px.
+ */
+WscUIChatbook.prototype.resize = function( height ) {
+    height = height || 600;
+    this.view.height(height);
+    
+    for( select in this.chan ) {
+        chan = this.chan[select];
+        chan.resize();
+    }
+};
+
+/**
  * @function channel
  * 
  * @overload

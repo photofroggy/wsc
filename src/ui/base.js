@@ -5,12 +5,13 @@
 
 function WscUI( view, options, mozilla, events ) {
     
-    this.events = events || null;
+    this.handle_evt = events || this._handle_evt;
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
+        'domain': 'website.com'
     };
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
@@ -19,6 +20,20 @@ function WscUI( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     
 }
+
+WscUI.prototype.set_handler = function( events ) {
+
+    this.handle_evt = events || this._handle_evt;
+
+};
+
+WscUI.prototype.trigger = function( event, data ) {
+
+    this.handle_evt( event, data );
+
+};
+
+WscUI.prototype._handle_evt = function( event, data ) {};
 
 // Deform a channel namespace.
 WscUI.prototype.deform_ns = function( ns ) {
@@ -87,8 +102,19 @@ WscUI.prototype.build = function() {
 };
 
 WscUI.prototype.resize = function() {
-    
+
     this.control.resize();
+    
+    // Main view dimensions.
+    //console.log('>> pH:',client.view.parent().height());
+    this.view.height( this.view.parent().height() );
+    this.view.width( '100%' );
+    
+    h = (this.view.parent().height() - this.nav.height() - this.control.height());
+    //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
+    //console.log('>> rUI h:', h);
+    // Chatbook dimensions.
+    this.chatbook.resize(h);
 
 };
 
