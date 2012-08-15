@@ -363,8 +363,6 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a:hover {
   background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
   background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
   background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  color: #ff5959;
-  font-weight: bold;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
@@ -492,8 +490,6 @@ div.wsc.wsct_test nav.tabs ul#chattabs li a:hover {
   background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
   background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
   background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  color: #ff5959;
-  font-weight: bold;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
