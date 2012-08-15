@@ -31,7 +31,7 @@ var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
                         <header>\
                             <div class="topic"></div>\
                         </header>\
-                        <div class="logwrap"></div>\
+                        <ul class="logwrap"></ul>\
                     </div>\
                     <div class="chatusers" id="{selector}-users">\
                 </div>\
@@ -44,7 +44,7 @@ var wsc_html_cheader = '<div class="{head}">{content}</div>';
 var wsc_html_logmsg = '<span class="message">{message}</span>';
 
 // Simple log template.
-var wsc_html_logitem = '<div class="logmsg"><span class="ts">{ts}</span> {message}</div>';
+var wsc_html_logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
 
 // Server message template.
 var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
