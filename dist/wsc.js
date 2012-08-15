@@ -1277,15 +1277,17 @@ function dAmnLumps( opts ) {
         '&emote\t': [ 5, '<img alt="{0}" width="{1}" height="{2}" title="{3}" src="http://e.deviantart.com/emoticons/{4}" />' ],
         '&dev\t': [ 2, '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>' ],
         '&thumb\t': [ 7, function( data ) {
-                id = data[0]; u = data[2]; f = data[5];
+                id = data[0];
+                user = data[2];
                 dim = data[3].split('x'); w = parseInt(dim[0]); h = parseInt(dim[1]);
-                lu = u.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
+                f = data[5];
                 flags = data[6].split(':');
+                lu = user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
                 // Deviation title.
                 t = data[1];
                 ut = (t.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+/, '').replace(/-+$/, '') || '-') + '-' + id;
                 // Deviation link tag. First segment only.
-                title = t + ' by ' + u + ', ' + w + 'x' + h;
+                title = t + ' by ' + user + ', ' + w + 'x' + h;
                 dal = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + title + '"';
                 
                 // Time to go through the flags.

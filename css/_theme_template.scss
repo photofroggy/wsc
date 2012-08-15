@@ -1,30 +1,51 @@
+@mixin button-gradient($start, $init, $slope, $bg) {
+    background: -webkit-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -moz-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -ms-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -o-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+}
+
 @mixin wsc-theme($base: #223740,
-    $chrome: #9AD7F1,
-    $chrome-shadow: #4E99BB,
-    $log-bg: #DFF5FF,
+    $chrome: #406D8B,
+    $chrome-shadow: #0D4D69,
+    $chrome-color: #99D3FA,
+    $log-bg: #EAF8FF,
     $light: #5F85A3,
     $a: #334DB3,
     $ah: #990000,
-    $outer-border: #40748B,
-    $inner-border: #40748B,
-    $heading-bg: #68A4BF,
+    $tab-a: white,
+    $tab-ah: #FF5959,
+    $bgs: top,
+    $bgi: #80A4BD,
+    $bgsl: #3F87B8,
+    $bgbg: #406D8B,
+    $hbgs: top,
+    $hbgi: #9AD0F1,
+    $hbgsl: #73ACD3,
+    $hbgbg: #406D8B,
+    $outer-border: #0D4D69,
+    $inner-border: #0D4D69,
+    $heading-bg: #81AAC5,
     $highlight: white,
     $topic-color: #041827,
-    $tabbed: #990000,
+    $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
     $noise: #223740) {
     
     color: $base;
     a {
-        color: $a;
-        &:hover { color: $ah; }
+        color: $tab-a;
+        &:hover { color: $tab-ah; }
     }
     &.button,
     form.msg input[type="submit"] {
+        @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
         background-color: $chrome;
         border-color: $base;
         &:hover {
+            @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $chrome-shadow;
             border-color: $base;
         }
@@ -33,10 +54,17 @@
     nav.tabs {
         ul li {
             a {
+                @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
                 background-color: $chrome;
                 border-color: $outer-border;
+                color: $tab-a;
                 &.button {
                     border-color: $base;
+                }
+                &:hover {
+                    @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
+                    color: $tab-ah;
+                    font-weight: bold;
                 }
             }
             &.noise a { font-weight: bold; }
@@ -44,11 +72,11 @@
                 a {
                     color: $tabbed;
                     border-color: $tabbed;
-                    border-width: 2px;
+                    border-width: 1px;
                     font-weight: bold;
                 }
                 &.fill a {
-                    background-color: $tabbed-fill-bg;
+                    @include button-gradient($bgs, $bgi, $tabbed-fill-bg, $bgbg);
                     color: $tabbed-fill;
                 }
             }
@@ -62,6 +90,7 @@
     div.chatwindow {
 
         header {
+            color: $chrome-color;
             div.topic {
                 background-color: $heading-bg;
                 border-color: $inner-border;
@@ -71,6 +100,11 @@
         
         div.chatlog {
             background-color: $log-bg;
+            
+            a {
+                color: $a;
+                &:hover { color: $ah; }
+            }
             
             div.logwrap {
                 border-color: $inner-border;
@@ -111,6 +145,7 @@
         div.info {
             background-color: $chrome;
             border-color: $inner-border;
+            color: $chrome-color;
         }
     }
     
