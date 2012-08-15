@@ -40,7 +40,6 @@ of how to use the client::
             </script>
         </head>
         <body>
-            <!-- doesn't seem to work well without a wrapping div.... -->
             <div class="main">
             </div>
         </body>
