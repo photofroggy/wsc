@@ -316,7 +316,7 @@ div.wsc.wsct_default {
   color: #0f6175;
 }
 div.wsc.wsct_default a {
-  color: white;
+  color: #affa3e;
 }
 div.wsc.wsct_default a:hover {
   color: #ff5959;
@@ -364,6 +364,7 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a:hover {
   background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  color: white;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
@@ -411,7 +412,7 @@ div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap a {
   color: #149e5c;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #990000;
+  color: #ff5959;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #0f6175;
@@ -452,7 +453,7 @@ div.wsc.wsct_test {
   color: #293840;
 }
 div.wsc.wsct_test a {
-  color: white;
+  color: #affa3e;
 }
 div.wsc.wsct_test a:hover {
   color: #ff5959;
@@ -498,6 +499,7 @@ div.wsc.wsct_test nav.tabs ul#chattabs li a:hover {
   background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  color: white;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
@@ -545,7 +547,7 @@ div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a {
   color: #149e5c;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #990000;
+  color: #ff5959;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #293840;
