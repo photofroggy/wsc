@@ -71,8 +71,6 @@
                 }
                 &:hover {
                     @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
-                    color: $tab-ah;
-                    font-weight: bold;
                 }
             }
             &.noise a { font-weight: bold; }
