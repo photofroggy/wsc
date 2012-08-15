@@ -22,7 +22,6 @@
         }
         
         form.msg input.msg {
-            width: 90%;
             line-height: 1.6em;
         }
     
@@ -43,9 +42,7 @@
         
         &:hover {
             background: none;
-            /*background-color: #95B4CC;*/
             border: 1px solid black;
-            /*color: #EDF8FF;*/
             cursor: pointer;
             -webkit-box-shadow: inset 0px 1px 2px black;
             -moz-box-shadow: inset 0px 1px 2px black;
