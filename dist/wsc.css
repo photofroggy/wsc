@@ -421,6 +421,9 @@ div.wsc.wsct_default div.chatusers {
 div.wsc.wsct_default div.chatusers div.pc h3, div.wsc.wsct_default div.chatusers div.pc h4 {
   background-color: #81aac5;
 }
+div.wsc.wsct_default div.chatusers div.pc ul {
+  color: #99d3fa;
+}
 div.wsc.wsct_default div.chatwindow div.userinfo {
   border-color: #0d4d69;
   background-color: #81aac5;
@@ -539,6 +542,9 @@ div.wsc.wsct_test div.chatusers {
 }
 div.wsc.wsct_test div.chatusers div.pc h3, div.wsc.wsct_test div.chatusers div.pc h4 {
   background-color: #cc5d17;
+}
+div.wsc.wsct_test div.chatusers div.pc ul {
+  color: #75ff8f;
 }
 div.wsc.wsct_test div.chatwindow div.userinfo {
   border-color: #0d4d69;
