@@ -77,7 +77,7 @@ WscUI.prototype.build = function() {
     this.view.append( wsc_html_ui );
     this.control = new WscUIControl( this );
     this.resize();
-    this.nav = new WscUINav( this ); //this.view.find('#chattabs');
+    this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
     this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
