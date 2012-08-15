@@ -296,7 +296,7 @@ function wsc_channel( client, ns, hidden ) {
             this.tab = this.client.tabul.find('#' + selector + '-tab')
             this.window = this.client.chatbook.find('#' + selector + '-window')
             this.logpanel = this.client.view.find('#' + selector + "-log");
-            this.wrap = this.logpanel.find('div.logwrap');
+            this.wrap = this.logpanel.find('ul.logwrap');
             this.userpanel = this.client.view.find('#' + selector + "-users");
             
             this.client.view.find('a[href="#' + selector + '"]').click(function () {
