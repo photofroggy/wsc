@@ -28,32 +28,6 @@
  */
 
 
-try {
-    exports.String = TablumpString;
-    exports.Parser = WscTablumps;
-    exports.dAmn_avatar = dAmn_avatar;
-    exports.dAmnLumps = dAmnLumps;
-} catch(err) {}
-
-var ESC = String.fromCharCode(0x1B);
-
-var lib = null;
-try {
-    lib = require('./src/lib');
-} catch(err) {}
-
-
-String.prototype.format = function() {
-  var args = arguments;
-  return this.replace(/{(\d+)}/g, function(match, number) { 
-    return typeof args[number] != 'undefined'
-      ? args[number]
-      : match
-    ;
-  });
-};
-
-
 /**
  * @function TablumpString
  * 
@@ -485,7 +459,7 @@ function dAmnLumps( opts ) {
                 }
                 
                 if( isgif ) {
-                    f = f.replace(/:/, '/150/');
+                    f = f.replace(/:/, '/');
                     path = 'http://fc0' + server + '.deviantart.net/' + f;
                     det = f.split('/');
                     if( det.length > 1 ) {

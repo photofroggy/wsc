@@ -2,12 +2,6 @@
  * Generic useful functions or something.
  */
 
-try {
-    exports = exports || {};
-    exports.$_GET = $_GET;
-} catch(err) {}
-
-
 // Function scope binding. Convoluted weirdness. Lol internet.
 Function.prototype.bind = function( scope ) {
     var _function = this;
