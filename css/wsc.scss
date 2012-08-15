@@ -1,11 +1,8 @@
 /**
  * wsc css
  * Defines the style rules for the wsc GUI.
- * Mainly used for layout.
- * Themes do the fancy colours. (eventually)
  */
 
-/*@import "defaults";*/
 @import "userlist";
 @import "nav";
 @import "msg";
@@ -13,7 +10,7 @@
 @import "control";
 @import "theme_template";
 
-
+/* Layout */
 div.wsc {
 
     * {
@@ -81,6 +78,7 @@ div.wsc {
 
 }
 
+/* Themes */
 @import "wsct_default";
 div.wsc.wsct_test {
     @include wsc-theme(
