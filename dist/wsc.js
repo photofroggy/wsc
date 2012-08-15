@@ -104,12 +104,6 @@ var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
  * Generic useful functions or something.
  */
 
-try {
-    exports = exports || {};
-    exports.$_GET = $_GET;
-} catch(err) {}
-
-
 // Function scope binding. Convoluted weirdness. Lol internet.
 Function.prototype.bind = function( scope ) {
     var _function = this;
@@ -1136,32 +1130,6 @@ function wsc_channel( client, ns, hidden ) {
  */
 
 
-try {
-    exports.String = TablumpString;
-    exports.Parser = WscTablumps;
-    exports.dAmn_avatar = dAmn_avatar;
-    exports.dAmnLumps = dAmnLumps;
-} catch(err) {}
-
-var ESC = String.fromCharCode(0x1B);
-
-var lib = null;
-try {
-    lib = require('./src/lib');
-} catch(err) {}
-
-
-String.prototype.format = function() {
-  var args = arguments;
-  return this.replace(/{(\d+)}/g, function(match, number) { 
-    return typeof args[number] != 'undefined'
-      ? args[number]
-      : match
-    ;
-  });
-};
-
-
 /**
  * @function TablumpString
  * 
@@ -1309,8 +1277,8 @@ WscTablumps.prototype.defaultMap = function () {
         '&/s\t': [0, '', '</s>', '\x1b[29m'],
         '&sup\t': [0, '/', '<sup>'],
         '&/sup\t': [0, '/', '</sup>'],
-        '&sup\t': [0, '\\', '<sub>'],
-        '&/sup\t': [0, '\\', '</sub>'],
+        '&sub\t': [0, '\\', '<sub>'],
+        '&/sub\t': [0, '\\', '</sub>'],
         '&code\t': [0, '``', '<code>'],
         '&/code\t': [0, '``', '</code>'],
         '&p\t': [0, '\n', '<p>'],
@@ -1593,7 +1561,7 @@ function dAmnLumps( opts ) {
                 }
                 
                 if( isgif ) {
-                    f = f.replace(/:/, '/150/');
+                    f = f.replace(/:/, '/');
                     path = 'http://fc0' + server + '.deviantart.net/' + f;
                     det = f.split('/');
                     if( det.length > 1 ) {
