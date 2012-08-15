@@ -3268,7 +3268,7 @@ WscUI.prototype.build = function() {
     this.view.append( wsc_html_ui );
     this.control = new WscUIControl( this );
     this.resize();
-    this.nav = new WscUINav( this ); //this.view.find('#chattabs');
+    this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
     this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
@@ -3373,6 +3373,39 @@ WscUI.prototype.channel = function( namespace, chan ) {
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
 };/**
+ * wsc/ui/channel.js - photofroggy
+ * Object to control the UI for the channel view.
+ */
+
+function WscUIChannel( ui, ns, hidden ) {
+
+    var selector = ui.deform_ns(ns).slice(1).toLowerCase();
+    this.window = this.manager.view.find('#'+selector+'-window');
+    this.manager = ui;
+    this.hidden = hidden;
+    this.selector = selector;
+    this.raw = ui.format_ns(ns);
+    this.namespace = ui.deform_ns(ns);
+
+}
+
+
+
+// Toggle the visibility of the channel.
+WscUIChannel.prototype.hideChannel = function( ) {
+    //console.log("hide " + this.info.selector);
+    this.window.css({'display': 'none'});
+    this.tab.removeClass('active');
+};
+
+WscUIChannel.prototype.showChannel = function( ) {
+    //console.log("show  " + this.info.selector);
+    this.window.css({'display': 'block'});
+    this.tab.addClass('active');
+    this.tab.removeClass('noise tabbed fill');
+    this.resize();
+};
+/**
  * wsc/ui/chatbook.js - photofroggy
  * Object for managing the UI's chatbook.
  */
@@ -3493,6 +3526,17 @@ WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
 WscUIControl.prototype._onkeypress = function( event ) {};
 WscUIControl.prototype._onsubmit = function( event ) {};
 
+/**
+ * wsc/ui/nav.js - photofroggy
+ * Object to control the UI for the chat navigation.
+ */
+
+function WscUINavigation( ui ) {
+
+    this.manager = ui;
+    this.tabs = this.manager.view.find('#chattabs');
+
+}
 /* wsc html - photofroggy
  * Provides HTML5 templates for the chat UI.
  */
