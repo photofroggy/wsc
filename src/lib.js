@@ -145,3 +145,15 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+Object.steal = function( a, b ) {
+    for( index in b )
+        a[index] = b[index];
+};
+
+Object.extend = function( a, b ) {
+    obj = {};
+    Object.steal(obj, a);
+    Object.steal(obj, b);
+    return obj;
+};
