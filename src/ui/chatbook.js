@@ -56,3 +56,14 @@ WscUIChatbook.prototype.channels = function( ) {
     return chans;
 };
 
+/**
+ * @function create_channel
+ * 
+ * Create a channel in the UI.
+ */
+WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
+    chan = this.channel(ns, new WscUIChannel(this, ns, toggle));
+    chan.build();
+    this.toggle_channel(ns);
+};
+

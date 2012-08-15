@@ -76,6 +76,7 @@ WscUI.prototype.build = function() {
     
     this.view.append( wsc_html_ui );
     this.control = new WscUIControl( this );
+    this.resize();
     this.nav = new WscUINav( this ); //this.view.find('#chattabs');
     this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
     // The monitor channel is essentially our console for the chat.
@@ -87,6 +88,8 @@ WscUI.prototype.build = function() {
 };
 
 WscUI.prototype.resize = function() {
+    
+    this.control.resize();
 
 };
 
@@ -95,9 +98,7 @@ WscUI.prototype.resize = function() {
 // channel without the `chat:` or `#` style prefixes. The `ns`
 // parameter is the string to use for the tab.
 WscUI.prototype.create_channel = function( ns, toggle ) {
-    chan = this.channel(ns, wsc_channel(this, ns, toggle));
-    chan.build();
-    this.toggle_channel(ns);
+    this.chatbook.create_channel( ns, toggle );
     this.resize();
 };
 
