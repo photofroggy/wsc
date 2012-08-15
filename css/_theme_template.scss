@@ -6,16 +6,20 @@
     background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
 }
 
-@mixin wsc-theme($base: #223740,
+@mixin wsc-theme($base: #0F6175,
     $chrome: #406D8B,
     $chrome-shadow: #0D4D69,
-    $chrome-color: #99D3FA,
+    $chrome-color: #AFD7F5,
     $log-bg: #EAF8FF,
-    $light: #5F85A3,
-    $a: #334DB3,
+    $light: #7C9AB4,
+    $a: #149E5C,
     $ah: #990000,
     $tab-a: white,
     $tab-ah: #FF5959,
+    $button: #AAE1EE,
+    $button-shadow: #0A384E, 
+    $buttonh: #87C1CE,
+    $buttonh-shadow: #1773A0, 
     $bgs: top,
     $bgi: #80A4BD,
     $bgsl: #3F87B8,
@@ -39,20 +43,24 @@
         color: $tab-a;
         &:hover { color: $tab-ah; }
     }
-    &.button,
+    a.button,
     form.msg input[type="submit"] {
         @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
         background-color: $chrome;
         border-color: $base;
+        color: $button;
+        text-shadow: 0px -1px $button-shadow;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $chrome-shadow;
             border-color: $base;
+            color: $buttonh;
+            text-shadow: 0px -1px $buttonh-shadow;
         }
     }
     
     nav.tabs {
-        ul li {
+        ul#chattabs li {
             a {
                 @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
                 background-color: $chrome;
@@ -101,14 +109,15 @@
         div.chatlog {
             background-color: $log-bg;
             
-            a {
-                color: $a;
-                &:hover { color: $ah; }
-            }
-            
             div.logwrap {
+                
+                a {
+                    color: $a;
+                    &:hover { color: $ah; }
+                }
+                
                 border-color: $inner-border;
-                p.logmsg {
+                .logmsg {
                     color: $base;
                     &.highlight,
                     &.highlight span {
@@ -136,6 +145,7 @@
             }
             ul {
                 color: $chrome-color;
+                a em { color: $chrome-color; }
             }
         }
         border: 1px solid $inner-border;
