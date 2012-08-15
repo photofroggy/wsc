@@ -322,11 +322,11 @@ div.wsc.wsct_default a:hover {
 }
 div.wsc.wsct_default a.button,
 div.wsc.wsct_default form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
   background-color: #406d8b;
   border-color: #0f6175;
   color: #aae1ee;
@@ -334,22 +334,22 @@ div.wsc.wsct_default form.msg input[type="submit"] {
 }
 div.wsc.wsct_default a.button:hover,
 div.wsc.wsct_default form.msg input[type="submit"]:hover {
-  background: -webkit-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background-color: #0d4d69;
   border-color: #0f6175;
   color: #87c1ce;
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
   background-color: #406d8b;
   border-color: #0d4d69;
   color: white;
@@ -358,11 +358,11 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a.button {
   border-color: #0f6175;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a:hover {
-  background: -webkit-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
@@ -374,12 +374,19 @@ div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a {
   font-weight: bold;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   color: #9ad7f1;
+}
+div.wsc.wsct_default nav.tabs ul#chattabs li.active a {
+  background: -webkit-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
 }
 div.wsc.wsct_default div.chatbook {
   background-color: #406d8b;
@@ -450,33 +457,33 @@ div.wsc.wsct_test a:hover {
   color: #ff5959;
 }
 div.wsc.wsct_test a.button, div.wsc.wsct_test form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
   background-color: #2ccc17;
   border-color: #293840;
   color: #aae1ee;
   text-shadow: 0px -1px #0a384e;
 }
 div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"]:hover {
-  background: -webkit-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
   background-color: #2ccc17;
   border-color: #293840;
   color: #87c1ce;
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #3f87b8 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
   background-color: #2ccc17;
   border-color: #0d4d69;
   color: white;
@@ -485,11 +492,11 @@ div.wsc.wsct_test nav.tabs ul#chattabs li a.button {
   border-color: #293840;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a:hover {
-  background: -webkit-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #9ad0f1 0%, #73acd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #90d2ff 5%, #406d8b 97%);
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.noise a {
   font-weight: bold;
@@ -501,12 +508,19 @@ div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a {
   font-weight: bold;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a {
-  background: -webkit-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
-  background: linear-gradient(top, #80a4bd 0%, #c93838 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   color: #9ad7f1;
+}
+div.wsc.wsct_test nav.tabs ul#chattabs li.active a {
+  background: -webkit-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #6cc4ff 5%, #406d8b 97%);
 }
 div.wsc.wsct_test div.chatbook {
   background-color: #2ccc17;
