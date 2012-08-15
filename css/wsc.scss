@@ -61,10 +61,11 @@ div.wsc {
                 vertical-align: middle;
             }
             
-            div.logwrap {
+            ul.logwrap {
                 border: 1px solid black;
                 overflow: auto;
                 padding-bottom: 4px;
+                list-style: none;
             }
         
         }

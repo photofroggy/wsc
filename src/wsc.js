@@ -7,6 +7,7 @@
 // @include commands.js
 // @include client.js
 // @include control.js
+// @include ui.js
 
 /* wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
@@ -86,6 +87,27 @@
         }
         
         return client;
+        
+    };
+    $.fn.wscui = function( method, options ) {
+        
+        ui = $(window).data('wscui');
+        
+        if( method == 'init' || ui === undefined ) {
+            if( ui == undefined ) {
+                ui = new WscUI( $(this), options, $.browser.mozilla );
+                $(window).resize(ui.resize);
+            }
+            $(window).data('wscui', ui);
+        }
+        
+        if( method != 'init' && method != undefined ) {
+            method = 'jq_' + method;
+            if( method in ui )
+                ui[method]( $(this), options);
+        }
+        
+        return ui;
         
     };
     

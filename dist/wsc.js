@@ -47,60 +47,7 @@ function EventEmitter() {
     this.removeListeners = removeListeners;
     this.emit = emit;
     this.listeners = listeners;
-}/* wsc html - photofroggy
- * Provides HTML5 templates for the chat UI.
- */
-
-// Chat UI.
-wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
-        <ul id="tabnav">\
-            <li><a href="#left" class="button">&laquo;</a></li>\
-            <li><a href="#right" class="button">&raquo;</a></li>\
-        </ul>\
-        </nav>\
-        <div class="chatbook"></div>';
-
-wsc_html_control = '<div class="chatcontrol">\
-            <form class="msg">\
-                <input type="text" class="msg" />\
-                <input type="submit" value="Send" class="sendmsg" />\
-            </form>\
-        </div>';
-
-// Channel templates.
-// Chat tab.
-var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}">{ns}</a></li>';
-
-// Chat screen.
-var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
-                    <header>\
-                        <div class="title"></div>\
-                    </header>\
-                    <div class="chatlog" id="{selector}-log">\
-                        <header>\
-                            <div class="topic"></div>\
-                        </header>\
-                        <div class="logwrap"></div>\
-                    </div>\
-                    <div class="chatusers" id="{selector}-users">\
-                </div>\
-            </div>';
-
-// Channel header HTML.
-var wsc_html_cheader = '<div class="{head}">{content}</div>';
-
-// Log message template.
-var wsc_html_logmsg = '<span class="message">{message}</span>';
-
-// Simple log template.
-var wsc_html_logitem = '<div class="logmsg"><span class="ts">{ts}</span> {message}</div>';
-
-// Server message template.
-var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
-
-// User message template.
-var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
-/* wsc lib - photofroggy
+}/* wsc lib - photofroggy
  * Generic useful functions or something.
  */
 
@@ -669,7 +616,7 @@ function wsc_channel( client, ns, hidden ) {
             this.tab = this.client.tabul.find('#' + selector + '-tab')
             this.window = this.client.chatbook.find('#' + selector + '-window')
             this.logpanel = this.client.view.find('#' + selector + "-log");
-            this.wrap = this.logpanel.find('div.logwrap');
+            this.wrap = this.logpanel.find('ul.logwrap');
             this.userpanel = this.client.view.find('#' + selector + "-users");
             
             this.client.view.find('a[href="#' + selector + '"]').click(function () {
@@ -3242,6 +3189,363 @@ function wsc_control( client ) {
     control.init(client);
     return control;
 }
+/**
+ * wsc/ui/base.js - photofroggy
+ * Base object used to manage a wsc client interface.
+ */
+
+function WscUI( view, options, mozilla, events ) {
+    
+    this.events = events || null;
+    this.mozilla = mozilla;
+    this.settings = {
+        'theme': 'wsct_default',
+        'monitor': ['~Monitor', true],
+        'username': '',
+    };
+    view.extend( this.settings, options );
+    view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    this.view = view.find('.wsc');
+    this.mns = this.format_ns(this.settings['monitor'][0]);
+    this.lun = this.settings["username"].toLowerCase();
+    
+}
+
+// Deform a channel namespace.
+WscUI.prototype.deform_ns = function( ns ) {
+    if(ns.indexOf("chat:") == 0)
+        return '#' + ns.slice(5);
+    
+    if(ns.indexOf("server:") == 0)
+        return '~' + ns.slice(7);
+    
+    if(ns.indexOf("pchat:") == 0) {
+        var names = ns.split(":");
+        names.shift();
+        for(i in names) {
+            name = names[i];
+            if(name.toLowerCase() != this.lun) {
+                return '@' + name;
+            }
+        }
+    }
+    
+    if( ns.indexOf('login:') == 0 )
+        return '@' + ns.slice(6);
+    
+    if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
+        return '#' + ns;
+    
+    return ns;
+};
+
+// Format a channel namespace.
+WscUI.prototype.format_ns = function( ns ) {
+    if(ns.indexOf('#') == 0) {
+        return 'chat:' + ns.slice(1);
+    }
+    if(ns.indexOf('@') == 0) {
+        var names = [ns.slice(1), this.lun];
+        names.sort(caseInsensitiveSort)
+        names.unshift("pchat");
+        return names.join(':');
+    }
+    if(ns.indexOf('~') == 0) {
+        return "server:" + ns.slice(1);
+    }
+    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
+        return 'chat:' + ns;
+    
+    return ns;
+};
+
+WscUI.prototype.set_events = function( events ) {
+    this.events = events;
+};
+
+WscUI.prototype.build = function() {
+    
+    this.view.append( wsc_html_ui );
+    this.control = new WscUIControl( this );
+    this.resize();
+    this.nav = new WscUINav( this ); //this.view.find('#chattabs');
+    this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
+    // The monitor channel is essentially our console for the chat.
+    hide = this.settings.monitor[1];
+    this.chatbook.create_channel(this.mns, hide);
+    this.control.setInput();
+    this.control.focus();
+    
+};
+
+WscUI.prototype.resize = function() {
+    
+    this.control.resize();
+
+};
+
+// Create a screen for channel `ns` in the UI, and initialise data
+// structures or some shit idk. The `selector` parameter defines the
+// channel without the `chat:` or `#` style prefixes. The `ns`
+// parameter is the string to use for the tab.
+WscUI.prototype.create_channel = function( ns, toggle ) {
+    this.chatbook.create_channel( ns, toggle );
+    this.resize();
+};
+
+// Remove a channel from the client and the GUI.
+// We do this when we leave a channel for any reason.
+// Note: last channel is never removed and when removing a channel
+// we switch to the last channel in the list before doing so.
+WscUI.prototype.remove_channel = function( ns ) {
+    if( this.channels() == 0 )
+        return;
+    
+    chan = this.channel(ns);
+    chan.remove();
+    delete this.channelo[chan.info["selector"]];
+    
+    var select = '';
+    for (tmp in this.channelo) {
+        if (this.channelo.hasOwnProperty(tmp) && tmp != chan.info['selector'])
+            select = tmp;
+    }
+    
+    this.toggle_channel(select);
+    this.channel(select).resize();
+};
+
+// Select which channel is currently being viewed.
+WscUI.prototype.toggle_channel = function( ns ) {
+    //console.log("out: "+previous+"; in: "+ns);
+    chan = this.channel(ns);
+    
+    if( !chan )
+        return;
+    
+    if(this.cchannel) {
+        if(this.cchannel == chan)
+            return;
+        // Hide previous channel, if any.
+        //console.log("prevshift ", previous);
+        this.cchannel.hide_channel();
+        this.control.cacheInput();
+    }
+    
+    // Show clicked channel.
+    chan.show_channel();
+    this.control.focus();
+    this.cchannel = chan;
+    this.control.setLabel();
+    if( this.settings['monitor'][1] ) {
+        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
+        mt.addClass(this.settings['monitor'][1]);
+    }
+    //this.resizeUI();
+};
+
+/**
+ * @function channel
+ * 
+ * @overload
+ *  Get the channel object associated with the given namespace.
+ *  @param [String] namespace
+ *  
+ * @overload
+ *  Set the channel object associated with the given namespace.
+ *  @param [String] namespace
+ *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ */
+WscUI.prototype.channel = function( namespace, chan ) {
+    return this.chatbook.channel( namespace, chan );
+};
+
+/**
+ * @function channels
+ * 
+ * Determine how many channels the ui has open. Hidden channels are
+ * not included in this, and we don't include the first channel because
+ * there should always be at least one non-hidden channel present in the
+ * ui.
+ * 
+ * @return [Integer] Number of channels open in the ui.
+ */
+WscUI.prototype.channels = function( ) {
+    return this.chatbook.channels();
+};/**
+ * wsc/ui/chatbook.js - photofroggy
+ * Object for managing the UI's chatbook.
+ */
+
+function WscUIChatbook( ui ) {
+    
+    this.manager = ui;
+    this.view = this.manager.view.find('div.chatbook');
+    this.chan = {};
+    this.current = null;
+    
+}
+
+/**
+ * @function channel
+ * 
+ * @overload
+ *  Get the channel object associated with the given namespace.
+ *  @param [String] namespace
+ *  
+ * @overload
+ *  Set the channel object associated with the given namespace.
+ *  @param [String] namespace
+ *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ */
+WscUIChatbook.prototype.channel = function( namespace, chan ) {
+    namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
+    /* 
+    console.log(namespace);
+    console.log(this.channelo);
+    /* */
+    if( !this.chan[namespace] && chan )
+        this.chan[namespace] = chan;
+    
+    return this.chan[namespace];
+};
+
+/**
+ * @function channels
+ * 
+ * Determine how many channels the ui has open. Hidden channels are
+ * not included in this, and we don't include the first channel because
+ * there should always be at least one non-hidden channel present in the
+ * ui.
+ * 
+ * @return [Integer] Number of channels open in the ui.
+ */
+WscUIChatbook.prototype.channels = function( ) {
+    chans = -1;
+    for(ns in this.chan) {
+        if( this.chan[ns].hidden )
+            continue;
+        chans++;
+    }
+    return chans;
+};
+
+/**
+ * @function create_channel
+ * 
+ * Create a channel in the UI.
+ */
+WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
+    chan = this.channel(ns, new WscUIChannel(this, ns, toggle));
+    chan.build();
+    this.toggle_channel(ns);
+};
+
+/**
+ * wsc/ui/control.js - photofroggy
+ * Object to control the UI for the control panel.
+ */
+
+function WscUIControl( ui ) {
+
+    this.manager = ui;
+    this.manager.view.append( wsc_html_control );
+    this.view = this.manager.view.find('div.chatcontrol');
+    this.form = this.view.find('form.msg');
+    this.input = this.form.find('input.msg');
+
+}
+
+// Steal the lime light. Brings the cursor to the input panel.
+WscUIControl.prototype.focus = function( ) {
+    this.input.focus();
+};
+
+// Returns `<symbol><username>`;
+WscUIControl.prototype.user_line = function( ) {
+    return /*this.manager.settings["symbol"] +*/ this.manager.settings["username"];
+};
+
+// Resize the control panel.
+WscUIControl.prototype.resize = function( ) {
+    this.view.css({
+        width: '100%'});
+    // Form dimensionals.
+    this.form.css({'width': '100%'});
+    this.input.css({'width': this.manager.view.width() - 80});
+};
+
+WscUIControl.prototype.height = function( ) {
+    return this.view.height() + 17;
+};
+
+
+// Set the handlers for the UI input.
+WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
+    if( this.client.mozilla )
+        this.input.keypress( onkeypress || this._onkeypress );
+    else
+        this.input.keydown( onkeypress || this._onkeypress );
+    
+    this.form.submit( onsubmit || this._onsubmit );
+};
+
+WscUIControl.prototype._onkeypress = function( event ) {};
+WscUIControl.prototype._onsubmit = function( event ) {};
+
+/* wsc html - photofroggy
+ * Provides HTML5 templates for the chat UI.
+ */
+
+// Chat UI.
+wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
+        <ul id="tabnav">\
+            <li><a href="#left" class="button">&laquo;</a></li>\
+            <li><a href="#right" class="button">&raquo;</a></li>\
+        </ul>\
+        </nav>\
+        <div class="chatbook"></div>';
+
+wsc_html_control = '<div class="chatcontrol">\
+            <form class="msg">\
+                <input type="text" class="msg" />\
+                <input type="submit" value="Send" class="sendmsg" />\
+            </form>\
+        </div>';
+
+// Channel templates.
+// Chat tab.
+var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}">{ns}</a></li>';
+
+// Chat screen.
+var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
+                    <header>\
+                        <div class="title"></div>\
+                    </header>\
+                    <div class="chatlog" id="{selector}-log">\
+                        <header>\
+                            <div class="topic"></div>\
+                        </header>\
+                        <ul class="logwrap"></ul>\
+                    </div>\
+                    <div class="chatusers" id="{selector}-users">\
+                </div>\
+            </div>';
+
+// Channel header HTML.
+var wsc_html_cheader = '<div class="{head}">{content}</div>';
+
+// Log message template.
+var wsc_html_logmsg = '<span class="message">{message}</span>';
+
+// Simple log template.
+var wsc_html_logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
+
+// Server message template.
+var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
+
+// User message template.
+var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
 // @include templates.js
 // @include lib.js
 // @include packet.js
@@ -3251,6 +3555,7 @@ function wsc_control( client ) {
 // @include commands.js
 // @include client.js
 // @include control.js
+// @include ui.js
 
 /* wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
@@ -3330,6 +3635,27 @@ function wsc_control( client ) {
         }
         
         return client;
+        
+    };
+    $.fn.wscui = function( method, options ) {
+        
+        ui = $(window).data('wscui');
+        
+        if( method == 'init' || ui === undefined ) {
+            if( ui == undefined ) {
+                ui = new WscUI( $(this), options, $.browser.mozilla );
+                $(window).resize(ui.resize);
+            }
+            $(window).data('wscui', ui);
+        }
+        
+        if( method != 'init' && method != undefined ) {
+            method = 'jq_' + method;
+            if( method in ui )
+                ui[method]( $(this), options);
+        }
+        
+        return ui;
         
     };
     

@@ -21,18 +21,22 @@
     $buttonh: #87C1CE,
     $buttonh-shadow: #1773A0, 
     $bgs: top,
-    $bgi: #80A4BD,
-    $bgsl: #3F87B8,
+    $bgi: #D3EDFF,
+    $bgsl: #53B1F0,
     $bgbg: #406D8B,
     $hbgs: top,
-    $hbgi: #9AD0F1,
-    $hbgsl: #73ACD3,
+    $hbgi: #D3EDFF,
+    $hbgsl: #90D2FF,
     $hbgbg: #406D8B,
+    $abgs: top,
+    $abgi: #D3EDFF,
+    $abgsl: #6CC4FF,
+    $abgbg: #406D8B,
     $outer-border: #0D4D69,
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
     $highlight: white,
-    $topic-color: #041827,
+    $topic-color: #125383,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
@@ -71,8 +75,6 @@
                 }
                 &:hover {
                     @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
-                    color: $tab-ah;
-                    font-weight: bold;
                 }
             }
             &.noise a { font-weight: bold; }
@@ -87,6 +89,9 @@
                     @include button-gradient($bgs, $bgi, $tabbed-fill-bg, $bgbg);
                     color: $tabbed-fill;
                 }
+            }
+            &.active a {
+                @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
             }
         }
     }
@@ -109,7 +114,7 @@
         div.chatlog {
             background-color: $log-bg;
             
-            div.logwrap {
+            ul.logwrap {
                 
                 a {
                     color: $a;
