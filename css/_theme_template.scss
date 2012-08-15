@@ -12,10 +12,12 @@
     $chrome-color: #AFD7F5,
     $log-bg: #EAF8FF,
     $light: #7C9AB4,
-    $a: #149E5C,
-    $ah: #990000,
+    $a: #AFFA3E,
+    $ah: #FF5959,
+    $log-a: #149E5C,
+    $log-ah: #FF5959,
     $tab-a: white,
-    $tab-ah: #FF5959,
+    $tab-ah: white,
     $button: #AAE1EE,
     $button-shadow: #0A384E, 
     $buttonh: #87C1CE,
@@ -44,8 +46,8 @@
     
     color: $base;
     a {
-        color: $tab-a;
-        &:hover { color: $tab-ah; }
+        color: $a;
+        &:hover { color: $ah; }
     }
     a.button,
     form.msg input[type="submit"] {
@@ -75,6 +77,7 @@
                 }
                 &:hover {
                     @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
+                    color: $tab-ah;
                 }
             }
             &.noise a { font-weight: bold; }
@@ -117,8 +120,8 @@
             ul.logwrap {
                 
                 a {
-                    color: $a;
-                    &:hover { color: $ah; }
+                    color: $log-a;
+                    &:hover { color: $log-ah; }
                 }
                 
                 border-color: $inner-border;
