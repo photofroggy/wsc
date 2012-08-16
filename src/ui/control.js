@@ -25,10 +25,11 @@ WscUIControl.prototype.user_line = function( ) {
 
 // Resize the control panel.
 WscUIControl.prototype.resize = function( ) {
+    w = this.manager.view.width();
     this.view.css({
         width: '100%'});
     // Form dimensionals.
-    this.form.css({'width': '100%'});
+    this.form.css({'width': this.manager.view.width() - 20});
     this.input.css({'width': this.manager.view.width() - 80});
 };
 
