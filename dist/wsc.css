@@ -323,11 +323,11 @@ div.wsc.wsct_default a:hover {
 }
 div.wsc.wsct_default a.button,
 div.wsc.wsct_default form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background-color: #406d8b;
   border-color: #0f6175;
   color: #aae1ee;
@@ -346,11 +346,11 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background-color: #406d8b;
   border-color: #0d4d69;
   color: white;
@@ -459,11 +459,11 @@ div.wsc.wsct_test a:hover {
   color: #ff5959;
 }
 div.wsc.wsct_test a.button, div.wsc.wsct_test form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background-color: #2ccc17;
   border-color: #293840;
   color: #aae1ee;
@@ -481,11 +481,11 @@ div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #53b1f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background-color: #2ccc17;
   border-color: #0d4d69;
   color: white;
