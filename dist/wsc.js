@@ -1082,6 +1082,17 @@ function wsc_channel( client, ns, hidden ) {
  * 
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
+ * 
+ * @param [String] data String possibly containing tablumps.
+ * @param [Object] parser A reference to a tablumps parser. Not required.
+ * 
+ * @example
+ *  // Parse something.
+ *  msg = new TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *  console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
+ *  console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+ *  console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
+ *  console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  */
 function TablumpString(data, parser) {
     this._parser = parser || new WscTablumps();
@@ -1265,7 +1276,7 @@ WscTablumps.prototype.defaultMap = function () {
         '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
         '&iframe\t': [ 3, '[iframe:{0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
         '&/iframe\t': [ 0, '', '</iframe>'],
-        '&a\t': [ 2, '[link:{0}]', '<a href="{0}" title="{1}">', '<a target="_blank" href="{0}" title="{1}">' ],
+        '&a\t': [ 2, '[link:{0}]', '<a target="_blank" href="{0}" title="{1}">' ],
         '&/a\t': [ 0, '[/link]', '</a>'],
         '&br\t': [ 0, '\n', '<br/>' ],
         '&bcode\t': [0, '\n', '<span><pre><code>'],
@@ -3408,7 +3419,7 @@ WscUIChannel.prototype.build = function( ) {
     this.userpanel = this.window.find('#' + selector + "-users");
     var chan = this;
     
-    this.manager.view.find('a[href="#' + selector + '"]').click(function () {
+    this.tab.click(function () {
         chan.manager.toggle_channel(selector);
         return false;
     });
@@ -3763,7 +3774,7 @@ WscUIControl.prototype.height = function( ) {
 
 // Set the handlers for the UI input.
 WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    if( this.client.mozilla )
+    if( this.manager.mozilla )
         this.input.keypress( onkeypress || this._onkeypress );
     else
         this.input.keydown( onkeypress || this._onkeypress );

@@ -1,11 +1,26 @@
 /**
- * wsc/ui/base.js - photofroggy
  * Base object used to manage a wsc client interface.
- */
+ * 
+ * @module wscuilib
+ **/
 
+
+/**
+ * This object is the platform for the wsc UI. Everything can be used and
+ * loaded from here.
+ * 
+ * @class WscUI
+ * @author photofroggy
+ * @constructor
+ * @param view {Object} Base jQuery object to use for the UI. Any empty div
+ *   will do.
+ * @param options {Object} Custom settings to use for the UI.
+ * @param mozilla {Boolean} Is the browser in use made by Mozilla?
+ * @param events {Method} Event trigger callback.
+ **/
 function WscUI( view, options, mozilla, events ) {
     
-    this.handle_evt = events || this._handle_evt;
+    this.trigger = events || this._handle_evt;
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
@@ -21,21 +36,40 @@ function WscUI( view, options, mozilla, events ) {
     
 }
 
+/**
+ * Sets the handler method to use for events.
+ * 
+ * @method set_handler
+ * @for WscUI
+ **/
 WscUI.prototype.set_handler = function( events ) {
 
-    this.handle_evt = events || this._handle_evt;
+    this.trigger = events || this._handle_evt;
 
 };
 
+/**
+ * Used to trigger events.
+ *
+ * @method trigger
+ * @for WscUI
+ **/
 WscUI.prototype.trigger = function( event, data ) {
 
-    this.handle_evt( event, data );
+    this._handle_evt( event, data );
 
 };
 
 WscUI.prototype._handle_evt = function( event, data ) {};
 
-// Deform a channel namespace.
+/**
+ * Deform a channel namespace.
+ *
+ * @method deform_ns
+ * @for WscUI
+ * @param ns {String} Channel namespace to deform.
+ * @return {String} The deformed namespace.
+ **/
 WscUI.prototype.deform_ns = function( ns ) {
     if(ns.indexOf("chat:") == 0)
         return '#' + ns.slice(5);

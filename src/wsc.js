@@ -9,7 +9,8 @@
 // @include control.js
 // @include ui.js
 
-/* wsc - photofroggy
+/**
+ * wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
  * chat servers and interact with them.
  */
