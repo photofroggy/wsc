@@ -2233,6 +2233,8 @@ function wsc_extdefault( client ) {
 }
 /* wsc client - photofroggy
  * wsc's chat client. Manages everything pretty much.
+ *
+ * @module wsc-client
  */
 
 /**
@@ -3201,13 +3203,28 @@ function wsc_control( client ) {
     return control;
 }
 /**
- * wsc/ui/base.js - photofroggy
  * Base object used to manage a wsc client interface.
- */
+ * 
+ * @module wscuilib
+ **/
 
+
+/**
+ * This object is the platform for the wsc UI. Everything can be used and
+ * loaded from here.
+ * 
+ * @class WscUI
+ * @author photofroggy
+ * @constructor
+ * @param view {Object} Base jQuery object to use for the UI. Any empty div
+ *   will do.
+ * @param options {Object} Custom settings to use for the UI.
+ * @param mozilla {Boolean} Is the browser in use made by Mozilla?
+ * @param events {Method} Event trigger callback.
+ **/
 function WscUI( view, options, mozilla, events ) {
     
-    this.handle_evt = events || this._handle_evt;
+    this.trigger = events || this._handle_evt;
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
@@ -3223,21 +3240,40 @@ function WscUI( view, options, mozilla, events ) {
     
 }
 
+/**
+ * Sets the handler method to use for events.
+ * 
+ * @method set_handler
+ * @for WscUI
+ **/
 WscUI.prototype.set_handler = function( events ) {
 
-    this.handle_evt = events || this._handle_evt;
+    this.trigger = events || this._handle_evt;
 
 };
 
+/**
+ * Used to trigger events.
+ *
+ * @method trigger
+ * @for WscUI
+ **/
 WscUI.prototype.trigger = function( event, data ) {
 
-    this.handle_evt( event, data );
+    this._handle_evt( event, data );
 
 };
 
 WscUI.prototype._handle_evt = function( event, data ) {};
 
-// Deform a channel namespace.
+/**
+ * Deform a channel namespace.
+ *
+ * @method deform_ns
+ * @for WscUI
+ * @param ns {String} Channel namespace to deform.
+ * @return {String} The deformed namespace.
+ **/
 WscUI.prototype.deform_ns = function( ns ) {
     if(ns.indexOf("chat:") == 0)
         return '#' + ns.slice(5);
@@ -3306,33 +3342,34 @@ WscUI.prototype.build = function() {
 WscUI.prototype.resize = function() {
 
     this.control.resize();
-    
-    // Main view dimensions.
-    //console.log('>> pH:',client.view.parent().height());
     this.view.height( this.view.parent().height() );
     this.view.width( '100%' );
-    
-    h = (this.view.parent().height() - this.nav.height() - this.control.height());
-    //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
-    //console.log('>> rUI h:', h);
-    // Chatbook dimensions.
-    this.chatbook.resize(h);
+    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
 
 };
 
-// Create a screen for channel `ns` in the UI, and initialise data
-// structures or some shit idk. The `selector` parameter defines the
-// channel without the `chat:` or `#` style prefixes. The `ns`
-// parameter is the string to use for the tab.
+/**
+ * Create a screen for channel `ns` in the UI, and initialise data
+ * structures or some shit idk.
+ * 
+ * @method create_channel
+ * @param ns {String} Short name for the channel.
+ * @param hidden {Boolean} Should this channel's tab be hidden?
+ */
 WscUI.prototype.create_channel = function( ns, toggle ) {
     this.chatbook.create_channel( ns, toggle );
     this.resize();
 };
 
-// Remove a channel from the client and the GUI.
-// We do this when we leave a channel for any reason.
-// Note: last channel is never removed and when removing a channel
-// we switch to the last channel in the list before doing so.
+/**
+ * Remove a channel from the GUI.
+ * We do this when we leave a channel for any reason.
+ * Note: last channel is never removed and when removing a channel
+ * we switch to the last channel in the list before doing so.
+ *
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ */
 WscUI.prototype.remove_channel = function( ns ) {
     if( this.channels() == 0 )
         return;
@@ -3870,7 +3907,8 @@ var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
 // @include control.js
 // @include ui.js
 
-/* wsc - photofroggy
+/**
+ * wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
  * chat servers and interact with them.
  */
