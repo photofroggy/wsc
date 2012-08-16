@@ -138,33 +138,34 @@ WscUI.prototype.build = function() {
 WscUI.prototype.resize = function() {
 
     this.control.resize();
-    
-    // Main view dimensions.
-    //console.log('>> pH:',client.view.parent().height());
     this.view.height( this.view.parent().height() );
     this.view.width( '100%' );
-    
-    h = (this.view.parent().height() - this.nav.height() - this.control.height());
-    //console.log('>> rUI h parts:',client.view.parent().height(),client.tabul.outerHeight(true),client.control.height());
-    //console.log('>> rUI h:', h);
-    // Chatbook dimensions.
-    this.chatbook.resize(h);
+    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
 
 };
 
-// Create a screen for channel `ns` in the UI, and initialise data
-// structures or some shit idk. The `selector` parameter defines the
-// channel without the `chat:` or `#` style prefixes. The `ns`
-// parameter is the string to use for the tab.
+/**
+ * Create a screen for channel `ns` in the UI, and initialise data
+ * structures or some shit idk.
+ * 
+ * @method create_channel
+ * @param ns {String} Short name for the channel.
+ * @param hidden {Boolean} Should this channel's tab be hidden?
+ */
 WscUI.prototype.create_channel = function( ns, toggle ) {
     this.chatbook.create_channel( ns, toggle );
     this.resize();
 };
 
-// Remove a channel from the client and the GUI.
-// We do this when we leave a channel for any reason.
-// Note: last channel is never removed and when removing a channel
-// we switch to the last channel in the list before doing so.
+/**
+ * Remove a channel from the GUI.
+ * We do this when we leave a channel for any reason.
+ * Note: last channel is never removed and when removing a channel
+ * we switch to the last channel in the list before doing so.
+ *
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ */
 WscUI.prototype.remove_channel = function( ns ) {
     if( this.channels() == 0 )
         return;
