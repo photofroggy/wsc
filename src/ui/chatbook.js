@@ -15,6 +15,7 @@ function WscUIChatbook( ui ) {
     this.manager = ui;
     this.view = this.manager.view.find('div.chatbook');
     this.chan = {};
+    this.trail = [];
     this.current = null;
     this.manager.on( 'tab.close.clicked', function( event, ui ) {
         ui.chatbook.remove_channel(event.ns);
@@ -42,7 +43,7 @@ WscUIChatbook.prototype.resize = function( height ) {
     this.view.height(height);
     
     for( select in this.chan ) {
-        chan = this.chan[select];
+        var chan = this.chan[select];
         chan.resize();
     }
 };
@@ -115,7 +116,12 @@ WscUIChatbook.prototype.channel_object = function( ns, hidden ) {
     return new WscUIChannel( this.manager, ns, hidden );
 };
 
-// Select which channel is currently being viewed.
+/**
+ * Select which channel is currently being viewed.
+ * 
+ * @method toggle_channel
+ * @param ns {String} Namespace of the channel to view.
+ */
 WscUIChatbook.prototype.toggle_channel = function( ns ) {
     chan = this.channel(ns);
     
@@ -134,6 +140,13 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    
+    // Update the paper trail.
+    pos = this.trail.indexOf(chan.namespace);
+    if( pos >= 0 )
+        this.trail.splice(pos, 1);
+    this.trail.push(chan.namespace);
+    
     this.manager.trigger( 'channel.selected', {
         'ns': chan.namespace,
         'chan': chan
@@ -154,12 +167,13 @@ WscUIChatbook.prototype.remove_channel = function( ns ) {
     chan.remove();
     delete this.chan[chan.selector];
     
-    var select = '';
-    for (tmp in this.chan) {
-        if (this.chan.hasOwnProperty(tmp) && tmp != chan.selector)
-            select = tmp;
-    }
+    rpos = this.trail.indexOf(chan.namespace);
+    this.trail.splice(rpos, 1);
     
+    if( this.current != chan )
+        return;
+    
+    select = this.trail[this.trail.length - 1];
     this.toggle_channel(select);
     this.channel(select).resize();
 };
