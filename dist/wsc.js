@@ -3806,7 +3806,7 @@ WscUIControl.prototype.resize = function( ) {
 };
 
 WscUIControl.prototype.height = function( ) {
-    return this.view.height() + 17;
+    return this.view.height();
 };
 
 
@@ -3837,7 +3837,7 @@ function WscUINavigation( ui ) {
 }
 
 WscUINavigation.prototype.height = function(  ) {
-    return this.nav.outerHeight(true);
+    return this.nav.height();
 };
 
 WscUINavigation.prototype.add_tab = function( selector, ns ) {

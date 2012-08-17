@@ -3,7 +3,7 @@
  * 
  * @module wscuilib
  **/
-
+var Foo = {};
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
@@ -12,8 +12,7 @@
  * @class WscUI
  * @author photofroggy
  * @constructor
- * @param view {Object} Base jQuery object to use for the UI. Any empty div
- *   will do.
+ * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param events {Method} Event trigger callback.
@@ -40,7 +39,7 @@ function WscUI( view, options, mozilla, events ) {
  * Sets the handler method to use for events.
  * 
  * @method set_handler
- * @for WscUI
+ * @param events {Method} Callback for handling events.
  **/
 WscUI.prototype.set_handler = function( events ) {
 
@@ -52,7 +51,8 @@ WscUI.prototype.set_handler = function( events ) {
  * Used to trigger events.
  *
  * @method trigger
- * @for WscUI
+ * @param event {String} Name of the event to trigger.
+ * @param data {Object} Event data.
  **/
 WscUI.prototype.trigger = function( event, data ) {
 
@@ -60,13 +60,18 @@ WscUI.prototype.trigger = function( event, data ) {
 
 };
 
+/**
+ * Place holder.
+ * @method _handle_evt
+ * @param event {String}
+ * @param data {Object}
+ */
 WscUI.prototype._handle_evt = function( event, data ) {};
 
 /**
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @for WscUI
  * @param ns {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
@@ -190,30 +195,25 @@ WscUI.prototype.toggle_channel = function( ns ) {
 };
 
 /**
- * @function channel
+ * Get or set the channel object associated with the given namespace.
  * 
- * @overload
- *  Get the channel object associated with the given namespace.
- *  @param [String] namespace
- *  
- * @overload
- *  Set the channel object associated with the given namespace.
- *  @param [String] namespace
- *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by `namespace`
  */
 WscUI.prototype.channel = function( namespace, chan ) {
     return this.chatbook.channel( namespace, chan );
 };
 
 /**
- * @function channels
- * 
  * Determine how many channels the ui has open. Hidden channels are
  * not included in this, and we don't include the first channel because
  * there should always be at least one non-hidden channel present in the
  * ui.
  * 
- * @return [Integer] Number of channels open in the ui.
+ * @method channels
+ * @return {Integer} Number of channels open in the ui.
  */
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();

@@ -1,8 +1,17 @@
-/**
+/*
  * wsc/ui/channel.js - photofroggy
  * Object to control the UI for the channel view.
  */
 
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class WscUIChannel
+ * @constructor
+ * @param ui {Object} WscUI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ */
 function WscUIChannel( ui, ns, hidden ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
@@ -14,7 +23,11 @@ function WscUIChannel( ui, ns, hidden ) {
 
 }
 
-// Draw channel on screen and store the different elements in attributes.
+/**
+ * Draw channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
 WscUIChannel.prototype.build = function( ) {
     
     if( this.built )
@@ -62,13 +75,22 @@ WscUIChannel.prototype.build = function( ) {
     this.built = true;
 };
 
-// Toggle the visibility of the channel.
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
 WscUIChannel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
 };
 
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
 WscUIChannel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
     this.window.css({'display': 'block'});
@@ -77,12 +99,22 @@ WscUIChannel.prototype.show = function( ) {
     this.resize();
 };
 
-// Scroll the log panel downwards.
+/**
+ * Scroll the log panel downwards.
+ * 
+ * @method scroll
+ */
 WscUIChannel.prototype.scroll = function( ) {
     this.pad();
     this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
 };
 
+/**
+ * Add padding to the channel log's wrapping ul.
+ * This is done to make sure messages always appear at the bottom first.
+ * 
+ * @method pad
+ */
 WscUIChannel.prototype.pad = function ( ) {
     // Add padding.
     this.wrap.css({'padding-top': 0});
@@ -105,7 +137,11 @@ WscUIChannel.prototype.pad = function ( ) {
     /* */
 };
 
-// Fix the dimensions of the log window.
+/**
+ * Fix the dimensions of the log window.
+ * 
+ * @method resize
+ */
 WscUIChannel.prototype.resize = function( ) {
     this.wrap.css({'padding-top': 0});
     // Height.
@@ -142,12 +178,22 @@ WscUIChannel.prototype.resize = function( ) {
     cu.css({height: this.logpanel.innerHeight() - 3});
 };
 
-// Display a log message.
+/**
+ * Display a log message.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ */
 WscUIChannel.prototype.log = function( msg ) {
     this.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
 };
 
-// Send a message to the log window.
+/**
+ * Send a message to the log window.
+ * 
+ * @method log_item
+ * @param msg {String} Message to send.
+ */
 WscUIChannel.prototype.log_item = function( msg ) {
     if( this.hidden ) {
         if( this.thresh <= 0 )
@@ -162,13 +208,25 @@ WscUIChannel.prototype.log_item = function( msg ) {
     this.scroll();
 };
 
-// Send a server message to the log window.
+/**
+ * Send a server message to the log window.
+ * 
+ * @method server_message
+ * @param msg {String} Server message.
+ * @param [info] {String} Extra information for the message.
+ */
 WscUIChannel.prototype.server_message = function( msg, info ) {
     this.log_item(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
 };
 
-// Set the channel header.
-// This can be the title or topic, determined by `head`.
+/**
+ * Set the channel header.
+ * This can be the title or topic, determined by `head`.
+ * 
+ * @method set_header
+ * @param head {String} Should be 'title' or 'topic'.
+ * @param content {String} HTML to use for the header.
+ */
 WscUIChannel.prototype.set_header = function( head, content ) {
     headd = this.window.find("header div." + head);
     headd.replaceWith(
@@ -185,6 +243,12 @@ WscUIChannel.prototype.set_header = function( head, content ) {
     this.resize();
 };
 
+/**
+ * Set the channel user list.
+ * 
+ * @method set_user_list
+ * @param userlist {Array} Listing of users in the channel.
+ */
 WscUIChannel.prototype.set_user_list = function( userlist ) {
     
     if( Object.size(userlist) == 0 )

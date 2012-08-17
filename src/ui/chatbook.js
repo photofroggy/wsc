@@ -1,8 +1,15 @@
-/**
+/*
  * wsc/ui/chatbook.js - photofroggy
  * Object for managing the UI's chatbook.
  */
 
+ /**
+  * Object for managing the chatbook portion of the UI.
+  *
+  * @class WscUIChatbook
+  * @constructor
+  * @param ui {Object} WscUI object.
+  */
 function WscUIChatbook( ui ) {
     
     this.manager = ui;
@@ -13,20 +20,19 @@ function WscUIChatbook( ui ) {
 }
 
 /**
- * @function height
- *
  * Return the height of the chatbook.
+ *
+ * @method height
  */
 WscUIChatbook.prototype.height = function() {
     return this.view.height();
 };
 
 /**
- * @function resize
- * 
  * Resize the chatbook view pane.
  * 
- * @param [Integer] height The height to set the view pane to. Defaults to 600px.
+ * @method resize
+ * @param [height=600] {Integer} The height to set the view pane to.
  */
 WscUIChatbook.prototype.resize = function( height ) {
     height = height || 600;
@@ -39,16 +45,12 @@ WscUIChatbook.prototype.resize = function( height ) {
 };
 
 /**
- * @function channel
+ * Get or set the channel object associated with the given namespace.
  * 
- * @overload
- *  Get the channel object associated with the given namespace.
- *  @param [String] namespace
- *  
- * @overload
- *  Set the channel object associated with the given namespace.
- *  @param [String] namespace
- *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by `namespace`
  */
 WscUIChatbook.prototype.channel = function( namespace, chan ) {
     namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
@@ -63,13 +65,12 @@ WscUIChatbook.prototype.channel = function( namespace, chan ) {
 };
 
 /**
- * @function channels
- * 
  * Determine how many channels the ui has open. Hidden channels are
  * not included in this, and we don't include the first channel because
  * there should always be at least one non-hidden channel present in the
  * ui.
  * 
+ * @method channels
  * @return [Integer] Number of channels open in the ui.
  */
 WscUIChatbook.prototype.channels = function( ) {
@@ -83,9 +84,9 @@ WscUIChatbook.prototype.channels = function( ) {
 };
 
 /**
- * @function create_channel
- * 
  * Create a channel in the UI.
+ * 
+ * @method create_channel
  */
 WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
     chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
