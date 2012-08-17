@@ -4204,6 +4204,44 @@ WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
 WscUIControl.prototype._onkeypress = function( event ) {};
 WscUIControl.prototype._onsubmit = function( event ) {};
 
+/**
+ * Get the last word from the input box.
+ * 
+ * @method chomp
+ * @return {String} The last word in the input box.
+ */
+WscUIControl.prototype.chomp = function( ) {
+    d = this.input.val();
+    i = d.lastIndexOf(' ');
+    
+    if( i == -1 ) {
+        this.input.val('');
+        return d;
+    }
+    
+    chunk = d.slice(i + 1);
+    this.input.val( d.slice(0, i) );
+    
+    if( chunk.length == 0 )
+        return this.chomp();
+    
+    return chunk;
+};
+
+/**
+ * Append text to the end of the input box.
+ * 
+ * @method unchomp
+ * @param data {String} Text to append.
+ */
+WscUIControl.prototype.unchomp = function( data ) {
+    d = this.input.val();
+    if( !d )
+        this.input.val(data);
+    else
+        this.input.val(d + ' ' + data);
+};
+
 /*
  * wsc/ui/nav.js - photofroggy
  * Object to control the UI for the chat navigation.
