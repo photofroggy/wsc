@@ -27,6 +27,8 @@ div.wsc nav.tabs ul#chattabs {
   list-style: none;
   padding: 14px 8px 0;
   width: 80%;
+  overflow: hidden;
+  height: 30px;
 }
 div.wsc nav.tabs ul#tabnav {
   float: right;
@@ -43,7 +45,7 @@ div.wsc nav.tabs ul li {
 div.wsc nav.tabs ul li.hidden {
   display: none;
 }
-div.wsc nav.tabs ul li a {
+div.wsc nav.tabs ul li a.tab {
   text-decoration: none;
   padding: 4px 5px;
   -webkit-border-top-left-radius: 5px;
@@ -56,24 +58,53 @@ div.wsc nav.tabs ul li a {
   border-bottom: none;
   display: block;
 }
-div.wsc nav.tabs ul li a:hover {
+div.wsc nav.tabs ul li a.tab:hover {
   text-decoration: none;
   border: 1px solid black;
   border-bottom: none;
   padding: 5px 5px;
   margin-top: -2px;
 }
+div.wsc nav.tabs ul li a.closetab {
+  background: none;
+  display: none;
+  height: 20px;
+  width: 20px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 13px;
+  -webkit-box-shadow: 0px 1px 1px black;
+  -moz-box-shadow: 0px 1px 1px black;
+  box-shadow: 0px 1px 1px black;
+}
+div.wsc nav.tabs ul li a.closetab:hover {
+  background: none;
+  border: 1px solid black;
+  cursor: pointer;
+  -webkit-box-shadow: inset 0px 1px 2px black;
+  -moz-box-shadow: inset 0px 1px 2px black;
+  box-shadow: inset 0px 1px 2px black;
+}
 div.wsc nav.tabs ul li.active {
   margin-top: 0px;
 }
-div.wsc nav.tabs ul li.active a {
+div.wsc nav.tabs ul li.active a.tab {
   padding: 5px 7px;
+  padding-left: 30px;
   border: 1px solid black;
   border-bottom: none;
 }
-div.wsc nav.tabs ul li.active a:hover {
-  padding: 5px 7px;
+div.wsc nav.tabs ul li.active a.tab:hover {
   margin-top: 0px;
+}
+div.wsc nav.tabs ul li.active a.closetab {
+  display: block;
+  position: relative;
+  top: -25px;
+  left: 5px;
 }
 div.wsc a {
   text-decoration: none;
@@ -273,7 +304,7 @@ div.wsc div.chatwindow div.userinfo div ul li {
 div.wsc div.chatcontrol {
   clear: both;
   margin: 0px;
-  padding: 5px;
+  padding: 0px;
   width: 100%;
   border-bottom: 1px solid black;
   font-size: 12px;
@@ -285,7 +316,7 @@ div.wsc div.chatcontrol p {
 }
 div.wsc div.chatcontrol form.msg {
   clear: both;
-  padding: 0px;
+  padding: 7px;
   margin: 0px;
   margin-bottom: 5px;
   width: 100%;
@@ -371,16 +402,36 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a:hover {
   background: linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
   color: white;
 }
-div.wsc.wsct_default nav.tabs ul#chattabs li.noise a {
+div.wsc.wsct_default nav.tabs ul#chattabs li a.closetab {
+  background: -webkit-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -moz-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -ms-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -o-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  color: #fff6e4;
+  text-shadow: 0px -1px #311604;
+  font-weight: bold;
+  border-color: #0f6175;
+}
+div.wsc.wsct_default nav.tabs ul#chattabs li a.closetab:hover {
+  background: -webkit-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -moz-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -ms-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -o-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  color: #fff6e4;
+  text-shadow: 0px -1px #311604;
+}
+div.wsc.wsct_default nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
-div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a {
+div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
-  border-width: 1px;
+  border-width: 2px;
   font-weight: bold;
 }
-div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a {
+div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
@@ -388,7 +439,7 @@ div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a {
   background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   color: #9ad7f1;
 }
-div.wsc.wsct_default nav.tabs ul#chattabs li.active a {
+div.wsc.wsct_default nav.tabs ul#chattabs li.active a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
@@ -506,16 +557,36 @@ div.wsc.wsct_test nav.tabs ul#chattabs li a:hover {
   background: linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
   color: white;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.noise a {
+div.wsc.wsct_test nav.tabs ul#chattabs li a.closetab {
+  background: -webkit-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -moz-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -ms-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: -o-linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  background: linear-gradient(top, #ffa69e 0%, #df4c3f 5%, #9e2318 97%);
+  color: #fff6e4;
+  text-shadow: 0px -1px #311604;
+  font-weight: bold;
+  border-color: #293840;
+}
+div.wsc.wsct_test nav.tabs ul#chattabs li a.closetab:hover {
+  background: -webkit-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -moz-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -ms-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: -o-linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  background: linear-gradient(top, #ffa69e 0%, #fab4ae 5%, #9e2318 97%);
+  color: #fff6e4;
+  text-shadow: 0px -1px #311604;
+}
+div.wsc.wsct_test nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a {
+div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
-  border-width: 1px;
+  border-width: 2px;
   font-weight: bold;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a {
+div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
@@ -523,7 +594,7 @@ div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a {
   background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
   color: #9ad7f1;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.active a {
+div.wsc.wsct_test nav.tabs ul#chattabs li.active a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);

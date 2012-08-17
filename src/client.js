@@ -1,5 +1,7 @@
 /* wsc client - photofroggy
  * wsc's chat client. Manages everything pretty much.
+ *
+ * @module wsc-client
  */
 
 /**

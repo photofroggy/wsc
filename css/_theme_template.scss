@@ -34,6 +34,17 @@
     $abgi: #D3EDFF,
     $abgsl: #55A5DB,
     $abgbg: #406D8B,
+    $close: #FFF6E4,
+    $closeh: #FFF6E4,
+    $close-shadow: #311604,
+    $close-bgs: top,
+    $close-bgi: #FFA69E ,
+    $close-bgsl: #DF4C3F,
+    $close-bgbg: #9E2318,
+    $close-hbgs: top,
+    $close-hbgi: #FFA69E ,
+    $close-hbgsl: #FAB4AE,
+    $close-hbgbg: #9E2318,
     $outer-border: #0D4D69,
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
@@ -80,20 +91,32 @@
                     color: $tab-ah;
                 }
             }
-            &.noise a { font-weight: bold; }
+            a.closetab {
+                @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
+                color: $close;
+                text-shadow: 0px -1px $close-shadow;
+                font-weight: bold;
+                border-color: $base;
+                &:hover {
+                    @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
+                    color: $closeh;
+                    text-shadow: 0px -1px $close-shadow;
+                }
+            }
+            &.noise a.tab { font-weight: bold; }
             &.tabbed {
-                a {
+                a.tab {
                     color: $tabbed;
                     border-color: $tabbed;
-                    border-width: 1px;
+                    border-width: 2px;
                     font-weight: bold;
                 }
-                &.fill a {
+                &.fill a.tab {
                     @include button-gradient($bgs, $bgi, $tabbed-fill-bg, $bgbg);
                     color: $tabbed-fill;
                 }
             }
-            &.active a {
+            &.active a.tab {
                 @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
             }
         }

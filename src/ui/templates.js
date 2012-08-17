@@ -20,7 +20,7 @@ wsc_html_control = '<div class="chatcontrol">\
 
 // Channel templates.
 // Chat tab.
-var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}">{ns}</a></li>';
+var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
 
 // Chat screen.
 var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
@@ -51,3 +51,14 @@ var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em>
 
 // User message template.
 var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
+
+// User info box (userlist hover)
+var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
+                            <div class="avatar">\
+                                {avatar}\
+                            </div><div class="info">\
+                            <strong>\
+                            {link}\
+                            </strong>\
+                            <ul>{info}</ul></div>\
+                        </div>';
