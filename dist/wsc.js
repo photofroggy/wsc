@@ -3207,7 +3207,7 @@ function wsc_control( client ) {
  * 
  * @module wscuilib
  **/
-
+var Foo = {};
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
@@ -3216,8 +3216,7 @@ function wsc_control( client ) {
  * @class WscUI
  * @author photofroggy
  * @constructor
- * @param view {Object} Base jQuery object to use for the UI. Any empty div
- *   will do.
+ * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param events {Method} Event trigger callback.
@@ -3244,7 +3243,7 @@ function WscUI( view, options, mozilla, events ) {
  * Sets the handler method to use for events.
  * 
  * @method set_handler
- * @for WscUI
+ * @param events {Method} Callback for handling events.
  **/
 WscUI.prototype.set_handler = function( events ) {
 
@@ -3256,7 +3255,8 @@ WscUI.prototype.set_handler = function( events ) {
  * Used to trigger events.
  *
  * @method trigger
- * @for WscUI
+ * @param event {String} Name of the event to trigger.
+ * @param data {Object} Event data.
  **/
 WscUI.prototype.trigger = function( event, data ) {
 
@@ -3264,13 +3264,18 @@ WscUI.prototype.trigger = function( event, data ) {
 
 };
 
+/**
+ * Place holder.
+ * @method _handle_evt
+ * @param event {String}
+ * @param data {Object}
+ */
 WscUI.prototype._handle_evt = function( event, data ) {};
 
 /**
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @for WscUI
  * @param ns {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
@@ -3394,50 +3399,59 @@ WscUI.prototype.toggle_channel = function( ns ) {
 };
 
 /**
- * @function channel
+ * Get or set the channel object associated with the given namespace.
  * 
- * @overload
- *  Get the channel object associated with the given namespace.
- *  @param [String] namespace
- *  
- * @overload
- *  Set the channel object associated with the given namespace.
- *  @param [String] namespace
- *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by `namespace`
  */
 WscUI.prototype.channel = function( namespace, chan ) {
     return this.chatbook.channel( namespace, chan );
 };
 
 /**
- * @function channels
- * 
  * Determine how many channels the ui has open. Hidden channels are
  * not included in this, and we don't include the first channel because
  * there should always be at least one non-hidden channel present in the
  * ui.
  * 
- * @return [Integer] Number of channels open in the ui.
+ * @method channels
+ * @return {Integer} Number of channels open in the ui.
  */
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
-};/**
+};/*
  * wsc/ui/channel.js - photofroggy
  * Object to control the UI for the channel view.
  */
 
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class WscUIChannel
+ * @constructor
+ * @param ui {Object} WscUI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ */
 function WscUIChannel( ui, ns, hidden ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
+    this.built = false;
     this.selector = selector;
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
 
 }
 
-// Draw channel on screen and store the different elements in attributes.
+/**
+ * Draw channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
 WscUIChannel.prototype.build = function( ) {
     
     if( this.built )
@@ -3485,13 +3499,22 @@ WscUIChannel.prototype.build = function( ) {
     this.built = true;
 };
 
-// Toggle the visibility of the channel.
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
 WscUIChannel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
 };
 
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
 WscUIChannel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
     this.window.css({'display': 'block'});
@@ -3500,12 +3523,22 @@ WscUIChannel.prototype.show = function( ) {
     this.resize();
 };
 
-// Scroll the log panel downwards.
+/**
+ * Scroll the log panel downwards.
+ * 
+ * @method scroll
+ */
 WscUIChannel.prototype.scroll = function( ) {
     this.pad();
     this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
 };
 
+/**
+ * Add padding to the channel log's wrapping ul.
+ * This is done to make sure messages always appear at the bottom first.
+ * 
+ * @method pad
+ */
 WscUIChannel.prototype.pad = function ( ) {
     // Add padding.
     this.wrap.css({'padding-top': 0});
@@ -3528,7 +3561,11 @@ WscUIChannel.prototype.pad = function ( ) {
     /* */
 };
 
-// Fix the dimensions of the log window.
+/**
+ * Fix the dimensions of the log window.
+ * 
+ * @method resize
+ */
 WscUIChannel.prototype.resize = function( ) {
     this.wrap.css({'padding-top': 0});
     // Height.
@@ -3565,12 +3602,22 @@ WscUIChannel.prototype.resize = function( ) {
     cu.css({height: this.logpanel.innerHeight() - 3});
 };
 
-// Display a log message.
+/**
+ * Display a log message.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ */
 WscUIChannel.prototype.log = function( msg ) {
     this.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
 };
 
-// Send a message to the log window.
+/**
+ * Send a message to the log window.
+ * 
+ * @method log_item
+ * @param msg {String} Message to send.
+ */
 WscUIChannel.prototype.log_item = function( msg ) {
     if( this.hidden ) {
         if( this.thresh <= 0 )
@@ -3585,13 +3632,25 @@ WscUIChannel.prototype.log_item = function( msg ) {
     this.scroll();
 };
 
-// Send a server message to the log window.
+/**
+ * Send a server message to the log window.
+ * 
+ * @method server_message
+ * @param msg {String} Server message.
+ * @param [info] {String} Extra information for the message.
+ */
 WscUIChannel.prototype.server_message = function( msg, info ) {
     this.log_item(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
 };
 
-// Set the channel header.
-// This can be the title or topic, determined by `head`.
+/**
+ * Set the channel header.
+ * This can be the title or topic, determined by `head`.
+ * 
+ * @method set_header
+ * @param head {String} Should be 'title' or 'topic'.
+ * @param content {String} HTML to use for the header.
+ */
 WscUIChannel.prototype.set_header = function( head, content ) {
     headd = this.window.find("header div." + head);
     headd.replaceWith(
@@ -3608,6 +3667,12 @@ WscUIChannel.prototype.set_header = function( head, content ) {
     this.resize();
 };
 
+/**
+ * Set the channel user list.
+ * 
+ * @method set_user_list
+ * @param userlist {Array} Listing of users in the channel.
+ */
 WscUIChannel.prototype.set_user_list = function( userlist ) {
     
     if( Object.size(userlist) == 0 )
@@ -3646,11 +3711,56 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
     this.resize();
     
 };
+
 /**
+ * The user has been highlighted in this channel.
+ * Highlights the last log message in the channel's log and animates the
+ * channel tab if the channel is not visible.
+ * 
+ * @method highlight
+ * @param [message] {Object} jQuery object for an html element. If provided,
+ *   this element will be highlighted instead of the channel's last log
+ *   message.
+ */
+WscUIChannel.prototype.highlight = function( message ) {
+    
+    var tab = this.tab;
+    ( message || this.window.find('.logmsg').last() ).addClass('highlight');
+    
+    if( tab.hasClass('active') )
+        return;
+    
+    if( tab.hasClass('tabbed') )
+        return;
+    
+    var runs = 0;
+    tab.addClass('tabbed');
+    
+    function toggles() {
+        runs++;
+        tab.toggleClass('fill');
+        if( runs == 6 )
+            return;
+        setTimeout( toggles, 1000 );
+    }
+    
+    toggles();
+    
+};
+
+
+/*
  * wsc/ui/chatbook.js - photofroggy
  * Object for managing the UI's chatbook.
  */
 
+ /**
+  * Object for managing the chatbook portion of the UI.
+  *
+  * @class WscUIChatbook
+  * @constructor
+  * @param ui {Object} WscUI object.
+  */
 function WscUIChatbook( ui ) {
     
     this.manager = ui;
@@ -3661,20 +3771,19 @@ function WscUIChatbook( ui ) {
 }
 
 /**
- * @function height
- *
  * Return the height of the chatbook.
+ *
+ * @method height
  */
 WscUIChatbook.prototype.height = function() {
     return this.view.height();
 };
 
 /**
- * @function resize
- * 
  * Resize the chatbook view pane.
  * 
- * @param [Integer] height The height to set the view pane to. Defaults to 600px.
+ * @method resize
+ * @param [height=600] {Integer} The height to set the view pane to.
  */
 WscUIChatbook.prototype.resize = function( height ) {
     height = height || 600;
@@ -3687,16 +3796,12 @@ WscUIChatbook.prototype.resize = function( height ) {
 };
 
 /**
- * @function channel
+ * Get or set the channel object associated with the given namespace.
  * 
- * @overload
- *  Get the channel object associated with the given namespace.
- *  @param [String] namespace
- *  
- * @overload
- *  Set the channel object associated with the given namespace.
- *  @param [String] namespace
- *  @param [Object] chan A {wsc_channel.channel wsc channel object} representing the channel specified.
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by `namespace`
  */
 WscUIChatbook.prototype.channel = function( namespace, chan ) {
     namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
@@ -3711,13 +3816,12 @@ WscUIChatbook.prototype.channel = function( namespace, chan ) {
 };
 
 /**
- * @function channels
- * 
  * Determine how many channels the ui has open. Hidden channels are
  * not included in this, and we don't include the first channel because
  * there should always be at least one non-hidden channel present in the
  * ui.
  * 
+ * @method channels
  * @return [Integer] Number of channels open in the ui.
  */
 WscUIChatbook.prototype.channels = function( ) {
@@ -3731,9 +3835,9 @@ WscUIChatbook.prototype.channels = function( ) {
 };
 
 /**
- * @function create_channel
- * 
  * Create a channel in the UI.
+ * 
+ * @method create_channel
  */
 WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
     chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
@@ -3770,11 +3874,18 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
     //this.resizeUI();
 };
 
-/**
+/*
  * wsc/ui/control.js - photofroggy
  * Object to control the UI for the control panel.
  */
 
+/**
+ * This object provides an interface for the chat input panel.
+ * 
+ * @class WscUIControl
+ * @constructor
+ * @param ui {Object} WscUI object.
+ */
 function WscUIControl( ui ) {
 
     this.manager = ui;
@@ -3785,17 +3896,30 @@ function WscUIControl( ui ) {
 
 }
 
-// Steal the lime light. Brings the cursor to the input panel.
+/**
+ * Steal the lime light. Brings the cursor to the input panel.
+ * 
+ * @method focus
+ */
 WscUIControl.prototype.focus = function( ) {
     this.input.focus();
 };
 
-// Returns `<symbol><username>`;
+/**
+ * Deprecated; Returns `<username>`;
+ * 
+ * @method user_line
+ * @return {String} `username`.
+ */
 WscUIControl.prototype.user_line = function( ) {
     return /*this.manager.settings["symbol"] +*/ this.manager.settings["username"];
 };
 
-// Resize the control panel.
+/**
+ * Resize the control panel.
+ *
+ * @method resize
+ */
 WscUIControl.prototype.resize = function( ) {
     w = this.manager.view.width();
     this.view.css({
@@ -3805,12 +3929,26 @@ WscUIControl.prototype.resize = function( ) {
     this.input.css({'width': this.manager.view.width() - 80});
 };
 
+
+/**
+ * Get the height of the input panel.
+ * 
+ * @method height
+ */
 WscUIControl.prototype.height = function( ) {
     return this.view.height();
 };
 
 
-// Set the handlers for the UI input.
+/**
+ * Set the handlers for the UI input.
+ *
+ * @method set_handlers
+ * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
+ *   `keypress`.
+ * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
+ *   `submit`.
+ */
 WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
     if( this.manager.mozilla )
         this.input.keypress( onkeypress || this._onkeypress );
@@ -3823,11 +3961,18 @@ WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
 WscUIControl.prototype._onkeypress = function( event ) {};
 WscUIControl.prototype._onsubmit = function( event ) {};
 
-/**
+/*
  * wsc/ui/nav.js - photofroggy
  * Object to control the UI for the chat navigation.
  */
 
+/**
+ * Navigation UI element. Provides helpers for controlling the chat navigation.
+ *
+ * @class WscUINavigation
+ * @constructor
+ * @param ui {Object} WscUI object.
+ */
 function WscUINavigation( ui ) {
 
     this.manager = ui;
@@ -3836,10 +3981,24 @@ function WscUINavigation( ui ) {
 
 }
 
+/**
+ * Get the height of the navigation bar.
+ *
+ * @method height
+ * @return {Integer} The height of the navigation bar in pixels.
+ */
 WscUINavigation.prototype.height = function(  ) {
     return this.nav.height();
 };
 
+/**
+ * Add a channel tab to the navigation bar.
+ * 
+ * @method add_tab
+ * @param selector {String} Shorthand lower case name for the channel with no prefixes.
+ * @param ns {String} Shorthand namespace for the channel. Used as the label
+ *   for the tab.
+ */
 WscUINavigation.prototype.add_tab = function( selector, ns ) {
     this.tabs.append(wsc_html_chattab.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
     return this.tabs.find('#' + selector + '-tab');

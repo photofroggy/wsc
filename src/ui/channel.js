@@ -17,6 +17,7 @@ function WscUIChannel( ui, ns, hidden ) {
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
+    this.built = false;
     this.selector = selector;
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
@@ -287,3 +288,41 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
     this.resize();
     
 };
+
+/**
+ * The user has been highlighted in this channel.
+ * Highlights the last log message in the channel's log and animates the
+ * channel tab if the channel is not visible.
+ * 
+ * @method highlight
+ * @param [message] {Object} jQuery object for an html element. If provided,
+ *   this element will be highlighted instead of the channel's last log
+ *   message.
+ */
+WscUIChannel.prototype.highlight = function( message ) {
+    
+    var tab = this.tab;
+    ( message || this.window.find('.logmsg').last() ).addClass('highlight');
+    
+    if( tab.hasClass('active') )
+        return;
+    
+    if( tab.hasClass('tabbed') )
+        return;
+    
+    var runs = 0;
+    tab.addClass('tabbed');
+    
+    function toggles() {
+        runs++;
+        tab.toggleClass('fill');
+        if( runs == 6 )
+            return;
+        setTimeout( toggles, 1000 );
+    }
+    
+    toggles();
+    
+};
+
+
