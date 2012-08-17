@@ -3776,6 +3776,19 @@ WscUIChannel.prototype.set_header = function( head, content ) {
 };
 
 /**
+ * Get a channel header's contents.
+ * 
+ * @method get_header
+ * @param head {String} Should be 'title' or 'topic'.
+ * @return {Object} Content of the header.
+ */
+WscUIChannel.prototype.get_header = function( head ) {
+
+    return this.window.find('header div.' + head);
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
