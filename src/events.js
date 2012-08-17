@@ -4,6 +4,8 @@
 /**
  * EventEmitter
  * Simple event framework, based off of NodeJS's EventEmitter
+ * @class EventEmitter
+ * @constructor
  **/
 function EventEmitter() {
     var events = {}, self = this;
@@ -14,7 +16,7 @@ function EventEmitter() {
             events[event] = [listener];
             return self;
         }
-        events[event].push(listener);
+        events[event].unshift(listener);
         return self;
     }
 
@@ -32,7 +34,9 @@ function EventEmitter() {
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
-                callbacks[i].apply({}, args);
+                bubble = callbacks[i].apply({}, args);
+                if( bubble === false )
+                    break;
             }
         }
         return self;
