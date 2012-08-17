@@ -3942,11 +3942,14 @@ WscUIChannel.prototype.userinfo = function( user ) {
     if( link.length == 0 )
         return;
 
-    var box = null;
     var chan = this;
+    var box = null;
     
     link.hover(
         function( e ) {
+            ed = { 'ns': chan.namespace, 'user': user};
+            chan.manager.trigger( 'userinfo.before', ed );
+            user = ed.user;
             infoli = '';
             for( index in user.info ) {
                 infoli+= '<li>' + user.info[index] + '</li>';
