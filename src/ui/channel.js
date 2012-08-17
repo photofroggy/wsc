@@ -206,7 +206,11 @@ WscUIChannel.prototype.resize = function( ) {
  * @param msg {String} Message to display.
  */
 WscUIChannel.prototype.log = function( msg ) {
-    this.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    data = {
+        'ns': this.namespace,
+        'message': msg};
+    this.manager.trigger( 'log.before', data );
+    this.log_item(wsc_html_logmsg.replacePArg('{message}', data.message));
 };
 
 /**
@@ -238,7 +242,12 @@ WscUIChannel.prototype.log_item = function( msg ) {
  * @param [info] {String} Extra information for the message.
  */
 WscUIChannel.prototype.server_message = function( msg, info ) {
-    this.log_item(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
+    data = {
+        'ns': this.namespace,
+        'message': msg,
+        'info': info};
+    this.manager.trigger( 'server_message.before', data );
+    this.log_item(wsc_html_servermsg.replacePArg('{message}', data.message).replacePArg('{info}', data.info));
 };
 
 /**

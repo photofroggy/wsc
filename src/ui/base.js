@@ -22,6 +22,7 @@ function WscUI( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
+        'themes': ['wsct_default', 'wsct_test'],
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
@@ -296,6 +297,34 @@ WscUI.prototype.log_item = function( msg ) {
 WscUI.prototype.log = function( msg ) {
 
     this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+
+};
+
+/**
+ * Set the theme for the UI.
+ * 
+ * @method theme
+ * @param theme {String} Name of the theme.
+ */
+WscUI.prototype.theme = function( theme ) {
+    if( this.settings.themes.indexOf(theme) == -1 || this.settings.theme == theme)
+        return;
+    this.view.removeClass( this.settings.theme ).addClass( theme );
+    this.settings.theme = theme;
+};
+
+/**
+ * Add a new theme to the client.
+ * 
+ * @method add_theme
+ * @param theme {String} Name of the theme to add.
+ */
+WscUI.prototype.add_theme = function( theme ) {
+
+    if( this.settings.themes.indexOf(theme) > -1 )
+        return;
+    
+    this.settings.themes.push(theme);
 
 };
 

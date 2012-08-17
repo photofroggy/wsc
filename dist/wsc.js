@@ -3230,6 +3230,7 @@ function WscUI( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
+        'themes': ['wsct_default', 'wsct_test'],
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
@@ -3507,6 +3508,34 @@ WscUI.prototype.log = function( msg ) {
 
 };
 
+/**
+ * Set the theme for the UI.
+ * 
+ * @method theme
+ * @param theme {String} Name of the theme.
+ */
+WscUI.prototype.theme = function( theme ) {
+    if( this.settings.themes.indexOf(theme) == -1 || this.settings.theme == theme)
+        return;
+    this.view.removeClass( this.settings.theme ).addClass( theme );
+    this.settings.theme = theme;
+};
+
+/**
+ * Add a new theme to the client.
+ * 
+ * @method add_theme
+ * @param theme {String} Name of the theme to add.
+ */
+WscUI.prototype.add_theme = function( theme ) {
+
+    if( this.settings.themes.indexOf(theme) > -1 )
+        return;
+    
+    this.settings.themes.push(theme);
+
+};
+
 
 /*
  * wsc/ui/channel.js - photofroggy
@@ -3716,7 +3745,11 @@ WscUIChannel.prototype.resize = function( ) {
  * @param msg {String} Message to display.
  */
 WscUIChannel.prototype.log = function( msg ) {
-    this.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    data = {
+        'ns': this.namespace,
+        'message': msg};
+    this.manager.trigger( 'log.before', data );
+    this.log_item(wsc_html_logmsg.replacePArg('{message}', data.message));
 };
 
 /**
@@ -3748,7 +3781,12 @@ WscUIChannel.prototype.log_item = function( msg ) {
  * @param [info] {String} Extra information for the message.
  */
 WscUIChannel.prototype.server_message = function( msg, info ) {
-    this.log_item(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
+    data = {
+        'ns': this.namespace,
+        'message': msg,
+        'info': info};
+    this.manager.trigger( 'server_message.before', data );
+    this.log_item(wsc_html_servermsg.replacePArg('{message}', data.message).replacePArg('{info}', data.info));
 };
 
 /**
