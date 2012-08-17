@@ -3630,6 +3630,7 @@ WscUIChannel.prototype.log_item = function( msg ) {
     this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
     // Scrollio
     this.scroll();
+    this.noise();
 };
 
 /**
@@ -3745,6 +3746,20 @@ WscUIChannel.prototype.highlight = function( message ) {
     }
     
     toggles();
+    
+};
+
+/**
+ * There has been activity in this channel.
+ * Modifies the channel tab slightly, if the channel is not currently being
+ * viewed.
+ * 
+ * @method noise
+ */
+WscUIChannel.prototype.noise = function(  ) {
+    
+    if( !this.tab.hasClass('active') )
+        this.tab.addClass('noise');
     
 };
 
