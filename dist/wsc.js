@@ -3205,7 +3205,7 @@ function wsc_control( client ) {
 /**
  * Base object used to manage a wsc client interface.
  * 
- * @module wscuilib
+ * @module wsc.ui
  **/
 var Foo = {};
 
@@ -3219,11 +3219,11 @@ var Foo = {};
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
- * @param events {Method} Event trigger callback.
+ * @param [events] {Object} EventEmitter object.
  **/
 function WscUI( view, options, mozilla, events ) {
     
-    this.trigger = events || this._handle_evt;
+    this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
@@ -3240,18 +3240,6 @@ function WscUI( view, options, mozilla, events ) {
 }
 
 /**
- * Sets the handler method to use for events.
- * 
- * @method set_handler
- * @param events {Method} Callback for handling events.
- **/
-WscUI.prototype.set_handler = function( events ) {
-
-    this.trigger = events || this._handle_evt;
-
-};
-
-/**
  * Used to trigger events.
  *
  * @method trigger
@@ -3260,17 +3248,33 @@ WscUI.prototype.set_handler = function( events ) {
  **/
 WscUI.prototype.trigger = function( event, data ) {
 
-    this._handle_evt( event, data );
+    this.events.emit( event, data, this );
 
 };
 
 /**
- * Place holder.
- * @method _handle_evt
- * @param event {String}
- * @param data {Object}
+ * Bind an event thingy.
+ * 
+ * @method on
+ * @param event {String} The event name to listen for.
+ * @param handler {Method} The event handler.
  */
-WscUI.prototype._handle_evt = function( event, data ) {};
+WscUI.prototype.on = function( event, handler ) {
+
+    this.events.addListener( event, handler );
+
+};
+
+/**
+ * Remove all of the event bindings.
+ * 
+ * @method remove_listeners
+ */
+WscUI.prototype.remove_listeners = function(  ) {
+    
+    this.events.removeListeners();
+    
+};
 
 /**
  * Deform a channel namespace.
@@ -3306,7 +3310,13 @@ WscUI.prototype.deform_ns = function( ns ) {
     return ns;
 };
 
-// Format a channel namespace.
+/**
+ * Format a channel namespace.
+ *
+ * @method format_ns
+ * @param ns {String} Channel namespace to format.
+ * @return {String} ns formatted as a channel namespace.
+ */
 WscUI.prototype.format_ns = function( ns ) {
     if(ns.indexOf('#') == 0) {
         return 'chat:' + ns.slice(1);
@@ -3327,15 +3337,24 @@ WscUI.prototype.format_ns = function( ns ) {
 };
 
 WscUI.prototype.set_events = function( events ) {
-    this.events = events;
+    this.events = events || this.events;
 };
 
-WscUI.prototype.build = function() {
+/**
+ * Build the GUI.
+ * 
+ * @method build
+ * @param [control=wsc.ui.WscUIControl] {Class} UI control panel class.
+ * @param [navigation=wsc.ui.WscUINavigation] {Class} UI navigation panel
+ *   class.
+ * @param [chatbook=wsc.ui.WscUIChatbook] {Class} Chatbook panel class.
+ */
+WscUI.prototype.build = function( control, navigation, chatbook ) {
     
     this.view.append( wsc_html_ui );
-    this.control = new WscUIControl( this );
-    this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
-    this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
+    this.control = new ( control || WscUIControl )( this );
+    this.nav = new ( navigation || WscUINavigation )( this );
+    this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
     this.chatbook.create_channel(this.mns, hide);
@@ -3344,6 +3363,11 @@ WscUI.prototype.build = function() {
     
 };
 
+/**
+ * Resize the UI to fit the containing element.
+ * 
+ * @method resize
+ */
 WscUI.prototype.resize = function() {
 
     this.control.resize();
@@ -3393,7 +3417,12 @@ WscUI.prototype.remove_channel = function( ns ) {
     this.channel(select).resize();
 };
 
-// Select which channel is currently being viewed.
+/**
+ * Select which channel is currently being viewed.
+ * 
+ * @method toggle_channel
+ * @param ns {String} Name of the channel to select.
+ */
 WscUI.prototype.toggle_channel = function( ns ) {
     return this.chatbook.toggle_channel(ns);
 };
@@ -3421,7 +3450,10 @@ WscUI.prototype.channel = function( namespace, chan ) {
  */
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
-};/*
+};
+
+
+/*
  * wsc/ui/channel.js - photofroggy
  * Object to control the UI for the channel view.
  */
@@ -3462,17 +3494,27 @@ WscUIChannel.prototype.build = function( ) {
     
     // Draw.
     this.tab = this.manager.nav.add_tab( selector, ns );
+    this.tabl = this.tab.find('.tab');
+    this.tabc = this.tab.find('.closetab');
     this.manager.chatbook.view.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
     // Store
-    this.window = this.manager.chatbook.view.find('#' + selector + '-window')
+    this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.logpanel = this.window.find('#' + selector + "-log");
     this.wrap = this.logpanel.find('ul.logwrap');
     this.userpanel = this.window.find('#' + selector + "-users");
     var chan = this;
     
-    this.tab.click(function () {
+    this.tabl.click(function () {
         chan.manager.toggle_channel(selector);
         return false;
+    });
+    
+    this.tabc.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.namespace,
+            'chan': chan,
+            'e': e
+        } );
     });
     
     var focus = true;
@@ -3521,6 +3563,16 @@ WscUIChannel.prototype.show = function( ) {
     this.tab.addClass('active');
     this.tab.removeClass('noise tabbed fill');
     this.resize();
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+WscUIChannel.prototype.remove = function(  ) {
+    this.tab.remove();
+    this.window.remove();
 };
 
 /**
@@ -3879,14 +3931,33 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
     
     // Show clicked channel.
     chan.show();
-    //this.control.focus();
+    this.manager.control.focus();
     this.current = chan;
-    //this.control.setLabel();
-    /*if( this.settings['monitor'][1] ) {
-        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-        mt.addClass(this.settings['monitor'][1]);
-    }*/
-    //this.resizeUI();
+    this.manager.resize();
+};
+
+/**
+ * Remove a channel from the UI.
+ * 
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ */
+WscUIChatbook.prototype.remove_channel = function( ns ) {
+    if( this.channels() == 0 ) 
+        return;
+    
+    chan = this.channel(ns);
+    chan.remove();
+    delete this.chan[chan.selector];
+    
+    var select = '';
+    for (tmp in this.chan) {
+        if (this.chan.hasOwnProperty(tmp) && tmp != chan.selector)
+            select = tmp;
+    }
+    
+    this.toggle_channel(select);
+    this.channel(select).resize();
 };
 
 /*
@@ -4040,7 +4111,7 @@ wsc_html_control = '<div class="chatcontrol">\
 
 // Channel templates.
 // Chat tab.
-var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}">{ns}</a></li>';
+var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
 
 // Chat screen.
 var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\

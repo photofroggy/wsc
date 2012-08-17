@@ -1,7 +1,7 @@
 /**
  * Base object used to manage a wsc client interface.
  * 
- * @module wscuilib
+ * @module wsc.ui
  **/
 var Foo = {};
 
@@ -15,11 +15,11 @@ var Foo = {};
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
- * @param events {Method} Event trigger callback.
+ * @param [events] {Object} EventEmitter object.
  **/
 function WscUI( view, options, mozilla, events ) {
     
-    this.trigger = events || this._handle_evt;
+    this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
         'theme': 'wsct_default',
@@ -32,20 +32,9 @@ function WscUI( view, options, mozilla, events ) {
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
+    this.monitor = null;
     
 }
-
-/**
- * Sets the handler method to use for events.
- * 
- * @method set_handler
- * @param events {Method} Callback for handling events.
- **/
-WscUI.prototype.set_handler = function( events ) {
-
-    this.trigger = events || this._handle_evt;
-
-};
 
 /**
  * Used to trigger events.
@@ -56,17 +45,33 @@ WscUI.prototype.set_handler = function( events ) {
  **/
 WscUI.prototype.trigger = function( event, data ) {
 
-    this._handle_evt( event, data );
+    this.events.emit( event, data, this );
 
 };
 
 /**
- * Place holder.
- * @method _handle_evt
- * @param event {String}
- * @param data {Object}
+ * Bind an event thingy.
+ * 
+ * @method on
+ * @param event {String} The event name to listen for.
+ * @param handler {Method} The event handler.
  */
-WscUI.prototype._handle_evt = function( event, data ) {};
+WscUI.prototype.on = function( event, handler ) {
+
+    this.events.addListener( event, handler );
+
+};
+
+/**
+ * Remove all of the event bindings.
+ * 
+ * @method remove_listeners
+ */
+WscUI.prototype.remove_listeners = function(  ) {
+    
+    this.events.removeListeners();
+    
+};
 
 /**
  * Deform a channel namespace.
@@ -102,7 +107,13 @@ WscUI.prototype.deform_ns = function( ns ) {
     return ns;
 };
 
-// Format a channel namespace.
+/**
+ * Format a channel namespace.
+ *
+ * @method format_ns
+ * @param ns {String} Channel namespace to format.
+ * @return {String} ns formatted as a channel namespace.
+ */
 WscUI.prototype.format_ns = function( ns ) {
     if(ns.indexOf('#') == 0) {
         return 'chat:' + ns.slice(1);
@@ -123,23 +134,37 @@ WscUI.prototype.format_ns = function( ns ) {
 };
 
 WscUI.prototype.set_events = function( events ) {
-    this.events = events;
+    this.events = events || this.events;
 };
 
-WscUI.prototype.build = function() {
+/**
+ * Build the GUI.
+ * 
+ * @method build
+ * @param [control=wsc.ui.WscUIControl] {Class} UI control panel class.
+ * @param [navigation=wsc.ui.WscUINavigation] {Class} UI navigation panel
+ *   class.
+ * @param [chatbook=wsc.ui.WscUIChatbook] {Class} Chatbook panel class.
+ */
+WscUI.prototype.build = function( control, navigation, chatbook ) {
     
     this.view.append( wsc_html_ui );
-    this.control = new WscUIControl( this );
-    this.nav = new WscUINavigation( this ); //this.view.find('#chattabs');
-    this.chatbook = new WscUIChatbook( this ); //this.chatbook = this.view.find('div.chatbook');
+    this.control = new ( control || WscUIControl )( this );
+    this.nav = new ( navigation || WscUINavigation )( this );
+    this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
-    this.chatbook.create_channel(this.mns, hide);
+    this.monitor = this.chatbook.create_channel(this.mns, hide);
     //this.control.setInput();
     this.control.focus();
     
 };
 
+/**
+ * Resize the UI to fit the containing element.
+ * 
+ * @method resize
+ */
 WscUI.prototype.resize = function() {
 
     this.control.resize();
@@ -189,7 +214,12 @@ WscUI.prototype.remove_channel = function( ns ) {
     this.channel(select).resize();
 };
 
-// Select which channel is currently being viewed.
+/**
+ * Select which channel is currently being viewed.
+ * 
+ * @method toggle_channel
+ * @param ns {String} Name of the channel to select.
+ */
 WscUI.prototype.toggle_channel = function( ns ) {
     return this.chatbook.toggle_channel(ns);
 };
@@ -218,3 +248,5 @@ WscUI.prototype.channel = function( namespace, chan ) {
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
 };
+
+

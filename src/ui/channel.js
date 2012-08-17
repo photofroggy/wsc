@@ -39,17 +39,27 @@ WscUIChannel.prototype.build = function( ) {
     
     // Draw.
     this.tab = this.manager.nav.add_tab( selector, ns );
+    this.tabl = this.tab.find('.tab');
+    this.tabc = this.tab.find('.closetab');
     this.manager.chatbook.view.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
     // Store
-    this.window = this.manager.chatbook.view.find('#' + selector + '-window')
+    this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.logpanel = this.window.find('#' + selector + "-log");
     this.wrap = this.logpanel.find('ul.logwrap');
     this.userpanel = this.window.find('#' + selector + "-users");
     var chan = this;
     
-    this.tab.click(function () {
+    this.tabl.click(function () {
         chan.manager.toggle_channel(selector);
         return false;
+    });
+    
+    this.tabc.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.namespace,
+            'chan': chan,
+            'e': e
+        } );
     });
     
     var focus = true;
@@ -98,6 +108,16 @@ WscUIChannel.prototype.show = function( ) {
     this.tab.addClass('active');
     this.tab.removeClass('noise tabbed fill');
     this.resize();
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+WscUIChannel.prototype.remove = function(  ) {
+    this.tab.remove();
+    this.window.remove();
 };
 
 /**

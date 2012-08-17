@@ -87,12 +87,16 @@ WscUIChatbook.prototype.channels = function( ) {
  * Create a channel in the UI.
  * 
  * @method create_channel
+ * @param ns {String} Namespace of the channel to create.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @return {Object} WscUIChannel object.
  */
 WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
     chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
     chan.build();
     this.toggle_channel(ns);
     this.manager.resize();
+    return chan;
 };
 
 // Select which channel is currently being viewed.
@@ -113,13 +117,32 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
     
     // Show clicked channel.
     chan.show();
-    //this.control.focus();
+    this.manager.control.focus();
     this.current = chan;
-    //this.control.setLabel();
-    /*if( this.settings['monitor'][1] ) {
-        mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-        mt.addClass(this.settings['monitor'][1]);
-    }*/
-    //this.resizeUI();
+    this.manager.resize();
+};
+
+/**
+ * Remove a channel from the UI.
+ * 
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ */
+WscUIChatbook.prototype.remove_channel = function( ns ) {
+    if( this.channels() == 0 ) 
+        return;
+    
+    chan = this.channel(ns);
+    chan.remove();
+    delete this.chan[chan.selector];
+    
+    var select = '';
+    for (tmp in this.chan) {
+        if (this.chan.hasOwnProperty(tmp) && tmp != chan.selector)
+            select = tmp;
+    }
+    
+    this.toggle_channel(select);
+    this.channel(select).resize();
 };
 

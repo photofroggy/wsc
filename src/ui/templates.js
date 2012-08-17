@@ -20,7 +20,7 @@ wsc_html_control = '<div class="chatcontrol">\
 
 // Channel templates.
 // Chat tab.
-var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}">{ns}</a></li>';
+var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
 
 // Chat screen.
 var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
