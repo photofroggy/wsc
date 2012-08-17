@@ -3837,6 +3837,7 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
     if( Object.size(userlist) == 0 )
         return;
     
+    infoboxes = [];
     html = '<div class="chatusers" id="' + this.selector + '-users">';
     
     for( order in userlist ) {
@@ -3845,7 +3846,9 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
         for( un in pc.users ) {
             user = pc.users[un];
             conn = user.conn == 1 ? '' : '[' + user.conn + ']';
-            html+= '<li><a target="_blank" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
+            html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
+            if( user.hover )
+                infoboxes.push(user.hover);
         }
         html+= '</ul></div>';
     }
@@ -3854,6 +3857,10 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
     this.window.find('div.chatusers').replaceWith(html);
     this.userpanel = this.window.find('div.chatusers');
     this.userpanel.css({display: 'block'});
+    
+    for( index in infoboxes ) {
+        this.userinfo(infoboxes[index]);
+    }
     /*
     pcs = this.userpanel.find('h3');
     if(typeof(pcs) == 'object') {
@@ -3919,6 +3926,95 @@ WscUIChannel.prototype.noise = function(  ) {
     if( !this.tab.hasClass('active') )
         this.tab.addClass('noise');
     
+};
+
+/**
+ * Display a user info hover box.
+ * 
+ * @method userinfo
+ * @param user {Object} Information about a user.
+ * @return {Object} jQuery object representing the information box.
+ */
+WscUIChannel.prototype.userinfo = function( user ) {
+
+    var link = this.window.find( 'a#' + user.name );
+    
+    if( link.length == 0 )
+        return;
+
+    var box = null;
+    var chan = this;
+    
+    link.hover(
+        function( e ) {
+            infoli = '';
+            for( index in user.info ) {
+                infoli+= '<li>' + user.info[index] + '</li>';
+            }
+            
+            chan.window.append(wsc_html_userinfo
+                .replacePArg('{username}', user.name)
+                .replacePArg('{avatar}', user.avatar)
+                .replacePArg('{link}', user.link)
+                .replacePArg('{info}', infoli));
+            
+            box = chan.window.find('.userinfo#'+user.name);
+            
+            //chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
+            
+            pos = link.offset();
+            console.log(pos.top,pos.left);
+            box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+            
+            box.hover(
+                function(){ box.data('hover', 1); },
+                function( e ) {
+                    box.data('hover', 0);
+                    chan.unhover_user( box, event );
+                }
+            );
+            
+            box.data('hover', 0);
+        },
+        function( e ) {
+            link.data('hover', 0);
+            chan.unhover_user(box, event);
+        }
+    );
+
+};
+
+/**
+ * This method tries to get rid of the given user information box.
+ * The information box can only be removed if the cursor is outside the
+ * bounds of the information box AND outside of the bounds of the user link in
+ * the user list.
+ * 
+ * @method unhover_user
+ * @param box {Object} A jQuery object representing the information box.
+ * @param event {Object} jQuery event object.
+ */
+WscUIChannel.prototype.unhover_user = function( box, event ) {
+
+    o = box.offset();
+    eb = box.outerHeight(true) + o.top;
+    er = box.outerWidth(true) + o.left;
+    x = event.pageX; y = event.pageY;
+    
+    if( x > o.left
+        && x < er
+        && y > o.top
+        && y < eb)
+        return;
+    
+    if( x < (er + 10)
+        && x > o.left
+        && y > o.top
+        && y < (o.top + 10) )
+        return;
+    
+    box.remove();
+
 };
 
 
@@ -4337,6 +4433,17 @@ var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em>
 
 // User message template.
 var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
+
+// User info box (userlist hover)
+var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
+                            <div class="avatar">\
+                                {avatar}\
+                            </div><div class="info">\
+                            <strong>\
+                            {link}\
+                            </strong>\
+                            <ul>{info}</ul></div>\
+                        </div>';
 // @include templates.js
 // @include lib.js
 // @include packet.js

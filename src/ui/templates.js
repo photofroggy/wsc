@@ -51,3 +51,14 @@ var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em>
 
 // User message template.
 var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
+
+// User info box (userlist hover)
+var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
+                            <div class="avatar">\
+                                {avatar}\
+                            </div><div class="info">\
+                            <strong>\
+                            {link}\
+                            </strong>\
+                            <ul>{info}</ul></div>\
+                        </div>';
