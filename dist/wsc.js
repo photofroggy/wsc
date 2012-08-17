@@ -4,6 +4,8 @@
 /**
  * EventEmitter
  * Simple event framework, based off of NodeJS's EventEmitter
+ * @class EventEmitter
+ * @constructor
  **/
 function EventEmitter() {
     var events = {}, self = this;
@@ -14,7 +16,7 @@ function EventEmitter() {
             events[event] = [listener];
             return self;
         }
-        events[event].push(listener);
+        events[event].unshift(listener);
         return self;
     }
 
@@ -32,7 +34,9 @@ function EventEmitter() {
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
-                callbacks[i].apply({}, args);
+                bubble = callbacks[i].apply({}, args);
+                if( bubble === false )
+                    break;
             }
         }
         return self;
@@ -3236,6 +3240,7 @@ function WscUI( view, options, mozilla, events ) {
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
+    this.monitoro = null;
     
 }
 
@@ -3357,7 +3362,7 @@ WscUI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
-    this.chatbook.create_channel(this.mns, hide);
+    this.monitoro = this.chatbook.create_channel(this.mns, hide);
     //this.control.setInput();
     this.control.focus();
     
@@ -3450,6 +3455,56 @@ WscUI.prototype.channel = function( namespace, chan ) {
  */
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
+};
+
+/**
+ * Display a log message in the monitor channel.
+ * 
+ * @method monitor
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUI.prototype.monitor = function( msg, info ) {
+
+    this.monitoro.server_message(msg, info);
+
+};
+
+/**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUI.prototype.server_message = function( msg, info ) {
+
+    this.chatbook.server_message(msg, info);
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+WscUI.prototype.log_item = function( msg ) {
+
+    this.chatbook.log_item(msg);
+
+};
+
+/**
+ * Display a log message across all open channels.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ */
+WscUI.prototype.log = function( msg ) {
+
+    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+
 };
 
 
@@ -3834,6 +3889,9 @@ function WscUIChatbook( ui ) {
     this.view = this.manager.view.find('div.chatbook');
     this.chan = {};
     this.current = null;
+    this.manager.on( 'tab.close.clicked', function( event, ui ) {
+        ui.chatbook.remove_channel(event.ns);
+    });
     
 }
 
@@ -3905,12 +3963,29 @@ WscUIChatbook.prototype.channels = function( ) {
  * Create a channel in the UI.
  * 
  * @method create_channel
+ * @param ns {String} Namespace of the channel to create.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @return {Object} WscUIChannel object.
  */
-WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
-    chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
+WscUIChatbook.prototype.create_channel = function( ns, hidden ) {
+    chan = this.channel(ns, this.channel_object(ns, hidden));
     chan.build();
     this.toggle_channel(ns);
     this.manager.resize();
+    return chan;
+};
+
+/**
+ * Create a new channel panel object.
+ * Override this method to use a different type of channel object.
+ * 
+ * @method channel_object
+ * @param ns {String} Namespace of the channel.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @return {Object} An object representing a channel UI.
+ */
+WscUIChatbook.prototype.channel_object = function( ns, hidden ) {
+    return new WscUIChannel( this.manager, ns, hidden );
 };
 
 // Select which channel is currently being viewed.
@@ -3958,6 +4033,35 @@ WscUIChatbook.prototype.remove_channel = function( ns ) {
     
     this.toggle_channel(select);
     this.channel(select).resize();
+};
+
+/**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUIChatbook.prototype.server_message = function( msg, info ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].server_message(msg, info);
+    }
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+WscUIChatbook.prototype.log_item = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log_item(msg);
+    }
+
 };
 
 /*

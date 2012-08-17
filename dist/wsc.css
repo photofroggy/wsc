@@ -428,7 +428,7 @@ div.wsc.wsct_default nav.tabs ul#chattabs li.noise a.tab {
 div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
-  border-width: 1px;
+  border-width: 2px;
   font-weight: bold;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a.tab {
@@ -583,7 +583,7 @@ div.wsc.wsct_test nav.tabs ul#chattabs li.noise a.tab {
 div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
-  border-width: 1px;
+  border-width: 2px;
   font-weight: bold;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a.tab {

@@ -16,6 +16,9 @@ function WscUIChatbook( ui ) {
     this.view = this.manager.view.find('div.chatbook');
     this.chan = {};
     this.current = null;
+    this.manager.on( 'tab.close.clicked', function( event, ui ) {
+        ui.chatbook.remove_channel(event.ns);
+    });
     
 }
 
@@ -91,12 +94,25 @@ WscUIChatbook.prototype.channels = function( ) {
  * @param hidden {Boolean} Should the tab be hidden?
  * @return {Object} WscUIChannel object.
  */
-WscUIChatbook.prototype.create_channel = function( ns, toggle ) {
-    chan = this.channel(ns, new WscUIChannel(this.manager, ns, toggle));
+WscUIChatbook.prototype.create_channel = function( ns, hidden ) {
+    chan = this.channel(ns, this.channel_object(ns, hidden));
     chan.build();
     this.toggle_channel(ns);
     this.manager.resize();
     return chan;
+};
+
+/**
+ * Create a new channel panel object.
+ * Override this method to use a different type of channel object.
+ * 
+ * @method channel_object
+ * @param ns {String} Namespace of the channel.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @return {Object} An object representing a channel UI.
+ */
+WscUIChatbook.prototype.channel_object = function( ns, hidden ) {
+    return new WscUIChannel( this.manager, ns, hidden );
 };
 
 // Select which channel is currently being viewed.
@@ -144,5 +160,34 @@ WscUIChatbook.prototype.remove_channel = function( ns ) {
     
     this.toggle_channel(select);
     this.channel(select).resize();
+};
+
+/**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUIChatbook.prototype.server_message = function( msg, info ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].server_message(msg, info);
+    }
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+WscUIChatbook.prototype.log_item = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log_item(msg);
+    }
+
 };
 

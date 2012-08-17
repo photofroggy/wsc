@@ -32,7 +32,7 @@ function WscUI( view, options, mozilla, events ) {
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
-    this.monitor = null;
+    this.monitoro = null;
     
 }
 
@@ -154,7 +154,7 @@ WscUI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
-    this.monitor = this.chatbook.create_channel(this.mns, hide);
+    this.monitoro = this.chatbook.create_channel(this.mns, hide);
     //this.control.setInput();
     this.control.focus();
     
@@ -247,6 +247,56 @@ WscUI.prototype.channel = function( namespace, chan ) {
  */
 WscUI.prototype.channels = function( ) {
     return this.chatbook.channels();
+};
+
+/**
+ * Display a log message in the monitor channel.
+ * 
+ * @method monitor
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUI.prototype.monitor = function( msg, info ) {
+
+    this.monitoro.server_message(msg, info);
+
+};
+
+/**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ */
+WscUI.prototype.server_message = function( msg, info ) {
+
+    this.chatbook.server_message(msg, info);
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+WscUI.prototype.log_item = function( msg ) {
+
+    this.chatbook.log_item(msg);
+
+};
+
+/**
+ * Display a log message across all open channels.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ */
+WscUI.prototype.log = function( msg ) {
+
+    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+
 };
 
 
