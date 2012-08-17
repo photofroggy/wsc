@@ -126,9 +126,7 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
         if(this.current == chan)
             return;
         // Hide previous channel, if any.
-        //console.log("prevshift ", previous);
         this.current.hide();
-        //this.control.cacheInput();
     }
     
     // Show clicked channel.
@@ -136,6 +134,10 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.trigger( 'channel.selected', {
+        'ns': chan.namespace,
+        'chan': chan
+    } );
 };
 
 /**
