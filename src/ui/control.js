@@ -1,8 +1,3 @@
-/*
- * wsc/ui/control.js - photofroggy
- * Object to control the UI for the control panel.
- */
-
 /**
  * This object provides an interface for the chat input panel.
  * 
@@ -27,16 +22,6 @@ function WscUIControl( ui ) {
  */
 WscUIControl.prototype.focus = function( ) {
     this.input.focus();
-};
-
-/**
- * Deprecated; Returns `<username>`;
- * 
- * @method user_line
- * @return {String} `username`.
- */
-WscUIControl.prototype.user_line = function( ) {
-    return /*this.manager.settings["symbol"] +*/ this.manager.settings["username"];
 };
 
 /**

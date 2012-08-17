@@ -1,8 +1,3 @@
-/*
- * wsc/ui/channel.js - photofroggy
- * Object to control the UI for the channel view.
- */
-
 /**
  * Object for managing channel interfaces.
  * 
@@ -142,20 +137,13 @@ WscUIChannel.prototype.pad = function ( ) {
     wh = this.wrap.innerHeight();
     lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
     pad = lh - wh;
-    /*
-    console.log(ns + ' log');
-    console.log('> log wrap height ' + wh);
-    console.log('> window height ' + this.logpanel.innerHeight());
-    console.log('> add padding ' + pad);
-    /* */
-    /* */
+    
     if( pad > 0 )
         this.wrap.css({'padding-top': pad});
     else
         this.wrap.css({
             'padding-top': 0,
             'height': lh});
-    /* */
 };
 
 /**
@@ -166,9 +154,7 @@ WscUIChannel.prototype.pad = function ( ) {
 WscUIChannel.prototype.resize = function( ) {
     this.wrap.css({'padding-top': 0});
     // Height.
-    //console.log('head height: ' + this.window.find("header").height() + '; outer: ' + this.window.find("header").outerHeight());
     wh = this.manager.chatbook.height();
-    //console.log(h);
     this.window.height(wh);
     // Width.
     cw = this.window.width();
@@ -181,11 +167,8 @@ WscUIChannel.prototype.resize = function( ) {
     if( cu.css('display') != 'none')
         cw = cw - cu.outerWidth();
     
-    //console.log('> lheight',wh);
-    
     if( title.css('display') == 'block' )
         wh = wh - title.outerHeight(true);
-    //console.log('> wh - th',wh);
         
     // Log panel dimensions
     this.logpanel.css({
@@ -220,12 +203,6 @@ WscUIChannel.prototype.log = function( msg ) {
  * @param msg {String} Message to send.
  */
 WscUIChannel.prototype.log_item = function( msg ) {
-    if( this.hidden ) {
-        if( this.thresh <= 0 )
-            return;
-        this.thresh--;
-    }
-    //console.log('logging in channel ' + this.info["namespace"]);
     var ts = new Date().toTimeString().slice(0, 8);
     // Add content.
     this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
@@ -322,19 +299,6 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
     for( index in infoboxes ) {
         this.userinfo(infoboxes[index]);
     }
-    /*
-    pcs = this.userpanel.find('h3');
-    if(typeof(pcs) == 'object') {
-        pcs.addClass('first');
-    } else {
-        for( index in pcs ) {
-            if( index == 0 ) {
-                pcs[0].addClass('first');
-                continue;
-            }
-            pcs[index].removeClass('first');
-        }
-    }*/
     this.resize();
     
 };
@@ -423,11 +387,8 @@ WscUIChannel.prototype.userinfo = function( user ) {
                 .replacePArg('{info}', infoli));
             
             box = chan.window.find('.userinfo#'+user.name);
-            
-            //chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            
+            chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
             pos = link.offset();
-            console.log(pos.top,pos.left);
             box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
             
             box.hover(

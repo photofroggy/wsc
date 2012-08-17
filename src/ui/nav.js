@@ -1,8 +1,3 @@
-/*
- * wsc/ui/nav.js - photofroggy
- * Object to control the UI for the chat navigation.
- */
-
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *

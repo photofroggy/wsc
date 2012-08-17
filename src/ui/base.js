@@ -1,16 +1,16 @@
 /**
- * Base object used to manage a wsc client interface.
+ * The UI module of wsc provides a set of objects which can be used to create
+ * and manage a GUI for a chat client.
  * 
  * @module wsc.ui
+ * @author photofroggy
  **/
-var Foo = {};
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
  * @class WscUI
- * @author photofroggy
  * @constructor
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.

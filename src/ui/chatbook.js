@@ -1,15 +1,10 @@
-/*
- * wsc/ui/chatbook.js - photofroggy
- * Object for managing the UI's chatbook.
+/**
+ * Object for managing the chatbook portion of the UI.
+ *
+ * @class WscUIChatbook
+ * @constructor
+ * @param ui {Object} WscUI object.
  */
-
- /**
-  * Object for managing the chatbook portion of the UI.
-  *
-  * @class WscUIChatbook
-  * @constructor
-  * @param ui {Object} WscUI object.
-  */
 function WscUIChatbook( ui ) {
     
     this.manager = ui;
@@ -58,10 +53,7 @@ WscUIChatbook.prototype.resize = function( height ) {
  */
 WscUIChatbook.prototype.channel = function( namespace, chan ) {
     namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
-    /* 
-    console.log(namespace);
-    console.log(this.channelo);
-    /* */
+    
     if( !this.chan[namespace] && chan )
         this.chan[namespace] = chan;
     
