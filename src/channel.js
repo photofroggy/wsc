@@ -472,9 +472,10 @@ function wsc_channel( client, ns, hidden ) {
         
         // Joins
         recv_join: function( e ) {
-            console.log('hey',e.user);
-            info = new WscPacket('user ' + e.user + '\n' + e['*info']);
+            info = new WscPacket('user ' + e.user + '\n' + e['info']);
             channel.registerUser( info );
+            this.info.users.push( e.user );
+            this.info.users.sort( caseInsensitiveSort );
             channel.setUserList();
         },
         

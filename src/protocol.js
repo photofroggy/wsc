@@ -28,7 +28,7 @@ function wsc_protocol( client ) {
             'recv_join': ['user', ['s'], '*info'],
             'recv_part': ['user', ['s', 'r']],
             'recv_privchg': ['user', ['s', 'by', 'pc']],
-            'recv_kicked': ['user', ['s', 'by'], '*r'],
+            'recv_kicked': ['user', [['i', 's'], 'by'], '*r'],
             'recv_admin_create': [null, ['p', ['by', 'user'], ['name', 'pc'], 'privs']],
             'recv_admin_update': [null, ['p', ['by', 'user'], ['name', 'pc'], 'privs']],
             'recv_admin_rename': [null, ['p', ['by', 'user'], 'prev', ['name', 'pc']]],
@@ -281,8 +281,10 @@ function wsc_protocol( client ) {
                 return;
             msg = msgm[0];
             
-            if( event.s == '0' )
+            console.log(event);
+            if( event.s == '0' ) {
                 return;
+            }
             
             for( key in event ) {
                 d = key == 'ns' ? protocol.client.deform_ns(event[key]) : event[key];
