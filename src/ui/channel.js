@@ -374,6 +374,7 @@ WscUIChannel.prototype.userinfo = function( user ) {
     
     link.hover(
         function( e ) {
+            user.info = [];
             ed = { 'ns': chan.namespace, 'user': user};
             chan.manager.trigger( 'userinfo.before', ed );
             user = ed.user;
