@@ -17,11 +17,14 @@
                 width: 80%;
                 overflow: hidden;
                 height: 30px;
+                li {
+                    margin-right: 2px;
+                }
             }
     
             &#tabnav {
                 float: right;
-                padding: 7px 20px;
+                padding: 10px 20px;
                 li a {
                     padding: 4px 7px;
                     margin: 0px 5px 0px 0px;
