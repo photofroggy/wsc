@@ -10,6 +10,8 @@
     $chrome: #406D8B,
     $chrome-shadow: #0D4D69,
     $chrome-color: #AFD7F5,
+    $chrome-a: #FFB024,
+    $chrome-ah: white,
     $log-bg: #EAF8FF,
     $light: #7C9AB4,
     $a: #AFFA3E,
@@ -129,7 +131,13 @@
     div.chatwindow {
 
         header {
-            color: $chrome-color;
+            div.title {
+                color: $chrome-color;
+                a {
+                    color: $chrome-a;
+                    &:hover { color: $chrome-ah; }
+                }
+            }
             div.topic {
                 background-color: $heading-bg;
                 border-color: $inner-border;
@@ -176,7 +184,11 @@
             }
             ul {
                 color: $chrome-color;
-                a em { color: $chrome-color; }
+                a {
+                    color: $chrome-a;
+                    &:hover { color: $chrome-ah; }
+                    em { color: $chrome-color; }
+                }
             }
         }
         border: 1px solid $inner-border;
@@ -190,6 +202,10 @@
             background-color: $chrome;
             border-color: $inner-border;
             color: $chrome-color;
+            a {
+                color: $chrome-a;
+                &:hover { color: $chrome-ah; }
+            }
         }
     }
     

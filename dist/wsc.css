@@ -451,8 +451,14 @@ div.wsc.wsct_default div.chatbook {
   background-color: #406d8b;
   border-color: #0d4d69;
 }
-div.wsc.wsct_default div.chatwindow header {
+div.wsc.wsct_default div.chatwindow header div.title {
   color: #afd7f5;
+}
+div.wsc.wsct_default div.chatwindow header div.title a {
+  color: #ffb024;
+}
+div.wsc.wsct_default div.chatwindow header div.title a:hover {
+  color: white;
 }
 div.wsc.wsct_default div.chatwindow header div.topic {
   background-color: #81aac5;
@@ -493,6 +499,12 @@ div.wsc.wsct_default div.chatusers div.pc h3, div.wsc.wsct_default div.chatusers
 div.wsc.wsct_default div.chatusers div.pc ul {
   color: #afd7f5;
 }
+div.wsc.wsct_default div.chatusers div.pc ul a {
+  color: #ffb024;
+}
+div.wsc.wsct_default div.chatusers div.pc ul a:hover {
+  color: white;
+}
 div.wsc.wsct_default div.chatusers div.pc ul a em {
   color: #afd7f5;
 }
@@ -504,6 +516,12 @@ div.wsc.wsct_default div.chatwindow div.userinfo div.info {
   background-color: #406d8b;
   border-color: #0d4d69;
   color: #afd7f5;
+}
+div.wsc.wsct_default div.chatwindow div.userinfo div.info a {
+  color: #ffb024;
+}
+div.wsc.wsct_default div.chatwindow div.userinfo div.info a:hover {
+  color: white;
 }
 
 div.wsc.wsct_test {
@@ -606,8 +624,14 @@ div.wsc.wsct_test div.chatbook {
   background-color: #2ccc17;
   border-color: #0d4d69;
 }
-div.wsc.wsct_test div.chatwindow header {
+div.wsc.wsct_test div.chatwindow header div.title {
   color: #75ff8f;
+}
+div.wsc.wsct_test div.chatwindow header div.title a {
+  color: #ffb024;
+}
+div.wsc.wsct_test div.chatwindow header div.title a:hover {
+  color: white;
 }
 div.wsc.wsct_test div.chatwindow header div.topic {
   background-color: #cc5d17;
@@ -648,6 +672,12 @@ div.wsc.wsct_test div.chatusers div.pc h3, div.wsc.wsct_test div.chatusers div.p
 div.wsc.wsct_test div.chatusers div.pc ul {
   color: #75ff8f;
 }
+div.wsc.wsct_test div.chatusers div.pc ul a {
+  color: #ffb024;
+}
+div.wsc.wsct_test div.chatusers div.pc ul a:hover {
+  color: white;
+}
 div.wsc.wsct_test div.chatusers div.pc ul a em {
   color: #75ff8f;
 }
@@ -659,4 +689,10 @@ div.wsc.wsct_test div.chatwindow div.userinfo div.info {
   background-color: #2ccc17;
   border-color: #0d4d69;
   color: #75ff8f;
+}
+div.wsc.wsct_test div.chatwindow div.userinfo div.info a {
+  color: #ffb024;
+}
+div.wsc.wsct_test div.chatwindow div.userinfo div.info a:hover {
+  color: white;
 }
