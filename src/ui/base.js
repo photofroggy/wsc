@@ -185,7 +185,6 @@ WscUI.prototype.resize = function() {
  */
 WscUI.prototype.create_channel = function( ns, toggle ) {
     this.chatbook.create_channel( ns, toggle );
-    this.resize();
 };
 
 /**

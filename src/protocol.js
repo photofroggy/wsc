@@ -155,21 +155,21 @@ function wsc_protocol( client ) {
             this.client.trigger('closed', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
             
             if(this.client.connected) {
-                this.client.monitorAll("Connection closed");
+                this.client.ui.server_message("Connection closed");
                 this.client.connected = false;
             } else {
-                this.client.monitorAll("Connection failed");
+                this.client.ui.server_message("Connection failed");
             }
             
             // For now we want to automatically reconnect.
             // Should probably be more intelligent about this though.
             if( this.client.attempts > 2 ) {
-                this.client.monitorAll("Can't connect. Try again later.");
+                this.client.ui.server_message("Can't connect. Try again later.");
                 this.client.attempts = 0;
                 return;
             }
             
-            this.client.monitorAll("Connecting in 2 seconds");
+            this.client.ui.server_message("Connecting in 2 seconds");
             c=this.client;
             setTimeout(function () {
                 c.connect();
@@ -291,11 +291,11 @@ function wsc_protocol( client ) {
             
             if( !msgm[2] ) {
                 if( !msgm[1] )
-                    protocol.client.channel(event.ns).logItem(msg);
+                    protocol.client.ui.channel(event.ns).log_item(msg);
                 else
-                    protocol.client.channel(protocol.client.mns).logItem(msg);
+                    protocol.client.ui.channel(protocol.client.mns).log_item(msg);
             } else
-                protocol.client.logItemAll(msg);
+                protocol.client.ui.log_item(msg);
         },
         
         /* DANGER!
@@ -352,10 +352,10 @@ function wsc_protocol( client ) {
             if(e.pkt["arg"]["e"] == "ok") {
                 ns = protocol.client.deform_ns(e.pkt["param"]);
                 //protocol.client.monitor("You have joined " + ns + '.');
-                protocol.client.createChannel(ns);
-                protocol.client.channel(ns).serverMessage("You have joined " + ns);
+                protocol.client.create_channel(ns);
+                protocol.client.ui.channel(ns).server_message("You have joined " + ns);
             } else {
-                protocol.client.cchannel.serverMessage("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), e.pkt["arg"]["e"]);
+                protocol.client.ui.chatbook.current.server_message("Failed to join " + protocol.client.deform_ns(e.pkt["param"]), e.pkt["arg"]["e"]);
             }
         },
         
@@ -370,10 +370,10 @@ function wsc_protocol( client ) {
                     info = '[' + e.r + ']';
                 
                 msg = 'You have left ' + ns;
-                c.serverMessage(msg, info);
+                c.server_message(msg, info);
                 
                 if( info == '' )
-                    protocol.client.removeChannel(ns);
+                    protocol.client.remove_channel(ns);
                 
                 if( protocol.client.channels() == 0 ) {
                     switch( e.r ) {
@@ -390,7 +390,7 @@ function wsc_protocol( client ) {
                 }
             } else {
                 protocol.client.monitor('Couldn\'t leave ' + ns, e.e);
-                c.serverMessage("Couldn't leave "+ns, e.e);
+                c.server_message("Couldn't leave "+ns, e.e);
             }
             
         },

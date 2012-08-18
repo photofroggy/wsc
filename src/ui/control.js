@@ -108,3 +108,27 @@ WscUIControl.prototype.unchomp = function( data ) {
         this.input.val(d + ' ' + data);
 };
 
+/**
+ * Get the text in the input box.
+ * 
+ * @method get_text
+ * @return {String} The text currently in the input box.
+ */
+WscUIControl.prototype.get_text = function(  ) {
+
+    return this.input.val();
+
+};
+
+/**
+ * Set the text in the input box.
+ * 
+ * @method set_text
+ * @param text {String} The text to put in the input box.
+ */
+WscUIControl.prototype.set_text = function( text ) {
+
+    this.input.val( text || '' );
+
+};
+

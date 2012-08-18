@@ -81,6 +81,7 @@ function wsc_client( view, options, mozilla ) {
             "emotefolder": '/emoticons/',
             "thumbfolder": '/thumbs/',
             "theme": 'wsct_default',
+            "themes": [ 'wsct_default', 'wsct_test' ],
         },
         // Protocol object.
         protocol: null,
@@ -103,7 +104,14 @@ function wsc_client( view, options, mozilla ) {
         init: function( view, options, mozilla ) {
             
             view.extend( this.settings, options );
-            view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+            //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+            this.ui = new WscUI( view, {
+                'themes': this.settings.themes,
+                'theme': this.settings.theme,
+                'monitor': this.settings.monitor,
+                'username': this.settings.username,
+                'domain': this.settings.domain
+            }, mozilla );
             // Set up variables.
             this.attempts = 0;
             this.view = view.find('.wsc');
@@ -325,18 +333,12 @@ function wsc_client( view, options, mozilla ) {
         
         // Build the initial UI.
         buildUI: function( ) {
-            this.view.append( wsc_html_ui );
-            this.control = this.settings['control']( this );
-            this.tabul = this.view.find('#chattabs');
-            this.chatbook = this.view.find('div.chatbook');
-            // The monitor channel is essentially our console for the chat.
-            hide = this.settings.monitor[1];
-            this.createChannel(this.mns, hide);
-            this.control.setInput();
-            this.control.focus();
-            // For testing purposes only.
-            // this.createChannel("llama2", "~Llama2", "server:llama2");
-            //this.resizeUI();
+            this.ui.build();
+            this.control = this.settings.control( this );
+            this.ui.on( 'channel.selected', function( event, ui ) {
+                client.cchannel = client.channel(event.ns);
+                client.control.cache_input(event);
+            } );
         },
         
         resizeUI: function( ) {
@@ -375,17 +377,17 @@ function wsc_client( view, options, mozilla ) {
         doLoop: function( ) {
             for( key in this.channelo ) {
                 c = this.channelo[key];
-                msgs = c.logpanel.find( '.logmsg' );
+                msgs = c.ui.logpanel.find( '.logmsg' );
                 
                 if( msgs.length < 200 )
                     continue;
                 
                 while( msgs.length > 200 ) {
                     msgs.slice(0, 10).remove();
-                    msgs = c.logpanel.find( '.logmsg' );
+                    msgs = c.ui.logpanel.find( '.logmsg' );
                 }
                 
-                c.resize();
+                c.ui.resize();
             }
         },
         
@@ -393,33 +395,17 @@ function wsc_client( view, options, mozilla ) {
         // structures or some shit idk. The `selector` parameter defines the
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
-        createChannel: function( ns, toggle ) {
+        create_channel: function( ns, toggle ) {
             chan = this.channel(ns, wsc_channel(this, ns, toggle));
             chan.build();
-            this.toggleChannel(ns);
-            this.resizeUI();
         },
         
         // Remove a channel from the client and the GUI.
         // We do this when we leave a channel for any reason.
         // Note: last channel is never removed and when removing a channel
         // we switch to the last channel in the list before doing so.
-        removeChannel: function( ns ) {
-            if( this.channels() == 0 ) 
-                return;
-            
-            chan = this.channel(ns);
-            chan.remove();
-            delete this.channelo[chan.info["selector"]];
-            
-            var select = '';
-            for (tmp in this.channelo) {
-                if (this.channelo.hasOwnProperty(tmp) && tmp != chan.info['selector'])
-                    select = tmp;
-            }
-            
-            this.toggleChannel(select);
-            this.channel(select).resize();
+        remove_channel: function( ns ) {
+            this.ui.remove_channel(ns);
         },
         
         // Select which channel is currently being viewed.

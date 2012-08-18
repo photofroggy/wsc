@@ -63,7 +63,7 @@ function wsc_extdefault( client ) {
             this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
             this.client.bind('cmd.clear', this.clear.bind(extension) );
             // userlistings
-            this.client.bind('set.userlist', this.setUsers.bind(extension) );
+            //this.client.bind('set.userlist', this.setUsers.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
         },

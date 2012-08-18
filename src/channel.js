@@ -283,6 +283,9 @@ function wsc_channel( client, ns, hidden ) {
         build: function( ) {
             this.info['members'] = {};
             
+            this.client.ui.create_channel(ns, hidden);
+            this.ui = this.client.ui.channel(ns);
+            /*
             if( this.built )
                 return;
             
@@ -325,7 +328,7 @@ function wsc_channel( client, ns, hidden ) {
                 this.tab.toggleClass('hidden');
             }
             
-            this.built = true;
+            this.built = true;*/
         },
         
         invisible: function( ) {
@@ -335,29 +338,21 @@ function wsc_channel( client, ns, hidden ) {
         
         // Remove a channel from the screen entirely.
         remove: function( ) {
-            selector = this.info['selector'];
-            this.tab.remove();
-            this.window.remove();
+            this.ui.remove();
         },
         
         // Toggle the visibility of the channel.
-        hideChannel: function( ) {
-            //console.log("hide " + this.info.selector);
-            this.window.css({'display': 'none'});
-            this.tab.removeClass('active');
+        hide: function( ) {
+            this.ui.hide();
         },
         
-        showChannel: function( ) {
-            //console.log("show  " + this.info.selector);
-            this.window.css({'display': 'block'});
-            this.tab.addClass('active');
-            this.tab.removeClass('noise tabbed fill');
-            this.resize();
+        show: function( ) {
+            this.ui.show();
         },
         
         // Toggle a class on the chat tab.
         toggleTabClass: function( cls ) {
-            this.tab.toggleClass(cls);
+            this.ui.tab.toggleClass(cls);
         },
         
         // Scroll the log panel downwards.
@@ -427,27 +422,17 @@ function wsc_channel( client, ns, hidden ) {
         
         // Display a log message.
         log: function( msg ) {
-            this.logItem(wsc_html_logmsg.replacePArg('{message}', msg));
+            this.ui.log(msg);
         },
         
         // Send a message to the log window.
         logItem: function( msg ) {
-            if( this.hidden ) {
-                if( this.thresh <= 0 )
-                    return;
-                this.thresh--;
-            }
-            //console.log('logging in channel ' + this.info["namespace"]);
-            var ts = new Date().toTimeString().slice(0, 8);
-            // Add content.
-            this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
-            // Scrollio
-            this.scroll();
+            this.ui.log_item(msg);
         },
         
         // Send a server message to the log window.
-        serverMessage: function( msg, info ) {
-            this.logItem(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
+        server_message: function( msg, info ) {
+            this.ui.server_message(msg, info);
         },
         
         // Set a channel property.
@@ -476,45 +461,7 @@ function wsc_channel( client, ns, hidden ) {
             this.info[head]["content"] = e.value || '';
             this.info[head]["by"] = e.by;
             this.info[head]["ts"] = e.ts;
-            //console.log("set " + head);
-            if(!this.info[head]["content"]) {
-                /*
-                this.setHeader('title', { pkt: {
-                            "arg": { "by": "", "ts": "" },
-                            "body": '<p>sample title</p>'
-                        }
-                    }
-                );
-                /**/
-                /*
-                this.setHeader('topic', { pkt: {
-                            'arg': { 'by': '', 'ts': '' },
-                            'body': '<p>sample topic</p>'
-                        }
-                    }
-                );
-                /**/
-                /*
-                return;/**/
-            }
-            headd = this.window.find("header div." + head);
-            headd.replaceWith(
-                wsc_html_cheader.replacePArg('{head}', head).replacePArg('{content}', this.info[head]['content'])
-            );
-            headd = this.window.find('header div.' + head);
-            
-            if( this.info[head]['content'] ) {
-                headd.css({display: 'block'});
-                /*
-                console.log(this.logpanel.width() + ', ' + this.window.width());
-                console.log((this.window.width() - this.logpanel.width()) - 10);
-                
-                headd.css({'margin-right': (this.window.width() - this.logpanel.width()) - 2});
-                */
-            } else
-                this.window.find('header div.' + head).css({display: 'none'});
-                
-            this.resize();
+            this.ui.set_header(head, e.value || '');
         },
         
         // Set the channel user list.
@@ -522,7 +469,6 @@ function wsc_channel( client, ns, hidden ) {
             if( Object.size(this.info['members']) == 0 )
                 return;
             
-            ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
             pcs = {};
             
             for( i in this.info['users'] ) {
@@ -530,13 +476,26 @@ function wsc_channel( client, ns, hidden ) {
                 member = this.info['members'][un];
                 
                 if( !( member['pc'] in pcs ) )
-                    pcs[member['pc']] = '';
+                    pcs[member['pc']] = {'name': member['pc'], 'users': []};
                 
                 conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
                 s = member.symbol;
-                pcs[member['pc']]+= '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
+                uinfo = {
+                    'name': un,
+                    'symbol': s,
+                    'conn': member['conn'],
+                    'hover': {
+                        'name': un,
+                        'avatar': '<img class="avatar" src="" height="50" width="50" />',
+                        'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
+                        'info': []
+                    }
+                };
+                
+                pcs[member['pc']].users.push(uinfo);
             }
             
+            ulist = [];
             //this.info['members'].sort( caseInsensitiveSort );
             //console.log(this.info["pc_order"])
             for(var index in this.info["pc_order"]) {
@@ -545,34 +504,11 @@ function wsc_channel( client, ns, hidden ) {
                 if( !( pc in pcs ) )
                     continue;
                 
-                ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcs[pc] + '</ul></div>';
+                ulist.push(pcs[pc]);
             }
-            ulist = ulist + '</div>'
             
-            //console.log(ulist);
+            this.ui.set_user_list(ulist);
             
-            this.window.find('div.chatusers').replaceWith(ulist);
-            this.userpanel = this.window.find('div.chatusers');
-            this.userpanel.css({display: 'block'});
-            
-            pcs = this.userpanel.find('h3');
-            if(typeof(pcs) == 'object') {
-                pcs.addClass('first');
-            } else {
-                for( index in pcs ) {
-                    if( index == 0 ) {
-                        pcs[0].addClass('first');
-                        continue;
-                    }
-                    pcs[index].removeClass('first');
-                }
-            }
-            /* */
-            //console.log(this.window.find("div.chatusers").height());
-            //var h = this.window.innerWidth() - this.window.find('div.chatusers').outerWidth();
-            //console.log(h);
-            //this.window.find("div.chatlog").width(h - 50);
-            this.resize();
             this.client.trigger('set.userlist', {
                 name: 'set.userlist',
                 ns: this.info['namespace']
@@ -667,39 +603,14 @@ function wsc_channel( client, ns, hidden ) {
         
         // Display a message sent by a user.
         recv_msg: function( e ) {
-        
-            var tabl = this.tab;
             
-            if( !this.tab.hasClass('active') )
-                tabl.addClass('noise');
-            
-            u = channel.client.settings['username'].toLowerCase();
+            u = this.client.settings['username'].toLowerCase();
             msg = e['message'].toLowerCase();
-            p = channel.window.find('.logmsg').last();
             
-            if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
+            if( msg.indexOf(u) < 0 )
                 return;
             
-            p.addClass('highlight');
-            
-            if( tabl.hasClass('active') )
-                return;
-            
-            if( tabl.hasClass('tabbed') )
-                return;
-            
-            var runs = 0;
-            tabl.addClass('tabbed');
-            
-            function toggles() {
-                runs++;
-                tabl.toggleClass('fill');
-                if( runs == 6 )
-                    return;
-                setTimeout( toggles, 1000 );
-            }
-            
-            toggles();
+            this.ui.highlight();
         
         },
         
