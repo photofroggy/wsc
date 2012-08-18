@@ -39,7 +39,7 @@ function $_GET( q, s ) {
     var re = new RegExp('&'+q+'(?:=([^&]*))?(?=&|$)','i'); 
     s = s.replace(/^\?/,'&').match(re); 
     if(s) 
-        return typeof s[1] != 'undefined' ? decodeURIComponent(s[1]) : ''; 
+        return typeof s[1] != 'undefined' ? decodeURIComponent(s[1].replace(/\+/g, '%20')) : ''; 
 }
 
 //This returns the unix time stamp as a JS Date object in the local timezone.
