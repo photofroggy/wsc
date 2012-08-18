@@ -262,6 +262,9 @@ div.wsc div.chatwindow div.chatusers div.pc ul li a {
   padding: 0px;
   margin: 0px;
 }
+div.wsc div.chatwindow div.chatusers div.pc ul li a em {
+  font-style: normal;
+}
 div.wsc div.chatwindow div.userinfo {
   display: block;
   position: absolute;
