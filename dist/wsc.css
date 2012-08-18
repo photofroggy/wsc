@@ -356,7 +356,7 @@ div.wsc.wsct_default a {
   color: #affa3e;
 }
 div.wsc.wsct_default a:hover {
-  color: #ff5959;
+  color: white;
 }
 div.wsc.wsct_default a.button,
 div.wsc.wsct_default form.msg input[type="submit"] {
@@ -531,7 +531,7 @@ div.wsc.wsct_test a {
   color: #affa3e;
 }
 div.wsc.wsct_test a:hover {
-  color: #ff5959;
+  color: white;
 }
 div.wsc.wsct_test a.button, div.wsc.wsct_test form.msg input[type="submit"] {
   background: -webkit-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
