@@ -60,13 +60,14 @@ div.wsc nav.tabs ul li a.tab {
   border: 1px solid black;
   border-bottom: none;
   display: block;
+  margin-top: -1px;
 }
 div.wsc nav.tabs ul li a.tab:hover {
   text-decoration: none;
   border: 1px solid black;
   border-bottom: none;
-  padding: 5px 5px;
-  margin-top: -2px;
+  padding: 9px 5px;
+  margin-top: -11px;
 }
 div.wsc nav.tabs ul li a.closetab {
   background: none;
@@ -96,18 +97,19 @@ div.wsc nav.tabs ul li.active {
   margin-top: 0px;
 }
 div.wsc nav.tabs ul li.active a.tab {
-  padding: 5px 7px;
-  padding-left: 25px;
+  padding: 7px 7px 7px 25px;
   border: 1px solid black;
   border-bottom: none;
+  margin-top: -4px;
 }
 div.wsc nav.tabs ul li.active a.tab:hover {
-  margin-top: 0px;
+  padding: 7px 7px 7px 25px;
+  margin-top: -4px;
 }
 div.wsc nav.tabs ul li.active a.closetab {
   display: block;
   position: relative;
-  top: -23px;
+  top: -24px;
   left: 5px;
 }
 div.wsc a {
@@ -386,11 +388,11 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
   background-color: #406d8b;
   border-color: #0d4d69;
   color: white;
@@ -399,11 +401,11 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a.button {
   border-color: #0f6175;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a:hover {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
   color: white;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.closetab {
@@ -436,11 +438,11 @@ div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a.tab {
   font-weight: bold;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed.fill a.tab {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
   color: #9ad7f1;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li.active a.tab {
@@ -560,11 +562,11 @@ div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
   background-color: #2ccc17;
   border-color: #0d4d69;
   color: white;
@@ -573,11 +575,11 @@ div.wsc.wsct_test nav.tabs ul#chattabs li a.button {
   border-color: #293840;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a:hover {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #3ba7f0 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
   color: white;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li a.closetab {
@@ -610,11 +612,11 @@ div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a.tab {
   font-weight: bold;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a.tab {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #406d8b 97%);
+  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
   color: #9ad7f1;
 }
 div.wsc.wsct_test nav.tabs ul#chattabs li.active a.tab {
