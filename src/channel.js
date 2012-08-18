@@ -391,8 +391,8 @@ function wsc_channel( client, ns, hidden ) {
             this.ui.set_user_list(ulist);
             
             this.client.trigger('set.userlist', {
-                name: 'set.userlist',
-                ns: this.info['namespace']
+                'name': 'set.userlist',
+                'ns': this.info['namespace']
             });
         },
         
