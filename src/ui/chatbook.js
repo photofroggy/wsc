@@ -85,10 +85,11 @@ WscUIChatbook.prototype.channels = function( ) {
  * @method create_channel
  * @param ns {String} Namespace of the channel to create.
  * @param hidden {Boolean} Should the tab be hidden?
+ * @param monitor {Boolean} Is this channel the monitor?
  * @return {Object} WscUIChannel object.
  */
-WscUIChatbook.prototype.create_channel = function( ns, hidden ) {
-    chan = this.channel(ns, this.channel_object(ns, hidden));
+WscUIChatbook.prototype.create_channel = function( ns, hidden, monitor ) {
+    chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
     chan.build();
     this.toggle_channel(ns);
     this.manager.resize();

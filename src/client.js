@@ -339,6 +339,9 @@ function wsc_client( view, options, mozilla ) {
                 client.cchannel = client.channel(event.ns);
                 client.control.cache_input(event);
             } );
+            this.ui.on('tab.close.clicked', function( event, ui ) {
+                client.close_channel(event, ui);
+            } );
         },
         
         resizeUI: function( ) {
@@ -406,6 +409,14 @@ function wsc_client( view, options, mozilla ) {
         // we switch to the last channel in the list before doing so.
         remove_channel: function( ns ) {
             this.ui.remove_channel(ns);
+        },
+        
+        close_channel: function( event, ui ) {
+            // Cannot close the monitor channel!
+            if( event.chan.monitor )
+                return;
+            
+            client.part(event.ns);
         },
         
         // Select which channel is currently being viewed.

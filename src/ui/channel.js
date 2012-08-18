@@ -6,12 +6,14 @@
  * @param ui {Object} WscUI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
  */
-function WscUIChannel( ui, ns, hidden ) {
+function WscUIChannel( ui, ns, hidden, monitor ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
+    this.monitor = monitor || false;
     this.built = false;
     this.selector = selector;
     this.raw = ui.format_ns(ns);

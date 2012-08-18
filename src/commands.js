@@ -64,6 +64,7 @@ function wsc_extdefault( client ) {
             this.client.bind('cmd.clear', this.clear.bind(extension) );
             // userlistings
             //this.client.bind('set.userlist', this.setUsers.bind(extension) );
+            this.client.ui.on('userinfo.before', this.userinfo.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
         },
@@ -187,63 +188,14 @@ function wsc_extdefault( client ) {
         },
         
         // Set users, right?
-        setUsers: function( e ) {
-            var chan = extension.client.channel(e.ns);
-            users = chan.userpanel.find('li a');
-            users.each(
-                function( index, item ) {
-                    var usertag = chan.userpanel.find(item);
-                    var username = usertag.html().substr(10);
-                    var info = chan.info['members'][username];
-                    var infobox = null;
-                    usertag.data('hover', 0);
-                    
-                    function rembox( e ) {
-                        if(hovering( infobox, e.pageX, e.pageY, true ))
-                            return;
-                        infobox.remove();
-                    }
-                    
-                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                    
-                    function repl( match, s, i ) {
-                        return info.username[i].toLowerCase();
-                    }
-                    
-                    usertag.hover(
-                        function( e ) {
-                            chan.window.find(this).data('hover', 1);
-                            rn = info.realname ? '<li>'+info.realname+'</li>' : '';
-                            tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                            pane = '<div class="userinfo" id="'+info.username+'">\
-                                <div class="avatar">\
-                                    '+dAmn_avatar( info.username, info.usericon )+'\
-                                </div><div class="info">\
-                                <strong>\
-                                '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
-                                </strong>\
-                                <ul>\
-                                    '+rn+tn+'\
-                                </ul></div>\
-                            </div>';
-                            chan.window.append(pane);
-                            infobox = chan.window.find('.userinfo#'+info.username);
-                            pos = usertag.offset();
-                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 6 });
-                            infobox.hover(function(){
-                                chan.window.find(this).data('hover', 1);
-                            }, rembox);
-                            infobox.data('hover', 0);
-                            box = chan.window.find('div.userinfo:not(\'#'+info.username+'\')');
-                            box.remove();
-                        },
-                        function( e ) {
-                            chan.window.find(this).data('hover', 0);
-                            rembox(e);
-                        }
-                    );
-                }
-            );
+        userinfo: function( event, ui ) {
+            event.user.avatar = dAmn_avatar(event.user.name, event.user.member.usericon);
+            
+            if( event.user.member.realname )
+                event.user.info.push(event.user.member.realname);
+            
+            if( event.user.member.typename )
+                event.user.info.push(event.user.member.typename);
         },
     };
     

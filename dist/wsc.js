@@ -807,8 +807,9 @@ function wsc_channel( client, ns, hidden ) {
                 uinfo = {
                     'name': un,
                     'symbol': s,
-                    'conn': member['conn'],
+                    'conn': member.conn,
                     'hover': {
+                        'member': member,
                         'name': un,
                         'avatar': '<img class="avatar" src="" height="50" width="50" />',
                         'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
@@ -1959,6 +1960,7 @@ function wsc_extdefault( client ) {
             this.client.bind('cmd.clear', this.clear.bind(extension) );
             // userlistings
             //this.client.bind('set.userlist', this.setUsers.bind(extension) );
+            this.client.ui.on('userinfo.before', this.userinfo.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
         },
@@ -2082,63 +2084,14 @@ function wsc_extdefault( client ) {
         },
         
         // Set users, right?
-        setUsers: function( e ) {
-            var chan = extension.client.channel(e.ns);
-            users = chan.userpanel.find('li a');
-            users.each(
-                function( index, item ) {
-                    var usertag = chan.userpanel.find(item);
-                    var username = usertag.html().substr(10);
-                    var info = chan.info['members'][username];
-                    var infobox = null;
-                    usertag.data('hover', 0);
-                    
-                    function rembox( e ) {
-                        if(hovering( infobox, e.pageX, e.pageY, true ))
-                            return;
-                        infobox.remove();
-                    }
-                    
-                    ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
-                    
-                    function repl( match, s, i ) {
-                        return info.username[i].toLowerCase();
-                    }
-                    
-                    usertag.hover(
-                        function( e ) {
-                            chan.window.find(this).data('hover', 1);
-                            rn = info.realname ? '<li>'+info.realname+'</li>' : '';
-                            tn = info.typename ? '<li>'+info.typename+'</li>' : '';
-                            pane = '<div class="userinfo" id="'+info.username+'">\
-                                <div class="avatar">\
-                                    '+dAmn_avatar( info.username, info.usericon )+'\
-                                </div><div class="info">\
-                                <strong>\
-                                '+info.symbol+'<a target="_blank" href="http://'+info.username+'.'+extension.client.settings['domain']+'/">'+info.username+'</a>\
-                                </strong>\
-                                <ul>\
-                                    '+rn+tn+'\
-                                </ul></div>\
-                            </div>';
-                            chan.window.append(pane);
-                            infobox = chan.window.find('.userinfo#'+info.username);
-                            pos = usertag.offset();
-                            infobox.css({ 'top': (pos.top - usertag.height()) + 10, 'left': (pos.left - (infobox.width())) - 6 });
-                            infobox.hover(function(){
-                                chan.window.find(this).data('hover', 1);
-                            }, rembox);
-                            infobox.data('hover', 0);
-                            box = chan.window.find('div.userinfo:not(\'#'+info.username+'\')');
-                            box.remove();
-                        },
-                        function( e ) {
-                            chan.window.find(this).data('hover', 0);
-                            rembox(e);
-                        }
-                    );
-                }
-            );
+        userinfo: function( event, ui ) {
+            event.user.avatar = dAmn_avatar(event.user.name, event.user.member.usericon);
+            
+            if( event.user.member.realname )
+                event.user.info.push(event.user.member.realname);
+            
+            if( event.user.member.typename )
+                event.user.info.push(event.user.member.typename);
         },
     };
     
@@ -2487,6 +2440,9 @@ function wsc_client( view, options, mozilla ) {
                 client.cchannel = client.channel(event.ns);
                 client.control.cache_input(event);
             } );
+            this.ui.on('tab.close.clicked', function( event, ui ) {
+                client.close_channel(event, ui);
+            } );
         },
         
         resizeUI: function( ) {
@@ -2554,6 +2510,14 @@ function wsc_client( view, options, mozilla ) {
         // we switch to the last channel in the list before doing so.
         remove_channel: function( ns ) {
             this.ui.remove_channel(ns);
+        },
+        
+        close_channel: function( event, ui ) {
+            // Cannot close the monitor channel!
+            if( event.chan.monitor )
+                return;
+            
+            client.part(event.ns);
         },
         
         // Select which channel is currently being viewed.
@@ -3197,7 +3161,7 @@ WscUI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
-    this.monitoro = this.chatbook.create_channel(this.mns, hide);
+    this.monitoro = this.chatbook.create_channel(this.mns, hide, true);
     //this.control.setInput();
     this.control.focus();
     
@@ -3378,12 +3342,14 @@ WscUI.prototype.add_theme = function( theme ) {
  * @param ui {Object} WscUI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
  */
-function WscUIChannel( ui, ns, hidden ) {
+function WscUIChannel( ui, ns, hidden, monitor ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
+    this.monitor = monitor || false;
     this.built = false;
     this.selector = selector;
     this.raw = ui.format_ns(ns);
@@ -3902,10 +3868,11 @@ WscUIChatbook.prototype.channels = function( ) {
  * @method create_channel
  * @param ns {String} Namespace of the channel to create.
  * @param hidden {Boolean} Should the tab be hidden?
+ * @param monitor {Boolean} Is this channel the monitor?
  * @return {Object} WscUIChannel object.
  */
-WscUIChatbook.prototype.create_channel = function( ns, hidden ) {
-    chan = this.channel(ns, this.channel_object(ns, hidden));
+WscUIChatbook.prototype.create_channel = function( ns, hidden, monitor ) {
+    chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
     chan.build();
     this.toggle_channel(ns);
     this.manager.resize();

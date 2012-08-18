@@ -483,8 +483,9 @@ function wsc_channel( client, ns, hidden ) {
                 uinfo = {
                     'name': un,
                     'symbol': s,
-                    'conn': member['conn'],
+                    'conn': member.conn,
                     'hover': {
+                        'member': member,
                         'name': un,
                         'avatar': '<img class="avatar" src="" height="50" width="50" />',
                         'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
