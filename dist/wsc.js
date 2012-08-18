@@ -799,6 +799,11 @@ function wsc_channel( client, ns, hidden ) {
                 un = this.info['users'][i];
                 member = this.info['members'][un];
                 
+                if( !('pc' in member) ) {
+                    delete this.info.users[i];
+                    break;
+                }
+                
                 if( !( member['pc'] in pcs ) )
                     pcs[member['pc']] = {'name': member['pc'], 'users': []};
                 
@@ -909,6 +914,8 @@ function wsc_channel( client, ns, hidden ) {
             
             if( member['conn'] == 0 )
                 delete this.info['members'][user];
+            
+            this.info.users.splice(this.info.users.indexOf(member), 1);
         },
         
         // Joins
