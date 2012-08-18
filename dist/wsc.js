@@ -2913,21 +2913,7 @@ WscUI.prototype.create_channel = function( ns, toggle ) {
  * @param ns {String} Name of the channel to remove.
  */
 WscUI.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 )
-        return;
-    
-    chan = this.channel(ns);
-    chan.remove();
-    delete this.channelo[chan.info["selector"]];
-    
-    var select = '';
-    for (tmp in this.channelo) {
-        if (this.channelo.hasOwnProperty(tmp) && tmp != chan.info['selector'])
-            select = tmp;
-    }
-    
-    this.toggle_channel(select);
-    this.channel(select).resize();
+    this.chatbook.remove_channel(ns);
 };
 
 /**
