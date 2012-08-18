@@ -57,14 +57,15 @@
                 a.closetab {
                     background: none;
                     display: none;
-                    height: 20px;
-                    width: 20px;
+                    height: 15px;
+                    width: 17px;
                     background-color: black;
                     color: white;
                     text-align: center;
+                    line-height: 1.3em;
                     -moz-border-radius: 2px;
                     border-radius: 2px;
-                    font-size: 13px;
+                    font-size: 10px;
                     -webkit-box-shadow: 0px 1px 1px black;
                     -moz-box-shadow: 0px 1px 1px black;
                     box-shadow: 0px 1px 1px black;
@@ -83,7 +84,7 @@
                     margin-top: 0px;
                     a.tab {
                         padding: 5px 7px;
-                        padding-left: 30px;
+                        padding-left: 25px;
                         border: 1px solid black;
                         border-bottom: none;
                         &:hover {
@@ -93,7 +94,7 @@
                     a.closetab {
                         display: block;
                         position: relative;
-                        top: -25px;
+                        top: -23px;
                         left: 5px;
                     }
                 }
