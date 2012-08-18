@@ -30,9 +30,12 @@ div.wsc nav.tabs ul#chattabs {
   overflow: hidden;
   height: 30px;
 }
+div.wsc nav.tabs ul#chattabs li {
+  margin-right: 2px;
+}
 div.wsc nav.tabs ul#tabnav {
   float: right;
-  padding: 7px 20px;
+  padding: 10px 20px;
 }
 div.wsc nav.tabs ul#tabnav li a {
   padding: 4px 7px;
