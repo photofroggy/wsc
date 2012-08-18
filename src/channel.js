@@ -3,11 +3,17 @@
  * for the channel.
  */
 
+/**
+ * Chat channel object.
+ * Manages channel events and data.
+ * 
+ * @class WscChannel
+ * @constructor
+ * @param client {Object} Wsc chat client object.
+ * @param ns {String} Channel namespace.
+ * @param hidden {Boolean} Should the channel tab be hidden?
+ */
 function WscChannel( client, ns, hidden ) {
-
-    var selector = client.deform_ns(ns).slice(1).toLowerCase();
-    this.client = client;
-    this.hidden = hidden;
     
     this.info = {
         'raw': null,
@@ -27,13 +33,20 @@ function WscChannel( client, ns, hidden ) {
             'ts': ''
         },
     };
+    
+    var selector = client.deform_ns(ns).slice(1).toLowerCase();
+    this.client = client;
+    this.hidden = hidden;
 
+    this.info["raw"] = client.format_ns(ns);
+    this.info["selector"] = selector;
+    this.info["namespace"] = client.deform_ns(ns);
+    
+    this.monitor = Object.size(this.client.channelo) == 0;
+    //
     this.info.raw = client.format_ns(ns);
     this.info.selector = selector;
     this.info['namespace'] = this.info.ns = client.deform_ns(ns);
-    
-    //this.property = this.property.bind( this );
-    scope_methods( this, WscChannel.prototype );
 
 }
 
@@ -62,28 +75,7 @@ WscChannel.prototype.setHeader = function( head, e ) {
     this.info[head]["content"] = e.value || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    //console.log("set " + head);
-    if(!this.info[head]["content"]) {
-        /*
-        this.setHeader('title', { pkt: {
-                    "arg": { "by": "", "ts": "" },
-                    "body": '<p>sample title</p>'
-                }
-            }
-        );
-        /**/
-        /*
-        this.setHeader('topic', { pkt: {
-                    'arg': { 'by': '', 'ts': '' },
-                    'body': '<p>sample topic</p>'
-                }
-            }
-        );
-        /**/
-        /*
-        return;/**/
-    }
-    //this.ui.setHeader();
+    this.ui.set_header(head, e.value || '');
 };
 
 // Set the channel's privclasses.
