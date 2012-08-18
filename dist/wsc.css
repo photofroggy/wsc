@@ -466,7 +466,7 @@ div.wsc.wsct_default div.chatwindow header div.title a:hover {
 div.wsc.wsct_default div.chatwindow header div.topic {
   background-color: #81aac5;
   border-color: #0d4d69;
-  color: #125383;
+  color: #063b63;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog {
   background-color: #eaf8ff;
@@ -498,6 +498,7 @@ div.wsc.wsct_default div.chatusers {
 }
 div.wsc.wsct_default div.chatusers div.pc h3, div.wsc.wsct_default div.chatusers div.pc h4 {
   background-color: #81aac5;
+  color: #063b63;
 }
 div.wsc.wsct_default div.chatusers div.pc ul {
   color: #afd7f5;
@@ -639,7 +640,7 @@ div.wsc.wsct_test div.chatwindow header div.title a:hover {
 div.wsc.wsct_test div.chatwindow header div.topic {
   background-color: #cc5d17;
   border-color: #0d4d69;
-  color: #125383;
+  color: #063b63;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog {
   background-color: #eaf8ff;
@@ -671,6 +672,7 @@ div.wsc.wsct_test div.chatusers {
 }
 div.wsc.wsct_test div.chatusers div.pc h3, div.wsc.wsct_test div.chatusers div.pc h4 {
   background-color: #cc5d17;
+  color: #063b63;
 }
 div.wsc.wsct_test div.chatusers div.pc ul {
   color: #75ff8f;

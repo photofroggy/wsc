@@ -50,8 +50,8 @@
     $outer-border: #0D4D69,
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
+    $heading-color: #063B63,
     $highlight: white,
-    $topic-color: #125383,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
@@ -141,7 +141,7 @@
             div.topic {
                 background-color: $heading-bg;
                 border-color: $inner-border;
-                color: $topic-color;
+                color: $heading-color;
             }
         }
         
@@ -181,6 +181,7 @@
         div.pc {
             h3, h4 {
                 background-color: $heading-bg;
+                color: $heading-color;
             }
             ul {
                 color: $chrome-color;
