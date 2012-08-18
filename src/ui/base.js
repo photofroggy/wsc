@@ -155,7 +155,7 @@ WscUI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || WscUIChatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
-    this.monitoro = this.chatbook.create_channel(this.mns, hide);
+    this.monitoro = this.chatbook.create_channel(this.mns, hide, true);
     //this.control.setInput();
     this.control.focus();
     
@@ -185,7 +185,6 @@ WscUI.prototype.resize = function() {
  */
 WscUI.prototype.create_channel = function( ns, toggle ) {
     this.chatbook.create_channel( ns, toggle );
-    this.resize();
 };
 
 /**

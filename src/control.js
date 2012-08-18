@@ -27,20 +27,13 @@ function wsc_control( client ) {
         
         init: function( client ) {
             this.client = client;
-            this.draw();
-            this.panel = this.client.view.find('div.chatcontrol');
-            this.form = this.panel.find('form.msg');
-            this.input = this.form.find('input.msg');
-        },
-        
-        // Draw the panel.
-        draw: function( ) {
-            this.client.view.append( wsc_html_control );
+            this.ui = this.client.ui.control;
+            this.set_input();
         },
         
         // Steal the lime light. Brings the cursor to the input panel.
         focus: function( ) {
-            control.input.focus();
+            this.ui.focus();
         },
         
         // Returns `<symbol><username>`;
@@ -48,55 +41,25 @@ function wsc_control( client ) {
             return this.client.settings["symbol"] + this.client.settings["username"];
         },
         
-        // Resize the control panel.
-        resize: function( ) {
-            this.panel.css({
-                width: '100%'});
-            // Form dimensionals.
-            this.form.css({'width': '100%'});
-            this.input.css({'width': this.client.view.width() - 80});
-        },
-        
-        height: function( ) {
-            return this.panel.height() + 17;
-        },
-        
-        // Edit the input bar's label.
-        setLabel: function( ) {
-            ns = this.client.cchannel.info['namespace'];
-            //this.panel.find('p').replaceWith(
-            //    '<p>' + this.userLine() + ' - ' + ns + '</p>'
-            //);
-            this.untab();
-            h = this.getHistory();
-            this.input.val( h.index == -1 ? h.tmp : h.list[h.index] );
-            if( h.index == -1 )
-                h.tmp = '';
-        },
-        
         // Save current input.
-        cacheInput: function( ) {
-            h = this.getHistory();
+        cache_input: function( event ) {
+            h = this.getHistory( event.prev.namespace );
             
             if( h.index > -1 )
                 return;
             
-            h.tmp = this.input.val();
+            h.tmp = this.ui.get_text();
+            this.ui.set_text(this.getHistory( event.chan.namespace ).tmp);
         },
         
         // Set up the control for the UI input.
-        setInput: function( ) {
-            if( this.client.mozilla )
-                this.input.keypress( this.keypress );
-            else
-                this.input.keydown( this.keypress );
-            
-            this.form.submit( this.submit );
+        set_input: function( ) {
+            this.ui.set_handlers(this.keypress, this.submit);
         },
         
         // Create history for a channel.
-        getHistory: function( ) {
-            ns = this.client.cchannel.info['namespace'];
+        getHistory: function( ns ) {
+            ns = ns || this.client.cchannel.info['namespace'];
             
             if( !this.history[ns] )
                 this.history[ns] = { index: -1, list: [], tmp: '' };
@@ -118,7 +81,7 @@ function wsc_control( client ) {
         // Scroll history or something.
         scrollHistory: function( up ) {
             history = this.getHistory();
-            data = this.input.val();
+            data = this.ui.get_text();
             
             if( history.index == -1 )
                 if( data )
@@ -170,9 +133,9 @@ function wsc_control( client ) {
         
         // Handle submit events woop.
         submit: function( event ) {
-            msg = control.input.val();
+            msg = control.ui.get_text();
             control.appendHistory(msg);
-            control.input.val('');
+            control.ui.set_text('');
             control.handleInput(event, msg);
             return false;
         },
@@ -196,8 +159,8 @@ function wsc_control( client ) {
             this.tab.type = 0;
             
             // We only tab the last word in the input. Slice!
-            needle = this.chomp();
-            this.unchomp(needle);
+            needle = this.ui.chomp();
+            this.ui.unchomp(needle);
             
             // Check if we's dealing with commands here
             if( needle[0] == "/" || needle[0] == "#" ) {
@@ -236,45 +199,19 @@ function wsc_control( client ) {
             if( !this.tab.hit )
                 this.newtab(event);
             
-            this.chomp();
+            this.ui.chomp();
             this.tab.index++;
             
             if( this.tab.index >= this.tab.matched.length )
                 this.tab.index = -1;
             
             if( this.tab.index == -1 ) {
-                this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
+                this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
                 return;
             }
             
-            suf = this.input.val() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
-            this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
-        },
-        
-        chomp: function( ) {
-            d = this.input.val();
-            i = d.lastIndexOf(' ');
-            
-            if( i == -1 ) {
-                this.input.val('');
-                return d;
-            }
-            
-            chunk = d.slice(i + 1);
-            this.input.val( d.slice(0, i) );
-            
-            if( chunk.length == 0 )
-                return this.chomp();
-            
-            return chunk;
-        },
-        
-        unchomp: function( data ) {
-            d = this.input.val();
-            if( !d )
-                this.input.val(data);
-            else
-                this.input.val(d + ' ' + data);
+            suf = this.ui.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
+            this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
         },
         
         // Handle UI input.

@@ -10,7 +10,7 @@ function WscPacket( data, separator ) {
         return null;
     }
     
-    var pkt = { cmd: null, param: null, arg: [], body: null, sub: [], raw: data };
+    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
     separator = separator || '=';
     
     try {
