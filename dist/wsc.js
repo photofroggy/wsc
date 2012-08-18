@@ -715,8 +715,8 @@ function wsc_channel( client, ns, hidden ) {
             this.ui.set_user_list(ulist);
             
             this.client.trigger('set.userlist', {
-                name: 'set.userlist',
-                ns: this.info['namespace']
+                'name': 'set.userlist',
+                'ns': this.info['namespace']
             });
         },
         
@@ -1463,7 +1463,7 @@ function wsc_protocol( client ) {
             client.bind('pkt.login', this.login);
             client.bind('pkt.join', this.join);
             client.bind('pkt.part', this.part);
-            //client.bind('pkt.kicked', this.kicked);
+            client.bind('pkt.kicked', this.kicked);
             client.bind('pkt.ping', this.ping);
             client.bind('pkt.property', this.property);
             client.bind('pkt.recv_join', this.recv_joinpart);
@@ -1622,7 +1622,6 @@ function wsc_protocol( client ) {
                 return;
             msg = msgm[0];
             
-            console.log(event);
             if( event.s == '0' ) {
                 return;
             }
@@ -1736,6 +1735,14 @@ function wsc_protocol( client ) {
                 c.server_message("Couldn't leave "+ns, e.e);
             }
             
+        },
+        
+        kicked: function( e, client ) {
+        
+            if( e.r.toLowerCase().indexOf('autokicked') > -1 )
+                return;
+            client.join(e.ns);
+        
         },
         
         // Process a property packet.
