@@ -97,7 +97,7 @@ function wsc_control( client ) {
                     history.index--;
             }
             
-            this.setLabel();
+            this.ui.set_text(history.list[history.index] || history.tmp);
         },
         
         // Handle a single keypress thingy.
