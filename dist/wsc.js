@@ -675,11 +675,6 @@ function wsc_channel( client, ns, hidden ) {
                 un = this.info['users'][i];
                 member = this.info['members'][un];
                 
-                if( member == undefined ) {
-                    delete this.info.users[i];
-                    break;
-                }
-                
                 if( !( member['pc'] in pcs ) )
                     pcs[member['pc']] = {'name': member['pc'], 'users': []};
                 
@@ -775,7 +770,7 @@ function wsc_channel( client, ns, hidden ) {
         
         // Unregister a user.
         removeUser: function( user ) {
-            var member = this.info['members'][user];
+            member = this.info['members'][user];
             
             if( member == undefined )
                 return;
@@ -3479,7 +3474,7 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
         return;
     
     infoboxes = [];
-    html = '<div class="chatusers" id="' + this.selector + '-users">';
+    html = '';
     
     for( order in userlist ) {
         pc = userlist[order];
@@ -3493,9 +3488,8 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
         }
         html+= '</ul></div>';
     }
-    html+= '</div>';
     
-    this.window.find('div.chatusers').replaceWith(html);
+    this.window.find('div.chatusers').html(html);
     this.userpanel = this.window.find('div.chatusers');
     this.userpanel.css({display: 'block'});
     

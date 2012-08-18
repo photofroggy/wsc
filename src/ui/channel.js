@@ -278,7 +278,7 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
         return;
     
     infoboxes = [];
-    html = '<div class="chatusers" id="' + this.selector + '-users">';
+    html = '';
     
     for( order in userlist ) {
         pc = userlist[order];
@@ -292,9 +292,8 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
         }
         html+= '</ul></div>';
     }
-    html+= '</div>';
     
-    this.window.find('div.chatusers').replaceWith(html);
+    this.window.find('div.chatusers').html(html);
     this.userpanel = this.window.find('div.chatusers');
     this.userpanel.css({display: 'block'});
     
