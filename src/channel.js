@@ -113,6 +113,7 @@ WscChannel.prototype.setPrivclasses = function( e ) {
 WscChannel.prototype.setMembers = function( e ) {
     pack = new WscPacket(e.pkt["body"]);
     this.info['members'] = {};
+    this.info['users'] = [];
     
     while(pack["cmd"] == "member") {
         this.registerUser(pack);
@@ -474,8 +475,10 @@ function wsc_channel( client, ns, hidden ) {
         recv_join: function( e ) {
             info = new WscPacket('user ' + e.user + '\n' + e['info']);
             channel.registerUser( info );
-            this.info.users.push( e.user );
-            this.info.users.sort( caseInsensitiveSort );
+            if( this.info.users.indexOf(e.user) == -1 ) {
+                this.info.users.push( e.user );
+                this.info.users.sort( caseInsensitiveSort );
+            }
             channel.setUserList();
         },
         
