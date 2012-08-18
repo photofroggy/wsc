@@ -641,6 +641,7 @@ WscChannel.prototype.remove_user = function( user ) {
     for( index in this.info.users ) {
         uinfo = this.info.users[index];
         if( uinfo.username == user ) {
+            this.info.users.splice(index, 1);
             break;
         }
     }
