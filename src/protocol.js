@@ -93,7 +93,7 @@ function wsc_protocol( client ) {
             'recv_admin_showverbose': null,
             'recv_admin_privclass': ['<span class="cevent admin">** Admin command "{command}" failed: {e} *</span>'],
             'kicked': ['<span class="servermsg">** You have been kicked by {user} * <em>{r}</em></span>'],
-            'ping': ['<span class="servermsg">** Ping...</span>', true],
+            'ping': null, //['<span class="servermsg">** Ping...</span>', true],
             'disconnect': ['<span class="servermsg">** You have been disconnected * <em>{e}</em></span>', false, true],
             // Stuff here is errors, yes?
             'send': ['<span class="servermsg">** Send error: <em>{e}</em></span>'],

@@ -21,8 +21,8 @@
     $tab-a: white,
     $tab-ah: white,
     $button: #AAE1EE,
+    $buttonh: #AAE1EE,
     $button-shadow: #0A384E, 
-    $buttonh: #87C1CE,
     $buttonh-shadow: #1773A0, 
     $bgs: top,
     $bgi: #D3EDFF,
@@ -30,8 +30,8 @@
     $bgbg: #406D8B,
     $hbgs: top,
     $hbgi: #D3EDFF,
-    $hbgsl: #3BA7F0,
-    $hbgbg: #406D8B,
+    $hbgsl: #1C78B6,
+    $hbgbg: #1B4968,
     $abgs: top,
     $abgi: #D3EDFF,
     $abgsl: #55A5DB,
@@ -40,13 +40,25 @@
     $closeh: #FFF6E4,
     $close-shadow: #311604,
     $close-bgs: top,
-    $close-bgi: #FFA69E ,
-    $close-bgsl: #DF4C3F,
-    $close-bgbg: #9E2318,
+    $close-bgi: #FFA69E,
+    $close-bgsl: #FC6053,
+    $close-bgbg: #B1362C,
     $close-hbgs: top,
-    $close-hbgi: #FFA69E ,
-    $close-hbgsl: #FAB4AE,
-    $close-hbgbg: #9E2318,
+    $close-hbgi: #FFA69E,
+    $close-hbgsl: #F74738,
+    $close-hbgbg: #A22D23,
+    $tab-bgs: top,
+    $tab-bgi: #D3EDFF,
+    $tab-bgsl: #298FD3,
+    $tab-bgbg: #406D8B,
+    $tab-hbgs: top,
+    $tab-hbgi: #D3EDFF,
+    $tab-hbgsl: #3BA7F0,
+    $tab-hbgbg: #406D8B,
+    $tab-abgs: top,
+    $tab-abgi: #D3EDFF,
+    $tab-abgsl: #55A5DB,
+    $tab-abgbg: #406D8B,
     $outer-border: #0D4D69,
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
@@ -81,7 +93,7 @@
     nav.tabs {
         ul#chattabs li {
             a {
-                @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
+                @include button-gradient($tab-bgs, $tab-bgi, $tab-bgsl, $tab-bgbg);
                 background-color: $chrome;
                 border-color: $outer-border;
                 color: $tab-a;
@@ -89,7 +101,7 @@
                     border-color: $base;
                 }
                 &:hover {
-                    @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
+                    @include button-gradient($tab-hbgs, $tab-hbgi, $tab-hbgsl, $tab-hbgbg);
                     color: $tab-ah;
                 }
             }
@@ -114,12 +126,12 @@
                     font-weight: bold;
                 }
                 &.fill a.tab {
-                    @include button-gradient($bgs, $bgi, $tabbed-fill-bg, $bgbg);
+                    @include button-gradient($tab-bgs, $tab-bgi, $tabbed-fill-bg, $tab-bgbg);
                     color: $tabbed-fill;
                 }
             }
             &.active a.tab {
-                @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
+                @include button-gradient($tab-abgs, $tab-abgi, $tab-abgsl, $tab-abgbg);
             }
         }
     }
