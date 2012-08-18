@@ -322,14 +322,10 @@ function packetEvtName( pkt ) {
     
     return name;
 }
-/* wsc channel - photofroggy
- * Provides a JavaScript representation of a chat channel and handles the UI
- * for the channel.
- */
-
 /**
  * Chat channel object.
- * Manages channel events and data.
+ * Manages channel events and data, and acts as a thin wrapper for the
+ * channel's UI object.
  * 
  * @class WscChannel
  * @constructor
