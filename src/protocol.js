@@ -173,7 +173,7 @@ function wsc_protocol( client ) {
             c=this.client;
             setTimeout(function () {
                 c.connect();
-                c.monitorAll('Opening connection');
+                c.ui.server_message('Opening connection');
             }, 2000);
         
         }, 

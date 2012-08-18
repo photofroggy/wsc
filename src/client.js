@@ -430,34 +430,9 @@ function wsc_client( view, options, mozilla ) {
             chan.log(msg);
         },
         
-        // Send a log message to all channels.
-        logAll: function( msg ) {
-            for( ns in this.channelo )
-                this.channlo[ns].log(msg);
-        },
-        
-        // Send a log item to all channels.
-        logItemAll: function( msg ) {
-            for( ns in this.channelo )
-                this.channelo[ns].logItem(msg);
-        },
-        
-        monitorAll: function( msg, info ) {
-            for( ns in this.channelo )
-                this.channelo[ns].serverMessage(msg, info);
-        },
-        
-        // Write a server message to the UI.
-        serverMessage: function( ns, msg, info ) {
-            var chan = this.channel(ns);
-            if( !chan )
-                return;
-            chan.serverMessage(msg, info);
-        },
-        
         // System message displayed in the monitor window.
         monitor: function( msg, info ) {
-            this.serverMessage(this.mns, msg, info);
+            this.ui.monitor(msg, info);
         },
         
         // Deform a channel namespace.
