@@ -59,7 +59,7 @@ function wsc_control( client ) {
         
         // Create history for a channel.
         getHistory: function( ns ) {
-            ns = ns || this.client.cchannel.info['namespace'];
+            ns = ns || this.client.cchannel.namespace;
             
             if( !this.history[ns] )
                 this.history[ns] = { index: -1, list: [], tmp: '' };
@@ -189,7 +189,7 @@ function wsc_control( client ) {
             } else if( this.tab.type == 2 ) {
                 for( chan in this.client.channelo )
                     if( chan.toLowerCase().indexOf(needle) == 0 )
-                        this.tab.matched.push(this.client.channel(chan).info['namespace']);
+                        this.tab.matched.push(this.client.channel(chan).namespace);
             }
         
         },
@@ -228,7 +228,7 @@ function wsc_control( client ) {
             data = data.slice(1);
             bits = data.split(' ');
             cmdn = bits.shift();
-            ens = this.client.cchannel.info['namespace'];
+            ens = this.client.cchannel.namespace;
             etarget = ens;
             
             if( bits[0] ) {

@@ -399,7 +399,7 @@ function wsc_client( view, options, mozilla ) {
         // channel without the `chat:` or `#` style prefixes. The `ns`
         // parameter is the string to use for the tab.
         create_channel: function( ns, toggle ) {
-            chan = this.channel(ns, wsc_channel(this, ns, toggle));
+            chan = this.channel(ns, new WscChannel(this, ns, toggle));
             chan.build();
         },
         
