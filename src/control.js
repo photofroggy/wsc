@@ -81,7 +81,7 @@ function wsc_control( client ) {
         // Scroll history or something.
         scrollHistory: function( up ) {
             history = this.getHistory();
-            data = this.input.val();
+            data = this.ui.get_text();
             
             if( history.index == -1 )
                 if( data )

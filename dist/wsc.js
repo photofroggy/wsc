@@ -222,7 +222,7 @@ function WscPacket( data, separator ) {
         return null;
     }
     
-    var pkt = { cmd: null, param: null, arg: [], body: null, sub: [], raw: data };
+    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
     separator = separator || '=';
     
     try {
@@ -576,7 +576,6 @@ function wsc_channel( client, ns, hidden ) {
         wrap: null,
         userpanel: null,
         tab: null,
-        built: false,
         hidden: false,
         monitor: false,
         thresh: null,
@@ -592,72 +591,13 @@ function wsc_channel( client, ns, hidden ) {
             this.info["namespace"] = client.deform_ns(ns);
             
             this.monitor = Object.size(this.client.channelo) == 0;
-            this.thresh = 10;
-            
-            /*
-            console.log(this.window);
-            console.log(this.logpanel);
-            console.log(this.wrap);
-            console.log(this.tab);
-            /**/
-    
         },
         
         // Draw channel on screen and store the different elements in attributes.
         build: function( ) {
             this.info['members'] = {};
-            
             this.client.ui.create_channel(ns, hidden);
             this.ui = this.client.ui.channel(ns);
-            /*
-            if( this.built )
-                return;
-            
-            var selector = this.info['selector']
-            ns = this.info['namespace']
-            
-            // Draw.
-            this.client.tabul.append(wsc_html_chattab.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
-            this.client.chatbook.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
-            // Store
-            this.tab = this.client.tabul.find('#' + selector + '-tab')
-            this.window = this.client.chatbook.find('#' + selector + '-window')
-            this.logpanel = this.client.view.find('#' + selector + "-log");
-            this.wrap = this.logpanel.find('ul.logwrap');
-            this.userpanel = this.client.view.find('#' + selector + "-users");
-            
-            this.client.view.find('a[href="#' + selector + '"]').click(function () {
-                channel.client.toggleChannel(selector);
-                return false;
-            });
-            
-            var focus = true;
-            
-            this.window.click(
-                function( e ) {
-                    if( focus )
-                        channel.client.control.focus();
-                    else
-                        focus = true;
-                }
-            );
-            
-            this.logpanel.select(
-                function( ) {
-                    focus = false;
-                }
-            );
-            
-            if( this.hidden ) {
-                this.tab.toggleClass('hidden');
-            }
-            
-            this.built = true;*/
-        },
-        
-        invisible: function( ) {
-            channel.hidden = true;
-            channel.tab.addClass('hidden');
         },
         
         // Remove a channel from the screen entirely.
@@ -677,71 +617,6 @@ function wsc_channel( client, ns, hidden ) {
         // Toggle a class on the chat tab.
         toggleTabClass: function( cls ) {
             this.ui.tab.toggleClass(cls);
-        },
-        
-        // Scroll the log panel downwards.
-        scroll: function( ) {
-            this.pad();
-            this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-        },
-        
-        pad: function ( ) {
-            // Add padding.
-            this.wrap.css({'padding-top': 0});
-            wh = this.wrap.innerHeight();
-            lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
-            pad = lh - wh;
-            /*
-            console.log(ns + ' log');
-            console.log('> log wrap height ' + wh);
-            console.log('> window height ' + this.logpanel.innerHeight());
-            console.log('> add padding ' + pad);
-            /* */
-            /* */
-            if( pad > 0 )
-                this.wrap.css({'padding-top': pad});
-            else
-                this.wrap.css({
-                    'padding-top': 0,
-                    'height': lh});
-            /* */
-        },
-        
-        // Fix the dimensions of the log window.
-        resize: function( ) {
-            this.wrap.css({'padding-top': 0});
-            // Height.
-            //console.log('head height: ' + this.window.find("header").height() + '; outer: ' + this.window.find("header").outerHeight());
-            wh = this.client.chatbook.height();
-            //console.log(h);
-            this.window.height(wh);
-            // Width.
-            cw = this.window.width();
-            cu = this.window.find('div.chatusers');
-            // Header height
-            title = this.window.find('header div.title');
-            topic = this.window.find('header div.topic');
-            
-            // Log width.
-            if( cu.css('display') != 'none')
-                cw = cw - cu.outerWidth();
-            
-            //console.log('> lheight',wh);
-            
-            if( title.css('display') == 'block' )
-                wh = wh - title.outerHeight(true);
-            //console.log('> wh - th',wh);
-                
-            // Log panel dimensions
-            this.logpanel.css({
-                height: wh + 1,
-                width: cw});
-            
-            // Scroll again just to make sure.
-            this.scroll();
-            
-            // User list dimensions
-            cu.css({height: this.logpanel.innerHeight() - 3});
         },
         
         // Display a log message.
@@ -799,7 +674,7 @@ function wsc_channel( client, ns, hidden ) {
                 un = this.info['users'][i];
                 member = this.info['members'][un];
                 
-                if( !('pc' in member) ) {
+                if( member == undefined ) {
                     delete this.info.users[i];
                     break;
                 }
@@ -860,11 +735,6 @@ function wsc_channel( client, ns, hidden ) {
                 this.info["pc"][parseInt(bits[0])] = bits[1];
             }
             this.info["pc_order"].sort(function(a,b){return b-a});
-            /* 
-            console.log("got privclasses");
-            console.log(this.info["pc"]);
-            console.log(this.info["pc_order"]);
-            /* */
         },
         
         // Store each member of the this.
@@ -878,7 +748,6 @@ function wsc_channel( client, ns, hidden ) {
                 if(pack == null)
                     break;
             }
-            //console.log("registered users");
             
             this.info['users'] = [];
             
@@ -905,17 +774,28 @@ function wsc_channel( client, ns, hidden ) {
         
         // Unregister a user.
         removeUser: function( user ) {
-            member = this.info['members'][user];
-            
+            var member = this.info['members'][user];
+            console.log(member, user in this.info.members, this.info.members[user], this.info.members);
             if( member == undefined )
                 return;
             
             member['conn']--;
             
-            if( member['conn'] == 0 )
-                delete this.info['members'][user];
+            if( member['conn'] > 0 )
+                return;
             
-            this.info.users.splice(this.info.users.indexOf(member), 1);
+            console.log(user, member, this.info.users.indexOf(member));
+            
+            for( index in this.info.users ) {
+                uinfo = this.info.users[index];
+                console.log('++',uinfo);
+                if( uinfo.username == user ) {
+                    console.log(this.info.users.splice(index, 1));
+                    break;
+                }
+            }
+            
+            delete this.info['members'][user];
         },
         
         // Joins
@@ -959,10 +839,7 @@ function wsc_channel( client, ns, hidden ) {
         
         // Process a kick event thingy.
         recv_kicked: function( e ) {
-            if( !channel.info['members'][e.user] )
-                return;
-            
-            delete channel.info['members'][e.user];
+            this.removeUser(e.user);
             channel.setUserList();
         }
         
@@ -2526,35 +2403,6 @@ function wsc_client( view, options, mozilla ) {
             
             client.part(event.ns);
         },
-        
-        // Select which channel is currently being viewed.
-        toggleChannel: function( ns ) {
-            //console.log("out: "+previous+"; in: "+ns);
-            chan = this.channel(ns);
-            
-            if( !chan )
-                return;
-            
-            if(this.cchannel) {
-                if(this.cchannel == chan)
-                    return;
-                // Hide previous channel, if any.
-                //console.log("prevshift ", previous);
-                this.cchannel.hideChannel();
-                this.control.cacheInput();
-            }
-            
-            // Show clicked channel.
-            chan.showChannel();
-            this.control.focus();
-            this.cchannel = chan;
-            this.control.setLabel();
-            if( this.settings['monitor'][1] ) {
-                mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-                mt.addClass(this.settings['monitor'][1]);
-            }
-            //this.resizeUI();
-        },
     
         // Write a message to the UI.
         // `ns` is the name of the channel. No `chat:` or `#` style prefix.
@@ -2838,7 +2686,7 @@ function wsc_control( client ) {
         // Scroll history or something.
         scrollHistory: function( up ) {
             history = this.getHistory();
-            data = this.input.val();
+            data = this.ui.get_text();
             
             if( history.index == -1 )
                 if( data )

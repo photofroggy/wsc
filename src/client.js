@@ -418,35 +418,6 @@ function wsc_client( view, options, mozilla ) {
             
             client.part(event.ns);
         },
-        
-        // Select which channel is currently being viewed.
-        toggleChannel: function( ns ) {
-            //console.log("out: "+previous+"; in: "+ns);
-            chan = this.channel(ns);
-            
-            if( !chan )
-                return;
-            
-            if(this.cchannel) {
-                if(this.cchannel == chan)
-                    return;
-                // Hide previous channel, if any.
-                //console.log("prevshift ", previous);
-                this.cchannel.hideChannel();
-                this.control.cacheInput();
-            }
-            
-            // Show clicked channel.
-            chan.showChannel();
-            this.control.focus();
-            this.cchannel = chan;
-            this.control.setLabel();
-            if( this.settings['monitor'][1] ) {
-                mt = this.tabul.find('#' + this.channel(this.mns).info['selector'] + '-tab')
-                mt.addClass(this.settings['monitor'][1]);
-            }
-            //this.resizeUI();
-        },
     
         // Write a message to the UI.
         // `ns` is the name of the channel. No `chat:` or `#` style prefix.
