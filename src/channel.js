@@ -351,11 +351,6 @@ function wsc_channel( client, ns, hidden ) {
                 un = this.info['users'][i];
                 member = this.info['members'][un];
                 
-                if( member == undefined ) {
-                    delete this.info.users[i];
-                    break;
-                }
-                
                 if( !( member['pc'] in pcs ) )
                     pcs[member['pc']] = {'name': member['pc'], 'users': []};
                 
@@ -451,7 +446,7 @@ function wsc_channel( client, ns, hidden ) {
         
         // Unregister a user.
         removeUser: function( user ) {
-            var member = this.info['members'][user];
+            member = this.info['members'][user];
             
             if( member == undefined )
                 return;
