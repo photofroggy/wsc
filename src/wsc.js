@@ -73,7 +73,7 @@
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {
-                client = wsc_client( $(this), options, $.browser.mozilla );
+                client = wsc_client( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(function( ) { client.ui.resize(); });
                 $(window).focus(function( ) { client.ui.control.focus(); });
                 setInterval(client.loop, 120000);
@@ -96,7 +96,7 @@
         
         if( method == 'init' || ui === undefined ) {
             if( ui == undefined ) {
-                ui = new WscUI( $(this), options, $.browser.mozilla );
+                ui = new WscUI( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(ui.resize);
             }
             $(window).data('wscui', ui);

@@ -1,4 +1,19 @@
 /**
+ * This is an alternate thing for the UI module.
+ * Chatterbox is basically a thing.
+ * 
+ * @module Chatterbox
+ */
+var Chatterbox = {};
+Chatterbox.VERSION = '0.2.0';
+Chatterbox.STATE = 'beta';
+Chatterbox.Manager = WscUI;
+Chatterbox.Control = WscUIControl;
+Chatterbox.Channel = WscUIChannel;
+Chatterbox.Chatbook = WscUIChatbook;
+Chatterbox.Navigation = WscUINavigation;
+
+/**
  * The UI module of wsc provides a set of objects which can be used to create
  * and manage a GUI for a chat client.
  * 

@@ -623,7 +623,8 @@ WscChannel.prototype.register_user = function( pkt ) {
  * @method remove_user
  * @param user {String} Name of the user to remove.
  */
-WscChannel.prototype.remove_user = function( user ) {
+WscChannel.prototype.remove_user = function( user, force ) {
+    force = force || false;
     member = this.info.members[user];
     
     if( member == undefined )
@@ -631,7 +632,7 @@ WscChannel.prototype.remove_user = function( user ) {
     
     member['conn']--;
     
-    if( member['conn'] > 0 )
+    if( member['conn'] > 0 && !force)
         return;
     
     for( index in this.info.users ) {
@@ -713,7 +714,7 @@ WscChannel.prototype.recv_privchg = function( e ) {
  */
 WscChannel.prototype.recv_kicked = function( e ) {
     
-    this.remove_user(e.user);
+    this.remove_user(e.user, true);
     this.set_user_list();
     
 };
@@ -1909,6 +1910,8 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
+        version: '0.3.13',
+        dev_state: 'alpha',
         view: null,
         mozilla: false,
         control: null,
@@ -1969,6 +1972,9 @@ function wsc_client( view, options, mozilla ) {
         init: function( view, options, mozilla ) {
             
             view.extend( this.settings, options );
+            this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+            console.log(this.settings.agent);
+            
             //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new WscUI( view, {
                 'themes': this.settings.themes,
@@ -2714,6 +2720,21 @@ function wsc_control( client ) {
     control.init(client);
     return control;
 }
+/**
+ * This is an alternate thing for the UI module.
+ * Chatterbox is basically a thing.
+ * 
+ * @module Chatterbox
+ */
+var Chatterbox = {};
+Chatterbox.VERSION = '0.2.0';
+Chatterbox.STATE = 'beta';
+Chatterbox.Manager = WscUI;
+Chatterbox.Control = WscUIControl;
+Chatterbox.Channel = WscUIChannel;
+Chatterbox.Chatbook = WscUIChatbook;
+Chatterbox.Navigation = WscUINavigation;
+
 /**
  * The UI module of wsc provides a set of objects which can be used to create
  * and manage a GUI for a chat client.
@@ -3992,7 +4013,7 @@ var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {
-                client = wsc_client( $(this), options, $.browser.mozilla );
+                client = wsc_client( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(function( ) { client.ui.resize(); });
                 $(window).focus(function( ) { client.ui.control.focus(); });
                 setInterval(client.loop, 120000);
@@ -4015,7 +4036,7 @@ var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
         
         if( method == 'init' || ui === undefined ) {
             if( ui == undefined ) {
-                ui = new WscUI( $(this), options, $.browser.mozilla );
+                ui = new WscUI( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(ui.resize);
             }
             $(window).data('wscui', ui);

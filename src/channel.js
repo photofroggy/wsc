@@ -299,7 +299,8 @@ WscChannel.prototype.register_user = function( pkt ) {
  * @method remove_user
  * @param user {String} Name of the user to remove.
  */
-WscChannel.prototype.remove_user = function( user ) {
+WscChannel.prototype.remove_user = function( user, force ) {
+    force = force || false;
     member = this.info.members[user];
     
     if( member == undefined )
@@ -307,7 +308,7 @@ WscChannel.prototype.remove_user = function( user ) {
     
     member['conn']--;
     
-    if( member['conn'] > 0 )
+    if( member['conn'] > 0 && !force)
         return;
     
     for( index in this.info.users ) {
@@ -389,7 +390,7 @@ WscChannel.prototype.recv_privchg = function( e ) {
  */
 WscChannel.prototype.recv_kicked = function( e ) {
     
-    this.remove_user(e.user);
+    this.remove_user(e.user, true);
     this.set_user_list();
     
 };

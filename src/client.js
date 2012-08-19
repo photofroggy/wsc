@@ -44,6 +44,8 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
+        version: '0.3.13',
+        dev_state: 'alpha',
         view: null,
         mozilla: false,
         control: null,
@@ -104,6 +106,9 @@ function wsc_client( view, options, mozilla ) {
         init: function( view, options, mozilla ) {
             
             view.extend( this.settings, options );
+            this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+            console.log(this.settings.agent);
+            
             //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new WscUI( view, {
                 'themes': this.settings.themes,
