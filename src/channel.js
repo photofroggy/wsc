@@ -1,17 +1,15 @@
-wsc.Channel = WscChannel;
-
 /**
  * Chat channel object.
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class WscChannel
+ * @class Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-function WscChannel( client, ns, hidden ) {
+wsc.Channel = function( client, ns, hidden ) {
 
     this.info = {
         'members': {},
@@ -37,14 +35,14 @@ function WscChannel( client, ns, hidden ) {
     this.namespace = client.deform_ns(ns);
     this.monitor = Object.size(this.client.channelo) == 0;
 
-}
+};
 
 /**
  * Create a UI view for this channel.
  * 
  * @method build
  */
-WscChannel.prototype.build = function( ) {
+wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
     this.client.ui.create_channel(this.namespace, this.hidden);
     this.ui = this.client.ui.channel(ns);
@@ -55,7 +53,7 @@ WscChannel.prototype.build = function( ) {
  * 
  * @method remove
  */
-WscChannel.prototype.remove = function( ) {
+wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
     this.ui.remove();
@@ -66,7 +64,7 @@ WscChannel.prototype.remove = function( ) {
  * 
  * @method hide
  */
-WscChannel.prototype.hide = function( ) {
+wsc.Channel.prototype.hide = function( ) {
     if( this.ui == null )
         return;
     this.ui.hide();
@@ -77,7 +75,7 @@ WscChannel.prototype.hide = function( ) {
  * 
  * @method show
  */
-WscChannel.prototype.show = function( ) {
+wsc.Channel.prototype.show = function( ) {
     if( this.ui == null )
         return;
     this.ui.show();
@@ -89,7 +87,7 @@ WscChannel.prototype.show = function( ) {
  * @method log
  * @param msg {String} Log message to display.
  */
-WscChannel.prototype.log = function( msg ) {
+wsc.Channel.prototype.log = function( msg ) {
     if( this.ui == null )
         return;
     this.ui.log(msg);
@@ -101,7 +99,7 @@ WscChannel.prototype.log = function( msg ) {
  * @method log_item
  * @param msg {String} Message to send.
  */
-WscChannel.prototype.logItem = function( msg ) {
+wsc.Channel.prototype.logItem = function( msg ) {
     if( this.ui == null )
         return;
     this.ui.log_item(msg);
@@ -114,7 +112,7 @@ WscChannel.prototype.logItem = function( msg ) {
  * @param msg {String} Server message.
  * @param [info] {String} Extra information for the message.
  */
-WscChannel.prototype.server_message = function( msg, info ) {
+wsc.Channel.prototype.server_message = function( msg, info ) {
     if( this.ui == null )
         return;
     this.ui.server_message(msg, info);
@@ -126,7 +124,7 @@ WscChannel.prototype.server_message = function( msg, info ) {
  * @method property
  * @param e {Object} Event data for the property packet.
  */
-WscChannel.prototype.property = function( e ) {
+wsc.Channel.prototype.property = function( e ) {
     var prop = e.pkt["arg"]["p"];
     switch(prop) {
         case "title":
@@ -152,7 +150,7 @@ WscChannel.prototype.property = function( e ) {
  * @method set_header
  * @param e {Object} Event data for the property packet.
  */
-WscChannel.prototype.set_header = function( head, e ) {
+wsc.Channel.prototype.set_header = function( head, e ) {
     this.info[head]["content"] = e.value || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
@@ -169,7 +167,7 @@ WscChannel.prototype.set_header = function( head, e ) {
  * @method set_privclasses
  * @param e {Object} Event data for the property packet.
  */
-WscChannel.prototype.set_privclasses = function( e ) {
+wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc"] = {};
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
@@ -189,7 +187,7 @@ WscChannel.prototype.set_privclasses = function( e ) {
  * @method set_members
  * @param e {Object} Event data for the property packet.
  */
-WscChannel.prototype.set_members = function( e ) {
+wsc.Channel.prototype.set_members = function( e ) {
     pack = new wsc.Packet(e.pkt["body"]);
     this.info.members = {};
     this.info.users = [];
@@ -208,7 +206,7 @@ WscChannel.prototype.set_members = function( e ) {
  * 
  * @method set_user_list
  */
-WscChannel.prototype.set_user_list = function( ) {
+wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
     
@@ -267,7 +265,7 @@ WscChannel.prototype.set_user_list = function( ) {
  * @method register_user
  * @param pkt {Object} User data.
  */
-WscChannel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt ) {
     un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
@@ -292,7 +290,7 @@ WscChannel.prototype.register_user = function( pkt ) {
  * @method remove_user
  * @param user {String} Name of the user to remove.
  */
-WscChannel.prototype.remove_user = function( user, force ) {
+wsc.Channel.prototype.remove_user = function( user, force ) {
     force = force || false;
     member = this.info.members[user];
     
@@ -314,7 +312,7 @@ WscChannel.prototype.remove_user = function( user, force ) {
  * @method recv_join
  * @param e {Object} Event data for recv_join packet.
  */
-WscChannel.prototype.recv_join = function( e ) {
+wsc.Channel.prototype.recv_join = function( e ) {
     info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
     this.set_user_list();
@@ -326,7 +324,7 @@ WscChannel.prototype.recv_join = function( e ) {
  * @method recv_part
  * @param e {Object} Event data for recv_part packet.
  */
-WscChannel.prototype.recv_part = function( e ) {
+wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
     this.set_user_list();
@@ -339,7 +337,7 @@ WscChannel.prototype.recv_part = function( e ) {
  * @method recv_msg
  * @param e {Object} Event data for recv_msg packet.
  */
-WscChannel.prototype.recv_msg = function( e ) {
+wsc.Channel.prototype.recv_msg = function( e ) {
     
     u = this.client.settings['username'].toLowerCase();
     msg = e['message'].toLowerCase();
@@ -358,7 +356,7 @@ WscChannel.prototype.recv_msg = function( e ) {
  * @method recv_privchg
  * @param e {Object} Event data for recv_privhcg packet.
  */
-WscChannel.prototype.recv_privchg = function( e ) {
+wsc.Channel.prototype.recv_privchg = function( e ) {
     member = this.info.members[e.user];
     
     if( !member )
@@ -374,7 +372,7 @@ WscChannel.prototype.recv_privchg = function( e ) {
  * @method recv_kicked
  * @param e {Object} Event data for recv_kicked packet.
  */
-WscChannel.prototype.recv_kicked = function( e ) {
+wsc.Channel.prototype.recv_kicked = function( e ) {
     
     this.remove_user(e.user, true);
     this.set_user_list();
