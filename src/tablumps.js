@@ -109,8 +109,6 @@ wsc.Tablumps = function(  ) {
 
 };
 
-wsc.Tablumps.prototype.lumps = {};
-
 /**
  * @function registerMap
  *

@@ -3,7 +3,9 @@
  * 
  * @module wsc
  */
-var wsc = {};// Taken from dAmnAIR by philo23
+var wsc = {};
+
+// Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
 /**
@@ -1074,8 +1076,6 @@ wsc.Tablumps = function(  ) {
     this._dent = 0;
 
 };
-
-wsc.Tablumps.prototype.lumps = {};
 
 /**
  * @function registerMap
