@@ -1903,7 +1903,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.14',
+        version: '0.3.15',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
