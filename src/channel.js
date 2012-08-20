@@ -83,14 +83,6 @@ WscChannel.prototype.show = function( ) {
     this.ui.show();
 };
 
-/* Toggle a class on the chat tab.
-WscChannel.prototype.toggleTabClass = function( cls ) {
-    if( this.ui == null )
-        return;
-    this.ui.tab.toggleClass(cls);
-};
-/* */
-
 /**
  * Display a log message.
  * 
@@ -177,7 +169,6 @@ WscChannel.prototype.set_header = function( head, e ) {
  * @method set_privclasses
  * @param e {Object} Event data for the property packet.
  */
-// TODO: Draw UI componentories!
 WscChannel.prototype.set_privclasses = function( e ) {
     this.info["pc"] = {};
     this.info["pc_order"] = [];
