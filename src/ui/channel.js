@@ -1,14 +1,14 @@
 /**
  * Object for managing channel interfaces.
  * 
- * @class WscUIChannel
+ * @class Channel
  * @constructor
- * @param ui {Object} WscUI object.
+ * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-function WscUIChannel( ui, ns, hidden, monitor ) {
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
     var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
@@ -19,14 +19,14 @@ function WscUIChannel( ui, ns, hidden, monitor ) {
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
 
-}
+};
 
 /**
  * Draw channel on screen and store the different elements in attributes.
  * 
  * @method build
  */
-WscUIChannel.prototype.build = function( ) {
+Chatterbox.Channel.prototype.build = function( ) {
     
     if( this.built )
         return;
@@ -38,7 +38,7 @@ WscUIChannel.prototype.build = function( ) {
     this.tab = this.manager.nav.add_tab( selector, ns );
     this.tabl = this.tab.find('.tab');
     this.tabc = this.tab.find('.closetab');
-    this.manager.chatbook.view.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
+    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
     this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.logpanel = this.window.find('#' + selector + "-log");
@@ -88,7 +88,7 @@ WscUIChannel.prototype.build = function( ) {
  * 
  * @method hide
  */
-WscUIChannel.prototype.hide = function( ) {
+Chatterbox.Channel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
@@ -99,7 +99,7 @@ WscUIChannel.prototype.hide = function( ) {
  * 
  * @method show
  */
-WscUIChannel.prototype.show = function( ) {
+Chatterbox.Channel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
@@ -112,7 +112,7 @@ WscUIChannel.prototype.show = function( ) {
  * 
  * @method remove
  */
-WscUIChannel.prototype.remove = function(  ) {
+Chatterbox.Channel.prototype.remove = function(  ) {
     this.tab.remove();
     this.window.remove();
 };
@@ -122,7 +122,7 @@ WscUIChannel.prototype.remove = function(  ) {
  * 
  * @method scroll
  */
-WscUIChannel.prototype.scroll = function( ) {
+Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
 };
@@ -133,7 +133,7 @@ WscUIChannel.prototype.scroll = function( ) {
  * 
  * @method pad
  */
-WscUIChannel.prototype.pad = function ( ) {
+Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.wrap.css({'padding-top': 0});
     wh = this.wrap.innerHeight();
@@ -153,7 +153,7 @@ WscUIChannel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-WscUIChannel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( ) {
     this.wrap.css({'padding-top': 0});
     // Height.
     wh = this.manager.chatbook.height();
@@ -190,12 +190,12 @@ WscUIChannel.prototype.resize = function( ) {
  * @method log
  * @param msg {String} Message to display.
  */
-WscUIChannel.prototype.log = function( msg ) {
+Chatterbox.Channel.prototype.log = function( msg ) {
     data = {
         'ns': this.namespace,
         'message': msg};
     this.manager.trigger( 'log.before', data );
-    this.log_item(wsc_html_logmsg.replacePArg('{message}', data.message));
+    this.log_item(Chatterbox.render('logmsg', {'message': data.message}));
 };
 
 /**
@@ -204,10 +204,10 @@ WscUIChannel.prototype.log = function( msg ) {
  * @method log_item
  * @param msg {String} Message to send.
  */
-WscUIChannel.prototype.log_item = function( msg ) {
+Chatterbox.Channel.prototype.log_item = function( msg ) {
     var ts = new Date().toTimeString().slice(0, 8);
     // Add content.
-    this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
+    this.wrap.append(Chatterbox.render('logitem', {'ts': ts, 'message': msg}));
     // Scrollio
     this.scroll();
     this.noise();
@@ -220,13 +220,13 @@ WscUIChannel.prototype.log_item = function( msg ) {
  * @param msg {String} Server message.
  * @param [info] {String} Extra information for the message.
  */
-WscUIChannel.prototype.server_message = function( msg, info ) {
+Chatterbox.Channel.prototype.server_message = function( msg, info ) {
     data = {
         'ns': this.namespace,
         'message': msg,
         'info': info};
     this.manager.trigger( 'server_message.before', data );
-    this.log_item(wsc_html_servermsg.replacePArg('{message}', data.message).replacePArg('{info}', data.info));
+    this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
 };
 
 /**
@@ -237,10 +237,10 @@ WscUIChannel.prototype.server_message = function( msg, info ) {
  * @param head {String} Should be 'title' or 'topic'.
  * @param content {String} HTML to use for the header.
  */
-WscUIChannel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content ) {
     headd = this.window.find("header div." + head);
     headd.replaceWith(
-        wsc_html_cheader.replacePArg('{head}', head).replacePArg('{content}', content || '')
+        Chatterbox.render('header', {'head': head, 'content': content || ''})
     );
     headd = this.window.find('header div.' + head);
     
@@ -260,7 +260,7 @@ WscUIChannel.prototype.set_header = function( head, content ) {
  * @param head {String} Should be 'title' or 'topic'.
  * @return {Object} Content of the header.
  */
-WscUIChannel.prototype.get_header = function( head ) {
+Chatterbox.Channel.prototype.get_header = function( head ) {
 
     return this.window.find('header div.' + head);
 
@@ -272,7 +272,7 @@ WscUIChannel.prototype.get_header = function( head ) {
  * @method set_user_list
  * @param userlist {Array} Listing of users in the channel.
  */
-WscUIChannel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
     
     if( Object.size(userlist) == 0 )
         return;
@@ -314,7 +314,7 @@ WscUIChannel.prototype.set_user_list = function( userlist ) {
  *   this element will be highlighted instead of the channel's last log
  *   message.
  */
-WscUIChannel.prototype.highlight = function( message ) {
+Chatterbox.Channel.prototype.highlight = function( message ) {
     
     var tab = this.tab;
     ( message || this.window.find('.logmsg').last() ).addClass('highlight');
@@ -347,7 +347,7 @@ WscUIChannel.prototype.highlight = function( message ) {
  * 
  * @method noise
  */
-WscUIChannel.prototype.noise = function(  ) {
+Chatterbox.Channel.prototype.noise = function(  ) {
     
     if( !this.tab.hasClass('active') )
         this.tab.addClass('noise');
@@ -361,7 +361,7 @@ WscUIChannel.prototype.noise = function(  ) {
  * @param user {Object} Information about a user.
  * @return {Object} jQuery object representing the information box.
  */
-WscUIChannel.prototype.userinfo = function( user ) {
+Chatterbox.Channel.prototype.userinfo = function( user ) {
 
     var link = this.window.find( 'a#' + user.name );
     
@@ -382,11 +382,11 @@ WscUIChannel.prototype.userinfo = function( user ) {
                 infoli+= '<li>' + user.info[index] + '</li>';
             }
             
-            chan.window.append(wsc_html_userinfo
-                .replacePArg('{username}', user.name)
-                .replacePArg('{avatar}', user.avatar)
-                .replacePArg('{link}', user.link)
-                .replacePArg('{info}', infoli));
+            chan.window.append(Chatterbox.render('userinfo', {
+                'username': user.name,
+                'avatar': user.avatar,
+                'link': user.link,
+                'info': infoli}));
             
             box = chan.window.find('.userinfo#'+user.name);
             chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
@@ -421,7 +421,7 @@ WscUIChannel.prototype.userinfo = function( user ) {
  * @param box {Object} A jQuery object representing the information box.
  * @param event {Object} jQuery event object.
  */
-WscUIChannel.prototype.unhover_user = function( box, event ) {
+Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
 
     o = box.offset();
     eb = box.outerHeight(true) + o.top;

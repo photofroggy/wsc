@@ -5,34 +5,22 @@
  * @module Chatterbox
  */
 var Chatterbox = {};
-Chatterbox.VERSION = '0.2.0';
-Chatterbox.STATE = 'beta';
-Chatterbox.Manager = WscUI;
-Chatterbox.Control = WscUIControl;
-Chatterbox.Channel = WscUIChannel;
-Chatterbox.Chatbook = WscUIChatbook;
-Chatterbox.Navigation = WscUINavigation;
 
-/**
- * The UI module of wsc provides a set of objects which can be used to create
- * and manage a GUI for a chat client.
- * 
- * @module wsc.ui
- * @author photofroggy
- **/
+Chatterbox.VERSION = '0.2.4';
+Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class WscUI
+ * @class UI
  * @constructor
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-function WscUI( view, options, mozilla, events ) {
+Chatterbox.UI = function( view, options, mozilla, events ) {
     
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
@@ -50,7 +38,7 @@ function WscUI( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
     
-}
+};
 
 /**
  * Used to trigger events.
@@ -59,7 +47,7 @@ function WscUI( view, options, mozilla, events ) {
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/
-WscUI.prototype.trigger = function( event, data ) {
+Chatterbox.UI.prototype.trigger = function( event, data ) {
 
     this.events.emit( event, data, this );
 
@@ -72,7 +60,7 @@ WscUI.prototype.trigger = function( event, data ) {
  * @param event {String} The event name to listen for.
  * @param handler {Method} The event handler.
  */
-WscUI.prototype.on = function( event, handler ) {
+Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
 
@@ -83,7 +71,7 @@ WscUI.prototype.on = function( event, handler ) {
  * 
  * @method remove_listeners
  */
-WscUI.prototype.remove_listeners = function(  ) {
+Chatterbox.UI.prototype.remove_listeners = function(  ) {
     
     this.events.removeListeners();
     
@@ -96,7 +84,7 @@ WscUI.prototype.remove_listeners = function(  ) {
  * @param ns {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
-WscUI.prototype.deform_ns = function( ns ) {
+Chatterbox.UI.prototype.deform_ns = function( ns ) {
     if(ns.indexOf("chat:") == 0)
         return '#' + ns.slice(5);
     
@@ -130,7 +118,7 @@ WscUI.prototype.deform_ns = function( ns ) {
  * @param ns {String} Channel namespace to format.
  * @return {String} ns formatted as a channel namespace.
  */
-WscUI.prototype.format_ns = function( ns ) {
+Chatterbox.UI.prototype.format_ns = function( ns ) {
     if(ns.indexOf('#') == 0) {
         return 'chat:' + ns.slice(1);
     }
@@ -149,7 +137,7 @@ WscUI.prototype.format_ns = function( ns ) {
     return ns;
 };
 
-WscUI.prototype.set_events = function( events ) {
+Chatterbox.UI.prototype.set_events = function( events ) {
     this.events = events || this.events;
 };
 
@@ -157,17 +145,17 @@ WscUI.prototype.set_events = function( events ) {
  * Build the GUI.
  * 
  * @method build
- * @param [control=wsc.ui.WscUIControl] {Class} UI control panel class.
- * @param [navigation=wsc.ui.WscUINavigation] {Class} UI navigation panel
+ * @param [control=Chatterbox.Control] {Class} UI control panel class.
+ * @param [navigation=Chatterbox.Navigation] {Class} UI navigation panel
  *   class.
- * @param [chatbook=wsc.ui.WscUIChatbook] {Class} Chatbook panel class.
+ * @param [chatbook=Chatterbox.Chatbook] {Class} Chatbook panel class.
  */
-WscUI.prototype.build = function( control, navigation, chatbook ) {
+Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( wsc_html_ui );
-    this.control = new ( control || WscUIControl )( this );
-    this.nav = new ( navigation || WscUINavigation )( this );
-    this.chatbook = new ( chatbook || WscUIChatbook )( this );
+    this.view.append( Chatterbox.template.ui );
+    this.control = new ( control || Chatterbox.Control )( this );
+    this.nav = new ( navigation || Chatterbox.Navigation )( this );
+    this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     // The monitor channel is essentially our console for the chat.
     hide = this.settings.monitor[1];
     this.monitoro = this.chatbook.create_channel(this.mns, hide, true);
@@ -181,7 +169,7 @@ WscUI.prototype.build = function( control, navigation, chatbook ) {
  * 
  * @method resize
  */
-WscUI.prototype.resize = function() {
+Chatterbox.UI.prototype.resize = function() {
 
     this.control.resize();
     this.view.height( this.view.parent().height() );
@@ -198,7 +186,7 @@ WscUI.prototype.resize = function() {
  * @param ns {String} Short name for the channel.
  * @param hidden {Boolean} Should this channel's tab be hidden?
  */
-WscUI.prototype.create_channel = function( ns, toggle ) {
+Chatterbox.UI.prototype.create_channel = function( ns, toggle ) {
     this.chatbook.create_channel( ns, toggle );
 };
 
@@ -211,7 +199,7 @@ WscUI.prototype.create_channel = function( ns, toggle ) {
  * @method remove_channel
  * @param ns {String} Name of the channel to remove.
  */
-WscUI.prototype.remove_channel = function( ns ) {
+Chatterbox.UI.prototype.remove_channel = function( ns ) {
     this.chatbook.remove_channel(ns);
 };
 
@@ -221,7 +209,7 @@ WscUI.prototype.remove_channel = function( ns ) {
  * @method toggle_channel
  * @param ns {String} Name of the channel to select.
  */
-WscUI.prototype.toggle_channel = function( ns ) {
+Chatterbox.UI.prototype.toggle_channel = function( ns ) {
     return this.chatbook.toggle_channel(ns);
 };
 
@@ -233,7 +221,7 @@ WscUI.prototype.toggle_channel = function( ns ) {
  * @param [chan] {Object} A wsc channel object representing the channel specified.
  * @return {Object} The channel object representing the channel defined by `namespace`
  */
-WscUI.prototype.channel = function( namespace, chan ) {
+Chatterbox.UI.prototype.channel = function( namespace, chan ) {
     return this.chatbook.channel( namespace, chan );
 };
 
@@ -246,7 +234,7 @@ WscUI.prototype.channel = function( namespace, chan ) {
  * @method channels
  * @return {Integer} Number of channels open in the ui.
  */
-WscUI.prototype.channels = function( ) {
+Chatterbox.UI.prototype.channels = function( ) {
     return this.chatbook.channels();
 };
 
@@ -257,7 +245,7 @@ WscUI.prototype.channels = function( ) {
  * @param msg {String} Message to display.
  * @param [info] {String} Additional data to display.
  */
-WscUI.prototype.monitor = function( msg, info ) {
+Chatterbox.UI.prototype.monitor = function( msg, info ) {
 
     this.monitoro.server_message(msg, info);
 
@@ -270,7 +258,7 @@ WscUI.prototype.monitor = function( msg, info ) {
  * @param msg {String} Message to display.
  * @param [info] {String} Additional data to display.
  */
-WscUI.prototype.server_message = function( msg, info ) {
+Chatterbox.UI.prototype.server_message = function( msg, info ) {
 
     this.chatbook.server_message(msg, info);
 
@@ -282,7 +270,7 @@ WscUI.prototype.server_message = function( msg, info ) {
  * @method log_item
  * @param msg {String} Message to display.
  */
-WscUI.prototype.log_item = function( msg ) {
+Chatterbox.UI.prototype.log_item = function( msg ) {
 
     this.chatbook.log_item(msg);
 
@@ -294,7 +282,7 @@ WscUI.prototype.log_item = function( msg ) {
  * @method log
  * @param msg {String} Message to display.
  */
-WscUI.prototype.log = function( msg ) {
+Chatterbox.UI.prototype.log = function( msg ) {
 
     this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
 
@@ -306,7 +294,7 @@ WscUI.prototype.log = function( msg ) {
  * @method theme
  * @param theme {String} Name of the theme.
  */
-WscUI.prototype.theme = function( theme ) {
+Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.themes.indexOf(theme) == -1 || this.settings.theme == theme)
         return;
     this.view.removeClass( this.settings.theme ).addClass( theme );
@@ -319,7 +307,7 @@ WscUI.prototype.theme = function( theme ) {
  * @method add_theme
  * @param theme {String} Name of the theme to add.
  */
-WscUI.prototype.add_theme = function( theme ) {
+Chatterbox.UI.prototype.add_theme = function( theme ) {
 
     if( this.settings.themes.indexOf(theme) > -1 )
         return;
