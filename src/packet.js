@@ -2,11 +2,9 @@
  * Methods to parse and create packets for the chat protocol.
  */
 
-wsc.Packet = WscPacket;
-
 var chains = [["recv", "admin"]];
 
-function WscPacket( data, separator ) {
+wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
         return null;
@@ -61,7 +59,7 @@ function WscPacket( data, separator ) {
     
     return pkt;
 
-}
+};
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {
