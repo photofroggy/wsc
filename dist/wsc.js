@@ -322,6 +322,8 @@ function packetEvtName( pkt ) {
     
     return name;
 }
+wsc.Channel = WscChannel;
+
 /**
  * Chat channel object.
  * Manages channel events and data, and acts as a thin wrapper for the
@@ -1857,14 +1859,8 @@ function wsc_extdefault( client ) {
     return extension;
 
 }
-/* wsc client - photofroggy
- * wsc's chat client. Manages everything pretty much.
- *
- * @module wsc-client
- */
-
 /**
- * @constructor wsc_client 
+ * @method wsc_client 
  * @author photofroggy
  * @note To create a client, use the {wsc wsc jQuery method}.
  * 
@@ -4008,7 +4004,16 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
 // @include control.js
 // @include ui.js
 
+
 /**
+ * WebSocket Chat client module.
+ * 
+ * @module wsc
+ */
+var wsc = {};
+
+
+/*
  * wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
  * chat servers and interact with them.

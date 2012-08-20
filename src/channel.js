@@ -1,3 +1,5 @@
+wsc.Channel = WscChannel;
+
 /**
  * Chat channel object.
  * Manages channel events and data, and acts as a thin wrapper for the

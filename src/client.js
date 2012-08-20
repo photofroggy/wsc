@@ -1,11 +1,5 @@
-/* wsc client - photofroggy
- * wsc's chat client. Manages everything pretty much.
- *
- * @module wsc-client
- */
-
 /**
- * @constructor wsc_client 
+ * @method wsc_client 
  * @author photofroggy
  * @note To create a client, use the {wsc wsc jQuery method}.
  * 
