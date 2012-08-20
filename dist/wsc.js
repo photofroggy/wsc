@@ -783,13 +783,13 @@ WscChannel.prototype.set_privclasses = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 WscChannel.prototype.set_members = function( e ) {
-    pack = new WscPacket(e.pkt["body"]);
+    pack = new wsc.Packet(e.pkt["body"]);
     this.info.members = {};
     this.info.users = [];
     
     while(pack["cmd"] == "member") {
         this.register_user(pack);
-        pack = new WscPacket(pack.body);
+        pack = new wsc.Packet(pack.body);
         if(pack == null)
             break;
     }
@@ -908,7 +908,7 @@ WscChannel.prototype.remove_user = function( user, force ) {
  * @param e {Object} Event data for recv_join packet.
  */
 WscChannel.prototype.recv_join = function( e ) {
-    info = new WscPacket('user ' + e.user + '\n' + e['info']);
+    info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
     this.set_user_list();
 };
@@ -3058,10 +3058,10 @@ function wsc_client( view, options, mozilla ) {
                 client.conn = client.createChatSocket();
                 client.conn.connect();
                 //console.log("connecting");
-                client.trigger('start', new WscPacket('client connecting\ne=ok\n\n'));
+                client.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
             } else {
                 client.monitor("Your browser does not support WebSockets. Sorry.");
-                client.trigger('start', new WscPacket('client connecting\ne=no websockets available\n\n'));
+                client.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
             }
         },
         
@@ -3251,7 +3251,7 @@ function wsc_client( view, options, mozilla ) {
                 if(cmds[0] != name)
                     continue;
                 
-                var sub = new WscPacket(pkt["body"]);
+                var sub = new wsc.Packet(pkt["body"]);
                 name = name + '_' + sub["cmd"];
                 
                 if(cmds.length > 1 && sub["param"] != undefined) {
