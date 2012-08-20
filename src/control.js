@@ -1,7 +1,40 @@
-/* wsc control - photofroggy
- * Input panel for the wsc web client. Manages the UI and controlling the
- * client via commands.
+/**
+ * Controls the input panel of the client.
+ * 
+ * @class Control
+ * @constructor
+ * @param client {Object} wsc.Client object.
  */
+wsc.Control = function( client ) {
+
+    this.client = client;
+    this.ui = this.client.ui.control;
+    this.history = {};
+    this.tab = {
+        hit: false,
+        cache: '',
+        matched: [],
+        index: -1,
+        type: 0,
+        prefix: ['', '/', ''],
+    };
+    
+    this.set_input();
+
+};
+
+wsc.Control.prototype.focus = function(  ) {};
+wsc.Control.prototype.cache_input = function( event ) {};
+wsc.Control.prototype.set_input = function(  ) {};
+wsc.Control.prototype.get_history = function(  ) {};
+wsc.Control.prototype.append_history = function( data ) {};
+wsc.Control.prototype.scroll_history = function( up ) {};
+wsc.Control.prototype.tab_item = function( event ) {};
+wsc.Control.prototype.start_tab = function( event ) {};
+wsc.Control.prototype.end_tab = function( event ) {};
+wsc.Control.prototype.submit = function( event ) {};
+wsc.Control.prototype.keypress = function( event ) {};
+wsc.Control.prototype.handle = function( event, message ) {};
 
 
 // Object representing the input control panel for the user interface.
