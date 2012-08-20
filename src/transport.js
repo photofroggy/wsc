@@ -29,7 +29,19 @@ wsc.Transport = function( server, open, message, disconnect ) {
  * 
  * @method Create
  */
-wsc.Transport.Create = function(  ) {};
+wsc.Transport.Create = function(  ) {
+
+    if( typeof io !== 'undefined' ) {
+        return new wsc.SocketIO( arguments );
+    }
+    
+    if(!window["WebSocket"]) {
+        throw "This browser does not support websockets.";
+    }
+    
+    return new wsc.WebSocket( arguments );
+
+};
 
 /**
  * Register open event callback.
@@ -116,5 +128,99 @@ wsc.Transport.prototype.send = function( message ) {};
  * @method close
  */
 wsc.Transport.prototype.close = function(  ) {};
+
+
+/**
+ * WebSocket transport object.
+ * 
+ * @class WebSocket
+ * @constructor
+ * @param server {String} Address for the server to connect to.
+ * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
+ *   a connection is established with the server.
+ * @param [message=wsc.WebSocket.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ * @param [disconnect=wsc.WebSocket.sdisconnect] {Method} The method to be
+ *   called when the connection has been closed.
+ */
+wsc.WebSocket = function(  ) {};
+wsc.WebSocket.prototype = new wsc.Transport('');
+
+wsc.WebSocket.prototype.onopen = function( event, sock ) {
+
+    this.sock = sock || this.conn;
+    this._open( event, this.sock );
+
+};
+
+wsc.WebSocket.prototype.ondisconnect = function( event ) {
+
+    this.sock = null;
+    this.conn = null;
+    this._disconnect( event );
+
+};
+
+/**
+ * Connect to the server.
+ * 
+ * @method connect
+ */
+wsc.WebSocket.prototype.connect = function(  ) {
+
+    this.conn = new WebSocket( this.server );
+    this.conn.onopen = this.onopen;
+    this.conn.onmessage = this._message;
+    this.conn.onclose = this.ondisconnect;
+
+};
+
+/**
+ * Send a message to the server.
+ * 
+ * @method send
+ * @param message {String} message to send to the server.
+ */
+wsc.WebSocket.prototype.send = function( message ) {
+
+    if( this.sock == null )
+        return -1;
+    
+    return this.sock.send(message);
+
+};
+
+/**
+ * Close the connection.
+ * 
+ * @method close
+ */
+wsc.WebSocket.prototype.close = function(  ) {
+
+    if( this.sock == null )
+        return;
+    
+    this.sock.close();
+
+};
+
+
+/**
+ * SocketIO wrapper.
+ * 
+ * @class SocketIO
+ * @constructor
+ * @param server {String} Address for the server to connect to.
+ * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
+ *   a connection is established with the server.
+ * @param [message=wsc.SocketIO.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ * @param [disconnect=wsc.SocketIO.sdisconnect] {Method} The method to be
+ *   called when the connection has been closed.
+ */
+wsc.SocketIO = function(  ) {};
+wsc.SocketIO.prototype = new wsc.Transport('');
+
+
 
 
