@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.19',
+        version: '0.4.21',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -64,13 +64,14 @@ function wsc_client( view, options, mozilla ) {
             "monitor": ['~Monitor', true],
             "welcome": "Welcome to the wsc web client!",
             "autojoin": "chat:channel",
-            "protocol": wsc_protocol,
+            "protocol": wsc.Protocol,
             "extend": [wsc_extdefault],
             "control": wsc_control,
             "stype": 'llama',
             "client": 'chatclient',
             "clientver": '0.3',
-            "tablumps": null,
+            "tablumps": function() { return new wsc.Tablumps(); },
+            "flow": function() { return new wsc.Flow(); },
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
@@ -81,6 +82,8 @@ function wsc_client( view, options, mozilla ) {
         },
         // Protocol object.
         protocol: null,
+        // Flow object.
+        flow: null,
         // Object containing all channel objects.
         channelo: {},
         // Current channel object.
@@ -121,7 +124,8 @@ function wsc_client( view, options, mozilla ) {
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
-            this.protocol = this.settings["protocol"]( this );
+            this.protocol = new this.settings.protocol( this.settings.tablumps() );
+            this.flow = this.settings.flow(this.protocol);
             //this.addListener('closed'
             
             // Debug!
@@ -321,9 +325,9 @@ function wsc_client( view, options, mozilla ) {
             var client = this;
             console.log(this.settings.server);
             conn = wsc.Transport.Create(this.settings.server);
-            conn.open(function( evt, sock ) { client.protocol.connected( evt, sock ); });
-            conn.disconnect(function( evt ) { client.protocol.closed( evt ); });
-            conn.message(function( evt ) { client.protocol.process_data( evt ); });
+            conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
+            conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
+            conn.message(function( evt ) { client.flow.message( client, evt ); });
             return conn;
             
         },

@@ -43,7 +43,7 @@ wsc.Packet = function( data, separator ) {
         if( pkt.body != null ) {
             subs = pkt.body.split('\n\n');
             for(i in subs) {
-                sub = WscPacket( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;
                 pkt.sub.push( sub );

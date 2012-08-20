@@ -3,9 +3,67 @@
  * 
  * @class Flow
  * @constructor
+ * @param protocol {Object} Protocol object.
  */
-wsc.Flow = function(  ) {
+wsc.Flow = function( protocol ) {
 
+    this.protocol = protocol || new wsc.Protocol();
+
+};
+
+// Established a WebSocket connection.
+wsc.Flow.prototype.connected = function( client, event, sock ) {
+    client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
+    client.connected = true;
+    client.handshake();
+    client.attempts = 0;
+};
+
+// WebSocket connection closed!
+wsc.Flow.prototype.closed = function( client, event ) {
+    console.log(evt);
+    client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
+    
+    if(client.connected) {
+        client.ui.server_message("Connection closed");
+        client.connected = false;
+    } else {
+        client.ui.server_message("Connection failed");
+    }
+    
+    // For now we want to automatically reconnect.
+    // Should probably be more intelligent about this though.
+    if( client.attempts > 2 ) {
+        client.ui.server_message("Can't connect. Try again later.");
+        client.attempts = 0;
+        return;
+    }
+    
+    client.ui.server_message("Connecting in 2 seconds");
+    c=client;
+    setTimeout(function () {
+        c.connect();
+        c.ui.server_message('Opening connection');
+    }, 2000);
+
+}; 
+
+// Received data from WebSocket connection.
+wsc.Flow.prototype.process_data = function( client, event ) {
+    var pack = new wsc.Packet(evt.data);
+    
+    if(pack == null)
+        return;
+    
+    var event = client.event_name(pack);
+    // Uncomment if you want everything ever in the console.
+    //console.log(event + '');
+    //console.log(JSON.stringify(pack));
+    pevt = this.packetEvent(event, pack);
+    this.log(pevt);
+    client.trigger('pkt', pevt);
+    client.trigger('pkt.'+event, pevt);
+    //this.monitor(data);
 };
 
 /**

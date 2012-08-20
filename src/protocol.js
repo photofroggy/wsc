@@ -3,11 +3,11 @@
  * 
  * @class Protocol
  * @constructor
- * @param [tablumps=WscTablumps] {Object} Tablumps parser instance.
+ * @param [tablumps=wsc.Tablumps] {Object} Tablumps parser instance.
  */
 wsc.Protocol = function( tablumps ) {
 
-    this.tablumps = tablumps || new WscTablumps;
+    this.tablumps = tablumps || new wsc.Tablumps;
     this.chains = [["recv", "admin"]];
     
     // Mappings for every packet.
@@ -49,10 +49,10 @@ wsc.Protocol = function( tablumps ) {
     this.mapper = {
         "recv": function( args, packet, mapping ) {
             args.ns = packet.param;
-            sub = new WscPacket( packet.body );
+            sub = new wsc.Packet( packet.body );
             
             if( sub.cmd == 'admin' ) {
-                ssub = new WscPacket( sub.body );
+                ssub = new wsc.Packet( sub.body );
                 return p.map(ssub, args, mapping);
             }
             
@@ -227,7 +227,7 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
             // e.<map[event][2]> = packet.body
             case 2:
                 if( key instanceof Array ) {
-                    this.mapPacket(event, new WscPacket(packet['body']), key);
+                    this.mapPacket(event, new wsc.Packet(packet['body']), key);
                 } else {
                     event[key] = packet['body'];
                 }
@@ -341,10 +341,10 @@ function wsc_protocol( client ) {
         mapper: {
             "recv": function( args, packet, mapping ) {
                 args.ns = packet.param;
-                sub = new WscPacket( packet.body );
+                sub = new wsc.Packet( packet.body );
                 
                 if( sub.cmd == 'admin' ) {
-                    ssub = new WscPacket( sub.body );
+                    ssub = new wsc.Packet( sub.body );
                     return protocol.mapPacket(args, ssub, mapping);
                 }
                 
@@ -432,7 +432,7 @@ function wsc_protocol( client ) {
         connected: function( evt, sock ) {
             if( sock  )
                 this.client.conn = sock;
-            this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
+            this.client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
             this.client.connected = true;
             this.client.handshake();
             this.client.attempts = 0;
@@ -441,7 +441,7 @@ function wsc_protocol( client ) {
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
+            this.client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
             
             if(this.client.connected) {
                 this.client.ui.server_message("Connection closed");
@@ -469,7 +469,7 @@ function wsc_protocol( client ) {
     
         // Received data from WebSocket connection.
         process_data: function( evt ) {
-            var pack = new WscPacket(evt.data);
+            var pack = new wsc.Packet(evt.data);
             
             if(pack == null)
                 return;
@@ -541,7 +541,7 @@ function wsc_protocol( client ) {
                     // e.<map[event][2]> = pkt.body
                     case 2:
                         if( key instanceof Array ) {
-                            this.mapPacket(arguments, new WscPacket(pkt['body']), key);
+                            this.mapPacket(arguments, new wsc.Packet(pkt['body']), key);
                         } else {
                             arguments[key] = pkt['body'];
                         }
@@ -613,7 +613,7 @@ function wsc_protocol( client ) {
             if(e.pkt["arg"]["e"] == "ok") {
                 //protocol.client.monitor("Logged in as " + e.pkt["param"] + '.');
                 // Use the username returned by the server!
-                info = new WscPacket('info\n' + e.data);
+                info = new wsc.Packet('info\n' + e.data);
                 protocol.client.settings["username"] = e.pkt["param"];
                 protocol.client.settings['symbol'] = info.arg.symbol;
                 protocol.client.settings['userinfo'] = info.arg;
