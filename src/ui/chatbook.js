@@ -1,11 +1,11 @@
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class WscUIChatbook
+ * @class Chatbook
  * @constructor
- * @param ui {Object} WscUI object.
+ * @param ui {Object} Chatterbox.UI object.
  */
-function WscUIChatbook( ui ) {
+Chatterbox.Chatbook = function( ui ) {
     
     this.manager = ui;
     this.view = this.manager.view.find('div.chatbook');
@@ -16,14 +16,14 @@ function WscUIChatbook( ui ) {
         ui.chatbook.remove_channel(event.ns);
     });
     
-}
+};
 
 /**
  * Return the height of the chatbook.
  *
  * @method height
  */
-WscUIChatbook.prototype.height = function() {
+Chatterbox.Chatbook.prototype.height = function() {
     return this.view.height();
 };
 
@@ -33,7 +33,7 @@ WscUIChatbook.prototype.height = function() {
  * @method resize
  * @param [height=600] {Integer} The height to set the view pane to.
  */
-WscUIChatbook.prototype.resize = function( height ) {
+Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
     this.view.height(height);
     
@@ -51,7 +51,7 @@ WscUIChatbook.prototype.resize = function( height ) {
  * @param [chan] {Object} A wsc channel object representing the channel specified.
  * @return {Object} The channel object representing the channel defined by `namespace`
  */
-WscUIChatbook.prototype.channel = function( namespace, chan ) {
+Chatterbox.Chatbook.prototype.channel = function( namespace, chan ) {
     namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
     
     if( !this.chan[namespace] && chan )
@@ -69,7 +69,7 @@ WscUIChatbook.prototype.channel = function( namespace, chan ) {
  * @method channels
  * @return [Integer] Number of channels open in the ui.
  */
-WscUIChatbook.prototype.channels = function( ) {
+Chatterbox.Chatbook.prototype.channels = function( ) {
     chans = -1;
     for(ns in this.chan) {
         if( this.chan[ns].hidden )
@@ -88,7 +88,7 @@ WscUIChatbook.prototype.channels = function( ) {
  * @param monitor {Boolean} Is this channel the monitor?
  * @return {Object} WscUIChannel object.
  */
-WscUIChatbook.prototype.create_channel = function( ns, hidden, monitor ) {
+Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
     chan.build();
     this.toggle_channel(ns);
@@ -105,8 +105,8 @@ WscUIChatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * @param hidden {Boolean} Should the tab be hidden?
  * @return {Object} An object representing a channel UI.
  */
-WscUIChatbook.prototype.channel_object = function( ns, hidden ) {
-    return new WscUIChannel( this.manager, ns, hidden );
+Chatterbox.Chatbook.prototype.channel_object = function( ns, hidden ) {
+    return new Chatterbox.Channel( this.manager, ns, hidden );
 };
 
 /**
@@ -115,7 +115,7 @@ WscUIChatbook.prototype.channel_object = function( ns, hidden ) {
  * @method toggle_channel
  * @param ns {String} Namespace of the channel to view.
  */
-WscUIChatbook.prototype.toggle_channel = function( ns ) {
+Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     chan = this.channel(ns);
     prev = chan;
     
@@ -155,7 +155,7 @@ WscUIChatbook.prototype.toggle_channel = function( ns ) {
  * @method remove_channel
  * @param ns {String} Name of the channel to remove.
  */
-WscUIChatbook.prototype.remove_channel = function( ns ) {
+Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     if( this.channels() == 0 ) 
         return;
     
@@ -181,7 +181,7 @@ WscUIChatbook.prototype.remove_channel = function( ns ) {
  * @param msg {String} Message to display.
  * @param [info] {String} Additional data to display.
  */
-WscUIChatbook.prototype.server_message = function( msg, info ) {
+Chatterbox.Chatbook.prototype.server_message = function( msg, info ) {
 
     for( ns in this.chan ) {
         this.chan[ns].server_message(msg, info);
@@ -195,7 +195,7 @@ WscUIChatbook.prototype.server_message = function( msg, info ) {
  * @method log_item
  * @param msg {String} Message to display.
  */
-WscUIChatbook.prototype.log_item = function( msg ) {
+Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log_item(msg);

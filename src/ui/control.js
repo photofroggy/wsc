@@ -1,26 +1,26 @@
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class WscUIControl
+ * @class Control
  * @constructor
- * @param ui {Object} WscUI object.
+ * @param ui {Object} Chatterbox.UI object.
  */
-function WscUIControl( ui ) {
+Chatterbox.Control = function( ui ) {
 
     this.manager = ui;
-    this.manager.view.append( wsc_html_control );
+    this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
 
-}
+};
 
 /**
  * Steal the lime light. Brings the cursor to the input panel.
  * 
  * @method focus
  */
-WscUIControl.prototype.focus = function( ) {
+Chatterbox.Control.prototype.focus = function( ) {
     this.input.focus();
 };
 
@@ -29,7 +29,7 @@ WscUIControl.prototype.focus = function( ) {
  *
  * @method resize
  */
-WscUIControl.prototype.resize = function( ) {
+Chatterbox.Control.prototype.resize = function( ) {
     w = this.manager.view.width();
     this.view.css({
         width: '100%'});
@@ -44,7 +44,7 @@ WscUIControl.prototype.resize = function( ) {
  * 
  * @method height
  */
-WscUIControl.prototype.height = function( ) {
+Chatterbox.Control.prototype.height = function( ) {
     return this.view.height();
 };
 
@@ -58,7 +58,7 @@ WscUIControl.prototype.height = function( ) {
  * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
  *   `submit`.
  */
-WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
+Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
     if( this.manager.mozilla )
         this.input.keypress( onkeypress || this._onkeypress );
     else
@@ -67,8 +67,8 @@ WscUIControl.prototype.set_handlers = function( onkeypress, onsubmit ) {
     this.form.submit( onsubmit || this._onsubmit );
 };
 
-WscUIControl.prototype._onkeypress = function( event ) {};
-WscUIControl.prototype._onsubmit = function( event ) {};
+Chatterbox.Control.prototype._onkeypress = function( event ) {};
+Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.
@@ -76,7 +76,7 @@ WscUIControl.prototype._onsubmit = function( event ) {};
  * @method chomp
  * @return {String} The last word in the input box.
  */
-WscUIControl.prototype.chomp = function( ) {
+Chatterbox.Control.prototype.chomp = function( ) {
     d = this.input.val();
     i = d.lastIndexOf(' ');
     
@@ -100,7 +100,7 @@ WscUIControl.prototype.chomp = function( ) {
  * @method unchomp
  * @param data {String} Text to append.
  */
-WscUIControl.prototype.unchomp = function( data ) {
+Chatterbox.Control.prototype.unchomp = function( data ) {
     d = this.input.val();
     if( !d )
         this.input.val(data);
@@ -114,7 +114,7 @@ WscUIControl.prototype.unchomp = function( data ) {
  * @method get_text
  * @return {String} The text currently in the input box.
  */
-WscUIControl.prototype.get_text = function(  ) {
+Chatterbox.Control.prototype.get_text = function(  ) {
 
     return this.input.val();
 
@@ -126,7 +126,7 @@ WscUIControl.prototype.get_text = function(  ) {
  * @method set_text
  * @param text {String} The text to put in the input box.
  */
-WscUIControl.prototype.set_text = function( text ) {
+Chatterbox.Control.prototype.set_text = function( text ) {
 
     this.input.val( text || '' );
 

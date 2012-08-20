@@ -110,7 +110,7 @@ function wsc_client( view, options, mozilla ) {
             console.log(this.settings.agent);
             
             //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
-            this.ui = new WscUI( view, {
+            this.ui = new Chatterbox.UI( view, {
                 'themes': this.settings.themes,
                 'theme': this.settings.theme,
                 'monitor': this.settings.monitor,

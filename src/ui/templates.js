@@ -1,9 +1,42 @@
-/* wsc html - photofroggy
- * Provides HTML5 templates for the chat UI.
+/**
+ * Container object for HTML5 templates for the chat UI.
+ * 
+ * @class template
  */
+Chatterbox.template = {};
 
-// Chat UI.
-wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
+/**
+ * Helper method to render templates.
+ * This method is actually a static method on the Chatterbox module.
+ * 
+ * @method render
+ * @param template {String} Name of the template to render.
+ * @param fill {Object} Variables to render the template with.
+ */
+Chatterbox.render = function( template, fill ) {
+
+    if( !Chatterbox.template.hasOwnProperty(template) )
+        return '';
+    
+    html = Chatterbox.template[template];
+    
+    for( key in fill ) {
+        if( !fill.hasOwnProperty(key) )
+            continue;
+        html = replaceAll(html, '{'+key+'}', fill[key]);
+    }
+    
+    return html;
+
+};
+
+/**
+ * This template provides the HTML for a chat client's main view.
+ *
+ * @property ui
+ * @type String
+ */
+Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button">&laquo;</a></li>\
             <li><a href="#right" class="button">&raquo;</a></li>\
@@ -11,19 +44,34 @@ wsc_html_ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         </nav>\
         <div class="chatbook"></div>';
 
-wsc_html_control = '<div class="chatcontrol">\
+/**
+ * HTML for an input panel.
+ * 
+ * @property control
+ * @type String
+ */
+Chatterbox.template.control = '<div class="chatcontrol">\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
 
-// Channel templates.
-// Chat tab.
-var wsc_html_chattab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
+/**
+ * HTML for a channel tab.
+ * 
+ * @property tab
+ * @type String
+ */
+Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
 
-// Chat screen.
-var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
+/**
+ * HTML template for a channel view.
+ * 
+ * @property channel
+ * @type String
+ */
+Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                     <header>\
                         <div class="title"></div>\
                     </header>\
@@ -37,23 +85,53 @@ var wsc_html_channel = '<div class="chatwindow" id="{selector}-window">\
                 </div>\
             </div>';
 
-// Channel header HTML.
-var wsc_html_cheader = '<div class="{head}">{content}</div>';
+/**
+ * Channel header HTML template.
+ * 
+ * @property header
+ * @type String
+ */
+Chatterbox.template.header = '<div class="{head}">{content}</div>';
 
-// Log message template.
-var wsc_html_logmsg = '<span class="message">{message}</span>';
+/**
+ * Log message template.
+ * 
+ * @property logmsg
+ * @type String
+ */
+Chatterbox.template.logmsg = '<span class="message">{message}</span>';
 
-// Simple log template.
-var wsc_html_logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
+/**
+ * Simple log template.
+ * 
+ * @property logitem
+ * @type String
+ */
+Chatterbox.template.logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
 
-// Server message template.
-var wsc_html_servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
+/**
+ * Server message template.
+ * 
+ * @property servermsg
+ * @type String
+ */
+Chatterbox.template.servermsg = '<span class="servermsg">** {message} * <em>{info}</em></span>';
 
-// User message template.
-var wsc_html_usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
+/**
+ * User message template.
+ * 
+ * @property usermsg
+ * @type String
+ */
+Chatterbox.template.usermsg = '<strong class="user">&lt;{user}&gt;</strong> {message}';
 
-// User info box (userlist hover)
-var wsc_html_userinfo = '<div class="userinfo" id="{username}">\
+/**
+ * User info box (userlist hover)
+ * 
+ * @property userinfo
+ * @type String
+ */
+Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             <div class="avatar">\
                                 {avatar}\
                             </div><div class="info">\
