@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.16',
+        version: '0.3.17',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -319,7 +319,8 @@ function wsc_client( view, options, mozilla ) {
         createChatSocket: function( ) {
             
             var client = this;
-            conn = wsc.Transport.Create(this.settings["server"]);
+            console.log(this.settings.server);
+            conn = wsc.Transport.Create(this.settings.server);
             conn.open(function( evt, sock ) { client.protocol.connected( evt, sock ); });
             conn.disconnect(function( evt ) { client.protocol.closed( evt ); });
             conn.message(function( evt ) { client.protocol.process_data( evt ); });

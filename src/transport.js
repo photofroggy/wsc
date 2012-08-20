@@ -143,9 +143,28 @@ wsc.Transport.prototype.close = function(  ) {};
  * @param [disconnect=wsc.WebSocket.sdisconnect] {Method} The method to be
  *   called when the connection has been closed.
  */
-wsc.WebSocket = function(  ) {};
-wsc.WebSocket.prototype = new wsc.Transport('');
+wsc.WebSocket = function( server, open, message, disconnect ) {
 
+    this.sock = null;
+    this.conn = null;
+    this.server = server;
+    this.open( open );
+    this.message( message );
+    this.disconnect( disconnect );
+
+};
+
+wsc.WebSocket.prototype = new wsc.Transport;
+wsc.WebSocket.prototype.constructor = wsc.WebSocket;
+
+/**
+ * Called when the connection is opened.
+ * Sets the `sock` attribute.
+ * 
+ * @method onopen
+ * @param event {Object} WebSocket event object.
+ * @param sock {Object} Transport object.
+ */
 wsc.WebSocket.prototype.onopen = function( event, sock ) {
 
     this.sock = sock || this.conn;
@@ -153,6 +172,13 @@ wsc.WebSocket.prototype.onopen = function( event, sock ) {
 
 };
 
+/**
+ * Called when the connection is closed.
+ * Resets `sock` and `conn` to null.
+ * 
+ * @method ondisconnect
+ * @param event {Object} WebSocket event object.
+ */
 wsc.WebSocket.prototype.ondisconnect = function( event ) {
 
     this.sock = null;
@@ -168,10 +194,12 @@ wsc.WebSocket.prototype.ondisconnect = function( event ) {
  */
 wsc.WebSocket.prototype.connect = function(  ) {
 
+    console.log( this.server );
+    var tr = this;
     this.conn = new WebSocket( this.server );
-    this.conn.onopen = function(event, sock) { this.onopen( event, sock ) };
-    this.conn.onmessage = function(event) { this._message( event ); };
-    this.conn.onclose = function(event) { this.ondisconnect( event ); };
+    this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };
+    this.conn.onmessage = function(event) { tr._message( event ); };
+    this.conn.onclose = function(event) { tr.ondisconnect( event ); };
 
 };
 
@@ -220,6 +248,7 @@ wsc.WebSocket.prototype.close = function(  ) {
  */
 wsc.SocketIO = function(  ) {};
 wsc.SocketIO.prototype = new wsc.Transport('');
+wsc.SocketIO.prototype.constructor = wsc.SocketIO;
 
 
 
