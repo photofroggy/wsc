@@ -50,5 +50,30 @@
         }
     
     }
+    
+    a.close {
+    background: none;
+    height: 15px;
+    width: 17px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    line-height: 1.3em;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 10px;
+    -webkit-box-shadow: 0px 1px 1px black;
+    -moz-box-shadow: 0px 1px 1px black;
+    box-shadow: 0px 1px 1px black;
+    &:hover {
+        background: none;
+        border: 1px solid black;
+        cursor: pointer;
+        -webkit-box-shadow: inset 0px 1px 0px black;
+        -moz-box-shadow: inset 0px 1px 0px black;
+        box-shadow: inset 0px 1px 0px black;
+    
+    }
+}
 
 }

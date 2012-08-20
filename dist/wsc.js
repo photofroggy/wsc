@@ -3495,7 +3495,7 @@ Chatterbox.Channel.prototype.build = function( ) {
     // Draw.
     this.tab = this.manager.nav.add_tab( selector, ns );
     this.tabl = this.tab.find('.tab');
-    this.tabc = this.tab.find('.closetab');
+    this.tabc = this.tab.find('.close');
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
     this.window = this.manager.chatbook.view.find('#' + selector + '-window');
@@ -4344,7 +4344,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
  * @property tab
  * @type String
  */
-Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
+Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="close">x</a></li>';
 
 /**
  * HTML template for a channel view.

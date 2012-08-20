@@ -63,7 +63,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
  * @property tab
  * @type String
  */
-Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="closetab">x</a></li>';
+Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="close">x</a></li>';
 
 /**
  * HTML template for a channel view.

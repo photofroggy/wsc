@@ -90,9 +90,22 @@
         }
     }
     
+    a.close {
+        @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
+        color: $close;
+        text-shadow: 0px -1px $close-shadow;
+        font-weight: bold;
+        border-color: $base;
+        &:hover {
+            @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
+            color: $closeh;
+            text-shadow: 0px -1px $close-shadow;
+        }
+    }
+    
     nav.tabs {
         ul#chattabs li {
-            a {
+            a.tab {
                 @include button-gradient($tab-bgs, $tab-bgi, $tab-bgsl, $tab-bgbg);
                 background-color: $chrome;
                 border-color: $outer-border;
@@ -103,18 +116,6 @@
                 &:hover {
                     @include button-gradient($tab-hbgs, $tab-hbgi, $tab-hbgsl, $tab-hbgbg);
                     color: $tab-ah;
-                }
-            }
-            a.closetab {
-                @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
-                color: $close;
-                text-shadow: 0px -1px $close-shadow;
-                font-weight: bold;
-                border-color: $base;
-                &:hover {
-                    @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
-                    color: $closeh;
-                    text-shadow: 0px -1px $close-shadow;
                 }
             }
             &.noise a.tab { font-weight: bold; }
