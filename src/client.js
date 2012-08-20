@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.15',
+        version: '0.3.17',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -297,6 +297,7 @@ function wsc_client( view, options, mozilla ) {
             // Start connecting!
             if(CanCreateWebsocket()) {
                 client.conn = client.createChatSocket();
+                client.conn.connect();
                 //console.log("connecting");
                 client.trigger('start', new WscPacket('client connecting\ne=ok\n\n'));
             } else {
@@ -318,15 +319,12 @@ function wsc_client( view, options, mozilla ) {
         createChatSocket: function( ) {
             
             var client = this;
-            return CreateWebSocket(
-                this.settings["server"],
-                // WebSocket connection closed!
-                function( evt ) { client.protocol.closed( evt ); },
-                // Received a message from the server! Process!
-                function( evt ) { client.protocol.process_data( evt ); },
-                // Connection opened.
-                function( evt, sock ) { client.protocol.connected( evt, sock ); }
-            );
+            console.log(this.settings.server);
+            conn = wsc.Transport.Create(this.settings.server);
+            conn.open(function( evt, sock ) { client.protocol.connected( evt, sock ); });
+            conn.disconnect(function( evt ) { client.protocol.closed( evt ); });
+            conn.message(function( evt ) { client.protocol.process_data( evt ); });
+            return conn;
             
         },
         
