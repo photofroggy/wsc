@@ -24,23 +24,40 @@ wsc.Flow.prototype.handle = function( event, client ) {
 
 };
 
-// Respond to pings from the server.
+/**
+ * Respond to pings from the server.
+ * 
+ * @method ping
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.ping = function( event, client ) {
     client.pong();
 };
 
-// Respond to a llama-style handshake.
-wsc.Flow.prototype.chatserver = function ( e ) {
+/**
+ * Respond to a llama-style handshake.
+ * 
+ * @method chatserver
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.chatserver = function( event, client ) {
     //client.monitor(
     //    "Connected to " + event.pkt["cmd"] + " " + event.pkt["arg"]["server"] + " version " +e.pkt["arg"]["version"]+".");
     client.login();
 };
 
-// Process a login packet
+/**
+ * Process a login packet
+ * 
+ * @method login
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.login = function( event, client ) {
     
     if(e.pkt["arg"]["e"] == "ok") {
-        //client.monitor("Logged in as " + event.pkt["param"] + '.');
         // Use the username returned by the server!
         info = new wsc.Packet('info\n' + event.data);
         client.settings["username"] = event.pkt["param"];
@@ -66,7 +83,13 @@ wsc.Flow.prototype.login = function( event, client ) {
     
 };
 
-// Received a join packet.
+/**
+ * Received a join packet.
+ * 
+ * @method join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.join = function( event, client ) {
     if(e.pkt["arg"]["e"] == "ok") {
         ns = client.deform_ns(e.pkt["param"]);
@@ -78,7 +101,13 @@ wsc.Flow.prototype.join = function( event, client ) {
     }
 };
 
-// Received a part packet.
+/**
+ * Received a part packet.
+ * 
+ * @method part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.part = function( event, client ) {
     ns = client.deform_ns(e.ns);
     c = client.channel(ns);
@@ -114,7 +143,14 @@ wsc.Flow.prototype.part = function( event, client ) {
     
 };
 
-wsc.Flow.prototype.kicked = function( e, client ) {
+/**
+ * Client has been kicked from a channel.
+ * 
+ * @method kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.kicked = function( event, client ) {
 
     if( event.r.toLowerCase().indexOf('autokicked') > -1 )
         return;
@@ -122,7 +158,13 @@ wsc.Flow.prototype.kicked = function( e, client ) {
 
 };
 
-// Process a property packet.
+/**
+ * Process a property packet.
+ * 
+ * @method property
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.property = function( event, client ) {
     //console.log(e.pkt["arg"]["p"]);
     chan = client.channel(e.pkt["param"]);
@@ -133,7 +175,13 @@ wsc.Flow.prototype.property = function( event, client ) {
     chan.property(e);
 };
 
-// User join or part.
+/**
+ * User join or part.
+ * 
+ * @method recv_joinpart
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_joinpart = function( event, client ) {
     c = client.channel(e.ns);
     if( event.name == 'recv_join')
@@ -142,20 +190,71 @@ wsc.Flow.prototype.recv_joinpart = function( event, client ) {
         c.recv_part(e);
 };
 
+/**
+ * A user joined a channel.
+ * 
+ * @method recv_join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_join = wsc.Flow.prototype.recv_joinpart;
+
+/**
+ * A user left a channel.
+ * 
+ * @method recv_part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_part = wsc.Flow.prototype.recv_joinpart;
 
-// Display a message received from a channel.
+/**
+ * A message was received in a channel.
+ * 
+ * @method recv_msg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_msg = function( event, client ) {
     client.channel(e.ns).recv_msg(e);
 };
 
-// Someone was promoted or demoted.
+/**
+ * A different kind of message.
+ * 
+ * @method recv_action
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_action = wsc.Flow.prototype.recv_msg;
+
+/**
+ * A non-parsed message.
+ * 
+ * @method recv_npmsg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_npmsg = wsc.Flow.prototype.recv_msg;
+
+/**
+ * Someone was promoted or demoted.
+ * 
+ * @method recv_privchg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_privchg = function( event, client ) {
     client.channel(e.ns).recv_privchg(e);
 };
 
-// Some sucka got kicked foo.
+/**
+ * Some sucka got kicked foo.
+ * 
+ * @method recv_kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
     client.channel(e.ns).recv_kicked(e);
 };
