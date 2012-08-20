@@ -2721,7 +2721,7 @@ function wsc_control( client ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.2.4';
+Chatterbox.VERSION = '0.3.0';
 Chatterbox.STATE = 'beta';
 
 /**
