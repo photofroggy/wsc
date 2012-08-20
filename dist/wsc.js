@@ -751,7 +751,7 @@ WscChannel.prototype.set_header = function( head, e ) {
     if( this.ui == null )
         return;
     
-    this.ui.set_header(head, e.value || '');
+    this.ui.set_header(head, e.value.html() || '');
 };
 
 /**
@@ -1029,6 +1029,7 @@ wsc.TablumpString = function(data, parser) {
 };
 
 with(wsc.TablumpString.prototype = new String) {
+    constructor = wsc.TablumpString;
     toString = valueOf = function() { return this.raw; };
 }
 
@@ -1516,7 +1517,7 @@ wsc.Protocol = function( tablumps ) {
     // Mapping callbacks!
     var p = this;
     this.mapper = {
-        "recv": function( args, packet, mapping ) {
+        "recv": function( packet, args, mapping ) {
             args.ns = packet.param;
             sub = new wsc.Packet( packet.body );
             
@@ -1642,7 +1643,7 @@ wsc.Protocol.prototype.event = function( pkt ) {
         if(cmds[0] != name)
             continue;
         
-        var sub = new wsc.Packet(pkt.sub[0]);
+        var sub = pkt.sub[0];
         name = name + '_' + sub["cmd"];
         
         if(cmds.length > 1 && sub["param"] != undefined) {
@@ -1745,7 +1746,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
             key = 'ns';
             d = event['sns'];
         }
-        if( d.hasOwnProperty('render') ) {
+        if( d.hasOwnProperty('_parser') ) {
             switch(format) {
                 case 'text':
                     d = d.text();
@@ -2250,7 +2251,6 @@ wsc.Flow = function( protocol ) {
 
 // Established a WebSocket connection.
 wsc.Flow.prototype.open = function( client, event, sock ) {
-    console.log('connection opened');
     client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
     client.connected = true;
     client.handshake();
@@ -2259,7 +2259,6 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
-    console.log('closed');
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
     
     if(client.connected) {
@@ -2288,7 +2287,6 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    console.log('message');
     var pack = new wsc.Packet(event.data);
     
     if(pack == null)
@@ -2301,7 +2299,6 @@ wsc.Flow.prototype.message = function( client, event ) {
     
     pevt.sns = client.deform_ns(pevt.ns);
     this.protocol.log(client, pevt);
-    console.log(pevt);
     this.handle(client, pevt);
     
     client.trigger('pkt', pevt);
@@ -2318,7 +2315,6 @@ wsc.Flow.prototype.message = function( client, event ) {
  */
 wsc.Flow.prototype.handle = function( client, event ) {
 
-    console.log(event.name);
     this[event.name](event, client);
 
 };
@@ -2471,7 +2467,7 @@ wsc.Flow.prototype.property = function( event, client ) {
     if( !chan )
         return;
     
-    chan.property(e);
+    chan.property( event );
 };
 
 /**
@@ -2484,9 +2480,9 @@ wsc.Flow.prototype.property = function( event, client ) {
 wsc.Flow.prototype.recv_joinpart = function( event, client ) {
     c = client.channel(event.ns);
     if( event.name == 'recv_join')
-        c.recv_join(e);
+        c.recv_join( event );
     else
-        c.recv_part(e);
+        c.recv_part( event );
 };
 
 /**
@@ -2515,7 +2511,7 @@ wsc.Flow.prototype.recv_part = wsc.Flow.prototype.recv_joinpart;
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_msg = function( event, client ) {
-    client.channel(event.ns).recv_msg(e);
+    client.channel(event.ns).recv_msg( event );
 };
 
 /**
@@ -2544,7 +2540,7 @@ wsc.Flow.prototype.recv_npmsg = wsc.Flow.prototype.recv_msg;
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_privchg = function( event, client ) {
-    client.channel(event.ns).recv_privchg(e);
+    client.channel(event.ns).recv_privchg( event );
 };
 
 /**
@@ -2555,7 +2551,7 @@ wsc.Flow.prototype.recv_privchg = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
-    client.channel(event.ns).recv_kicked(e);
+    client.channel(event.ns).recv_kicked( event );
 };
 
 
@@ -2804,7 +2800,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.26',
+        version: '0.4.27',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -3296,7 +3292,6 @@ function wsc_client( view, options, mozilla ) {
         
         // Send login details.
         login: function( ) {
-            console.log('sup');
             pkt = 'login ' + this.settings["username"] + '\npk=' + this.settings["pk"] + '\n';
             this.send( pkt );
         },

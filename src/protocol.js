@@ -47,7 +47,7 @@ wsc.Protocol = function( tablumps ) {
     // Mapping callbacks!
     var p = this;
     this.mapper = {
-        "recv": function( args, packet, mapping ) {
+        "recv": function( packet, args, mapping ) {
             args.ns = packet.param;
             sub = new wsc.Packet( packet.body );
             
@@ -173,7 +173,7 @@ wsc.Protocol.prototype.event = function( pkt ) {
         if(cmds[0] != name)
             continue;
         
-        var sub = new wsc.Packet(pkt.sub[0]);
+        var sub = pkt.sub[0];
         name = name + '_' + sub["cmd"];
         
         if(cmds.length > 1 && sub["param"] != undefined) {
@@ -276,7 +276,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
             key = 'ns';
             d = event['sns'];
         }
-        if( d.hasOwnProperty('render') ) {
+        if( d.hasOwnProperty('_parser') ) {
             switch(format) {
                 case 'text':
                     d = d.text();

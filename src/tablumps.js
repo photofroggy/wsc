@@ -54,6 +54,7 @@ wsc.TablumpString = function(data, parser) {
 };
 
 with(wsc.TablumpString.prototype = new String) {
+    constructor = wsc.TablumpString;
     toString = valueOf = function() { return this.raw; };
 }
 

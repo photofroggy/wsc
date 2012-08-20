@@ -168,7 +168,7 @@ WscChannel.prototype.set_header = function( head, e ) {
     if( this.ui == null )
         return;
     
-    this.ui.set_header(head, e.value || '');
+    this.ui.set_header(head, e.value.html() || '');
 };
 
 /**

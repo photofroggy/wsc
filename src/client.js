@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.26',
+        version: '0.4.27',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -530,7 +530,6 @@ function wsc_client( view, options, mozilla ) {
         
         // Send login details.
         login: function( ) {
-            console.log('sup');
             pkt = 'login ' + this.settings["username"] + '\npk=' + this.settings["pk"] + '\n';
             this.send( pkt );
         },
