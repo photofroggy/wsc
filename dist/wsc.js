@@ -1903,7 +1903,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.13',
+        version: '0.3.14',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -1920,7 +1920,7 @@ function wsc_client( view, options, mozilla ) {
         settings: {
             "domain": "website.com",
             "server": "ws://website.com/wsendpoint",
-            "agent": "wsc 0.1a",
+            "agent": "",
             "symbol": "",
             "username": "",
             "userinfo": {},
