@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.17',
+        version: '0.4.19',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
