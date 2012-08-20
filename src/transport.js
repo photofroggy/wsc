@@ -194,7 +194,6 @@ wsc.WebSocket.prototype.ondisconnect = function( event ) {
  */
 wsc.WebSocket.prototype.connect = function(  ) {
 
-    console.log( this.server );
     var tr = this;
     this.conn = new WebSocket( this.server );
     this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };

@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.24',
+        version: '0.4.26',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -323,7 +323,6 @@ function wsc_client( view, options, mozilla ) {
         createChatSocket: function( ) {
             
             var client = this;
-            console.log(this.settings.server);
             conn = wsc.Transport.Create(this.settings.server);
             conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
             conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
@@ -512,10 +511,7 @@ function wsc_client( view, options, mozilla ) {
         // Send a message to the server.
         // Uses a raw packet string.
         send: function( msg ) {
-            if(this.connected) {
-                return this.conn.send(msg);
-            }
-            return -1;
+            return this.conn.send(msg);
         },
         
         // Protocol methods. Woop!
@@ -534,6 +530,7 @@ function wsc_client( view, options, mozilla ) {
         
         // Send login details.
         login: function( ) {
+            console.log('sup');
             pkt = 'login ' + this.settings["username"] + '\npk=' + this.settings["pk"] + '\n';
             this.send( pkt );
         },

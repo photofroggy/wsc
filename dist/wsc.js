@@ -252,7 +252,6 @@ wsc.WebSocket.prototype.ondisconnect = function( event ) {
  */
 wsc.WebSocket.prototype.connect = function(  ) {
 
-    console.log( this.server );
     var tr = this;
     this.conn = new WebSocket( this.server );
     this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };
@@ -1483,6 +1482,7 @@ wsc.Protocol = function( tablumps ) {
     // Mappings for every packet.
     this.maps = {
         'chatserver': ['version'],
+        'dAmnServer': ['version'],
         'login': ['username', ['e'], 'data'],
         'join': ['ns', ['e'] ],
         'part': ['ns', ['e', '*r'] ],
@@ -1510,7 +1510,7 @@ wsc.Protocol = function( tablumps ) {
         'get': ['ns', ['p', 'e']],
         'set': ['ns', ['p', 'e']],
         'kill': ['ns', ['e']],
-        'unknown': [null, null, null, null, 'packet'],
+        'unknown': [null, null, null, 'packet'],
     };
     
     // Mapping callbacks!
@@ -1532,6 +1532,7 @@ wsc.Protocol = function( tablumps ) {
     
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
+        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
         'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
@@ -1601,12 +1602,17 @@ wsc.Protocol.prototype.extend_messages = function( messages ) {
 wsc.Protocol.prototype.parse = function( packet ) {
 
     name = this.event( packet );
+    
+    if( !(name in this.maps) ) {
+        console.log('unknown: ',name);
+        console.log(this.maps);
+        mapping = this.maps.unknown;
+        name = 'unknown';
+    } else {
+        mapping = this.maps[name];
+    }
+    
     var args = { 'name': name, 'pkt': packet, 'ns': null };
-    
-    if( !this.maps[name] )
-        return args;
-    
-    mapping = this.maps[name];
     cmd = packet.cmd;
     
     if( this.mapper[cmd] )
@@ -1700,6 +1706,9 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
                     event[key] = packet['body'];
                 }
                 break;
+            case 3:
+                event[key] = packet.raw;
+                break;
         }
         
         if( skey[0] != '*' )
@@ -1777,7 +1786,7 @@ wsc.Protocol.prototype.log = function( client, event ) {
         if( !msgm[1] )
             client.ui.channel(event.ns).log_item(msg);
         else
-            client.ui.channel(protocol.client.mns).log_item(msg);
+            client.ui.channel(client.mns).log_item(msg);
     } else {
         client.ui.log_item(msg);
     }
@@ -2241,6 +2250,7 @@ wsc.Flow = function( protocol ) {
 
 // Established a WebSocket connection.
 wsc.Flow.prototype.open = function( client, event, sock ) {
+    console.log('connection opened');
     client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
     client.connected = true;
     client.handshake();
@@ -2249,7 +2259,7 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
-    console.log(evt);
+    console.log('closed');
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
     
     if(client.connected) {
@@ -2278,18 +2288,21 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
+    console.log('message');
     var pack = new wsc.Packet(event.data);
     
     if(pack == null)
         return;
     
-    pevt = this.protocol.parse(pack);
+    var pevt = this.protocol.parse(pack);
     
     if( pevt.ns == null )
         pevt.ns = client.mns;
     
     pevt.sns = client.deform_ns(pevt.ns);
     this.protocol.log(client, pevt);
+    console.log(pevt);
+    this.handle(client, pevt);
     
     client.trigger('pkt', pevt);
     client.trigger('pkt.'+pevt.name, pevt);
@@ -2303,11 +2316,9 @@ wsc.Flow.prototype.message = function( client, event ) {
  * @param event {Object} Packet event data.
  * @param client {Object} Client object.
  */
-wsc.Flow.prototype.handle = function( event, client ) {
+wsc.Flow.prototype.handle = function( client, event ) {
 
-    if( !this.hasOwnProperty(event.name) )
-        return;
-    
+    console.log(event.name);
     this[event.name](event, client);
 
 };
@@ -2331,10 +2342,10 @@ wsc.Flow.prototype.ping = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.chatserver = function( event, client ) {
-    //client.monitor(
-    //    "Connected to " + event.pkt["cmd"] + " " + event.pkt["arg"]["server"] + " version " +e.pkt["arg"]["version"]+".");
     client.login();
 };
+
+wsc.Flow.prototype.dAmnServer = wsc.Flow.prototype.chatserver;
 
 /**
  * Process a login packet
@@ -2345,7 +2356,7 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  */
 wsc.Flow.prototype.login = function( event, client ) {
     
-    if(e.pkt["arg"]["e"] == "ok") {
+    if(event.pkt["arg"]["e"] == "ok") {
         // Use the username returned by the server!
         info = new wsc.Packet('info\n' + event.data);
         client.settings["username"] = event.pkt["param"];
@@ -2379,13 +2390,13 @@ wsc.Flow.prototype.login = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.join = function( event, client ) {
-    if(e.pkt["arg"]["e"] == "ok") {
-        ns = client.deform_ns(e.pkt["param"]);
+    if(event.pkt["arg"]["e"] == "ok") {
+        ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
         client.create_channel(ns);
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
-        client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(e.pkt["param"]), event.pkt["arg"]["e"]);
+        client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
     }
 };
 
@@ -2397,10 +2408,10 @@ wsc.Flow.prototype.join = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.part = function( event, client ) {
-    ns = client.deform_ns(e.ns);
+    ns = client.deform_ns(event.ns);
     c = client.channel(ns);
     
-    if(e.e == "ok") {
+    if(event.e == "ok") {
         info = '';
         if( event.r )
             info = '[' + event.r + ']';
@@ -2442,7 +2453,7 @@ wsc.Flow.prototype.kicked = function( event, client ) {
 
     if( event.r.toLowerCase().indexOf('autokicked') > -1 )
         return;
-    client.join(e.ns);
+    client.join(event.ns);
 
 };
 
@@ -2454,8 +2465,8 @@ wsc.Flow.prototype.kicked = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.property = function( event, client ) {
-    //console.log(e.pkt["arg"]["p"]);
-    chan = client.channel(e.pkt["param"]);
+    //console.log(event.pkt["arg"]["p"]);
+    chan = client.channel(event.pkt["param"]);
     
     if( !chan )
         return;
@@ -2471,7 +2482,7 @@ wsc.Flow.prototype.property = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_joinpart = function( event, client ) {
-    c = client.channel(e.ns);
+    c = client.channel(event.ns);
     if( event.name == 'recv_join')
         c.recv_join(e);
     else
@@ -2504,7 +2515,7 @@ wsc.Flow.prototype.recv_part = wsc.Flow.prototype.recv_joinpart;
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_msg = function( event, client ) {
-    client.channel(e.ns).recv_msg(e);
+    client.channel(event.ns).recv_msg(e);
 };
 
 /**
@@ -2533,7 +2544,7 @@ wsc.Flow.prototype.recv_npmsg = wsc.Flow.prototype.recv_msg;
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_privchg = function( event, client ) {
-    client.channel(e.ns).recv_privchg(e);
+    client.channel(event.ns).recv_privchg(e);
 };
 
 /**
@@ -2544,7 +2555,7 @@ wsc.Flow.prototype.recv_privchg = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
-    client.channel(e.ns).recv_kicked(e);
+    client.channel(event.ns).recv_kicked(e);
 };
 
 
@@ -2793,7 +2804,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.24',
+        version: '0.4.26',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -3078,7 +3089,6 @@ function wsc_client( view, options, mozilla ) {
         createChatSocket: function( ) {
             
             var client = this;
-            console.log(this.settings.server);
             conn = wsc.Transport.Create(this.settings.server);
             conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
             conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
@@ -3267,10 +3277,7 @@ function wsc_client( view, options, mozilla ) {
         // Send a message to the server.
         // Uses a raw packet string.
         send: function( msg ) {
-            if(this.connected) {
-                return this.conn.send(msg);
-            }
-            return -1;
+            return this.conn.send(msg);
         },
         
         // Protocol methods. Woop!
@@ -3289,6 +3296,7 @@ function wsc_client( view, options, mozilla ) {
         
         // Send login details.
         login: function( ) {
+            console.log('sup');
             pkt = 'login ' + this.settings["username"] + '\npk=' + this.settings["pk"] + '\n';
             this.send( pkt );
         },

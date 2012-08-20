@@ -13,6 +13,7 @@ wsc.Protocol = function( tablumps ) {
     // Mappings for every packet.
     this.maps = {
         'chatserver': ['version'],
+        'dAmnServer': ['version'],
         'login': ['username', ['e'], 'data'],
         'join': ['ns', ['e'] ],
         'part': ['ns', ['e', '*r'] ],
@@ -40,7 +41,7 @@ wsc.Protocol = function( tablumps ) {
         'get': ['ns', ['p', 'e']],
         'set': ['ns', ['p', 'e']],
         'kill': ['ns', ['e']],
-        'unknown': [null, null, null, null, 'packet'],
+        'unknown': [null, null, null, 'packet'],
     };
     
     // Mapping callbacks!
@@ -62,6 +63,7 @@ wsc.Protocol = function( tablumps ) {
     
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
+        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
         'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
@@ -131,12 +133,17 @@ wsc.Protocol.prototype.extend_messages = function( messages ) {
 wsc.Protocol.prototype.parse = function( packet ) {
 
     name = this.event( packet );
+    
+    if( !(name in this.maps) ) {
+        console.log('unknown: ',name);
+        console.log(this.maps);
+        mapping = this.maps.unknown;
+        name = 'unknown';
+    } else {
+        mapping = this.maps[name];
+    }
+    
     var args = { 'name': name, 'pkt': packet, 'ns': null };
-    
-    if( !this.maps[name] )
-        return args;
-    
-    mapping = this.maps[name];
     cmd = packet.cmd;
     
     if( this.mapper[cmd] )
@@ -230,6 +237,9 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
                     event[key] = packet['body'];
                 }
                 break;
+            case 3:
+                event[key] = packet.raw;
+                break;
         }
         
         if( skey[0] != '*' )
@@ -307,7 +317,7 @@ wsc.Protocol.prototype.log = function( client, event ) {
         if( !msgm[1] )
             client.ui.channel(event.ns).log_item(msg);
         else
-            client.ui.channel(protocol.client.mns).log_item(msg);
+            client.ui.channel(client.mns).log_item(msg);
     } else {
         client.ui.log_item(msg);
     }
