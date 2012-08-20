@@ -13,7 +13,6 @@ wsc.Protocol = function( tablumps ) {
     // Mappings for every packet.
     this.maps = {
         'chatserver': ['version'],
-        'dAmnServer': ['version'],
         'login': ['username', ['e'], 'data'],
         'join': ['ns', ['e'] ],
         'part': ['ns', ['e', '*r'] ],
@@ -63,7 +62,6 @@ wsc.Protocol = function( tablumps ) {
     
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
-        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
         'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],

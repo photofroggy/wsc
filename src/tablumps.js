@@ -107,7 +107,9 @@ wsc.Tablumps = function(  ) {
     this._list = [];
     this._dent = 0;
 
-}
+};
+
+wsc.Tablumps.prototype.lumps = {};
 
 /**
  * @function registerMap
@@ -403,6 +405,19 @@ function dAmn_avatar( un, icon ) {
     return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
             alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
 }
+
+wsc.dAmnLumps = function(  ) {
+
+    console.log(this);
+    this.lumps = this.defaultMap();
+    this._list = [];
+    this._dent = 0;
+    this.extend(dAmnLumps);
+
+};
+
+wsc.dAmnLumps.prototype = new wsc.Tablumps;
+wsc.dAmnLumps.prototype.constructor = wsc.dAmnLumps;
 
 /**
  * @function dAmnLumps

@@ -103,8 +103,6 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
     client.login();
 };
 
-wsc.Flow.prototype.dAmnServer = wsc.Flow.prototype.chatserver;
-
 /**
  * Process a login packet
  * 

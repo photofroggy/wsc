@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.27',
+        version: '0.4.28',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -70,8 +70,8 @@ function wsc_client( view, options, mozilla ) {
             "stype": 'llama',
             "client": 'chatclient',
             "clientver": '0.3',
-            "tablumps": function() { return new wsc.Tablumps(); },
-            "flow": function() { return new wsc.Flow(); },
+            "tablumps": wsc.Tablumps,
+            "flow": wsc.Flow,
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
@@ -104,7 +104,6 @@ function wsc_client( view, options, mozilla ) {
             
             view.extend( this.settings, options );
             this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
-            console.log(this.settings.agent);
             
             //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new Chatterbox.UI( view, {
@@ -124,8 +123,8 @@ function wsc_client( view, options, mozilla ) {
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
-            this.protocol = new this.settings.protocol( this.settings.tablumps() );
-            this.flow = this.settings.flow(this.protocol);
+            this.protocol = new this.settings.protocol( new this.settings.tablumps() );
+            this.flow = new this.settings.flow(this.protocol);
             //this.addListener('closed'
             
             // Debug!

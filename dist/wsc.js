@@ -1082,7 +1082,9 @@ wsc.Tablumps = function(  ) {
     this._list = [];
     this._dent = 0;
 
-}
+};
+
+wsc.Tablumps.prototype.lumps = {};
 
 /**
  * @function registerMap
@@ -1379,6 +1381,19 @@ function dAmn_avatar( un, icon ) {
             alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
 }
 
+wsc.dAmnLumps = function(  ) {
+
+    console.log(this);
+    this.lumps = this.defaultMap();
+    this._list = [];
+    this._dent = 0;
+    this.extend(dAmnLumps);
+
+};
+
+wsc.dAmnLumps.prototype = new wsc.Tablumps;
+wsc.dAmnLumps.prototype.constructor = wsc.dAmnLumps;
+
 /**
  * @function dAmnLumps
  * dAmn tablumps map.
@@ -1483,7 +1498,6 @@ wsc.Protocol = function( tablumps ) {
     // Mappings for every packet.
     this.maps = {
         'chatserver': ['version'],
-        'dAmnServer': ['version'],
         'login': ['username', ['e'], 'data'],
         'join': ['ns', ['e'] ],
         'part': ['ns', ['e', '*r'] ],
@@ -1533,7 +1547,6 @@ wsc.Protocol = function( tablumps ) {
     
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
-        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
         'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
@@ -2341,8 +2354,6 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
     client.login();
 };
 
-wsc.Flow.prototype.dAmnServer = wsc.Flow.prototype.chatserver;
-
 /**
  * Process a login packet
  * 
@@ -2800,7 +2811,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.4.27',
+        version: '0.4.28',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -2832,8 +2843,8 @@ function wsc_client( view, options, mozilla ) {
             "stype": 'llama',
             "client": 'chatclient',
             "clientver": '0.3',
-            "tablumps": function() { return new wsc.Tablumps(); },
-            "flow": function() { return new wsc.Flow(); },
+            "tablumps": wsc.Tablumps,
+            "flow": wsc.Flow,
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
@@ -2866,7 +2877,6 @@ function wsc_client( view, options, mozilla ) {
             
             view.extend( this.settings, options );
             this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
-            console.log(this.settings.agent);
             
             //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new Chatterbox.UI( view, {
@@ -2886,8 +2896,8 @@ function wsc_client( view, options, mozilla ) {
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
-            this.protocol = new this.settings.protocol( this.settings.tablumps() );
-            this.flow = this.settings.flow(this.protocol);
+            this.protocol = new this.settings.protocol( new this.settings.tablumps() );
+            this.flow = new this.settings.flow(this.protocol);
             //this.addListener('closed'
             
             // Debug!
