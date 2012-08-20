@@ -29,17 +29,17 @@ wsc.Transport = function( server, open, message, disconnect ) {
  * 
  * @method Create
  */
-wsc.Transport.Create = function(  ) {
+wsc.Transport.Create = function( server, open, message, disconnect ) {
 
     if( typeof io !== 'undefined' ) {
-        return new wsc.SocketIO( arguments );
+        return new wsc.SocketIO( server, open, message, disconnect );
     }
     
     if(!window["WebSocket"]) {
         throw "This browser does not support websockets.";
     }
     
-    return new wsc.WebSocket( arguments );
+    return new wsc.WebSocket( server, open, message, disconnect );
 
 };
 
@@ -149,7 +149,7 @@ wsc.WebSocket.prototype = new wsc.Transport('');
 wsc.WebSocket.prototype.onopen = function( event, sock ) {
 
     this.sock = sock || this.conn;
-    this._open( event, this.sock );
+    this._open( event, this );
 
 };
 
@@ -169,9 +169,9 @@ wsc.WebSocket.prototype.ondisconnect = function( event ) {
 wsc.WebSocket.prototype.connect = function(  ) {
 
     this.conn = new WebSocket( this.server );
-    this.conn.onopen = this.onopen;
-    this.conn.onmessage = this._message;
-    this.conn.onclose = this.ondisconnect;
+    this.conn.onopen = function(event, sock) { this.onopen( event, sock ) };
+    this.conn.onmessage = function(event) { this._message( event ); };
+    this.conn.onclose = function(event) { this.ondisconnect( event ); };
 
 };
 
