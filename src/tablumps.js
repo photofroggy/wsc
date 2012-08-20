@@ -1,49 +1,19 @@
-/* wsc tablumps - photofroggy
- * Processes the chat tablumps for a llama-like chat server.
- * 
- * dAmn sends certain information formatted in a specific manner.
- * Links, images, thumbs, and other forms of data are formatted
- * in strings where the different attributes of these values are
- * separated by tab characters (``\\t``). The formatted string always starts
- * with an ampersand followed directly by the name of the tag that the string
- * represents. For example, links start with &a\t, the tab character acting as
- * a separator. Looking for &<tag>\t should allow us to narrow down our searches
- * without resorting to regular expressions.
- *
- * We refer to these items as "tablumps" because of the tab
- * characters being used as delimeters. The job of this class is to
- * replace tablumps with readable strings.
- *  
- * Here's an example of how to use the parser:
- *      // Create new parser.
- *      parser = new wsc.Tablumps();
- *      // Add support for dAmn's tablumps.
- *      parser.extend( dAmnLumps() );
- *      // This really just creates a wsc.TablumpString object.
- *      message = parser.parse(data);
- *      // Show different renders.
- *      console.log(message.text());
- *      console.log(message.html());
- *      console.log(message.ansi());
- */
-
-
 /**
- * @function wsc.TablumpString
- * 
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
  * 
- * @param [String] data String possibly containing tablumps.
- * @param [Object] parser A reference to a tablumps parser. Not required.
- * 
  * @example
- *  // Parse something.
- *  msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
- *  console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
- *  console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
- *  console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
- *  console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+ *   // Parse something.
+ *   msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *   console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
+ *   console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+ *   console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
+ *   console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+ * 
+ * @class TablumpString
+ * @constructor
+ * @param data {String} String possibly containing tablumps.
+ * @param parser {Object} A reference to a tablumps parser. Not required.
  */
 wsc.TablumpString = function(data, parser) {
     this._parser = parser || new wsc.Tablumps();
@@ -217,7 +187,7 @@ wsc.Tablumps.prototype.defaultMap = function () {
                 return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
             },
             function( data ) {
-                t = data[1] || '[link]';
+                t = data[1] || data[0];
                 return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
             }
         ],
