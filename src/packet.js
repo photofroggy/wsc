@@ -2,6 +2,8 @@
  * Methods to parse and create packets for the chat protocol.
  */
 
+wsc.Packet = WscPacket;
+
 var chains = [["recv", "admin"]];
 
 function WscPacket( data, separator ) {
