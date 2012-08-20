@@ -1,6 +1,18 @@
-/* wsc protocol - photofroggy
- * Processes the chat protocol for a llama-like chat server.
+/**
+ * Parser for dAmn-like protocols.
+ * 
+ * @class Protocol
+ * @constructor
  */
+wsc.Protocol = function(  ) {};
+
+wsc.Protocol.prototype.extend_maps = function( maps ) {};
+wsc.Protocol.prototype.extend_messages = function( messages ) {};
+
+wsc.Protocol.prototype.parse = function( packet ) {};
+wsc.Protocol.prototype.event = function( packet ) {};
+wsc.Protocol.prototype.map = function( packet, event, map ) {};
+wsc.Protocol.prototype.render = function( format, event ) {};
 
 // Create a protocol object that will process all incoming packets.
 // Protocol constructers are given a wsc object as input.
