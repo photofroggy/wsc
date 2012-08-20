@@ -476,7 +476,7 @@ Object.extend = function( a, b ) {
 
 var chains = [["recv", "admin"]];
 
-function WscPacket( data, separator ) {
+wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
         return null;
@@ -515,7 +515,7 @@ function WscPacket( data, separator ) {
         if( pkt.body != null ) {
             subs = pkt.body.split('\n\n');
             for(i in subs) {
-                sub = WscPacket( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;
                 pkt.sub.push( sub );
@@ -531,7 +531,7 @@ function WscPacket( data, separator ) {
     
     return pkt;
 
-}
+};
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {
@@ -992,10 +992,10 @@ WscChannel.prototype.recv_kicked = function( e ) {
  *  
  * Here's an example of how to use the parser:
  *      // Create new parser.
- *      parser = new WscTablumps();
+ *      parser = new wsc.Tablumps();
  *      // Add support for dAmn's tablumps.
  *      parser.extend( dAmnLumps() );
- *      // This really just creates a TablumpString object.
+ *      // This really just creates a wsc.TablumpString object.
  *      message = parser.parse(data);
  *      // Show different renders.
  *      console.log(message.text());
@@ -1005,7 +1005,7 @@ WscChannel.prototype.recv_kicked = function( e ) {
 
 
 /**
- * @function TablumpString
+ * @function wsc.TablumpString
  * 
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
@@ -1015,21 +1015,21 @@ WscChannel.prototype.recv_kicked = function( e ) {
  * 
  * @example
  *  // Parse something.
- *  msg = new TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *  msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
  *  console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
  *  console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
  *  console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
  *  console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  */
-function TablumpString(data, parser) {
-    this._parser = parser || new WscTablumps();
+wsc.TablumpString = function(data, parser) {
+    this._parser = parser || new wsc.Tablumps();
     this.raw = data;
     this._text = null;
     this._html = null;
     this._ansi = null;
-}
+};
 
-with(TablumpString.prototype = new String) {
+with(wsc.TablumpString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
@@ -1038,7 +1038,7 @@ with(TablumpString.prototype = new String) {
  * 
  * Render the tablumps as HTML entities.
  */
-TablumpString.prototype.html = function() {
+wsc.TablumpString.prototype.html = function() {
     if(this._html == null)
         this._html = this._parser.render(1, this.raw);
     return this._html;
@@ -1050,7 +1050,7 @@ TablumpString.prototype.html = function() {
  * Render the tablumps in plain text where possible. Some tablumps appear as
  * HTML entities even through this.
  */
-TablumpString.prototype.text = function() {
+wsc.TablumpString.prototype.text = function() {
     if(this._text == null)
         this._text = this._parser.render(0, this.raw);
     return this._text;
@@ -1064,7 +1064,7 @@ TablumpString.prototype.text = function() {
  * For this rendering method to really be worth it, I'll actually have to move
  * away from the simple regex.
  */
-TablumpString.prototype.ansi = function() {
+wsc.TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
         this._ansi = this._parser.render(2, this.raw);
     return this._ansi;
@@ -1072,11 +1072,11 @@ TablumpString.prototype.ansi = function() {
 
 
 /**
- * @object WscTablumps
+ * @object wsc.Tablumps
  *
  * Constructor for the tablumps parser.
  */
-function WscTablumps(  ) {
+wsc.Tablumps = function(  ) {
 
     this.lumps = this.defaultMap();
     this._list = [];
@@ -1089,7 +1089,7 @@ function WscTablumps(  ) {
  *
  * I should probably deprecate this. Sets the rendering map to the given map.
  */
-WscTablumps.prototype.registerMap = function( map ) {
+wsc.Tablumps.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
@@ -1098,7 +1098,7 @@ WscTablumps.prototype.registerMap = function( map ) {
  *
  * Add the given rendering items to the parser's render map.
  */
-WscTablumps.prototype.extend = function( map ) {
+wsc.Tablumps.prototype.extend = function( map ) {
     for(index in map) {
         this.lumps[index] = map[index];
     }
@@ -1108,7 +1108,7 @@ WscTablumps.prototype.extend = function( map ) {
  * @function _list_start
  * Initiate a list.
  */
-WscTablumps.prototype._list_start = function( ol ) {
+wsc.Tablumps.prototype._list_start = function( ol ) {
     list = {};
     list.ol = ol || false;
     list.count = 0;
@@ -1122,7 +1122,7 @@ WscTablumps.prototype._list_start = function( ol ) {
  * @function _list_end
  * Finish a list.
  */
-WscTablumps.prototype._list_end = function( ) {
+wsc.Tablumps.prototype._list_end = function( ) {
     if( this._list.length == 0 ) {
         return '';
     }
@@ -1137,7 +1137,7 @@ WscTablumps.prototype._list_end = function( ) {
  * 
  * Get all the default nonsense.
  */
-WscTablumps.prototype.defaultMap = function () {
+wsc.Tablumps.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
      *     lumps[tag] => [ arguments, render[, render[, ...]] ]
@@ -1219,10 +1219,10 @@ WscTablumps.prototype.defaultMap = function () {
 /**
  * @function parse
  *
- * Create a TablumpString obejct and return it.
+ * Create a wsc.TablumpString obejct and return it.
  */
-WscTablumps.prototype.parse = function( data, sep ) {
-    return new TablumpString(data, this);
+wsc.Tablumps.prototype.parse = function( data, sep ) {
+    return new wsc.TablumpString(data, this);
 };
 
 /**
@@ -1239,7 +1239,7 @@ WscTablumps.prototype.parse = function( data, sep ) {
  * where possible. Setting `flag` to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
  */
-WscTablumps.prototype.render = function( flag, data ) {
+wsc.Tablumps.prototype.render = function( flag, data ) {
     if( !data )
         return '';
     
@@ -1292,7 +1292,7 @@ WscTablumps.prototype.render = function( flag, data ) {
  * @function renderOne
  * Render a single tablump.
  */
-WscTablumps.prototype.renderOne = function( type, tag, working ) {
+wsc.Tablumps.prototype.renderOne = function( type, tag, working ) {
     lump = this.lumps[tag];
     
     // If we don't know how to parse the tag, leave it be!
@@ -1326,7 +1326,7 @@ WscTablumps.prototype.renderOne = function( type, tag, working ) {
  * method is used to crop a specific number of arguments from a given
  * input.
  */
-WscTablumps.prototype.tokens = function( data, limit, sep, end ) {
+wsc.Tablumps.prototype.tokens = function( data, limit, sep, end ) {
     sep = sep || '\t';
     end = end || '&';
     tokens = [];
@@ -1468,9 +1468,323 @@ function dAmnLumps( opts ) {
         ],
     };
 
-}/* wsc protocol - photofroggy
- * Processes the chat protocol for a llama-like chat server.
+}/**
+ * Parser for dAmn-like protocols.
+ * 
+ * @class Protocol
+ * @constructor
+ * @param [tablumps=wsc.Tablumps] {Object} Tablumps parser instance.
  */
+wsc.Protocol = function( tablumps ) {
+
+    this.tablumps = tablumps || new wsc.Tablumps;
+    this.chains = [["recv", "admin"]];
+    
+    // Mappings for every packet.
+    this.maps = {
+        'chatserver': ['version'],
+        'dAmnServer': ['version'],
+        'login': ['username', ['e'], 'data'],
+        'join': ['ns', ['e'] ],
+        'part': ['ns', ['e', '*r'] ],
+        'property': ['ns', ['p', 'by', 'ts'], '*value' ],
+        'recv_msg': [null, [['from', 'user']], '*message'],
+        'recv_npmsg': [null, [['from', 'user']], 'message'],
+        'recv_action': [null, ['s', ['from', 'user']], '*message'],
+        'recv_join': ['user', ['s'], '*info'],
+        'recv_part': ['user', ['s', 'r']],
+        'recv_privchg': ['user', ['s', 'by', 'pc']],
+        'recv_kicked': ['user', [['i', 's'], 'by'], '*r'],
+        'recv_admin_create': [null, ['p', ['by', 'user'], ['name', 'pc'], 'privs']],
+        'recv_admin_update': [null, ['p', ['by', 'user'], ['name', 'pc'], 'privs']],
+        'recv_admin_rename': [null, ['p', ['by', 'user'], 'prev', ['name', 'pc']]],
+        'recv_admin_move': [null, ['p', ['by', 'user'], 'prev', ['name', 'pc'], ['n', 'affected']]],
+        'recv_admin_remove': [null, ['p', ['by', 'user'], ['name', 'pc'], ['n', 'affected']]],
+        'recv_admin_show': [null, ['p'], 'info'],
+        'recv_admin_showverbose': [null, ['p'], 'info'],
+        'recv_admin_privclass': [null, ['p', 'e'], 'command'],
+        'kicked': ['ns', [['by', 'user']], '*r'],
+        'ping': [],
+        'disconnect': [null, ['e']],
+        'send': ['ns', ['e']],
+        'kick': ['ns', [['u', 'user'], 'e']],
+        'get': ['ns', ['p', 'e']],
+        'set': ['ns', ['p', 'e']],
+        'kill': ['ns', ['e']],
+        'unknown': [null, null, null, null, 'packet'],
+    };
+    
+    // Mapping callbacks!
+    var p = this;
+    this.mapper = {
+        "recv": function( args, packet, mapping ) {
+            args.ns = packet.param;
+            sub = new wsc.Packet( packet.body );
+            
+            if( sub.cmd == 'admin' ) {
+                ssub = new wsc.Packet( sub.body );
+                return p.map(ssub, args, mapping);
+            }
+            
+            return p.map(sub, args, mapping);
+        }
+        
+    };
+    
+    this.messages = {
+        'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
+        //'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ],
+        'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
+        'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
+        'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
+        'property': ['<span class="servermsg">** Got {p} for {ns} *</span>', true],
+        'recv_msg': ['<span class="cmsg user"><strong>&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
+        'recv_action': ['<span class="caction user"><em>* {user}</em></span><span class="caction">{message}</span>'],
+        'recv_join': ['<span class="cevent bg">** {user} has joined *</span>'],
+        'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
+        'recv_privchg': ['<span class="cevent">** {user} has been made a member of {pc} by {by} *</span>'],
+        'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{*r}</em></span>'],
+        'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} with: {privs} *</span>'],
+        'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} with: {privs} *</span>'],
+        'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
+        'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} -- {affected} affected user(s) *</span>'],
+        'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} -- {affected} affected user(s) *</span>'],
+        'recv_admin_show': null,
+        'recv_admin_showverbose': null,
+        'recv_admin_privclass': ['<span class="cevent admin">** Admin command "{command}" failed: {e} *</span>'],
+        'kicked': ['<span class="servermsg">** You have been kicked by {user} * <em>{r}</em></span>'],
+        'ping': null, //['<span class="servermsg">** Ping...</span>', true],
+        'disconnect': ['<span class="servermsg">** You have been disconnected * <em>{e}</em></span>', false, true],
+        // Stuff here is errors, yes?
+        'send': ['<span class="servermsg">** Send error: <em>{e}</em></span>'],
+        'kick': ['<span class="servermsg">** Could not kick {user}: <em>{e}</em></span>'],
+        'get': ['<span class="servermsg">** Could not get {p} info for {ns}: <em>{e}</em></span>'],
+        'set': ['<span class="servermsg">** Could not set {p}: <em>{e}</em></span>'],
+        'kill': ['<span class="servermsg">** Kill error: <em>{e}</em></span>'],
+        'unknown': ['<span class="servermsg">** Received unknown packet in {ns}: <em>{packet}</em></span>', true],
+    };
+
+};
+
+/**
+ * Extend the protocol maps.
+ * 
+ * @method extend_maps
+ * @param maps {Object} An object containing packet mappings.
+ */
+wsc.Protocol.prototype.extend_maps = function( maps ) {
+
+    for( key in maps ) {
+        this.maps[key] = maps[key];
+    }
+
+};
+
+/**
+ * Extend the protocol message renderers.
+ * 
+ * @method extend_messages
+ * @param messages {Object} An object containing packet rendering methods.
+ */
+wsc.Protocol.prototype.extend_messages = function( messages ) {
+
+    for( key in messages ) {
+        this.messages[key] = messages[key];
+    }
+
+};
+
+/**
+ * Parse a packet.
+ * 
+ * @method parse
+ * @param packet {Object} Packet object.
+ */
+wsc.Protocol.prototype.parse = function( packet ) {
+
+    name = this.event( packet );
+    var args = { 'name': name, 'pkt': packet, 'ns': null };
+    
+    if( !this.maps[name] )
+        return args;
+    
+    mapping = this.maps[name];
+    cmd = packet.cmd;
+    
+    if( this.mapper[cmd] )
+        this.mapper[cmd](packet, args, mapping);
+    else
+        this.map(packet, args, mapping);
+    
+    return args;
+
+};
+
+/**
+ * Get the event name of a packet.
+ * 
+ * @method event
+ * @param pkt {Object} Packet object.
+ * @return {String} Packet event name.
+ */
+wsc.Protocol.prototype.event = function( pkt ) {
+
+    var name = pkt["cmd"];
+    var cmds = null;
+    for(var index in this.chains) {
+        
+        cmds = this.chains[index];
+        
+        if(cmds[0] != name)
+            continue;
+        
+        var sub = new wsc.Packet(pkt.sub[0]);
+        name = name + '_' + sub["cmd"];
+        
+        if(cmds.length > 1 && sub["param"] != undefined) {
+            if(cmds[1] == sub["cmd"])
+                return name + '_' + sub["param"];
+        }
+    
+    }
+    
+    return name;
+
+};
+
+/**
+ * Map a packet to an event object.
+ * 
+ * @method map
+ * @param packet {Object} Packet object.
+ * @param event {Object} Event data object.
+ * @param map {Object} Packet mapping data.
+ */
+wsc.Protocol.prototype.map = function( packet, event, map ) {
+
+    for(var i in mapping) {
+        if( mapping[i] == null)
+            continue;
+        
+        key = mapping[i];
+        skey = key;
+        switch(parseInt(i)) {
+            // e.<map[event][0]> = packet.param
+            case 0:
+                event[key] = packet['param'];
+                break;
+            // for n in map[event][1]: e.<map[event][1][n]> = packet.arg.<map[event][1][n]>
+            case 1:
+                if( mapping[1] instanceof Array ) {
+                    for( n in mapping[1] ) {
+                        key = mapping[1][n];
+                        if( key instanceof Array ) {
+                            event[key[1]] = packet['arg'][key[0]];
+                            skey = key[1];
+                        } else {
+                            k = key[0] == '*' ? key.slice(1) : key;
+                            event[key] = packet['arg'][k] || '';
+                            skey = key;
+                        }
+                    }
+                }
+                
+                if( typeof mapping[1] == 'string' ) {
+                    // Here we want to accept the packet args as they are. All of them.
+                    event[key] = packet.arg.slice(0);
+                }
+                break;
+            // e.<map[event][2]> = packet.body
+            case 2:
+                if( key instanceof Array ) {
+                    this.mapPacket(event, new wsc.Packet(packet['body']), key);
+                } else {
+                    event[key] = packet['body'];
+                }
+                break;
+        }
+        
+        if( skey[0] != '*' )
+            continue;
+        
+        k = skey.slice(1);
+        val = this.tablumps.parse( event[skey] );
+        event[k] = val;
+    }
+
+};
+
+/**
+ * Render a protocol message in the given format.
+ * 
+ * @method render
+ * @param format {String} Format to render the event in.
+ * @param event {Object} Event data.
+ * @return {String} Rendered event.
+ */
+wsc.Protocol.prototype.render = function( event, format ) {
+
+    msgm = this.messages[event.name];
+    
+    if( !msgm )
+        return '';
+    
+    msg = msgm[0];
+    
+    for( key in event ) {
+        d = event[key];
+        
+        if( key == 'ns' || key == 'sns' ) {
+            key = 'ns';
+            d = event['sns'];
+        }
+        if( d.hasOwnProperty('render') ) {
+            switch(format) {
+                case 'text':
+                    d = d.text();
+                    break;
+                case 'html':
+                    d = d.html();
+                    break;
+                case 'ansi':
+                    d = d.ansi();
+                    break;
+                default:
+                    d = d.text();
+                    break;
+            }
+        }
+        msg = replaceAll(msg, '{'+key+'}', d);
+    }
+    
+    return msg;
+
+};
+
+
+wsc.Protocol.prototype.log = function( client, event ) {
+
+    msgm = this.messages[event.name];
+    
+    if( !msgm )
+        return;
+    
+    if( event.s == '0' ) {
+        return;
+    }
+    
+    msg = this.render(event, 'html');
+    
+    if( !msgm[2] ) {
+        if( !msgm[1] )
+            client.ui.channel(event.ns).log_item(msg);
+        else
+            client.ui.channel(protocol.client.mns).log_item(msg);
+    } else {
+        client.ui.log_item(msg);
+    }
+
+};
 
 // Create a protocol object that will process all incoming packets.
 // Protocol constructers are given a wsc object as input.
@@ -1522,10 +1836,10 @@ function wsc_protocol( client ) {
         mapper: {
             "recv": function( args, packet, mapping ) {
                 args.ns = packet.param;
-                sub = new WscPacket( packet.body );
+                sub = new wsc.Packet( packet.body );
                 
                 if( sub.cmd == 'admin' ) {
-                    ssub = new WscPacket( sub.body );
+                    ssub = new wsc.Packet( sub.body );
                     return protocol.mapPacket(args, ssub, mapping);
                 }
                 
@@ -1613,7 +1927,7 @@ function wsc_protocol( client ) {
         connected: function( evt, sock ) {
             if( sock  )
                 this.client.conn = sock;
-            this.client.trigger('connected', {name: 'connected', pkt: new WscPacket('connected\n\n')});
+            this.client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
             this.client.connected = true;
             this.client.handshake();
             this.client.attempts = 0;
@@ -1622,7 +1936,7 @@ function wsc_protocol( client ) {
         // WebSocket connection closed!
         closed: function( evt ) {
             console.log(evt);
-            this.client.trigger('closed', {name: 'closed', pkt: new WscPacket('connection closed\n\n')});
+            this.client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
             
             if(this.client.connected) {
                 this.client.ui.server_message("Connection closed");
@@ -1650,7 +1964,7 @@ function wsc_protocol( client ) {
     
         // Received data from WebSocket connection.
         process_data: function( evt ) {
-            var pack = new WscPacket(evt.data);
+            var pack = new wsc.Packet(evt.data);
             
             if(pack == null)
                 return;
@@ -1722,7 +2036,7 @@ function wsc_protocol( client ) {
                     // e.<map[event][2]> = pkt.body
                     case 2:
                         if( key instanceof Array ) {
-                            this.mapPacket(arguments, new WscPacket(pkt['body']), key);
+                            this.mapPacket(arguments, new wsc.Packet(pkt['body']), key);
                         } else {
                             arguments[key] = pkt['body'];
                         }
@@ -1794,7 +2108,7 @@ function wsc_protocol( client ) {
             if(e.pkt["arg"]["e"] == "ok") {
                 //protocol.client.monitor("Logged in as " + e.pkt["param"] + '.');
                 // Use the username returned by the server!
-                info = new WscPacket('info\n' + e.data);
+                info = new wsc.Packet('info\n' + e.data);
                 protocol.client.settings["username"] = e.pkt["param"];
                 protocol.client.settings['symbol'] = info.arg.symbol;
                 protocol.client.settings['userinfo'] = info.arg;
@@ -1914,7 +2228,329 @@ function wsc_protocol( client ) {
     protocol.init(client);
     return protocol;
 
-}/* wsc commands - photofroggy
+}/**
+ * Control the client's program flow in relation to the chat this.
+ * 
+ * @class Flow
+ * @constructor
+ * @param protocol {Object} Protocol object.
+ */
+wsc.Flow = function( protocol ) {
+
+    this.protocol = protocol || new wsc.Protocol();
+
+};
+
+// Established a WebSocket connection.
+wsc.Flow.prototype.open = function( client, event, sock ) {
+    client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
+    client.connected = true;
+    client.handshake();
+    client.attempts = 0;
+};
+
+// WebSocket connection closed!
+wsc.Flow.prototype.close = function( client, event ) {
+    console.log(evt);
+    client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
+    
+    if(client.connected) {
+        client.ui.server_message("Connection closed");
+        client.connected = false;
+    } else {
+        client.ui.server_message("Connection failed");
+    }
+    
+    // For now we want to automatically reconnect.
+    // Should probably be more intelligent about this though.
+    if( client.attempts > 2 ) {
+        client.ui.server_message("Can't connect. Try again later.");
+        client.attempts = 0;
+        return;
+    }
+    
+    client.ui.server_message("Connecting in 2 seconds");
+    
+    setTimeout(function () {
+        client.conn.connect();
+        client.ui.server_message('Opening connection');
+    }, 2000);
+
+}; 
+
+// Received data from WebSocket connection.
+wsc.Flow.prototype.message = function( client, event ) {
+    var pack = new wsc.Packet(event.data);
+    
+    if(pack == null)
+        return;
+    
+    pevt = this.protocol.parse(pack);
+    
+    if( pevt.ns == null )
+        pevt.ns = client.mns;
+    
+    pevt.sns = client.deform_ns(pevt.ns);
+    this.protocol.log(client, pevt);
+    
+    client.trigger('pkt', pevt);
+    client.trigger('pkt.'+pevt.name, pevt);
+    //this.monitor(data);
+};
+
+/**
+ * Handle a packet event.
+ * 
+ * @method handle
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.handle = function( event, client ) {
+
+    if( !this.hasOwnProperty(event.name) )
+        return;
+    
+    this[event.name](event, client);
+
+};
+
+/**
+ * Respond to pings from the server.
+ * 
+ * @method ping
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.ping = function( event, client ) {
+    client.pong();
+};
+
+/**
+ * Respond to a llama-style handshake.
+ * 
+ * @method chatserver
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.chatserver = function( event, client ) {
+    //client.monitor(
+    //    "Connected to " + event.pkt["cmd"] + " " + event.pkt["arg"]["server"] + " version " +e.pkt["arg"]["version"]+".");
+    client.login();
+};
+
+/**
+ * Process a login packet
+ * 
+ * @method login
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.login = function( event, client ) {
+    
+    if(e.pkt["arg"]["e"] == "ok") {
+        // Use the username returned by the server!
+        info = new wsc.Packet('info\n' + event.data);
+        client.settings["username"] = event.pkt["param"];
+        client.settings['symbol'] = info.arg.symbol;
+        client.settings['userinfo'] = info.arg;
+        // Autojoin!
+        // TODO: multi-channel?
+        if ( client.fresh )
+            client.join(client.settings["autojoin"]);
+        else {
+            for( key in client.channelo ) {
+                if( client.channelo[key].info['namespace'][0] != '~' )
+                    client.join(key);
+            }
+        }
+    } else {
+        //client.close();
+    }
+    
+    if( client.fresh )
+        client.fresh = false;
+    
+    
+};
+
+/**
+ * Received a join packet.
+ * 
+ * @method join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.join = function( event, client ) {
+    if(e.pkt["arg"]["e"] == "ok") {
+        ns = client.deform_ns(e.pkt["param"]);
+        //client.monitor("You have joined " + ns + '.');
+        client.create_channel(ns);
+        client.ui.channel(ns).server_message("You have joined " + ns);
+    } else {
+        client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(e.pkt["param"]), event.pkt["arg"]["e"]);
+    }
+};
+
+/**
+ * Received a part packet.
+ * 
+ * @method part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.part = function( event, client ) {
+    ns = client.deform_ns(e.ns);
+    c = client.channel(ns);
+    
+    if(e.e == "ok") {
+        info = '';
+        if( event.r )
+            info = '[' + event.r + ']';
+        
+        msg = 'You have left ' + ns;
+        c.server_message(msg, info);
+        
+        if( info == '' )
+            client.remove_channel(ns);
+        
+        if( client.channels() == 0 ) {
+            switch( event.r ) {
+                case 'bad data':
+                case 'bad msg':
+                case 'msg too big':
+                    break;
+                default:
+                    if( event.r.indexOf('killed:') < 0 )
+                        return;
+                    break;
+            }
+            this.process_data( { data: 'disconnect\ne='+e.r+'\n' } );
+        }
+    } else {
+        client.monitor('Couldn\'t leave ' + ns, event.e);
+        c.server_message("Couldn't leave "+ns, event.e);
+    }
+    
+};
+
+/**
+ * Client has been kicked from a channel.
+ * 
+ * @method kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.kicked = function( event, client ) {
+
+    if( event.r.toLowerCase().indexOf('autokicked') > -1 )
+        return;
+    client.join(e.ns);
+
+};
+
+/**
+ * Process a property packet.
+ * 
+ * @method property
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.property = function( event, client ) {
+    //console.log(e.pkt["arg"]["p"]);
+    chan = client.channel(e.pkt["param"]);
+    
+    if( !chan )
+        return;
+    
+    chan.property(e);
+};
+
+/**
+ * User join or part.
+ * 
+ * @method recv_joinpart
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_joinpart = function( event, client ) {
+    c = client.channel(e.ns);
+    if( event.name == 'recv_join')
+        c.recv_join(e);
+    else
+        c.recv_part(e);
+};
+
+/**
+ * A user joined a channel.
+ * 
+ * @method recv_join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_join = wsc.Flow.prototype.recv_joinpart;
+
+/**
+ * A user left a channel.
+ * 
+ * @method recv_part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_part = wsc.Flow.prototype.recv_joinpart;
+
+/**
+ * A message was received in a channel.
+ * 
+ * @method recv_msg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_msg = function( event, client ) {
+    client.channel(e.ns).recv_msg(e);
+};
+
+/**
+ * A different kind of message.
+ * 
+ * @method recv_action
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_action = wsc.Flow.prototype.recv_msg;
+
+/**
+ * A non-parsed message.
+ * 
+ * @method recv_npmsg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_npmsg = wsc.Flow.prototype.recv_msg;
+
+/**
+ * Someone was promoted or demoted.
+ * 
+ * @method recv_privchg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_privchg = function( event, client ) {
+    client.channel(e.ns).recv_privchg(e);
+};
+
+/**
+ * Some sucka got kicked foo.
+ * 
+ * @method recv_kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.recv_kicked = function( event, client ) {
+    client.channel(e.ns).recv_kicked(e);
+};
+
+
+/* wsc commands - photofroggy
  * Commands for the user to use.
  */
 
@@ -2159,7 +2795,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.3.17',
+        version: '0.4.23',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -2185,13 +2821,14 @@ function wsc_client( view, options, mozilla ) {
             "monitor": ['~Monitor', true],
             "welcome": "Welcome to the wsc web client!",
             "autojoin": "chat:channel",
-            "protocol": wsc_protocol,
+            "protocol": wsc.Protocol,
             "extend": [wsc_extdefault],
             "control": wsc_control,
             "stype": 'llama',
             "client": 'chatclient',
             "clientver": '0.3',
-            "tablumps": null,
+            "tablumps": function() { return new wsc.Tablumps(); },
+            "flow": function() { return new wsc.Flow(); },
             "avatarfile": '$un[0]/$un[1]/{un}',
             "defaultavatar": 'default.gif',
             "avatarfolder": '/avatars/',
@@ -2202,6 +2839,8 @@ function wsc_client( view, options, mozilla ) {
         },
         // Protocol object.
         protocol: null,
+        // Flow object.
+        flow: null,
         // Object containing all channel objects.
         channelo: {},
         // Current channel object.
@@ -2242,7 +2881,8 @@ function wsc_client( view, options, mozilla ) {
             this.mns = this.format_ns(this.settings['monitor'][0]);
             this.lun = this.settings["username"].toLowerCase();
             this.channelo = {};
-            this.protocol = this.settings["protocol"]( this );
+            this.protocol = new this.settings.protocol( this.settings.tablumps() );
+            this.flow = this.settings.flow(this.protocol);
             //this.addListener('closed'
             
             // Debug!
@@ -2442,9 +3082,9 @@ function wsc_client( view, options, mozilla ) {
             var client = this;
             console.log(this.settings.server);
             conn = wsc.Transport.Create(this.settings.server);
-            conn.open(function( evt, sock ) { client.protocol.connected( evt, sock ); });
-            conn.disconnect(function( evt ) { client.protocol.closed( evt ); });
-            conn.message(function( evt ) { client.protocol.process_data( evt ); });
+            conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
+            conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
+            conn.message(function( evt ) { client.flow.message( client, evt ); });
             return conn;
             
         },

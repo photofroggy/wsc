@@ -12,7 +12,7 @@ wsc.Flow = function( protocol ) {
 };
 
 // Established a WebSocket connection.
-wsc.Flow.prototype.connected = function( client, event, sock ) {
+wsc.Flow.prototype.open = function( client, event, sock ) {
     client.trigger('connected', {name: 'connected', pkt: new wsc.Packet('connected\n\n')});
     client.connected = true;
     client.handshake();
@@ -20,7 +20,7 @@ wsc.Flow.prototype.connected = function( client, event, sock ) {
 };
 
 // WebSocket connection closed!
-wsc.Flow.prototype.closed = function( client, event ) {
+wsc.Flow.prototype.close = function( client, event ) {
     console.log(evt);
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
     
@@ -40,29 +40,31 @@ wsc.Flow.prototype.closed = function( client, event ) {
     }
     
     client.ui.server_message("Connecting in 2 seconds");
-    c=client;
+    
     setTimeout(function () {
-        c.connect();
-        c.ui.server_message('Opening connection');
+        client.conn.connect();
+        client.ui.server_message('Opening connection');
     }, 2000);
 
 }; 
 
 // Received data from WebSocket connection.
-wsc.Flow.prototype.process_data = function( client, event ) {
-    var pack = new wsc.Packet(evt.data);
+wsc.Flow.prototype.message = function( client, event ) {
+    var pack = new wsc.Packet(event.data);
     
     if(pack == null)
         return;
     
-    var event = client.event_name(pack);
-    // Uncomment if you want everything ever in the console.
-    //console.log(event + '');
-    //console.log(JSON.stringify(pack));
-    pevt = this.packetEvent(event, pack);
-    this.log(pevt);
+    pevt = this.protocol.parse(pack);
+    
+    if( pevt.ns == null )
+        pevt.ns = client.mns;
+    
+    pevt.sns = client.deform_ns(pevt.ns);
+    this.protocol.log(client, pevt);
+    
     client.trigger('pkt', pevt);
-    client.trigger('pkt.'+event, pevt);
+    client.trigger('pkt.'+pevt.name, pevt);
     //this.monitor(data);
 };
 

@@ -168,7 +168,7 @@ wsc.Protocol.prototype.event = function( pkt ) {
         if(cmds[0] != name)
             continue;
         
-        var sub = new pkt.sub[0]);
+        var sub = new wsc.Packet(pkt.sub[0]);
         name = name + '_' + sub["cmd"];
         
         if(cmds.length > 1 && sub["param"] != undefined) {
@@ -252,7 +252,7 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
  * @param event {Object} Event data.
  * @return {String} Rendered event.
  */
-wsc.Protocol.prototype.render = function( format, event ) {
+wsc.Protocol.prototype.render = function( event, format ) {
 
     msgm = this.messages[event.name];
     
@@ -288,6 +288,31 @@ wsc.Protocol.prototype.render = function( format, event ) {
     }
     
     return msg;
+
+};
+
+
+wsc.Protocol.prototype.log = function( client, event ) {
+
+    msgm = this.messages[event.name];
+    
+    if( !msgm )
+        return;
+    
+    if( event.s == '0' ) {
+        return;
+    }
+    
+    msg = this.render(event, 'html');
+    
+    if( !msgm[2] ) {
+        if( !msgm[1] )
+            client.ui.channel(event.ns).log_item(msg);
+        else
+            client.ui.channel(protocol.client.mns).log_item(msg);
+    } else {
+        client.ui.log_item(msg);
+    }
 
 };
 
