@@ -187,8 +187,8 @@ wsc.Tablumps.prototype.defaultMap = function () {
                 return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
             },
             function( data ) {
-                t = data[1] || data[0];
-                return '<a target="_blank" href="'+data[0]+'" title="'+t+'">'+t+'</a>';
+                t = data[1];
+                return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
             }
         ],
         '&acro\t': [ 1, '[acro:{0}]', '<acronym title="{0}">' ],
