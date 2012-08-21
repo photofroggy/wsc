@@ -2397,7 +2397,6 @@ function wsc_client( view, options, mozilla ) {
             view.extend( this.settings, options );
             this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
             
-            //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new Chatterbox.UI( view, {
                 'themes': this.settings.themes,
                 'theme': this.settings.theme,
