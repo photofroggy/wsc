@@ -26,7 +26,7 @@ div.wsc nav.tabs ul#chattabs {
   float: left;
   list-style: none;
   padding: 14px 8px 0;
-  width: 80%;
+  width: 90%;
   overflow: hidden;
   height: 30px;
 }
@@ -34,7 +34,7 @@ div.wsc nav.tabs ul#chattabs li {
   margin-right: 2px;
 }
 div.wsc nav.tabs ul#tabnav {
-  float: right;
+  float: left;
   padding: 10px 20px;
 }
 div.wsc nav.tabs ul#tabnav li a {
