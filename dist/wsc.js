@@ -3165,7 +3165,7 @@ wsc.Control.prototype.keypress = function( event ) {
     }
     
     if( ut )
-        this.untab( event );
+        this.end_tab( event );
     
     return bubble;
 
