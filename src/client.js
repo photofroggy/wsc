@@ -75,6 +75,25 @@ wsc.Client = function( view, options, mozilla ) {
 
 };
 
+wsc.Client.prototype.build = function(  ) {};
+wsc.Client.prototype.resize = function(  ) {};
+wsc.Client.prototype.loop = function(  ) {};
+
+wsc.Client.prototype.add_extension = function( extension ) {};
+wsc.Client.prototype.bind = function( event, handler ) {};
+wsc.Client.prototype.clear_listeners = function(  ) {};
+
+wsc.Client.prototype.connect = function(  ) {};
+wsc.Client.prototype.close = function(  ) {};
+
+wsc.Client.prototype.channel = function( namespace ) {};
+wsc.Client.prototype.channels = function(  ) {};
+wsc.Client.prototype.deform_ns = function( namespace ) {};
+wsc.Client.prototype.format_ns = function( namespace ) {};
+wsc.Client.prototype.create_ns = function( namespace, hidden ) {};
+wsc.Client.prototype.remove_ns = function( namespace ) {};
+wsc.Client.prototype.close_ns = function( namespace ) {};
+
 /*
  * @method wsc_client 
  * @author photofroggy
