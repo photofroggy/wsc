@@ -42,7 +42,6 @@ wsc.Client = function( view, options, mozilla ) {
         "control": wsc_control,
         "client": 'chatclient',
         "clientver": '0.3',
-        "thumbfolder": '/thumbs/',
         "theme": 'wsct_default',
         "themes": [ 'wsct_default', 'wsct_test' ],
     };
