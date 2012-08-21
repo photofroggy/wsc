@@ -38,7 +38,7 @@ function wsc_client( view, options, mozilla ) {
      */
     var client = {
     
-        version: '0.5.29',
+        version: '0.5.30',
         dev_state: 'alpha',
         view: null,
         mozilla: false,
@@ -66,7 +66,7 @@ function wsc_client( view, options, mozilla ) {
             "autojoin": "chat:channel",
             "protocol": wsc.Protocol,
             "extend": [wsc_extdefault],
-            "control": wsc_control,
+            "control": wsc.Control,
             "stype": 'llama',
             "client": 'chatclient',
             "clientver": '0.3',
@@ -103,9 +103,8 @@ function wsc_client( view, options, mozilla ) {
         init: function( view, options, mozilla ) {
             
             view.extend( this.settings, options );
-            this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+            this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
             
-            //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
             this.ui = new Chatterbox.UI( view, {
                 'themes': this.settings.themes,
                 'theme': this.settings.theme,
@@ -333,7 +332,7 @@ function wsc_client( view, options, mozilla ) {
         // Build the initial UI.
         buildUI: function( ) {
             this.ui.build();
-            this.control = this.settings.control( this );
+            this.control = new this.settings.control( this );
             this.ui.on( 'channel.selected', function( event, ui ) {
                 client.cchannel = client.channel(event.ns);
                 client.control.cache_input(event);

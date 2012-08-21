@@ -259,7 +259,7 @@ wsc.Control.prototype.keypress = function( event ) {
 
     key = event.which || event.keypress;
     ut = this.tab.hit;
-    bubble = false;
+    var bubble = false;
     
     switch( key ) {
         case 13: // Enter
@@ -282,7 +282,7 @@ wsc.Control.prototype.keypress = function( event ) {
     
     if( ut )
         this.untab( event );
-        
+    
     return bubble;
 
 };
@@ -292,9 +292,9 @@ wsc.Control.prototype.keypress = function( event ) {
  * 
  * @method handle
  * @param event {Object} Event data.
- * @param message {String} Input message given by the user.
+ * @param data {String} Input message given by the user.
  */
-wsc.Control.prototype.handle = function( event, message ) {
+wsc.Control.prototype.handle = function( event, data ) {
 
     if( data == '' )
         return;
@@ -304,7 +304,7 @@ wsc.Control.prototype.handle = function( event, message ) {
             return;
     }
     
-    data = (e.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
+    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
     data = data.slice(1);
     bits = data.split(' ');
     cmdn = bits.shift();
