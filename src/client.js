@@ -1,4 +1,81 @@
 /**
+ * Chat client.
+ *
+ * @class Client
+ * @constructor
+ * @param view {Object} The client's container element.
+ * @param options {Object} Configuration options for the client.
+ * @param mozilla {Object} Is firefox being used?
+ */
+wsc.Client = function( view, options, mozilla ) {
+
+    this.version = '0.5.29';
+    this.dev_state = 'alpha';
+    this.mozilla = mozilla;
+    this.fresh = true;
+    this.attempts = 0;
+    this.protocol = null;
+    this.flow = null;
+    this.ui = null;
+    this.events = new EventEmitter();
+    this.conn = null;
+    this.channelo = {};
+    this.cchannel = null;
+    this.cmds = [];
+    this.settings = {
+        "domain": "website.com",
+        "server": "ws://website.com/wsendpoint",
+        "agent": "",
+        "symbol": "",
+        "username": "",
+        "userinfo": {},
+        "pk": "",
+        // Monitor: `ns`
+        "monitor": ['~Monitor', true],
+        "welcome": "Welcome to the wsc web client!",
+        "autojoin": "chat:channel",
+        "protocol": wsc.Protocol,
+        "tablumps": wsc.Tablumps,
+        "flow": wsc.Flow,
+        "ui": Chatterbox.UI,
+        "extend": [wsc_extdefault],
+        "control": wsc_control,
+        "client": 'chatclient',
+        "clientver": '0.3',
+        "thumbfolder": '/thumbs/',
+        "theme": 'wsct_default',
+        "themes": [ 'wsct_default', 'wsct_test' ],
+    };
+    
+    view.extend( this.settings, options );
+    this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+    
+    //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    this.ui = new this.settings.ui( view, {
+        'themes': this.settings.themes,
+        'theme': this.settings.theme,
+        'monitor': this.settings.monitor,
+        'username': this.settings.username,
+        'domain': this.settings.domain
+    }, mozilla );
+    
+    this.mns = this.format_ns(this.settings['monitor'][0]);
+    this.lun = this.settings["username"].toLowerCase();
+    this.protocol = new this.settings.protocol( new this.settings.tablumps() );
+    this.flow = new this.settings.flow(this.protocol);
+    
+    this.build();
+    
+    for(var index in this.settings["extend"]) {
+        this.settings["extend"][index](this);
+    }
+    
+    // Welcome!
+    this.monitor(this.settings["welcome"]);
+
+};
+
+/*
  * @method wsc_client 
  * @author photofroggy
  * @note To create a client, use the {wsc wsc jQuery method}.
