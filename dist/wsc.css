@@ -491,7 +491,7 @@ div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #0f6175;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
-  background-color: white;
+  background-color: #ffd5ba;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #7c9ab4;
@@ -665,7 +665,7 @@ div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #293840;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
-  background-color: white;
+  background-color: #ffd5ba;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #7c9ab4;
