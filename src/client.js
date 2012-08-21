@@ -25,7 +25,6 @@ wsc.Client = function( view, options, mozilla ) {
     this.settings = {
         "domain": "website.com",
         "server": "ws://website.com/wsendpoint",
-        "agent": "",
         "symbol": "",
         "username": "",
         "userinfo": {},
@@ -92,6 +91,29 @@ wsc.Client.prototype.format_ns = function( namespace ) {};
 wsc.Client.prototype.create_ns = function( namespace, hidden ) {};
 wsc.Client.prototype.remove_ns = function( namespace ) {};
 wsc.Client.prototype.close_ns = function( namespace ) {};
+
+wsc.Client.prototype.log = function( namespace, data ) {};
+wsc.Client.prototype.monitor = function( message ) {};
+
+// Client packets
+
+wsc.Client.prototype.send = function( data ) {};
+wsc.Client.prototype.handshake = function(  ) {};
+wsc.Client.prototype.login = function(  ) {};
+wsc.Client.prototype.pong = function(  ) {};
+wsc.Client.prototype.join = function( namespace ) {};
+wsc.Client.prototype.part = function( namespace ) {};
+wsc.Client.prototype.say = function( namespace, message ) {};
+wsc.Client.prototype.npmsg = function( namespace, message ) {};
+wsc.Client.prototype.action = function( namespace, action ) {};
+wsc.Client.prototype.promote = function( namespace, user, pc ) {};
+wsc.Client.prototype.demote = function( namespace, user, pc ) {};
+wsc.Client.prototype.ban = function( namespace, user ) {};
+wsc.Client.prototype.unban = function( namespae, user ) {};
+wsc.Client.prototype.kick = function( namespace, user, reason ) {};
+wsc.Client.prototype.kill = function( namespace, user, reason ) {};
+wsc.Client.prototype.admin = function( namespace, command ) {};
+wsc.Client.prototype.disconnect = function(  ) {};
 
 /*
  * @method wsc_client 
