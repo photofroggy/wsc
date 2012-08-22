@@ -9,8 +9,6 @@
  */
 wsc.Client = function( view, options, mozilla ) {
 
-    this.version = '0.5.29';
-    this.dev_state = 'alpha';
     this.mozilla = mozilla;
     this.fresh = true;
     this.attempts = 0;
@@ -46,7 +44,7 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'wsc/' + this.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+    this.settings.agent = 'wsc/' + wsc.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
     
     //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     this.ui = new this.settings.ui( view, {
