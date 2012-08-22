@@ -307,22 +307,22 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  */
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(ns.indexOf('#') == 0) {
-        return 'chat:' + ns.slice(1);
+    if(namespace.indexOf('#') == 0) {
+        return 'chat:' + namespace.slice(1);
     }
-    if(ns.indexOf('@') == 0) {
-        var names = [ns.slice(1), this.lun];
+    if(namespace.indexOf('@') == 0) {
+        var names = [namespace.slice(1), this.lun];
         names.sort(caseInsensitiveSort)
         names.unshift("pchat");
         return names.join(':');
     }
-    if(ns.indexOf('~') == 0) {
-        return "server:" + ns.slice(1);
+    if(namespace.indexOf('~') == 0) {
+        return "server:" + namespace.slice(1);
     }
-    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
-        return 'chat:' + ns;
+    if(namespace.indexOf('chat:') != 0 && namespace.indexOf('server:') != 0 && namespace.indexOf('pchat:') != 0)
+        return 'chat:' + namespace;
     
-    return ns;
+    return namespace;
 
 };
 
@@ -335,7 +335,7 @@ wsc.Client.prototype.format_ns = function( namespace ) {
  */
 wsc.Client.prototype.create_ns = function( namespace, hidden ) {
 
-    chan = this.channel(ns, new wsc.Channel(this, ns, hidden));
+    chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden));
     chan.build();
 
 };
@@ -352,8 +352,35 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
 
 };
 
-wsc.Client.prototype.log = function( namespace, data ) {};
-wsc.Client.prototype.monitor = function( message ) {};
+/**
+ * Write a log message to a channel's log view.
+ * 
+ * @method log
+ * @param namespace {String} Namespace of the channel to log to.
+ * @param data {String} Message to display.
+ */
+wsc.Client.prototype.log = function( namespace, data ) {
+
+    var chan = this.channel(namespace);
+    
+    if( !chan )
+        return;
+    
+    chan.log(data);
+
+};
+
+/**
+ * Write a message to the client monitor.
+ * 
+ * @method monitor
+ * @param message {String} Message to display.
+ */
+wsc.Client.prototype.monitor = function( message ) {
+
+    this.ui.monitor(message);
+
+};
 
 // Client packets
 
