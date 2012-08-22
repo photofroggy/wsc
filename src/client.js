@@ -184,8 +184,45 @@ wsc.Client.prototype.trigger = function( event, data ) {
 
 };
 
-wsc.Client.prototype.connect = function(  ) {};
-wsc.Client.prototype.close = function(  ) {};
+/**
+ * Open a connection to the chat server.
+ * If the client if already connected, nothing happens.
+ * 
+ * @method connect
+ */
+wsc.Client.prototype.connect = function(  ) {
+
+    if( this.connected )
+        return;
+    
+    this.attempts++;
+    
+    // Start connecting!
+    try {
+        var client = this;
+        this.conn = wsc.Transport.Create(this.settings.server);
+        this.conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
+        this.conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
+        this.conn.message(function( evt ) { client.flow.message( client, evt ); });
+        this.conn.connect();
+        this.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
+    } catch(err) {
+        this.monitor("Your browser does not support WebSockets. Sorry.");
+        this.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
+    }
+
+};
+
+/**
+ * Close the connection foo.
+ * 
+ * @method close
+ */
+wsc.Client.prototype.close = function(  ) {
+
+    this.conn.close();
+
+};
 
 wsc.Client.prototype.channel = function( namespace ) {};
 wsc.Client.prototype.channels = function(  ) {};
