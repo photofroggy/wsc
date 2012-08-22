@@ -384,24 +384,267 @@ wsc.Client.prototype.monitor = function( message ) {
 
 // Client packets
 
-wsc.Client.prototype.send = function( data ) {};
-wsc.Client.prototype.handshake = function(  ) {};
-wsc.Client.prototype.login = function(  ) {};
-wsc.Client.prototype.pong = function(  ) {};
-wsc.Client.prototype.join = function( namespace ) {};
-wsc.Client.prototype.part = function( namespace ) {};
-wsc.Client.prototype.say = function( namespace, message ) {};
-wsc.Client.prototype.npmsg = function( namespace, message ) {};
-wsc.Client.prototype.action = function( namespace, action ) {};
-wsc.Client.prototype.promote = function( namespace, user, pc ) {};
-wsc.Client.prototype.demote = function( namespace, user, pc ) {};
-wsc.Client.prototype.ban = function( namespace, user ) {};
-wsc.Client.prototype.unban = function( namespae, user ) {};
-wsc.Client.prototype.kick = function( namespace, user, reason ) {};
-wsc.Client.prototype.kill = function( namespace, user, reason ) {};
-wsc.Client.prototype.admin = function( namespace, command ) {};
-wsc.Client.prototype.whois = function( user ) {};
-wsc.Client.prototype.disconnect = function(  ) {};
+/**
+ * Send a packet to the server.
+ * 
+ * @method send
+ * @param data {String} Packet to send.
+ * @return {Integer} Number of characters written to the server.
+ *   -1 for failure.
+ */
+wsc.Client.prototype.send = function( data ) {
+
+    return this.conn.send(data);
+
+};
+
+/**
+ * Send a handshake packet.
+ * 
+ * @method handshake
+ */
+wsc.Client.prototype.handshake = function(  ) {
+
+    this.send(wsc_packetstr(this.settings.client, this.settings.clientver, {
+        "agent": this.settings.agent
+    }));
+
+};
+
+/**
+ * Send a login packet.
+ * 
+ * @method login
+ */
+wsc.Client.prototype.login = function(  ) {
+
+    pkt = 'login ' + this.settings.username + '\npk=' + this.settings.pk + '\n';
+    this.send( pkt );
+
+};
+
+/**
+ * Send a pong packet to the server.
+ * 
+ * @method pong
+ */
+wsc.Client.prototype.pong = function(  ) {
+
+    this.send(wsc_packetstr("pong"));
+
+};
+
+/**
+ * Join a channel.
+ * 
+ * @method join
+ * @param namespace {String} Channel to join.
+ */
+wsc.Client.prototype.join = function( namespace ) {
+
+    this.send(wsc_packetstr("join", this.format_ns(namespace)));
+
+};
+
+/**
+ * Leave a channel.
+ * 
+ * @method part
+ * @param namespace {String} Channel to leave.
+ */
+wsc.Client.prototype.part = function( namespace ) {
+
+    this.send(wsc_packetstr('part', this.format_ns(namespace)));
+
+};
+
+/**
+ * Send a message to a channel.
+ * 
+ * @method say
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ */
+wsc.Client.prototype.say = function( namespace, message ) {
+
+    e = { name: 'send.msg.before', 'msg': message, 'ns': namespace };
+    this.trigger( e );
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('msg', 'main', {}, e.msg)
+    ));
+
+};
+
+/**
+ * Send a non-parsed message to a channel.
+ * 
+ * @method npmsg
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ */
+wsc.Client.prototype.npmsg = function( namespace, message ) {
+
+    e = { name: 'send.npmsg.before', 'msg': message, 'ns': namespace };
+    this.trigger( e );
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('npmsg', 'main', {}, e.msg)
+    ));
+
+};
+
+/**
+ * Send an action message to a channel.
+ * 
+ * @method action
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ */
+wsc.Client.prototype.action = function( namespace, action ) {
+
+    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
+    this.trigger( e );
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('action', 'main', {}, e.msg)
+    ));
+
+};
+
+/**
+ * Promote a user in a channel.
+ * 
+ * @method promote
+ * @param namespace {String} Channel to promote someone in.
+ * @param user {String} User to promote.
+ * @param [pc] {String} Privclass to promote the user to.
+ */
+wsc.Client.prototype.promote = function( namespace, user, pc ) {
+
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('promote', user, {}, ( !pc ? '' : pc ))));
+
+};
+
+/**
+ * Demote a user in a channel.
+ * 
+ * @method demote
+ * @param namespace {String} Channel to demote someone in.
+ * @param user {String} User to demote.
+ * @param [pc] {String} Privclass to demote the user to.
+ */
+wsc.Client.prototype.demote = function( namespace, user, pc ) {
+
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('demote', user, {}, ( !pc ? '' : pc ))));
+
+};
+
+/**
+ * Ban a user from a channel.
+ * 
+ * @method ban
+ * @param namespace {String} Channel to ban someone from.
+ * @param user {String} User to ban.
+ */
+wsc.Client.prototype.ban = function( namespace, user ) {
+
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('ban', user, {}, ( !pc ? '' : pc ))));
+
+};
+
+/**
+ * Unban a user from a channel.
+ * 
+ * @method unban
+ * @param namespace {String} Channel to unban someone from.
+ * @param user {String} User to unban.
+ */
+wsc.Client.prototype.unban = function( namespae, user ) {
+
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('unban', user, {}, ( !pc ? '' : pc ))));
+
+};
+
+/**
+ * Kick a user from a channel.
+ * 
+ * @method kick
+ * @param namespace {String} Channel to kick someone from.
+ * @param user {String} User to kick.
+ * @param [reason] {String} Reason for the kick.
+ */
+wsc.Client.prototype.kick = function( namespace, user, reason ) {
+
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+
+};
+
+/**
+ * Kill a user's connection to the server.
+ * Only message network admins have access to this packet on the server.
+ * 
+ * @method kill
+ * @param user {String} User to kill.
+ * @param [reason] {String} Reason for the kill.
+ */
+wsc.Client.prototype.kill = function( user, reason ) {
+
+    this.send(wsc_packetstr('kill', user, {}, reason || null));
+
+};
+
+/**
+ * Send an admin comment to a channel.
+ * 
+ * @method admin
+ * @param namespace {String} Channel to use for the admin command.
+ * @param command {String} Command to run.
+ */
+wsc.Client.prototype.admin = function( namespace, command ) {
+
+    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
+        wsc_packetstr('admin', '', {}, command)
+    ));
+
+};
+
+/**
+ * Request a channel property from the server.
+ * 
+ * @method property
+ * @param namespace {String} Namespace of the channel to get a property for.
+ * @param property {String} Name of the property to get.
+ */
+wsc.Client.prototype.property = function( namespace, property ) {
+
+    this.send(wsc_packetstr('get', this.format_ns(namespace), { 'p': property }));
+
+};
+
+/**
+ * Get whois information for a user.
+ * 
+ * @method whois
+ * @param user {String} User to get information for.
+ */
+wsc.Client.prototype.whois = function( user ) {
+
+    this.send(wsc_packetstr('get', 'login:' + user, { 'p': property }));
+
+};
+
+/**
+ * Send a disconnect packet.
+ * 
+ * @method disconnect
+ */
+wsc.Client.prototype.disconnect = function(  ) {
+
+    this.send(wsc_packetstr('disconnect'));
+
+};
 
 /*
  * @method wsc_client 
