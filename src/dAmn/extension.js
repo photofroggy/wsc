@@ -1,6 +1,9 @@
 
 wsc.dAmn.Extension = function( client ) {
 
+    client.settings.client = 'dAmnClient';
+    client.settings.domain = 'deviantart.com';
+    
     client.protocol.extend_maps({
         'dAmnServer': ['version']
     });
