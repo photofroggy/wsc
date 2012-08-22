@@ -44,7 +44,7 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'wsc/' + wsc.version + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+    this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
     
     //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     this.ui = new this.settings.ui( view, {
