@@ -94,7 +94,7 @@ wsc.Client.prototype.build = function(  ) {
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
             return;
-        client.part(event.namespace);
+        client.part(event.ns);
     } );
 
 };

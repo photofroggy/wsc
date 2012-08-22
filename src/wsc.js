@@ -74,10 +74,10 @@
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {
-                client = wsc_client( $(this), options, ($.browser.mozilla || false) );
+                client = new wsc.Client( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(function( ) { client.ui.resize(); });
                 $(window).focus(function( ) { client.ui.control.focus(); });
-                setInterval(client.loop, 120000);
+                setInterval(function(  ) { client.loop(); }, 120000);
             }
             $(window).data('wscclient', client);
         }

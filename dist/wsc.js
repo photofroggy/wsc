@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.6.36';
+wsc.VERSION = '0.6.37';
 wsc.STATE = 'beta';
 
 // Taken from dAmnAIR by philo23
@@ -1919,7 +1919,7 @@ wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
         ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
-        client.create_channel(ns);
+        client.create_ns(ns);
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
         client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
@@ -2386,7 +2386,7 @@ wsc.Client.prototype.build = function(  ) {
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
             return;
-        client.part(event.namespace);
+        client.part(event.ns);
     } );
 
 };
@@ -5223,10 +5223,10 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {
-                client = wsc_client( $(this), options, ($.browser.mozilla || false) );
+                client = new wsc.Client( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(function( ) { client.ui.resize(); });
                 $(window).focus(function( ) { client.ui.control.focus(); });
-                setInterval(client.loop, 120000);
+                setInterval(function(  ) { client.loop(); }, 120000);
             }
             $(window).data('wscclient', client);
         }
