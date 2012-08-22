@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.6.33';
+wsc.VERSION = '0.6.35';
 wsc.STATE = 'beta';
 
 // Taken from dAmnAIR by philo23
@@ -1894,7 +1894,7 @@ wsc.Flow.prototype.login = function( event, client ) {
             client.join(client.settings["autojoin"]);
         else {
             for( key in client.channelo ) {
-                if( client.channelo[key].info['namespace'][0] != '~' )
+                if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);
             }
         }

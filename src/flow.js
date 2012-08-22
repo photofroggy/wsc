@@ -124,7 +124,7 @@ wsc.Flow.prototype.login = function( event, client ) {
             client.join(client.settings["autojoin"]);
         else {
             for( key in client.channelo ) {
-                if( client.channelo[key].info['namespace'][0] != '~' )
+                if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);
             }
         }
