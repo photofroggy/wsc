@@ -73,13 +73,116 @@ wsc.Client = function( view, options, mozilla ) {
 
 };
 
-wsc.Client.prototype.build = function(  ) {};
-wsc.Client.prototype.resize = function(  ) {};
-wsc.Client.prototype.loop = function(  ) {};
+/**
+ * Build the client interface and hook up any required event handlers for the
+ * interface. In particular, event handlers are hooked for switching and
+ * closing channel tabs.
+ * 
+ * @method build
+ */
+wsc.Client.prototype.build = function(  ) {
 
-wsc.Client.prototype.add_extension = function( extension ) {};
-wsc.Client.prototype.bind = function( event, handler ) {};
-wsc.Client.prototype.clear_listeners = function(  ) {};
+    this.ui.build();
+    this.control = this.settings.control( this );
+    var client = this;
+    
+    this.ui.on( 'channel.selected', function( event, ui ) {
+        client.cchannel = client.channel(event.ns);
+        client.control.cache_input(event);
+    } );
+    
+    this.ui.on('tab.close.clicked', function( event, ui ) {
+        if( event.chan.monitor )
+            return;
+        client.part(event.namespace);
+    } );
+
+};
+
+/**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+wsc.Client.prototype.loop = function(  ) {
+
+    for( key in this.channelo ) {
+        c = this.channelo[key];
+        msgs = c.ui.logpanel.find( '.logmsg' );
+        
+        if( msgs.length < 200 )
+            continue;
+        
+        while( msgs.length > 200 ) {
+            msgs.slice(0, 10).remove();
+            msgs = c.ui.logpanel.find( '.logmsg' );
+        }
+        
+        c.ui.resize();
+    }
+
+};
+
+/**
+ * Add an extension to the client.
+ * 
+ * @method add_extension
+ * @param extension {Method} Extension constructor. Not called with `new`.
+ */
+wsc.Client.prototype.add_extension = function( extension ) {
+
+    if( container === undefined )
+        return;
+    this.settings['extend'].push( extension );
+    extension( this );
+
+};
+
+/**
+ * Bind a method to an event.
+ * 
+ * @method bind
+ * @param event {String} Name of the event to listen for.
+ * @param handler {Method} Method to call when the given event is triggered.
+ */
+wsc.Client.prototype.bind = function( event, handler ) {
+
+    this.events.addListener(event, handler);
+    
+    if( event.indexOf('cmd.') != 0 || event.length <= 4 )
+        return;
+    
+    cmd = event.slice(4).toLowerCase();
+    this.cmds.push(cmd);
+
+};
+
+/**
+ * Clear event listeners for a given event.
+ *
+ * @method clear_listeners
+ * @param event {String} Event to clear listeners for.
+ */
+wsc.Client.prototype.clear_listeners = function( event ) {
+
+    this.events.removeListeners(event);
+
+};
+
+/**
+ * Trigger an event.
+ * 
+ * @method trigger
+ * @param event {String} Name of the event to trigger.
+ * @param data {Object} Event data.
+ */
+wsc.Client.prototype.trigger = function( event, data ) {
+
+    this.events.emit( event, data, this );
+
+};
 
 wsc.Client.prototype.connect = function(  ) {};
 wsc.Client.prototype.close = function(  ) {};
@@ -113,6 +216,7 @@ wsc.Client.prototype.unban = function( namespae, user ) {};
 wsc.Client.prototype.kick = function( namespace, user, reason ) {};
 wsc.Client.prototype.kill = function( namespace, user, reason ) {};
 wsc.Client.prototype.admin = function( namespace, command ) {};
+wsc.Client.prototype.whois = function( user ) {};
 wsc.Client.prototype.disconnect = function(  ) {};
 
 /*
