@@ -33,12 +33,12 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
+        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "tablumps": wsc.Tablumps,
         "flow": wsc.Flow,
         "ui": Chatterbox.UI,
         "extend": [wsc_extdefault],
-        "control": wsc_control,
         "client": 'chatclient',
         "clientver": '0.3',
         "theme": 'wsct_default',
@@ -83,7 +83,7 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = this.settings.control( this );
+    this.control = new this.settings.control( this );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
