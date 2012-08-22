@@ -38,11 +38,11 @@ wsc.Client = function( view, options, mozilla ) {
         "tablumps": wsc.Tablumps,
         "flow": wsc.Flow,
         "ui": Chatterbox.UI,
-        "extend": [wsc_extdefault],
+        "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
-        "theme": 'wsct_default',
-        "themes": [ 'wsct_default', 'wsct_test' ],
+        "theme": wsc.defaults.theme,
+        "themes": wsc.defaults.themes,
     };
     
     view.extend( this.settings, options );

@@ -1,10 +1,6 @@
-/**
- * @constructor wsc_extdefault
- * Create our extension and return it.
- * @param [Object] client A reference to a {wsc_client.client wsc client object}.
- * @return [Object] An initialised {wsc_extdefault.extension default extension object}.
- */
-function wsc_extdefault( client ) {
+
+
+wsc.defaults.Extension = function( client ) {
 
     /**
      * @object extension
@@ -176,4 +172,4 @@ function wsc_extdefault( client ) {
     extension.init(client);
     return extension;
 
-}
+};

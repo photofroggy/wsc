@@ -4,9 +4,11 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.7.38';
+wsc.VERSION = '0.7.39';
 wsc.STATE = 'beta';
-
+wsc.defaults = {};
+wsc.defaults.theme = 'wsct_default';
+wsc.defaults.themes = [ 'wsct_default', 'wsct_test' ];
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
@@ -2085,13 +2087,9 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 };
 
 
-/**
- * @constructor wsc_extdefault
- * Create our extension and return it.
- * @param [Object] client A reference to a {wsc_client.client wsc client object}.
- * @return [Object] An initialised {wsc_extdefault.extension default extension object}.
- */
-function wsc_extdefault( client ) {
+
+
+wsc.defaults.Extension = function( client ) {
 
     /**
      * @object extension
@@ -2263,7 +2261,7 @@ function wsc_extdefault( client ) {
     extension.init(client);
     return extension;
 
-}
+};
 /**
  * Chat client.
  *
@@ -2304,11 +2302,11 @@ wsc.Client = function( view, options, mozilla ) {
         "tablumps": wsc.Tablumps,
         "flow": wsc.Flow,
         "ui": Chatterbox.UI,
-        "extend": [wsc_extdefault],
+        "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
-        "theme": 'wsct_default',
-        "themes": [ 'wsct_default', 'wsct_test' ],
+        "theme": wsc.defaults.theme,
+        "themes": wsc.defaults.themes,
     };
     
     view.extend( this.settings, options );
