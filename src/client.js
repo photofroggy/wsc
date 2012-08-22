@@ -46,7 +46,6 @@ wsc.Client = function( view, options, mozilla ) {
     view.extend( this.settings, options );
     this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
     
-    //view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,
         'theme': this.settings.theme,
@@ -131,8 +130,6 @@ wsc.Client.prototype.loop = function(  ) {
  */
 wsc.Client.prototype.add_extension = function( extension ) {
 
-    if( container === undefined )
-        return;
     this.settings['extend'].push( extension );
     extension( this );
 
@@ -618,6 +615,21 @@ wsc.Client.prototype.admin = function( namespace, command ) {
 wsc.Client.prototype.property = function( namespace, property ) {
 
     this.send(wsc_packetstr('get', this.format_ns(namespace), { 'p': property }));
+
+};
+
+/**
+ * Set a channel property.
+ * 
+ * @method set
+ * @param namespace {String} Namespace of the channel to set a property for.
+ * @param property {String} Name of the property to set. Should be 'title' or
+ *   'topic'.
+ * @param value {String} Value to set the property to.
+ */
+wsc.Client.prototype.set = function( namespace, property ) {
+
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
 
 };
 

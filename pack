@@ -3,7 +3,8 @@ echo ">> Cleaning ./dist..."
 rm -f dist/*.*
 echo ">> Combining javascript files..."
 cat src/ui/*.js > src/ui.js
-cat src/base.js src/events.js src/transport.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/flow.js src/commands.js src/client.js src/control.js src/ui.js src/wsc.js > dist/wsc.js
+cat src/dAmn/*.js > src/dAmn.js
+cat src/base.js src/events.js src/transport.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/flow.js src/commands.js src/client.js src/control.js src/ui.js src/dAmn.js src/wsc.js > dist/wsc.js
 rm -f src/ui.js
 echo ">> Compressing javascript source..."
 java -jar /usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar -o dist/wsc.min.js dist/wsc.js

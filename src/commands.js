@@ -32,9 +32,6 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.say', this.say.bind(extension) );
             this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
             this.client.bind('cmd.clear', this.clear.bind(extension) );
-            // userlistings
-            //this.client.bind('set.userlist', this.setUsers.bind(extension) );
-            this.client.ui.on('userinfo.before', this.userinfo.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
         },
@@ -114,7 +111,7 @@ wsc.defaults.Extension = function( client ) {
         
         // Set the title
         title: function( e ) {
-            extension.client.title(e.target, e.args);
+            extension.client.set(e.target, 'title', e.args);
         },
         
         // Promote user
@@ -155,17 +152,6 @@ wsc.defaults.Extension = function( client ) {
         clear: function( e ) {
             this.client.cchannel.logpanel.find('p.logmsg').remove();
             this.client.cchannel.resize();
-        },
-        
-        // Set users, right?
-        userinfo: function( event, ui ) {
-            event.user.avatar = dAmn_avatar(event.user.name, event.user.member.usericon);
-            
-            if( event.user.member.realname )
-                event.user.info.push(event.user.member.realname);
-            
-            if( event.user.member.typename )
-                event.user.info.push(event.user.member.typename);
         },
     };
     
