@@ -224,13 +224,133 @@ wsc.Client.prototype.close = function(  ) {
 
 };
 
-wsc.Client.prototype.channel = function( namespace ) {};
-wsc.Client.prototype.channels = function(  ) {};
-wsc.Client.prototype.deform_ns = function( namespace ) {};
-wsc.Client.prototype.format_ns = function( namespace ) {};
-wsc.Client.prototype.create_ns = function( namespace, hidden ) {};
-wsc.Client.prototype.remove_ns = function( namespace ) {};
-wsc.Client.prototype.close_ns = function( namespace ) {};
+/**
+ * Get or set the channel object associated with the given namespace.
+ * 
+ * @method channel
+ * @param namespace {String} Channel namespace to get or set.
+ * @param [channel] {Object} Channel object to use for the given namespace.
+ * @return {Object} Channel object associated with the given namespace.
+ */
+wsc.Client.prototype.channel = function( namespace, channel ) {
+
+    namespace = this.deform_ns(namespace).slice(1).toLowerCase();
+    
+    if( !this.channelo[namespace] && channel )
+        this.channelo[namespace] = channel;
+    
+    return this.channelo[namespace];
+
+};
+
+/**
+ * Get a count of the number of channels the client has open.
+ * Channels with their tabs hidden are not counted.
+ * 
+ * @method channels
+ * @return {Integer} Number of channels open.
+ */
+wsc.Client.prototype.channels = function(  ) {
+
+    chans = -1;
+    for(ns in this.channelo) {
+        if( this.channelo[ns].hidden )
+            continue;
+        chans++;
+    }
+    return chans;
+
+};
+
+/**
+ * Deform a channel namespace to its shorthand form.
+ * 
+ * @method deform_ns
+ * @param namespace {String} Namespace to deform.
+ * @return {String} Shorthand channel namespace.
+ */
+wsc.Client.prototype.deform_ns = function( namespace ) {
+
+    if(namespace.indexOf("chat:") == 0)
+        return '#' + namespace.slice(5);
+    
+    if(namespace.indexOf("server:") == 0)
+        return '~' + namespace.slice(7);
+    
+    if(namespace.indexOf("pchat:") == 0) {
+        var names = namespace.split(":");
+        names.shift();
+        for(i in names) {
+            name = names[i];
+            if(name.toLowerCase() != this.lun) {
+                return '@' + name;
+            }
+        }
+    }
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if(namespace[0] != '#' && namespace[0] != '@' && namespace[0] != '~')
+        return '#' + namespace;
+    
+    return namespace;
+
+};
+
+/**
+ * Format a channel namespace in its longhand form.
+ * 
+ * @method format_ns
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} Formatted namespace.
+ */
+wsc.Client.prototype.format_ns = function( namespace ) {
+
+    if(ns.indexOf('#') == 0) {
+        return 'chat:' + ns.slice(1);
+    }
+    if(ns.indexOf('@') == 0) {
+        var names = [ns.slice(1), this.lun];
+        names.sort(caseInsensitiveSort)
+        names.unshift("pchat");
+        return names.join(':');
+    }
+    if(ns.indexOf('~') == 0) {
+        return "server:" + ns.slice(1);
+    }
+    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
+        return 'chat:' + ns;
+    
+    return ns;
+
+};
+
+/**
+ * Create a channel object for the client.
+ * 
+ * @method create_ns
+ * @param namespace {String} Namespace to use for the channel.
+ * @param hidden {Boolean} Should the channel tab be hidden?
+ */
+wsc.Client.prototype.create_ns = function( namespace, hidden ) {
+
+    chan = this.channel(ns, new wsc.Channel(this, ns, hidden));
+    chan.build();
+
+};
+
+/**
+ * Remove a channel object from the client.
+ * 
+ * @method remove_ns
+ * @param namespace {String} Namespace of the channel to remove.
+ */
+wsc.Client.prototype.remove_ns = function( namespace ) {
+
+    this.ui.remove_channel(namespace);
+
+};
 
 wsc.Client.prototype.log = function( namespace, data ) {};
 wsc.Client.prototype.monitor = function( message ) {};
