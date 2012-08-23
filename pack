@@ -1,6 +1,7 @@
 #!/bin/bash
 echo ">> Cleaning ./dist..."
-rm -f dist/*.*
+rm -f dist/*.js
+rm -f dist/*.css
 echo ">> Combining javascript files..."
 cat src/ui/*.js > src/ui.js
 cat src/dAmn/*.js > src/dAmn.js

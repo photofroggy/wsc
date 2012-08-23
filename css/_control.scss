@@ -9,13 +9,19 @@
         
         p {
             margin: 0px;
-            padding: 0px;
-            padding-left: 5px;
+            padding: 2px;
+            padding-left: 7px;
+            a.button {
+                font-size: 16px;
+                line-height: .9em;
+                padding: 4px;
+            }
         }
         
         form.msg {
             clear: both;
             padding: 7px;
+            padding-top: 2px;
             margin: 0px;
             margin-bottom: 5px;
             width: 100%;
@@ -53,15 +59,16 @@
     
     a.close {
     background: none;
-    height: 15px;
-    width: 17px;
+    height: 16px;
+    width: 16px;
     background-color: black;
     color: white;
     text-align: center;
-    line-height: 1.3em;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    font-size: 10px;
+    line-height: 1em;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    padding: 1px;
     -webkit-box-shadow: 0px 1px 1px black;
     -moz-box-shadow: 0px 1px 1px black;
     box-shadow: 0px 1px 1px black;

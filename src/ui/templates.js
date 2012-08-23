@@ -38,8 +38,9 @@ Chatterbox.render = function( template, fill ) {
  */
 Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <ul id="tabnav">\
-            <li><a href="#left" class="button">&laquo;</a></li>\
-            <li><a href="#right" class="button">&raquo;</a></li>\
+            <li><a href="#left" class="button iconic arrow_left"></a></li>\
+            <li><a href="#right" class="button iconic arrow_right"></a></li>\
+            <li><a href="#settings" title="Change client settings" class="button iconic cog"></a></li>\
         </ul>\
         </nav>\
         <div class="chatbook"></div>';
@@ -51,6 +52,7 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
+            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <input type="submit" value="Send" class="sendmsg" />\
@@ -63,7 +65,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
  * @property tab
  * @type String
  */
-Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="close">x</a></li>';
+Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
 
 /**
  * HTML template for a channel view.

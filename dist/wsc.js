@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.7.40';
+wsc.VERSION = '0.7.41';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -3284,7 +3284,8 @@ Chatterbox.UI.prototype.resize = function() {
 
     this.control.resize();
     this.view.height( this.view.parent().height() );
-    this.view.width( '100%' );
+    //this.view.width( '100%' );
+    this.nav.resize(  );
     this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
 
 };
@@ -4225,7 +4226,18 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.manager.view.find('#chattabs');
+    this.tabs = this.nav.find('#chattabs');
+    this.buttons = this.nav.find('#tabnav');
+    this.tableft = this.buttons.find('.arrow_left');
+    this.tabright = this.buttons.find('.arrow_right');
+    this.settings = this.buttons.find('.cog');
+    console.log(this.settings);
+    var gui = ui;
+    this.settings.click(
+        function( event ) {
+            ui.view.append('<div class="floater"><div class="inner"><h2>Settings<a href="#close" title="Close chat settings" class="close iconic x"></a></h2><p>Just seeing what I can do.</p></div></div>');
+        }
+    );
 
 };
 
@@ -4250,6 +4262,17 @@ Chatterbox.Navigation.prototype.height = function(  ) {
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
     this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
     return this.tabs.find('#' + selector + '-tab');
+};
+
+/**
+ * Resize the tab bar.
+ * 
+ * @method resize
+ */
+Chatterbox.Navigation.prototype.resize = function(  ) {
+
+    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+
 };
 /**
  * Container object for HTML5 templates for the chat UI.
@@ -4291,8 +4314,9 @@ Chatterbox.render = function( template, fill ) {
  */
 Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <ul id="tabnav">\
-            <li><a href="#left" class="button">&laquo;</a></li>\
-            <li><a href="#right" class="button">&raquo;</a></li>\
+            <li><a href="#left" class="button iconic arrow_left"></a></li>\
+            <li><a href="#right" class="button iconic arrow_right"></a></li>\
+            <li><a href="#settings" title="Change client settings" class="button iconic cog"></a></li>\
         </ul>\
         </nav>\
         <div class="chatbook"></div>';
@@ -4304,6 +4328,7 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
+            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <input type="submit" value="Send" class="sendmsg" />\
@@ -4316,7 +4341,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
  * @property tab
  * @type String
  */
-Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}</a><a href="#{selector}" class="close">x</a></li>';
+Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
 
 /**
  * HTML template for a channel view.

@@ -9,7 +9,18 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.manager.view.find('#chattabs');
+    this.tabs = this.nav.find('#chattabs');
+    this.buttons = this.nav.find('#tabnav');
+    this.tableft = this.buttons.find('.arrow_left');
+    this.tabright = this.buttons.find('.arrow_right');
+    this.settings = this.buttons.find('.cog');
+    console.log(this.settings);
+    var gui = ui;
+    this.settings.click(
+        function( event ) {
+            ui.view.append('<div class="floater"><div class="inner"><h2>Settings<a href="#close" title="Close chat settings" class="close iconic x"></a></h2><p>Just seeing what I can do.</p></div></div>');
+        }
+    );
 
 };
 
@@ -34,4 +45,15 @@ Chatterbox.Navigation.prototype.height = function(  ) {
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
     this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
     return this.tabs.find('#' + selector + '-tab');
+};
+
+/**
+ * Resize the tab bar.
+ * 
+ * @method resize
+ */
+Chatterbox.Navigation.prototype.resize = function(  ) {
+
+    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+
 };
