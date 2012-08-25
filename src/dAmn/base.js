@@ -4,6 +4,8 @@
  * @module wsc.dAmn
  */
 wsc.dAmn = {};
+wsc.dAmn.VERSION = '0.1.1';
+wsc.dAmn.STATE = 'alpha';
 
 /*
  * This function returns a map which can be used by the tablumps parser to parse

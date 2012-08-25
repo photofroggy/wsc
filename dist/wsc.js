@@ -1382,8 +1382,9 @@ wsc.Protocol = function( tablumps ) {
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
         'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
         'property': ['<span class="servermsg">** Got {p} for {ns} *</span>', true],
-        'recv_msg': ['<span class="cmsg user"><strong>&lt;{user}&gt;</strong></span><span class="cmsg">{message}</span>'],
-        'recv_action': ['<span class="caction user"><em>* {user}</em></span><span class="caction">{message}</span>'],
+        'recv_msg': ['<span class="cmsg user u-{user}"><strong>&lt;{user}&gt;</strong></span><span class="cmsg u-{user}">{message}</span>'],
+        'recv_npmsg': ['<span class="cmsg user u-{user}"><strong>&lt;{user}&gt;</strong></span><span class="cmsg u-{user}">{message}</span>'],
+        'recv_action': ['<span class="caction user u-{user}"><em>* {user}</em></span><span class="caction u-{user}">{message}</span>'],
         'recv_join': ['<span class="cevent bg">** {user} has joined *</span>'],
         'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
         'recv_privchg': ['<span class="cevent">** {user} has been made a member of {pc} by {by} *</span>'],
@@ -1809,14 +1810,14 @@ wsc.Flow.prototype.part = function( event, client ) {
     
     if(event.e == "ok") {
         info = '';
-        if( event.r )
+        if( event.r.length > 0 )
             info = '[' + event.r + ']';
         
         msg = 'You have left ' + ns;
         c.server_message(msg, info);
         
         if( info == '' )
-            client.remove_channel(ns);
+            client.remove_ns(ns);
         
         if( client.channels() == 0 ) {
             switch( event.r ) {
@@ -1991,6 +1992,7 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.clear', this.clear.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
+            // some ui business.
         },
         
         theme: function( e, client) {
@@ -3637,8 +3639,13 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( msg ) {
     var ts = new Date().toTimeString().slice(0, 8);
+    data = {
+        'ts': ts,
+        'message': msg};
+    this.manager.trigger( 'log_item.before', data );
     // Add content.
-    this.wrap.append(Chatterbox.render('logitem', {'ts': ts, 'message': msg}));
+    this.wrap.append(Chatterbox.render('logitem', {'ts': data.ts, 'message': data.message}));
+    this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
     // Scrollio
     this.scroll();
     this.noise();
@@ -3823,6 +3830,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
             chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
             pos = link.offset();
             box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+            box.find('.info').height(box.height());
             
             box.hover(
                 function(){ box.data('hover', 1); },
@@ -4231,13 +4239,6 @@ Chatterbox.Navigation = function( ui ) {
     this.tableft = this.buttons.find('.arrow_left');
     this.tabright = this.buttons.find('.arrow_right');
     this.settings = this.buttons.find('.cog');
-    console.log(this.settings);
-    var gui = ui;
-    this.settings.click(
-        function( event ) {
-            ui.view.append('<div class="floater"><div class="inner"><h2>Settings<a href="#close" title="Close chat settings" class="close iconic x"></a></h2><p>Just seeing what I can do.</p></div></div>');
-        }
-    );
 
 };
 
@@ -4424,6 +4425,8 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
  * @module wsc.dAmn
  */
 wsc.dAmn = {};
+wsc.dAmn.VERSION = '0.1.1';
+wsc.dAmn.STATE = 'alpha';
 
 /*
  * This function returns a map which can be used by the tablumps parser to parse
@@ -4517,7 +4520,9 @@ wsc.dAmn.Tablumps = function(  ) {
 wsc.dAmn.Extension = function( client ) {
 
     client.settings.client = 'dAmnClient';
+    client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
+    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
@@ -4540,6 +4545,15 @@ wsc.dAmn.Extension = function( client ) {
         if( event.user.member.typename )
             event.user.info.push(event.user.member.typename);
     });
+    
+    client.ui.on('log_item.after',
+        function( event, ui ) {
+            userbox = event.item.find('span.u-photofroggy');
+            if( userbox.length == 0 )
+                return;
+            userbox.first().css('color', 'red');
+        }
+    );
 
 };
 

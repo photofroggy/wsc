@@ -14,13 +14,6 @@ Chatterbox.Navigation = function( ui ) {
     this.tableft = this.buttons.find('.arrow_left');
     this.tabright = this.buttons.find('.arrow_right');
     this.settings = this.buttons.find('.cog');
-    console.log(this.settings);
-    var gui = ui;
-    this.settings.click(
-        function( event ) {
-            ui.view.append('<div class="floater"><div class="inner"><h2>Settings<a href="#close" title="Close chat settings" class="close iconic x"></a></h2><p>Just seeing what I can do.</p></div></div>');
-        }
-    );
 
 };
 

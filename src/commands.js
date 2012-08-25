@@ -34,6 +34,7 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.clear', this.clear.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
+            // some ui business.
         },
         
         theme: function( e, client) {

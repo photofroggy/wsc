@@ -2,7 +2,9 @@
 wsc.dAmn.Extension = function( client ) {
 
     client.settings.client = 'dAmnClient';
+    client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
+    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
@@ -25,5 +27,14 @@ wsc.dAmn.Extension = function( client ) {
         if( event.user.member.typename )
             event.user.info.push(event.user.member.typename);
     });
+    
+    client.ui.on('log_item.after',
+        function( event, ui ) {
+            userbox = event.item.find('span.u-photofroggy');
+            if( userbox.length == 0 )
+                return;
+            userbox.first().css('color', 'red');
+        }
+    );
 
 };

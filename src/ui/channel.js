@@ -206,8 +206,13 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( msg ) {
     var ts = new Date().toTimeString().slice(0, 8);
+    data = {
+        'ts': ts,
+        'message': msg};
+    this.manager.trigger( 'log_item.before', data );
     // Add content.
-    this.wrap.append(Chatterbox.render('logitem', {'ts': ts, 'message': msg}));
+    this.wrap.append(Chatterbox.render('logitem', {'ts': data.ts, 'message': data.message}));
+    this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
     // Scrollio
     this.scroll();
     this.noise();
@@ -392,6 +397,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
             chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
             pos = link.offset();
             box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+            box.find('.info').height(box.height());
             
             box.hover(
                 function(){ box.data('hover', 1); },
