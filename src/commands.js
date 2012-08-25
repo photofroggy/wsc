@@ -40,10 +40,7 @@ wsc.defaults.Extension = function( client ) {
         theme: function( e, client) {
             theme = client.settings.theme;
             select = e.args.split(' ').shift();
-            if( client.default_themes.indexOf(select) == -1 || theme == select)
-                return;
-            client.view.removeClass( theme ).addClass( select );
-            client.settings.theme = select;
+            client.ui.theme(select);
         },
         
         /**
