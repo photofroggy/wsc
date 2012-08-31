@@ -440,10 +440,10 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         && y < eb)
         return;
     
-    if( x < (er + 10)
+    if( x < (er + 15)
         && x > o.left
         && y > o.top
-        && y < (o.top + 10) )
+        && y < (o.top + 15) )
         return;
     
     box.remove();

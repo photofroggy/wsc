@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.7.42';
+wsc.VERSION = '0.7.43';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -3870,10 +3870,10 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         && y < eb)
         return;
     
-    if( x < (er + 10)
+    if( x < (er + 15)
         && x > o.left
         && y > o.top
-        && y < (o.top + 10) )
+        && y < (o.top + 15) )
         return;
     
     box.remove();

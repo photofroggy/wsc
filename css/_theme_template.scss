@@ -28,14 +28,14 @@
     $bgi: #D3EDFF,
     $bgsl: #298FD3,
     $bgbg: #406D8B,
-    $hbgs: top,
-    $hbgi: #D3EDFF,
-    $hbgsl: #1C78B6,
-    $hbgbg: #1B4968,
     $abgs: top,
     $abgi: #D3EDFF,
-    $abgsl: #55A5DB,
-    $abgbg: #406D8B,
+    $abgsl: #1C78B6,
+    $abgbg: #1B4968,
+    $hbgs: top,
+    $hbgi: #FFD3D3,
+    $hbgsl: #B61C1C,
+    $hbgbg: #681B1B,
     $close: #FFF6E4,
     $closeh: #FFF6E4,
     $close-shadow: #311604,
@@ -77,14 +77,21 @@
     a.button,
     form.msg input[type="submit"] {
         @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
-        background-color: $chrome;
-        border-color: $base;
+        background-color: $bgbg;
+        border-color: $bgbg;
         color: $button;
         text-shadow: 0px -1px $button-shadow;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
-            background-color: $chrome-shadow;
-            border-color: $base;
+            background-color: $hbgbg;
+            border-color: $hbgbg;
+            color: $buttonh;
+            text-shadow: 0px -1px $buttonh-shadow;
+        }
+        &:active {
+            @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
+            background-color: $abgbg;
+            border-color: $abgbg;
             color: $buttonh;
             text-shadow: 0px -1px $buttonh-shadow;
         }
