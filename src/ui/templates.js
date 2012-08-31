@@ -15,10 +15,15 @@ Chatterbox.template = {};
  */
 Chatterbox.render = function( template, fill ) {
 
-    if( !Chatterbox.template.hasOwnProperty(template) )
-        return '';
+    html = Chatterbox.template;
+    tparts = template.split('.');
     
-    html = Chatterbox.template[template];
+    for( ind in tparts ) {
+        part = tparts[ind];
+        if( !html.hasOwnProperty( part ) )
+            return '';
+        html = html[part];
+    }
     
     for( key in fill ) {
         if( !fill.hasOwnProperty(key) )
@@ -142,3 +147,33 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             </strong>\
                             <ul>{info}</ul></div>\
                         </div>';
+
+/**
+ * Container for popup shit.
+ * 
+ * @property popup
+ * @type String
+ */
+Chatterbox.template.popup = '<div class="floater"><div class="inner">{content}</div></div>;
+
+/**
+ * Settings stuff.
+ *
+ * @class settings
+ */
+Chatterbox.template.settings = {};
+
+Chatterbox.template.settings.main = '<h2>Settings<a href="#closesettings" class="close iconic x"></a></h2>\
+                            <nav class="tabs">\
+                                <ul>{tabs}</ul>\
+                            </nav>\
+                            <div class="book">\
+                                {pages}\
+                            </div>';
+
+
+Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
+                                {content}\
+                            </div>';
+
+Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{label}</a></li>';
