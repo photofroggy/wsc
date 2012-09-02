@@ -2229,11 +2229,7 @@ wsc.Client.prototype.loop = function(  ) {
         if( msgs.length < 200 )
             continue;
         
-        while( msgs.length > 200 ) {
-            msgs.slice(0, 10).remove();
-            msgs = c.ui.logpanel.find( '.logmsg' );
-        }
-        
+        msgs.slice(0, msgs.length - 200).remove();
         c.ui.resize();
     }
 
