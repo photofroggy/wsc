@@ -4542,15 +4542,6 @@ wsc.dAmn.Extension = function( client ) {
         if( event.user.member.typename )
             event.user.info.push(event.user.member.typename);
     });
-    
-    client.ui.on('log_item.after',
-        function( event, ui ) {
-            userbox = event.item.find('span.u-photofroggy');
-            if( userbox.length == 0 )
-                return;
-            userbox.first().css('color', 'red');
-        }
-    );
 
 };
 
