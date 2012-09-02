@@ -169,14 +169,14 @@ wsc.Flow.prototype.part = function( event, client ) {
     
     if(event.e == "ok") {
         info = '';
+        
         if( event.r.length > 0 )
             info = '[' + event.r + ']';
+        else
+            client.remove_ns(ns);
         
         msg = 'You have left ' + ns;
         c.server_message(msg, info);
-        
-        if( info == '' )
-            client.remove_ns(ns);
         
         if( client.channels() == 0 ) {
             switch( event.r ) {
