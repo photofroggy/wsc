@@ -245,7 +245,7 @@ wsc.WebSocket.prototype.close = function(  ) {
  * @param [disconnect=wsc.SocketIO.sdisconnect] {Method} The method to be
  *   called when the connection has been closed.
  */
-wsc.SocketIO = function( open, message, disconnect ) {
+wsc.SocketIO = function( server, open, message, disconnect ) {
 
     this.sock = null;
     this.conn = null;
@@ -269,7 +269,7 @@ wsc.SocketIO.prototype.connect = function(  ) {
     var tr = this;
     this.conn = io.connect( this.server );
     this.conn.on('connect', function(event, sock) { tr.onopen( event, sock ) });
-    this.conn.on('message', this._message);
+    this.conn.on('message', function( message ) { tr._message( { 'data': message } ) } );
     this.conn.on('close', function(event) { tr.ondisconnect( event ); });
 
 };

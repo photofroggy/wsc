@@ -198,6 +198,7 @@ wsc.Client.prototype.connect = function(  ) {
         this.conn.connect();
         this.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
     } catch(err) {
+        console.log(err);
         this.monitor("Your browser does not support WebSockets. Sorry.");
         this.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
     }
