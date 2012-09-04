@@ -197,7 +197,7 @@ wsc.WebSocket.prototype.connect = function(  ) {
     var tr = this;
     this.conn = new WebSocket( this.server );
     this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };
-    this.conn.onmessage = function(event) { tr._message( event ); };
+    this.conn.onmessage = this._message;
     this.conn.onclose = function(event) { tr.ondisconnect( event ); };
 
 };
@@ -269,7 +269,7 @@ wsc.SocketIO.prototype.connect = function(  ) {
     var tr = this;
     this.conn = io.connect( this.server );
     this.conn.on('connect', function(event, sock) { tr.onopen( event, sock ) });
-    this.conn.on('message', function(event) { tr._message( event ); });
+    this.conn.on('message', this._message);
     this.conn.on('close', function(event) { tr.ondisconnect( event ); });
 
 };
@@ -315,7 +315,7 @@ wsc.SocketIO.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.emit('message', message);
+    return this.sock.send(message);
 
 };
 
