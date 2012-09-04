@@ -22,7 +22,7 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
-    
+    console.log(event);
     if(client.connected) {
         client.ui.server_message("Connection closed");
         client.connected = false;
