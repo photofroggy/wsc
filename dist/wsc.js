@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.46';
+wsc.VERSION = '0.8.47';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -1767,7 +1767,6 @@ wsc.Flow.prototype.close = function( client, event ) {
     
     setTimeout(function () {
         client.conn.connect();
-        client.ui.server_message('Opening connection');
     }, 2000);
 
 }; 
@@ -2397,6 +2396,7 @@ wsc.Client.prototype.connect = function(  ) {
         this.conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
         this.conn.message(function( evt ) { client.flow.message( client, evt ); });
         this.conn.connect();
+        this.ui.server_message('Opening connection');
         this.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
     } catch(err) {
         console.log(err);

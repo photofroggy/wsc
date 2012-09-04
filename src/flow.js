@@ -42,7 +42,6 @@ wsc.Flow.prototype.close = function( client, event ) {
     
     setTimeout(function () {
         client.conn.connect();
-        client.ui.server_message('Opening connection');
     }, 2000);
 
 }; 
