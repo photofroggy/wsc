@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.7.44';
+wsc.VERSION = '0.8.45';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -261,7 +261,7 @@ wsc.WebSocket.prototype.connect = function(  ) {
     var tr = this;
     this.conn = new WebSocket( this.server );
     this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };
-    this.conn.onmessage = function(event) { tr._message( event ); };
+    this.conn.onmessage = this._message;
     this.conn.onclose = function(event) { tr.ondisconnect( event ); };
 
 };
@@ -309,9 +309,93 @@ wsc.WebSocket.prototype.close = function(  ) {
  * @param [disconnect=wsc.SocketIO.sdisconnect] {Method} The method to be
  *   called when the connection has been closed.
  */
-wsc.SocketIO = function(  ) {};
+wsc.SocketIO = function( open, message, disconnect ) {
+
+    this.sock = null;
+    this.conn = null;
+    this.server = server;
+    this.open( open );
+    this.message( message );
+    this.disconnect( disconnect );
+
+};
+
 wsc.SocketIO.prototype = new wsc.Transport('');
 wsc.SocketIO.prototype.constructor = wsc.SocketIO;
+
+/**
+ * Connect to the server.
+ * 
+ * @method connect
+ */
+wsc.SocketIO.prototype.connect = function(  ) {
+
+    var tr = this;
+    this.conn = io.connect( this.server );
+    this.conn.on('connect', function(event, sock) { tr.onopen( event, sock ) });
+    this.conn.on('message', this._message);
+    this.conn.on('close', function(event) { tr.ondisconnect( event ); });
+
+};
+
+/**
+ * Called when the connection is opened.
+ * Sets the `sock` attribute.
+ * 
+ * @method onopen
+ * @param event {Object} SocketIO event object.
+ * @param sock {Object} Transport object.
+ */
+wsc.SocketIO.prototype.onopen = function( event, sock ) {
+
+    this.sock = sock || this.conn;
+    this._open( event, this );
+
+};
+
+/**
+ * Called when the connection is closed.
+ * Resets `sock` and `conn` to null.
+ * 
+ * @method ondisconnect
+ * @param event {Object} SocketIO event object.
+ */
+wsc.SocketIO.prototype.ondisconnect = function( event ) {
+
+    this.sock = null;
+    this.conn = null;
+    this._disconnect( event );
+
+};
+
+/**
+ * Send a message to the server.
+ * 
+ * @method send
+ * @param message {String} message to send to the server.
+ */
+wsc.SocketIO.prototype.send = function( message ) {
+
+    if( this.sock == null )
+        return -1;
+    
+    return this.sock.send(message);
+
+};
+
+/**
+ * Close the connection.
+ * 
+ * @method close
+ */
+wsc.SocketIO.prototype.close = function(  ) {
+
+    if( this.sock == null )
+        return;
+    
+    this.sock.close();
+
+};
 
 
 
