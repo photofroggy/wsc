@@ -37,6 +37,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
+    this.swidth = getscrollbarWidth();
     
 };
 
@@ -486,8 +487,16 @@ Chatterbox.Channel.prototype.resize = function( ) {
     topic = this.window.find('header div.topic');
     
     // Log width.
-    if( cu.css('display') != 'none')
+    if( cu.css('display') != 'none') {
+        cu.width(1);
+        userwidth = cu[0].scrollWidth + this.manager.swidth + 10;
+        max = parseInt(cu.css('max-width').slice(0,-2));
+        if( userwidth > max ) {
+            userwidth = max;
+        }
+        cu.width(userwidth);
         cw = cw - cu.outerWidth();
+    }
     
     if( title.css('display') == 'block' )
         wh = wh - title.outerHeight(true);

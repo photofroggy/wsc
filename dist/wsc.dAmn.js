@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.47';
+wsc.VERSION = '0.8.48';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -559,6 +559,25 @@ Object.extend = function( a, b ) {
     Object.steal(obj, b);
     return obj;
 };
+
+function getscrollbarWidth() { 
+    if ( $.browser.msie ) {
+        var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
+                .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body'),
+            $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>')
+                .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
+        scrollbarWidth = $textarea1.width() - $textarea2.width();
+        $textarea1.add($textarea2).remove();
+    } else {
+        var $div = $('<div />')
+            .css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: -1000 })
+            .prependTo('body').append('<div />').find('div')
+                .css({ width: '100%', height: 200 });
+        scrollbarWidth = 100 - $div.width();
+        $div.parent().remove();
+    }
+    return scrollbarWidth;
+}
 /* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
@@ -3228,6 +3247,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
+    this.swidth = getscrollbarWidth();
     
 };
 
@@ -3677,8 +3697,16 @@ Chatterbox.Channel.prototype.resize = function( ) {
     topic = this.window.find('header div.topic');
     
     // Log width.
-    if( cu.css('display') != 'none')
+    if( cu.css('display') != 'none') {
+        cu.width(1);
+        userwidth = cu[0].scrollWidth + this.manager.swidth + 10;
+        max = parseInt(cu.css('max-width').slice(0,-2));
+        if( userwidth > max ) {
+            userwidth = max;
+        }
+        cu.width(userwidth);
         cw = cw - cu.outerWidth();
+    }
     
     if( title.css('display') == 'block' )
         wh = wh - title.outerHeight(true);
