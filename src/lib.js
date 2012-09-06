@@ -70,33 +70,6 @@ function caseInsensitiveSort( a, b ) {
     return ( ( a > b ) ? 1 : ( a < b ? -1 : 0 ) );
 }
 
-function CanCreateWebsocket() {
-    if(window["WebSocket"]) {
-        return true
-    }
-    return false
-}
-
-// TODO: use fallbacks?
-function CreateWebSocket(url, onclose, onmessage, onopen) {
-    if(!CanCreateWebsocket()) {
-        throw "This browser does not support websockets.";
-    }
-    var sock = null;
-    if( typeof io === 'undefined' ) {
-        sock = new WebSocket(url)
-        sock.onclose = onclose;
-        sock.onmessage = onmessage;
-        sock.onopen = onopen;
-    } else {
-        sock = io.connect();
-        onopen({}, sock);
-        sock.on('message', onmessage);
-        sock.on('disconnect', onclose);
-    }
-    return sock;
-}
-
 // Escape special characters for regexes.
 function EscapeRegExp( text ) {
     return text.replace((new RegExp('(\\' + [

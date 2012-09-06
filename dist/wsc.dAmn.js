@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.48';
+wsc.VERSION = '0.8.49';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -470,33 +470,6 @@ function DateStamp(ts) {
 function caseInsensitiveSort( a, b ) {
     a = a.toLowerCase(); b = b.toLowerCase();
     return ( ( a > b ) ? 1 : ( a < b ? -1 : 0 ) );
-}
-
-function CanCreateWebsocket() {
-    if(window["WebSocket"]) {
-        return true
-    }
-    return false
-}
-
-// TODO: use fallbacks?
-function CreateWebSocket(url, onclose, onmessage, onopen) {
-    if(!CanCreateWebsocket()) {
-        throw "This browser does not support websockets.";
-    }
-    var sock = null;
-    if( typeof io === 'undefined' ) {
-        sock = new WebSocket(url)
-        sock.onclose = onclose;
-        sock.onmessage = onmessage;
-        sock.onopen = onopen;
-    } else {
-        sock = io.connect();
-        onopen({}, sock);
-        sock.on('message', onmessage);
-        sock.on('disconnect', onclose);
-    }
-    return sock;
 }
 
 // Escape special characters for regexes.
