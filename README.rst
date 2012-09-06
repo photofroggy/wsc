@@ -46,3 +46,9 @@ of how to use the client::
     </html>
 
 There are more configuration options, which will be documented later.
+
+----------
+Socket.IO
+----------
+Wsc can be used with **socket.io**. The only thing you need to do to use
+socket.io with wsc is load socket.io into your web page.

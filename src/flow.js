@@ -22,7 +22,7 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
-    
+    console.log(event);
     if(client.connected) {
         client.ui.server_message("Connection closed");
         client.connected = false;
@@ -42,7 +42,6 @@ wsc.Flow.prototype.close = function( client, event ) {
     
     setTimeout(function () {
         client.conn.connect();
-        client.ui.server_message('Opening connection');
     }, 2000);
 
 }; 
@@ -169,14 +168,14 @@ wsc.Flow.prototype.part = function( event, client ) {
     
     if(event.e == "ok") {
         info = '';
+        
         if( event.r.length > 0 )
             info = '[' + event.r + ']';
+        else
+            client.remove_ns(ns);
         
         msg = 'You have left ' + ns;
         c.server_message(msg, info);
-        
-        if( info == '' )
-            client.remove_ns(ns);
         
         if( client.channels() == 0 ) {
             switch( event.r ) {

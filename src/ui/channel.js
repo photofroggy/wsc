@@ -166,8 +166,16 @@ Chatterbox.Channel.prototype.resize = function( ) {
     topic = this.window.find('header div.topic');
     
     // Log width.
-    if( cu.css('display') != 'none')
+    if( cu.css('display') != 'none') {
+        cu.width(1);
+        userwidth = cu[0].scrollWidth + this.manager.swidth + 10;
+        max = parseInt(cu.css('max-width').slice(0,-2));
+        if( userwidth > max ) {
+            userwidth = max;
+        }
+        cu.width(userwidth);
         cw = cw - cu.outerWidth();
+    }
     
     if( title.css('display') == 'block' )
         wh = wh - title.outerHeight(true);
@@ -440,10 +448,10 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         && y < eb)
         return;
     
-    if( x < (er + 10)
+    if( x < (er + 15)
         && x > o.left
         && y > o.top
-        && y < (o.top + 10) )
+        && y < (o.top + 15) )
         return;
     
     box.remove();

@@ -112,11 +112,7 @@ wsc.Client.prototype.loop = function(  ) {
         if( msgs.length < 200 )
             continue;
         
-        while( msgs.length > 200 ) {
-            msgs.slice(0, 10).remove();
-            msgs = c.ui.logpanel.find( '.logmsg' );
-        }
-        
+        msgs.slice(0, msgs.length - 200).remove();
         c.ui.resize();
     }
 
@@ -200,8 +196,10 @@ wsc.Client.prototype.connect = function(  ) {
         this.conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
         this.conn.message(function( evt ) { client.flow.message( client, evt ); });
         this.conn.connect();
+        this.ui.server_message('Opening connection');
         this.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
     } catch(err) {
+        console.log(err);
         this.monitor("Your browser does not support WebSockets. Sorry.");
         this.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
     }
