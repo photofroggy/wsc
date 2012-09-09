@@ -843,7 +843,7 @@ div.wsc a.close:hover {
 
 /* Themes */
 div.wsc.wsct_default {
-  color: #0f6175;
+  color: #075c70;
 }
 div.wsc.wsct_default a {
   color: #960101;
@@ -877,13 +877,13 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
 }
 div.wsc.wsct_default a.button:active,
 div.wsc.wsct_default form.msg input[type="submit"]:active {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background-color: #1b4968;
-  border-color: #1b4968;
+  background: -webkit-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background-color: #1c78b6;
+  border-color: #1c78b6;
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
 }
@@ -896,7 +896,7 @@ div.wsc.wsct_default a.close {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
-  border-color: #0f6175;
+  border-color: #075c70;
 }
 div.wsc.wsct_default a.close:hover {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
@@ -918,7 +918,7 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a.tab {
   color: white;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.tab.button {
-  border-color: #0f6175;
+  border-color: #075c70;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.tab:hover {
   background: -webkit-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
@@ -977,19 +977,19 @@ div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap {
   border-color: #0d4d69;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap a {
-  color: #149e5c;
+  color: #9b3d08;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #ff5959;
+  color: #23afaf;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg {
-  color: #0f6175;
+  color: #075c70;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
   background-color: #fdc8a5;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
-  color: #7092af;
+  color: #7290aa;
 }
 div.wsc.wsct_default div.chatcontrol {
   background-color: #406d8b;
@@ -1062,13 +1062,13 @@ div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_test a.button:active, div.wsc.wsct_test form.msg input[type="submit"]:active {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background: linear-gradient(top, #d3edff 0%, #1c78b6 5%, #1b4968 97%);
-  background-color: #1b4968;
-  border-color: #1b4968;
+  background: -webkit-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background: linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
+  background-color: #1c78b6;
+  border-color: #1c78b6;
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
 }
@@ -1162,10 +1162,10 @@ div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap {
   border-color: #0d4d69;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a {
-  color: #149e5c;
+  color: #9b3d08;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #ff5959;
+  color: #23afaf;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #293840;
@@ -1174,7 +1174,7 @@ div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.w
   background-color: #fdc8a5;
 }
 div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
-  color: #7092af;
+  color: #7290aa;
 }
 div.wsc.wsct_test div.chatcontrol {
   background-color: #2ccc17;
