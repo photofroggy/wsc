@@ -182,7 +182,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
         
     // Log panel dimensions
     this.logpanel.css({
-        height: wh + 1,
+        height: wh - 3,
         width: cw});
     
     // Scroll again just to make sure.

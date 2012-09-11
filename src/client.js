@@ -44,7 +44,7 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+    this.settings.agent = 'Chatterbox/' + Chatterbox.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,

@@ -81,13 +81,40 @@ div.wsc {
 }
 
 /* Themes */
+/* Default theme */
 @import "wsct_default";
-div.wsc.wsct_test {
+
+/* dAmn style theme */
+div.wsc.wsct_dAmn {
     @include wsc-theme(
-        #293840,
-        #2CCC17,
-        #2CCC17,
-        #75FF8F,
-        $heading-bg: #CC5D17
+        $chrome: #D0DBD0,
+        $chrome-a: #2C3635,
+        $chrome-ah: #2C3635,
+        $heading-bg: #BBC6B9,
+        $heading-color: #2C3635,
+        $inner-border: #9EAEA0,
+        $outer-border: #9EAEA0,
+        $chrome-color: #2C3635,
+        $log-bg: #DCE7DC,
+        $log-a: #2C3635,
+        $log-ah: #2C3635,
+        $base: #2C3635,
+        $light: #797979,
+        $a: #2C3635,
+        $ah: #2C3635,
+        $ad: underline,
+        $ahd: underline,
+        $usri-ahd: underline,
+        $tab-a: #2C3635,
+        $tab-ah: #2C3635,
+        $tab-bgbg: #9CAD9C,
+        $tab-bgsl: #D5E4D5,
+        $tab-bgi: #F9FFF9,
+        $tab-abgi: #F9FFF9,
+        $tab-hbgi: #F9FFF9,
+        $tab-hbgbg: #AFC2AF,
+        $tab-hbgsl: #D5DDD5,
+        $tab-abgbg: #D0DBD0,
+        $tab-abgsl: #E2F1E2
     );
 }

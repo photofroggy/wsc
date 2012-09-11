@@ -842,14 +842,17 @@ div.wsc a.close:hover {
 }
 
 /* Themes */
+/* Default theme */
 div.wsc.wsct_default {
   color: #075c70;
 }
 div.wsc.wsct_default a {
   color: #960101;
+  text-decoration: none;
 }
 div.wsc.wsct_default a:hover {
   color: white;
+  text-decoration: none;
 }
 div.wsc.wsct_default a.button,
 div.wsc.wsct_default form.msg input[type="submit"] {
@@ -862,6 +865,7 @@ div.wsc.wsct_default form.msg input[type="submit"] {
   border-color: #406d8b;
   color: #aae1ee;
   text-shadow: 0px -1px #0a384e;
+  text-decoration: none;
 }
 div.wsc.wsct_default a.button:hover,
 div.wsc.wsct_default form.msg input[type="submit"]:hover {
@@ -874,6 +878,7 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
   border-color: #681b1b;
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
+  text-decoration: none;
 }
 div.wsc.wsct_default a.button:active,
 div.wsc.wsct_default form.msg input[type="submit"]:active {
@@ -897,6 +902,7 @@ div.wsc.wsct_default a.close {
   text-shadow: 0px -1px #311604;
   font-weight: bold;
   border-color: #075c70;
+  text-decoration: none;
 }
 div.wsc.wsct_default a.close:hover {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
@@ -906,6 +912,7 @@ div.wsc.wsct_default a.close:hover {
   background: linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
+  text-decoration: none;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
@@ -1007,9 +1014,11 @@ div.wsc.wsct_default div.chatusers div.pc ul {
 }
 div.wsc.wsct_default div.chatusers div.pc ul a {
   color: #ffb024;
+  text-decoration: none;
 }
 div.wsc.wsct_default div.chatusers div.pc ul a:hover {
   color: white;
+  text-decoration: none;
 }
 div.wsc.wsct_default div.chatusers div.pc ul a em {
   color: #afd7f5;
@@ -1025,21 +1034,26 @@ div.wsc.wsct_default div.chatwindow div.userinfo div.info {
 }
 div.wsc.wsct_default div.chatwindow div.userinfo div.info a {
   color: #ffb024;
+  text-decoration: none;
 }
 div.wsc.wsct_default div.chatwindow div.userinfo div.info a:hover {
   color: white;
+  text-decoration: none;
 }
 
-div.wsc.wsct_test {
-  color: #293840;
+/* dAmn style theme */
+div.wsc.wsct_dAmn {
+  color: #2c3635;
 }
-div.wsc.wsct_test a {
-  color: #960101;
+div.wsc.wsct_dAmn a {
+  color: #2c3635;
+  text-decoration: underline;
 }
-div.wsc.wsct_test a:hover {
-  color: white;
+div.wsc.wsct_dAmn a:hover {
+  color: #2c3635;
+  text-decoration: underline;
 }
-div.wsc.wsct_test a.button, div.wsc.wsct_test form.msg input[type="submit"] {
+div.wsc.wsct_dAmn a.button, div.wsc.wsct_dAmn form.msg input[type="submit"] {
   background: -webkit-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
@@ -1049,8 +1063,9 @@ div.wsc.wsct_test a.button, div.wsc.wsct_test form.msg input[type="submit"] {
   border-color: #406d8b;
   color: #aae1ee;
   text-shadow: 0px -1px #0a384e;
+  text-decoration: none;
 }
-div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"]:hover {
+div.wsc.wsct_dAmn a.button:hover, div.wsc.wsct_dAmn form.msg input[type="submit"]:hover {
   background: -webkit-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
   background: -moz-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
   background: -ms-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
@@ -1060,8 +1075,9 @@ div.wsc.wsct_test a.button:hover, div.wsc.wsct_test form.msg input[type="submit"
   border-color: #681b1b;
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
+  text-decoration: none;
 }
-div.wsc.wsct_test a.button:active, div.wsc.wsct_test form.msg input[type="submit"]:active {
+div.wsc.wsct_dAmn a.button:active, div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
   background: -webkit-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
   background: -moz-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
   background: -ms-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
@@ -1072,7 +1088,7 @@ div.wsc.wsct_test a.button:active, div.wsc.wsct_test form.msg input[type="submit
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
 }
-div.wsc.wsct_test a.close {
+div.wsc.wsct_dAmn a.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1081,9 +1097,10 @@ div.wsc.wsct_test a.close {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
-  border-color: #293840;
+  border-color: #2c3635;
+  text-decoration: none;
 }
-div.wsc.wsct_test a.close:hover {
+div.wsc.wsct_dAmn a.close:hover {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
@@ -1091,126 +1108,131 @@ div.wsc.wsct_test a.close:hover {
   background: linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
+  text-decoration: none;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li a.tab {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
-  background: linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
-  background-color: #2ccc17;
-  border-color: #0d4d69;
-  color: white;
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab {
+  background: -webkit-linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #9cad9c 97%);
+  background: -moz-linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #9cad9c 97%);
+  background: -ms-linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #9cad9c 97%);
+  background: -o-linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #9cad9c 97%);
+  background: linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #9cad9c 97%);
+  background-color: #d0dbd0;
+  border-color: #9eaea0;
+  color: #2c3635;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li a.tab.button {
-  border-color: #293840;
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab.button {
+  border-color: #2c3635;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li a.tab:hover {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
-  background: linear-gradient(top, #d3edff 0%, #2e9be4 5%, #306080 97%);
-  color: white;
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab:hover {
+  background: -webkit-linear-gradient(top, #f9fff9 0%, #d5ddd5 5%, #afc2af 97%);
+  background: -moz-linear-gradient(top, #f9fff9 0%, #d5ddd5 5%, #afc2af 97%);
+  background: -ms-linear-gradient(top, #f9fff9 0%, #d5ddd5 5%, #afc2af 97%);
+  background: -o-linear-gradient(top, #f9fff9 0%, #d5ddd5 5%, #afc2af 97%);
+  background: linear-gradient(top, #f9fff9 0%, #d5ddd5 5%, #afc2af 97%);
+  color: #2c3635;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.noise a.tab {
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed a.tab {
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
   border-width: 2px;
   font-weight: bold;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.tabbed.fill a.tab {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
-  background: linear-gradient(top, #d3edff 0%, #c93838 5%, #306080 97%);
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li.tabbed.fill a.tab {
+  background: -webkit-linear-gradient(top, #f9fff9 0%, #c93838 5%, #9cad9c 97%);
+  background: -moz-linear-gradient(top, #f9fff9 0%, #c93838 5%, #9cad9c 97%);
+  background: -ms-linear-gradient(top, #f9fff9 0%, #c93838 5%, #9cad9c 97%);
+  background: -o-linear-gradient(top, #f9fff9 0%, #c93838 5%, #9cad9c 97%);
+  background: linear-gradient(top, #f9fff9 0%, #c93838 5%, #9cad9c 97%);
   color: #9ad7f1;
 }
-div.wsc.wsct_test nav.tabs ul#chattabs li.active a.tab {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li.active a.tab {
+  background: -webkit-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -moz-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -ms-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -o-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
 }
-div.wsc.wsct_test div.chatbook {
-  background-color: #2ccc17;
-  border-color: #0d4d69;
+div.wsc.wsct_dAmn div.chatbook {
+  background-color: #d0dbd0;
+  border-color: #9eaea0;
 }
-div.wsc.wsct_test div.chatwindow header div.title {
-  color: #75ff8f;
+div.wsc.wsct_dAmn div.chatwindow header div.title {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow header div.title a {
-  color: #ffb024;
+div.wsc.wsct_dAmn div.chatwindow header div.title a {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow header div.title a:hover {
-  color: white;
+div.wsc.wsct_dAmn div.chatwindow header div.title a:hover {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow header div.topic {
-  background-color: #cc5d17;
-  border-color: #0d4d69;
-  color: #063b63;
+div.wsc.wsct_dAmn div.chatwindow header div.topic {
+  background-color: #bbc6b9;
+  border-color: #9eaea0;
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog {
-  background-color: #cedbe2;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog {
+  background-color: #dce7dc;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap {
-  border-color: #0d4d69;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap {
+  border-color: #9eaea0;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a {
-  color: #9b3d08;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #23afaf;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a:hover {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg {
-  color: #293840;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
   background-color: #fdc8a5;
 }
-div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_test div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
-  color: #7290aa;
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
+  color: #797979;
 }
-div.wsc.wsct_test div.chatcontrol {
-  background-color: #2ccc17;
+div.wsc.wsct_dAmn div.chatcontrol {
+  background-color: #d0dbd0;
 }
-div.wsc.wsct_test div.chatusers {
-  border: 1px solid #0d4d69;
+div.wsc.wsct_dAmn div.chatusers {
+  border: 1px solid #9eaea0;
   border-left: none;
 }
-div.wsc.wsct_test div.chatusers div.pc h3, div.wsc.wsct_test div.chatusers div.pc h4 {
-  background-color: #cc5d17;
-  color: #063b63;
+div.wsc.wsct_dAmn div.chatusers div.pc h3, div.wsc.wsct_dAmn div.chatusers div.pc h4 {
+  background-color: #bbc6b9;
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatusers div.pc ul {
-  color: #75ff8f;
+div.wsc.wsct_dAmn div.chatusers div.pc ul {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatusers div.pc ul a {
-  color: #ffb024;
+div.wsc.wsct_dAmn div.chatusers div.pc ul a {
+  color: #2c3635;
+  text-decoration: none;
 }
-div.wsc.wsct_test div.chatusers div.pc ul a:hover {
-  color: white;
+div.wsc.wsct_dAmn div.chatusers div.pc ul a:hover {
+  color: #2c3635;
+  text-decoration: none;
 }
-div.wsc.wsct_test div.chatusers div.pc ul a em {
-  color: #75ff8f;
+div.wsc.wsct_dAmn div.chatusers div.pc ul a em {
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.userinfo {
-  border-color: #0d4d69;
-  background-color: #cc5d17;
+div.wsc.wsct_dAmn div.chatwindow div.userinfo {
+  border-color: #9eaea0;
+  background-color: #bbc6b9;
 }
-div.wsc.wsct_test div.chatwindow div.userinfo div.info {
-  background-color: #2ccc17;
-  border-color: #0d4d69;
-  color: #75ff8f;
+div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info {
+  background-color: #d0dbd0;
+  border-color: #9eaea0;
+  color: #2c3635;
 }
-div.wsc.wsct_test div.chatwindow div.userinfo div.info a {
-  color: #ffb024;
+div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a {
+  color: #2c3635;
+  text-decoration: none;
 }
-div.wsc.wsct_test div.chatwindow div.userinfo div.info a:hover {
-  color: white;
+div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a:hover {
+  color: #2c3635;
+  text-decoration: underline;
 }

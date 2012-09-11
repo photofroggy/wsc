@@ -4,11 +4,11 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.50';
+wsc.VERSION = '0.8.51';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
-wsc.defaults.themes = [ 'wsct_default', 'wsct_test' ];
+wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
@@ -2236,7 +2236,7 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'wsc/' + wsc.VERSION + ' (' + this.settings.username + '; ' + navigator.language + '; ' + navigator.platform + ') Chatterbox/' + Chatterbox.VERSION;
+    this.settings.agent = 'Chatterbox/' + Chatterbox.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,
@@ -3189,7 +3189,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.3.0';
+Chatterbox.VERSION = '0.4.2';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -3208,7 +3208,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_test'],
+        'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
@@ -3480,8 +3480,13 @@ Chatterbox.UI.prototype.log = function( msg ) {
  * @param theme {String} Name of the theme.
  */
 Chatterbox.UI.prototype.theme = function( theme ) {
-    if( this.settings.themes.indexOf(theme) == -1 || this.settings.theme == theme)
+    if( this.settings.theme == theme )
         return;
+    if( this.settings.themes.indexOf(theme) == -1 ) {
+        theme = 'wsct_' + theme;
+        if( this.settings.themes.indexOf(theme) == -1 )
+            return;
+    }
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
 };
@@ -3686,7 +3691,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
         
     // Log panel dimensions
     this.logpanel.css({
-        height: wh + 1,
+        height: wh - 3,
         width: cw});
     
     // Scroll again just to make sure.
