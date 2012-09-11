@@ -12,6 +12,8 @@
     $chrome-color: #AFD7F5,
     $chrome-a: #FFB024,
     $chrome-ah: white,
+    $chrome-ad: none,
+    $chrome-ahd: none,
     $log-bg: #CEDBE2,
     $light: #7290AA,
     $a: #960101,
@@ -24,14 +26,21 @@
     $usri-ahd: none,
     $log-a: #9B3D08,
     $log-ah: #23AFAF,
+    $log-ad: none,
+    $log-ahd: none,
     $tab-a: white,
     $tab-ah: white,
     $button: #AAE1EE,
     $buttonh: #AAE1EE,
+    $buttona: #AAE1EE,
     $buttond: none,
     $buttonhd: none,
+    $buttonb: #406D8B,
+    $buttonhb: #406D8B,
+    $buttonab: #406D8B,
     $button-shadow: #0A384E, 
     $buttonh-shadow: #1773A0, 
+    $buttona-shadow: #1773A0, 
     $bgs: top,
     $bgi: #D3EDFF,
     $bgsl: #298FD3,
@@ -92,14 +101,14 @@
     form.msg input[type="submit"] {
         @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
         background-color: $bgbg;
-        border-color: $bgbg;
+        border-color: $buttonb;
         color: $button;
         text-shadow: 0px -1px $button-shadow;
         text-decoration: $buttond;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $hbgbg;
-            border-color: $hbgbg;
+            border-color: $buttonhb;
             color: $buttonh;
             text-shadow: 0px -1px $buttonh-shadow;
             text-decoration: $buttonhd;
@@ -107,9 +116,9 @@
         &:active {
             @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
             background-color: $abgbg;
-            border-color: $abgbg;
-            color: $buttonh;
-            text-shadow: 0px -1px $buttonh-shadow;
+            border-color: $buttonab;
+            color: $buttona;
+            text-shadow: 0px -1px $buttona-shadow;
         }
     }
     
@@ -173,7 +182,11 @@
                 color: $chrome-color;
                 a {
                     color: $chrome-a;
-                    &:hover { color: $chrome-ah; }
+                    text-decoration: $chrome-ad;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $chrome-ahd;
+                    }
                 }
             }
             div.topic {
@@ -190,7 +203,11 @@
                 
                 a {
                     color: $log-a;
-                    &:hover { color: $log-ah; }
+                    text-decoration: $log-ad;
+                    &:hover {
+                        color: $log-ah;
+                        text-decoration: $log-ahd;
+                    }
                 }
                 
                 border-color: $inner-border;

@@ -51,7 +51,6 @@ div.wsc {
             width: 100%;
             
             a {
-                text-decoration: none;
                 padding: 0px;
                 margin: 0px;
             }
@@ -90,6 +89,8 @@ div.wsc.wsct_dAmn {
         $chrome: #D0DBD0,
         $chrome-a: #2C3635,
         $chrome-ah: #2C3635,
+        $chrome-ad: underline,
+        $chrome-ahd: underline,
         $heading-bg: #BBC6B9,
         $heading-color: #2C3635,
         $inner-border: #9EAEA0,
@@ -98,6 +99,8 @@ div.wsc.wsct_dAmn {
         $log-bg: #DCE7DC,
         $log-a: #2C3635,
         $log-ah: #2C3635,
+        $log-ad: underline,
+        $log-ahd: underline,
         $base: #2C3635,
         $light: #797979,
         $a: #2C3635,
@@ -115,6 +118,19 @@ div.wsc.wsct_dAmn {
         $tab-hbgbg: #AFC2AF,
         $tab-hbgsl: #D5DDD5,
         $tab-abgbg: #D0DBD0,
-        $tab-abgsl: #E2F1E2
+        $tab-abgsl: #E2F1E2,
+        $bgi: #CFDAD2,
+        $bgsl: #62806A,
+        $bgbg: #2B4E34,
+        $abgi: #CFDAD2,
+        $abgsl: #2B4E34,
+        $abgbg: #62806A,
+        $button: #C0E4C9,
+        $buttonh: #C0E4C9,
+        $buttona: #BAD5C0,
+        $buttonb: #20462A,
+        $buttonab: #20462A,
+        $button-shadow: #002409,
+        $buttona-shadow: #002409
     );
 }
