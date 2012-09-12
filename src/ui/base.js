@@ -38,6 +38,9 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
     this.swidth = getscrollbarWidth();
+    this.LIB = 'Chatterbox';
+    this.VERSION = Chatterbox.VERSION;
+    this.STATE = Chatterbox.STATE;
     
 };
 

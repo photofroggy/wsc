@@ -44,7 +44,6 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'Chatterbox/' + Chatterbox.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,
@@ -54,6 +53,7 @@ wsc.Client = function( view, options, mozilla ) {
         'domain': this.settings.domain
     }, mozilla );
     
+    this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.protocol = new this.settings.protocol( new this.settings.tablumps() );

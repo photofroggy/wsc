@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.51';
+wsc.VERSION = '0.8.52';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -2236,7 +2236,6 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
-    this.settings.agent = 'Chatterbox/' + Chatterbox.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,
@@ -2246,6 +2245,7 @@ wsc.Client = function( view, options, mozilla ) {
         'domain': this.settings.domain
     }, mozilla );
     
+    this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.protocol = new this.settings.protocol( new this.settings.tablumps() );
@@ -3221,6 +3221,9 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
     this.swidth = getscrollbarWidth();
+    this.LIB = 'Chatterbox';
+    this.VERSION = Chatterbox.VERSION;
+    this.STATE = Chatterbox.STATE;
     
 };
 
