@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.3.0';
+Chatterbox.VERSION = '0.4.3';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -25,7 +25,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_test'],
+        'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
@@ -38,6 +38,9 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
     this.swidth = getscrollbarWidth();
+    this.LIB = 'Chatterbox';
+    this.VERSION = Chatterbox.VERSION;
+    this.STATE = Chatterbox.STATE;
     
 };
 
@@ -297,8 +300,13 @@ Chatterbox.UI.prototype.log = function( msg ) {
  * @param theme {String} Name of the theme.
  */
 Chatterbox.UI.prototype.theme = function( theme ) {
-    if( this.settings.themes.indexOf(theme) == -1 || this.settings.theme == theme)
+    if( this.settings.theme == theme )
         return;
+    if( this.settings.themes.indexOf(theme) == -1 ) {
+        theme = 'wsct_' + theme;
+        if( this.settings.themes.indexOf(theme) == -1 )
+            return;
+    }
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
 };
@@ -503,7 +511,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
         
     // Log panel dimensions
     this.logpanel.css({
-        height: wh + 1,
+        height: wh - 3,
         width: cw});
     
     // Scroll again just to make sure.

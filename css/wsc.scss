@@ -51,7 +51,6 @@ div.wsc {
             width: 100%;
             
             a {
-                text-decoration: none;
                 padding: 0px;
                 margin: 0px;
             }
@@ -81,13 +80,58 @@ div.wsc {
 }
 
 /* Themes */
+/* Default theme */
 @import "wsct_default";
-div.wsc.wsct_test {
+
+/* dAmn style theme */
+div.wsc.wsct_dAmn {
     @include wsc-theme(
-        #293840,
-        #2CCC17,
-        #2CCC17,
-        #75FF8F,
-        $heading-bg: #CC5D17
+        $chrome: #D0DBD0,
+        $chrome-a: #2C3635,
+        $chrome-ah: #2C3635,
+        $chrome-ad: underline,
+        $chrome-ahd: underline,
+        $heading-bg: #BBC6B9,
+        $heading-color: #2C3635,
+        $inner-border: #9EAEA0,
+        $outer-border: #858585,
+        $chrome-color: #2C3635,
+        $log-bg: #DCE7DC,
+        $log-a: #2C3635,
+        $log-ah: #2C3635,
+        $log-ad: underline,
+        $log-ahd: underline,
+        $base: #2C3635,
+        $light: #797979,
+        $a: #2C3635,
+        $ah: #2C3635,
+        $ad: underline,
+        $ahd: underline,
+        $usri-ahd: underline,
+        $tab-a: #2C3635,
+        $tab-ah: #2C3635,
+        $tabbed-fill: #2C3635,
+        $tab-bgbg: #ADBDAD,
+        $tab-bgsl: #D5E4D5,
+        $tab-bgi: #F9FFF9,
+        $tab-abgi: #F9FFF9,
+        $tab-hbgi: #F9FFF9,
+        $tab-hbgbg: #AFC2AF,
+        $tab-hbgsl: #D5DDD5,
+        $tab-abgbg: #D0DBD0,
+        $tab-abgsl: #E2F1E2,
+        $bgi: #CFDAD2,
+        $bgsl: #62806A,
+        $bgbg: #2B4E34,
+        $abgi: #CFDAD2,
+        $abgsl: #2B4E34,
+        $abgbg: #62806A,
+        $button: #C0E4C9,
+        $buttonh: #C0E4C9,
+        $buttona: #BAD5C0,
+        $buttonb: #20462A,
+        $buttonab: #20462A,
+        $button-shadow: #002409,
+        $buttona-shadow: #002409
     );
 }

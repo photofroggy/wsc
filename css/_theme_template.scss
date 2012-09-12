@@ -6,38 +6,57 @@
     background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
 }
 
-@mixin wsc-theme($base: #0F6175,
+@mixin wsc-theme($base: #075C70,
     $chrome: #406D8B,
     $chrome-shadow: #0D4D69,
     $chrome-color: #AFD7F5,
     $chrome-a: #FFB024,
     $chrome-ah: white,
+    $chrome-ad: none,
+    $chrome-ahd: none,
     $log-bg: #CEDBE2,
-    $light: #7092AF,
+    $light: #7290AA,
     $a: #960101,
     $ah: white,
-    $log-a: #149E5C,
-    $log-ah: #FF5959,
+    $ad: none,
+    $ahd: none,
+    $usrl-ad: none,
+    $usrl-ahd: none,
+    $usri-ad: none,
+    $usri-ahd: none,
+    $log-a: #9B3D08,
+    $log-ah: #23AFAF,
+    $log-ad: none,
+    $log-ahd: none,
     $tab-a: white,
     $tab-ah: white,
     $button: #AAE1EE,
     $buttonh: #AAE1EE,
+    $buttona: #AAE1EE,
+    $buttond: none,
+    $buttonhd: none,
+    $buttonb: #406D8B,
+    $buttonhb: #611A14,
+    $buttonab: #406D8B,
     $button-shadow: #0A384E, 
     $buttonh-shadow: #1773A0, 
+    $buttona-shadow: #1773A0, 
     $bgs: top,
     $bgi: #D3EDFF,
     $bgsl: #298FD3,
     $bgbg: #406D8B,
     $abgs: top,
     $abgi: #D3EDFF,
-    $abgsl: #1C78B6,
-    $abgbg: #1B4968,
+    $abgsl: #1B4968,
+    $abgbg: #1C78B6,
     $hbgs: top,
     $hbgi: #FFD3D3,
     $hbgsl: #B61C1C,
     $hbgbg: #681B1B,
     $close: #FFF6E4,
     $closeh: #FFF6E4,
+    $closed: none,
+    $closehd: none,
     $close-shadow: #311604,
     $close-bgs: top,
     $close-bgi: #FFA69E,
@@ -72,28 +91,34 @@
     color: $base;
     a {
         color: $a;
-        &:hover { color: $ah; }
+        text-decoration: $ad;
+        &:hover {
+            color: $ah;
+            text-decoration: $ahd;
+        }
     }
     a.button,
     form.msg input[type="submit"] {
         @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
         background-color: $bgbg;
-        border-color: $bgbg;
+        border-color: $buttonb;
         color: $button;
         text-shadow: 0px -1px $button-shadow;
+        text-decoration: $buttond;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $hbgbg;
-            border-color: $hbgbg;
+            border-color: $buttonhb;
             color: $buttonh;
             text-shadow: 0px -1px $buttonh-shadow;
+            text-decoration: $buttonhd;
         }
         &:active {
             @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
             background-color: $abgbg;
-            border-color: $abgbg;
-            color: $buttonh;
-            text-shadow: 0px -1px $buttonh-shadow;
+            border-color: $buttonab;
+            color: $buttona;
+            text-shadow: 0px -1px $buttona-shadow;
         }
     }
     
@@ -103,10 +128,12 @@
         text-shadow: 0px -1px $close-shadow;
         font-weight: bold;
         border-color: $base;
+        text-decoration: $closed;
         &:hover {
             @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
             color: $closeh;
             text-shadow: 0px -1px $close-shadow;
+            text-decoration: $closehd;
         }
     }
     
@@ -155,7 +182,11 @@
                 color: $chrome-color;
                 a {
                     color: $chrome-a;
-                    &:hover { color: $chrome-ah; }
+                    text-decoration: $chrome-ad;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $chrome-ahd;
+                    }
                 }
             }
             div.topic {
@@ -172,7 +203,11 @@
                 
                 a {
                     color: $log-a;
-                    &:hover { color: $log-ah; }
+                    text-decoration: $log-ad;
+                    &:hover {
+                        color: $log-ah;
+                        text-decoration: $log-ahd;
+                    }
                 }
                 
                 border-color: $inner-border;
@@ -207,7 +242,11 @@
                 color: $chrome-color;
                 a {
                     color: $chrome-a;
-                    &:hover { color: $chrome-ah; }
+                    text-decoration: $usrl-ad;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $usrl-ahd;
+                    }
                     em { color: $chrome-color; }
                 }
             }
@@ -225,7 +264,11 @@
             color: $chrome-color;
             a {
                 color: $chrome-a;
-                &:hover { color: $chrome-ah; }
+                text-decoration: $usri-ad;
+                &:hover {
+                    color: $chrome-ah;
+                    text-decoration: $usri-ahd;
+                }
             }
         }
     }
