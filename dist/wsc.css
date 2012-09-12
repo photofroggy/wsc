@@ -1138,8 +1138,8 @@ div.wsc.wsct_dAmn nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
 div.wsc.wsct_dAmn nav.tabs ul#chattabs li.tabbed a.tab {
-  color: #ff5959;
-  border-color: #ff5959;
+  color: #e02d2d;
+  border-color: #e02d2d;
   border-width: 2px;
   font-weight: bold;
 }
@@ -1196,7 +1196,7 @@ div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
-  background-color: #fdc8a5;
+  background-color: white;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #797979;
