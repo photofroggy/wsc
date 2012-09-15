@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.52';
+wsc.VERSION = '0.8.53';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -1793,7 +1793,9 @@ wsc.Flow.prototype.message = function( client, event ) {
  */
 wsc.Flow.prototype.handle = function( client, event ) {
 
-    this[event.name](event, client);
+    try {
+        this[event.name](event, client);
+    } catch( err ) {}
 
 };
 

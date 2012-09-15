@@ -9,6 +9,13 @@ cat src/base.js src/events.js src/transport.js src/lib.js src/packet.js src/chan
 cat src/base.js src/events.js src/transport.js src/lib.js src/packet.js src/channel.js src/tablumps.js src/protocol.js src/flow.js src/commands.js src/client.js src/control.js src/ui.js src/dAmn.js src/wsc.js > dist/wsc.dAmn.js
 cp src/ui.js dist/chatterbox.js
 rm -f src/ui.js
+echo ">> Nomming source..."
+echo ">>   wsc..."
+./nom dist/wsc.js
+echo ">>   wsc.dAmn..."
+./nom dist/wsc.dAmn.js
+echo ">>   chatterbox..."
+./nom dist/chatterbox.js
 echo ">> Compressing source..."
 echo ">>   wsc..."
 java -jar /usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar -o dist/wsc.min.js dist/wsc.js

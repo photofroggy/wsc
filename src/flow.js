@@ -76,7 +76,9 @@ wsc.Flow.prototype.message = function( client, event ) {
  */
 wsc.Flow.prototype.handle = function( client, event ) {
 
-    this[event.name](event, client);
+    try {
+        this[event.name](event, client);
+    } catch( err ) {}
 
 };
 
