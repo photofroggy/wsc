@@ -45,7 +45,7 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
-            <li><a href="#settings" title="Change client settings" class="button iconic cog"></a></li>\
+            <li><a href="#settings" title="Change client settings" class="button iconic cog" id="settings-button"></a></li>\
         </ul>\
         </nav>\
         <div class="chatbook"></div>';
@@ -154,7 +154,7 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
  * @property popup
  * @type String
  */
-Chatterbox.template.popup = '<div class="floater"><div class="inner">{content}</div></div>;
+Chatterbox.template.popup = '<div class="floater"><div class="inner">{content}</div></div>';
 
 /**
  * Settings stuff.

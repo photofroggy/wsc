@@ -13,7 +13,20 @@ Chatterbox.Navigation = function( ui ) {
     this.buttons = this.nav.find('#tabnav');
     this.tableft = this.buttons.find('.arrow_left');
     this.tabright = this.buttons.find('.arrow_right');
-    this.settings = this.buttons.find('.cog');
+    this.settingsb = this.buttons.find('#settings-button');
+    this.settings = {};
+    this.settings.open = false;
+    
+    var nav = this;
+    this.settingsb.click(
+        function( event ) {
+            if( nav.settings.open )
+                return false;
+            
+            var edata = {};
+            return false;
+        }
+    );
 
 };
 
