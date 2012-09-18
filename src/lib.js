@@ -106,8 +106,7 @@ replaceAllRaw = function ( text, search, replace ) {
 };
 
 replaceAll = function( text, search, replace ) {
-    search = new RegExp(EscapeRegExp(search), 'g');
-    return text.replace(search, replace || '');
+    return text.split(search).join(replace);
 };
 
 // Size of an associative array, wooo!
