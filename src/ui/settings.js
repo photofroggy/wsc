@@ -5,10 +5,22 @@
  * @class Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
+ * @param config {Object} Chatterbox.SettingsConfig object.
  */
 Chatterbox.Settings = function( ui ) {
 
     this.manager = ui;
+
+};
+
+/**
+ * Build the settings window.
+ * 
+ * @method build
+ */
+Chatterbox.Settings.prototype.build = function(  ) {
+
+
 
 };
 
@@ -51,23 +63,33 @@ Chatterbox.SettingsConfig.prototype.find_page = function( name ) {
 };
 
 /**
- * Get or set a settings page.
+ * Return the settings pages rendered as html strings.
+ * 
+ * @method render
+ * @return {Array} Settings pages HTML array.
+ */
+Chatterbox.SettingsConfig.prototype.render = function() {
+
+
+
+};
+
+/**
+ * Get a settings page.
  * 
  * @method page
  * @param name {String} Name of the page to get or set.
- * @param [page] {Chatterbox.SettingsPage} Settings page object to associate
- *   with the given name.
  * @return {Chatterbox.SettingsPage} Settings page associated with `name`.
  */
-Chatterbox.SettingsConfig.prototype.page = function( name, page ) {
+Chatterbox.SettingsConfig.prototype.page = function( name ) {
 
-    if( page == undefined ) {
-        page = this.find_page(name);
-        if( page == null ) {
-            page = new Chatterbox.SettingsPage(name);
-            this.pages.unshift(page);
-        }
+    page = this.find_page(name);
+    
+    if( page == null ) {
+        page = new Chatterbox.SettingsPage(name);
+        this.pages.unshift(page);
     }
+    
     return page;
 
 };
