@@ -176,4 +176,10 @@ Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
                                 {content}\
                             </div>';
 
-Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{label}</a></li>';
+Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
+
+
+Chatterbox.template.settings.item = '<div class="item {type} {ref}">\
+                                    {content}\
+                                </div>';
+
