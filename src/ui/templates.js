@@ -154,7 +154,7 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
  * @property popup
  * @type String
  */
-Chatterbox.template.popup = '<div class="floater"><div class="inner">{content}</div></div>';
+Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{content}</div></div>';
 
 /**
  * Settings stuff.
@@ -179,7 +179,17 @@ Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
 Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
 
 
-Chatterbox.template.settings.item = '<div class="item {type} {ref}">\
+Chatterbox.template.settings.item = {};
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}">\
                                     {content}\
                                 </div>';
+
+Chatterbox.template.settings.item.text = {};
+Chatterbox.template.settings.item.text.keys = [
+    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n                              </p><p>\n                              '); }]
+];
+
+Chatterbox.template.settings.item.text.frame = '<p>\
+                                        {text}\
+                                    </p>';
 

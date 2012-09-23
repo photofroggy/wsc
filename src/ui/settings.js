@@ -10,6 +10,7 @@
 Chatterbox.Settings = function( ui, config ) {
 
     this.manager = ui;
+    this.config = config;
 
 };
 
@@ -20,7 +21,17 @@ Chatterbox.Settings = function( ui, config ) {
  */
 Chatterbox.Settings.prototype.build = function(  ) {
 
-
+    wrap = Chatterbox.template.popup;
+    window = Chatterbox.template.settings.main;
+    
+    pages = this.config.render();
+    window = replaceAll(window, '{tabs}', pages[0]);
+    window = replaceAll(window, '{pages}', pages[1]);
+    wrap = replaceAll(wrap, '{content}', window);
+    wrap = replaceAll(wrap, '{ref}', 'settings');
+    
+    this.manager.append(wrap);
+    this.window = this.manager.find('.floater.settings');
 
 };
 
@@ -70,7 +81,18 @@ Chatterbox.Settings.Config.prototype.find_page = function( name ) {
  */
 Chatterbox.Settings.Config.prototype.render = function(  ) {
 
-
+    pages = ['', ''];
+    
+    for( i in this.pages ) {
+    
+        page = this.pages[i];
+        parts = page.render();
+        pages[0]+= parts[0];
+        pages[1]+= parts[1];
+    
+    }
+    
+    return pages;
 
 };
 
@@ -137,7 +159,32 @@ Chatterbox.Settings.Page.prototype.render = function(  ) {
  */
 Chatterbox.Settings.Page.prototype.content = function(  ) {
 
-    return ''; // stub
+    content = '';
+    
+    for( i in this.items ) {
+    
+        item = this.items[i];
+        content+= item.render();
+    
+    }
+    
+    return content;
+
+};
+
+/**
+ * Add an item to the page.
+ * 
+ * @method item
+ * @param type {String} The type of item to add to the page.
+ * @param options {Object} Item options.
+ * @return {Object} A settings page item object.
+ */
+Chatterbox.Settings.Page.prototype.item = function( type, options ) {
+
+    item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+    this.items.push(item);
+    return item;
 
 };
 
@@ -147,12 +194,13 @@ Chatterbox.Settings.Page.prototype.content = function(  ) {
  * 
  * @class Settings.Item
  * @constructor
+ * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
  */
-Chatterbox.Settings.Item = function( options ) {
+Chatterbox.Settings.Item = function( type, options ) {
 
-    this.options = options;
-    this.type = 'base';
+    this.options = options || {};
+    this.type = type || 'base';
 
 };
 
@@ -172,7 +220,7 @@ Chatterbox.Settings.Item.prototype.render = function(  ) {
     if( content === false )
         return '';
     
-    item = replaceAll(Chatterbox.template.settings.item, '{type}', this.type);
+    item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
     item = replaceAll(item, '{ref}', this.options.ref);
     item = replaceAll(item, '{content}', content);
     return item;
@@ -188,7 +236,29 @@ Chatterbox.Settings.Item.prototype.render = function(  ) {
  */
 Chatterbox.Settings.Item.prototype.content = function(  ) {
 
-    return false;
+    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
+        return false;
+    
+    item = Chatterbox.template.settings.item[this.type];
+    
+    if( !item.hasOwnProperty('keys') || !item.hasOwnProperty('frame') )
+        return false;
+    
+    content = item.frame;
+    stub = function( item ) { return item; };
+    
+    for( i in item.keys ) {
+    
+        key = item.keys[i];
+        
+        if( !this.options.hasOwnProperty(key[0]) )
+            return false;
+        
+        content = replaceAll( content, key[1], ( key[2] || stub )( this.options[key[0]] ) );
+    
+    }
+    
+    return content;
 
 };
 
