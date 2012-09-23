@@ -23,14 +23,13 @@ Chatterbox.Navigation = function( ui ) {
             if( nav.settings.open )
                 return false;
             
-            var conf = Chatterbox.Settings.Config();
             var evt = {
                 'e': event,
-                'settings': conf
+                'settings': new Chatterbox.Settings.Config()
             };
             
             nav.manager.trigger('settings.open', evt);
-            nav.settings.window = new Chatterbox.Settings( nav.manager, conf );
+            nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
             nav.settings.window.build();
             nav.settings.open = true;
             return false;

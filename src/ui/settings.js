@@ -22,16 +22,16 @@ Chatterbox.Settings = function( ui, config ) {
 Chatterbox.Settings.prototype.build = function(  ) {
 
     wrap = Chatterbox.template.popup;
-    window = Chatterbox.template.settings.main;
+    swindow = Chatterbox.template.settings.main;
     
     pages = this.config.render();
-    window = replaceAll(window, '{tabs}', pages[0]);
-    window = replaceAll(window, '{pages}', pages[1]);
-    wrap = replaceAll(wrap, '{content}', window);
+    swindow = replaceAll(swindow, '{tabs}', pages[0]);
+    swindow = replaceAll(swindow, '{pages}', pages[1]);
+    wrap = replaceAll(wrap, '{content}', swindow);
     wrap = replaceAll(wrap, '{ref}', 'settings');
     
-    this.manager.append(wrap);
-    this.window = this.manager.find('.floater.settings');
+    this.manager.view.append(wrap);
+    this.window = this.manager.view.find('.floater.settings');
 
 };
 

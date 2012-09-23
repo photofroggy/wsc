@@ -9,6 +9,8 @@
 @import "msg";
 @import "heads";
 @import "control";
+@import "popup";
+@import "settings";
 @import "theme_template";
 
 /* Layout */
@@ -76,6 +78,8 @@ div.wsc {
     }
     
     @include control;
+    @include popup;
+    @include settings;
 
 }
 

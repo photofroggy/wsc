@@ -2070,6 +2070,19 @@ wsc.defaults.Extension = function( client ) {
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
+            
+            this.client.ui.on('settings.open', this.settings_page.bind(extension));
+        },
+        
+        settings_page: function( e, ui ) {
+        
+            page = e.settings.page('Main');
+            page.item('text', {
+                'text': 'This will eventually have a whole thing of settings to use. Honest!'
+            });
+            
+            console.log(page, page.render());
+        
         },
         
         theme: function( e, client) {
@@ -3191,7 +3204,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.4';
+Chatterbox.VERSION = '0.4.6';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4327,7 +4340,28 @@ Chatterbox.Navigation = function( ui ) {
     this.buttons = this.nav.find('#tabnav');
     this.tableft = this.buttons.find('.arrow_left');
     this.tabright = this.buttons.find('.arrow_right');
-    this.settings = this.buttons.find('.cog');
+    this.settingsb = this.buttons.find('#settings-button');
+    this.settings = {};
+    this.settings.open = false;
+    
+    var nav = this;
+    this.settingsb.click(
+        function( event ) {
+            if( nav.settings.open )
+                return false;
+            
+            var evt = {
+                'e': event,
+                'settings': new Chatterbox.Settings.Config()
+            };
+            
+            nav.manager.trigger('settings.open', evt);
+            nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
+            nav.settings.window.build();
+            nav.settings.open = true;
+            return false;
+        }
+    );
 
 };
 
@@ -4365,6 +4399,279 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
 
 };
 /**
+ * Settings popup window.
+ * Provides stuff for doing things. Yay.
+ *
+ * @class Settings
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param config {Object} Chatterbox.Settings.Config object.
+ */
+Chatterbox.Settings = function( ui, config ) {
+
+    this.manager = ui;
+    this.config = config;
+
+};
+
+/**
+ * Build the settings window.
+ * 
+ * @method build
+ */
+Chatterbox.Settings.prototype.build = function(  ) {
+
+    wrap = Chatterbox.template.popup;
+    swindow = Chatterbox.template.settings.main;
+    
+    pages = this.config.render();
+    swindow = replaceAll(swindow, '{tabs}', pages[0]);
+    swindow = replaceAll(swindow, '{pages}', pages[1]);
+    wrap = replaceAll(wrap, '{content}', swindow);
+    wrap = replaceAll(wrap, '{ref}', 'settings');
+    
+    this.manager.view.append(wrap);
+    this.window = this.manager.view.find('.floater.settings');
+
+};
+
+
+/**
+ * Settings options object.
+ * Extensions can configure the settings window with this shit yo.
+ * 
+ * @class Settings.Config
+ * @constructor
+ */
+Chatterbox.Settings.Config = function(  ) {
+
+    this.pages = [];
+
+};
+
+/**
+ * Find a settings page that has the given name.
+ * 
+ * @method find_page
+ * @param name {String} Settings page to search for.
+ * @return {Chatterbox.Settings.Page} Settings page object. Returns null if
+ *   no such page exists.
+ */
+Chatterbox.Settings.Config.prototype.find_page = function( name ) {
+
+    n = name.toLowerCase();
+    
+    for( index in this.pages ) {
+    
+        page = this.pages[index];
+        if( page.lname == n )
+            return page;
+    
+    }
+    
+    return null;
+
+};
+
+/**
+ * Return the settings pages rendered as html strings.
+ * 
+ * @method render
+ * @return {Array} Settings pages HTML array.
+ */
+Chatterbox.Settings.Config.prototype.render = function(  ) {
+
+    pages = ['', ''];
+    
+    for( i in this.pages ) {
+    
+        page = this.pages[i];
+        parts = page.render();
+        pages[0]+= parts[0];
+        pages[1]+= parts[1];
+    
+    }
+    
+    return pages;
+
+};
+
+/**
+ * Get a settings page.
+ * 
+ * @method page
+ * @param name {String} Name of the page to get or set.
+ * @return {Chatterbox.Settings.Page} Settings page associated with `name`.
+ */
+Chatterbox.Settings.Config.prototype.page = function( name ) {
+
+    page = this.find_page(name);
+    
+    if( page == null ) {
+        page = new Chatterbox.Settings.Page(name);
+        this.pages.unshift(page);
+    }
+    
+    return page;
+
+};
+
+
+/**
+ * Settings page config object.
+ * 
+ * @class Settings.Page
+ * @constructor
+ * @param name {String} Name of the page.
+ */
+Chatterbox.Settings.Page = function( name ) {
+
+    this.name = name;
+    this.lname = name.toLowerCase();
+    this.ref = replaceAll(this.lname, ' ', '_');
+    //this.content = '';
+    this.items = [];
+
+};
+
+/**
+ * Return the settings page rendered as an html string.
+ * 
+ * @method render
+ * @return {Array} A pair of HTML strings. The Settings page tab HTML, and the Settings page HTML.
+ */
+Chatterbox.Settings.Page.prototype.render = function(  ) {
+
+    tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
+    tab = replaceAll(tab, '{name}', this.name);
+    page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
+    page = replaceAll(page, '{content}', this.content());
+    page = replaceAll(page, '{page-name}', this.name);
+    return [tab, page];
+
+};
+
+/**
+ * Return the page contents rendered as an html string.
+ * 
+ * @method content
+ * @return {String} The contents of the settings page as a string.
+ */
+Chatterbox.Settings.Page.prototype.content = function(  ) {
+
+    content = '';
+    
+    for( i in this.items ) {
+    
+        item = this.items[i];
+        content+= item.render();
+    
+    }
+    
+    return content;
+
+};
+
+/**
+ * Add an item to the page.
+ * 
+ * @method item
+ * @param type {String} The type of item to add to the page.
+ * @param options {Object} Item options.
+ * @return {Object} A settings page item object.
+ */
+Chatterbox.Settings.Page.prototype.item = function( type, options ) {
+
+    item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+    this.items.push(item);
+    return item;
+
+};
+
+
+/**
+ * A base class for settings page items.
+ * 
+ * @class Settings.Item
+ * @constructor
+ * @param type {String} Determines the type of the item.
+ * @param options {Object} Options for the item.
+ */
+Chatterbox.Settings.Item = function( type, options ) {
+
+    this.options = options || {};
+    this.type = type || 'base';
+
+};
+
+/**
+ * Returns the settings page item rendered as an html string.
+ * 
+ * @method render
+ * @return {String} Rendered page item.
+ */
+Chatterbox.Settings.Item.prototype.render = function(  ) {
+
+    if( !this.options.hasOwnProperty('ref') )
+        return '';
+    
+    content = this.content();
+    
+    if( content === false )
+        return '';
+    
+    item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
+    item = replaceAll(item, '{ref}', this.options.ref);
+    item = replaceAll(item, '{content}', content);
+    return item;
+
+};
+
+/**
+ * Renders the contents of the settings page item.
+ * 
+ * @method content
+ * @return {Boolean} Returns false if there is no content for this item.
+ * @return {String} Returns an HTML string if there is content for this item.
+ */
+Chatterbox.Settings.Item.prototype.content = function(  ) {
+
+    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
+        return false;
+    
+    item = Chatterbox.template.settings.item[this.type];
+    
+    if( !item.hasOwnProperty('keys') || !item.hasOwnProperty('frame') )
+        return false;
+    
+    content = item.frame;
+    stub = function( item ) { return item; };
+    
+    for( i in item.keys ) {
+    
+        key = item.keys[i];
+        
+        if( !this.options.hasOwnProperty(key[0]) )
+            return false;
+        
+        content = replaceAll( content, key[1], ( key[2] || stub )( this.options[key[0]] ) );
+    
+    }
+    
+    return content;
+
+};
+
+/**
+ * Method stub for UI events.
+ * 
+ * @method _event_stub
+ */
+Chatterbox.Settings.Item.prototype._event_stub = function(  ) {};
+
+
+
+/**
  * Container object for HTML5 templates for the chat UI.
  * 
  * @class template
@@ -4381,10 +4688,15 @@ Chatterbox.template = {};
  */
 Chatterbox.render = function( template, fill ) {
 
-    if( !Chatterbox.template.hasOwnProperty(template) )
-        return '';
+    html = Chatterbox.template;
+    tparts = template.split('.');
     
-    html = Chatterbox.template[template];
+    for( ind in tparts ) {
+        part = tparts[ind];
+        if( !html.hasOwnProperty( part ) )
+            return '';
+        html = html[part];
+    }
     
     for( key in fill ) {
         if( !fill.hasOwnProperty(key) )
@@ -4406,7 +4718,7 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
-            <li><a href="#settings" title="Change client settings" class="button iconic cog"></a></li>\
+            <li><a href="#settings" title="Change client settings" class="button iconic cog" id="settings-button"></a></li>\
         </ul>\
         </nav>\
         <div class="chatbook"></div>';
@@ -4508,6 +4820,52 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             </strong>\
                             <ul>{info}</ul></div>\
                         </div>';
+
+/**
+ * Container for popup shit.
+ * 
+ * @property popup
+ * @type String
+ */
+Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{content}</div></div>';
+
+/**
+ * Settings stuff.
+ *
+ * @class settings
+ */
+Chatterbox.template.settings = {};
+
+Chatterbox.template.settings.main = '<h2>Settings<a href="#closesettings" class="close iconic x"></a></h2>\
+                            <nav class="tabs">\
+                                <ul>{tabs}</ul>\
+                            </nav>\
+                            <div class="book">\
+                                {pages}\
+                            </div>';
+
+
+Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
+                                {content}\
+                            </div>';
+
+Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
+
+
+Chatterbox.template.settings.item = {};
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}">\
+                                    {content}\
+                                </div>';
+
+Chatterbox.template.settings.item.text = {};
+Chatterbox.template.settings.item.text.keys = [
+    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
+];
+
+Chatterbox.template.settings.item.text.frame = '<p>\
+                                        {text}\
+                                    </p>';
+
 /**
  * dAmn module lolol.
  * 

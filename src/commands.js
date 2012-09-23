@@ -35,6 +35,19 @@ wsc.defaults.Extension = function( client ) {
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
+            
+            this.client.ui.on('settings.open', this.settings_page.bind(extension));
+        },
+        
+        settings_page: function( e, ui ) {
+        
+            page = e.settings.page('Main');
+            page.item('text', {
+                'text': 'This will eventually have a whole thing of settings to use. Honest!'
+            });
+            
+            console.log(page, page.render());
+        
         },
         
         theme: function( e, client) {

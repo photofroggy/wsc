@@ -186,7 +186,7 @@ Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}">\
 
 Chatterbox.template.settings.item.text = {};
 Chatterbox.template.settings.item.text.keys = [
-    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n                              </p><p>\n                              '); }]
+    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
 ];
 
 Chatterbox.template.settings.item.text.frame = '<p>\
