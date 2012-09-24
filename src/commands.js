@@ -43,9 +43,43 @@ wsc.defaults.Extension = function( client ) {
         settings_page: function( e, ui ) {
         
             page = e.settings.page('Main');
+            var client = this.client;
+            var orig = {};
+            orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
+            
             page.item('text', {
-                'ref': 'description',
-                'text': 'This will eventually have a whole thing of settings to use. Honest!'
+                'ref': 'intro',
+                'title': 'Main',
+                'text': 'Use this window to view and change your settings.\n\nAt\
+                        the bottom of this settings page you can see some debug\
+                        information, which can come in handy if something goes\
+                        wrong.'
+            });
+            
+            themes = [];
+            for( i in client.ui.settings.themes ) {
+                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
+                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+            }
+            
+            page.item('dropdown', {
+                'ref': 'theme',
+                'title': 'Theme',
+                'text': 'Set the theme for the client.',
+                'items': themes,
+                'event': {
+                    'change': function( event ) {
+                    
+                        client.ui.theme(client.ui.view.find(this).val());
+                    
+                    }
+                }
+            });
+            
+            page.item('text', {
+                'ref': 'debug',
+                'title': 'Debug Information',
+                'text': 'User Agent: <code>' + this.client.settings.agent + '</code>'
             });
         
         },

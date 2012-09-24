@@ -11,14 +11,21 @@
                 border: 1px solid black;
                 div.page {
                     display: none;
+                    overflow: auto;
                     &.active {
                         display: block;
                     }
                     div.item {
+                        border-bottom: 1px solid black;
+                        padding-bottom: 5px;
+                        margin-bottom: 5px;
+                        &:last-child {
+                            border: none;
+                        }
                         &.centered {
                             text-align: center;
                         }
-                        &.text {
+                        &.text, .text {
                             p {
                                 padding: 0px 10px;
                             }
@@ -26,11 +33,19 @@
                                 padding: 5px 10px 0px 10px;
                             }
                         }
-                        border-bottom: 1px solid black;
-                        padding-bottom: 5px;
-                        margin-bottom: 5px;
-                        &:last-child {
-                            border: none;
+                        .formwrap {
+                            padding: 0px 10px;
+                        }
+                        .twopane {
+                            overflow: hidden;
+                            .left {
+                                float: left;
+                                width: 35%;
+                            }
+                            .right {
+                                float: right;
+                                width: 60%;
+                            }
                         }
                     }
                 }

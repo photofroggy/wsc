@@ -384,7 +384,33 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
  * @method hooks
  * @param item {Object} Page item jQuery object.
  */
-Chatterbox.Settings.Item.prototype.hooks = function( item ) {};
+Chatterbox.Settings.Item.prototype.hooks = function( item ) {
+
+    if( !this.options.hasOwnProperty('event') )
+        return;
+    
+    events = this.options.event;
+        
+    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
+        return;
+    
+    titem = Chatterbox.template.settings.item[this.type];
+    
+    if( !titem.hasOwnProperty('events') )
+        return;
+    
+    for( i in titem.events ) {
+    
+        pair = titem.events[i];
+        
+        if( !events.hasOwnProperty(pair[0]) )
+            continue;
+        
+        item.find(pair[1]).bind(pair[0], events[pair[0]]);
+    
+    }
+
+};
 
 /**
  * Method stub for UI events.
@@ -392,6 +418,39 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {};
  * @method _event_stub
  */
 Chatterbox.Settings.Item.prototype._event_stub = function(  ) {};
+
+
+/**
+ * Drop down menu as a settings page item.
+ * 
+ * @class Dropdown
+ * @constructor
+ * @param type {String} The type of item this item is.
+ * @param options {Object} Item options.
+ */
+Chatterbox.Settings.Item.Dropdown = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+
+};
+
+Chatterbox.Settings.Item.Dropdown.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Dropdown.prototype.constructor = Chatterbox.Settings.Item.Dropdown;
+/*
+Chatterbox.Settings.Item.Dropdown.prototype.hooks = function( item ) {
+
+    if( !this.options.hasOwnProperty('event') )
+        return;
+    
+    events = this.options.event;
+    
+    if( events.hasOwnProperty('change') ) {
+    
+        item.find('select').bind('change', events.change);
+    
+    }
+
+};*/
 
 
 

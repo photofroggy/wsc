@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.10';
+Chatterbox.VERSION = '0.4.11';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1598,7 +1598,33 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
  * @method hooks
  * @param item {Object} Page item jQuery object.
  */
-Chatterbox.Settings.Item.prototype.hooks = function( item ) {};
+Chatterbox.Settings.Item.prototype.hooks = function( item ) {
+
+    if( !this.options.hasOwnProperty('event') )
+        return;
+    
+    events = this.options.event;
+        
+    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
+        return;
+    
+    titem = Chatterbox.template.settings.item[this.type];
+    
+    if( !titem.hasOwnProperty('events') )
+        return;
+    
+    for( i in titem.events ) {
+    
+        pair = titem.events[i];
+        
+        if( !events.hasOwnProperty(pair[0]) )
+            continue;
+        
+        item.find(pair[1]).bind(pair[0], events[pair[0]]);
+    
+    }
+
+};
 
 /**
  * Method stub for UI events.
@@ -1606,6 +1632,39 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {};
  * @method _event_stub
  */
 Chatterbox.Settings.Item.prototype._event_stub = function(  ) {};
+
+
+/**
+ * Drop down menu as a settings page item.
+ * 
+ * @class Dropdown
+ * @constructor
+ * @param type {String} The type of item this item is.
+ * @param options {Object} Item options.
+ */
+Chatterbox.Settings.Item.Dropdown = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+
+};
+
+Chatterbox.Settings.Item.Dropdown.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Dropdown.prototype.constructor = Chatterbox.Settings.Item.Dropdown;
+/*
+Chatterbox.Settings.Item.Dropdown.prototype.hooks = function( item ) {
+
+    if( !this.options.hasOwnProperty('event') )
+        return;
+    
+    events = this.options.event;
+    
+    if( events.hasOwnProperty('change') ) {
+    
+        item.find('select').bind('change', events.change);
+    
+    }
+
+};*/
 
 
 
@@ -1805,4 +1864,56 @@ Chatterbox.template.settings.item.text.keys = [
 Chatterbox.template.settings.item.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
+
+Chatterbox.template.settings.item.dropdown = {};
+Chatterbox.template.settings.item.dropdown.keys = [
+    ['title', '{title}', function( title ) {
+        if( title.length == 0 )
+            return '';
+        return '<h3>' + title + '</h3>';
+    }],
+    ['text', '{text}', function( text ) {
+        if( text.length == 0 ) {
+            return '<div class="formwrap">\
+                                            <form>\
+                                                <select>\
+                                                    {items}\
+                                                </select>\
+                                            </form>\
+                                        </div>';
+        }
+        return '<div class="twopane">\
+                                        <div class="text left">\
+                                            <p>' + replaceAll(text, '\n\n', '\n</p><p>\n') + '</p>\
+                                        </div>\
+                                        <div class="formwrap right">\
+                                            <form>\
+                                                <select>\
+                                                    {items}\
+                                                </select>\
+                                            </form>\
+                                        </div>\
+                                    </div>';
+    }],
+    ['items', '{items}', function( items ) {
+        if( items.length == 0 )
+            return '';
+        render = '';
+        
+        for( i in items ) {
+        
+            item = items[i];
+            render+= '<option value="' + item.value + '"';
+            if( item.selected ) {
+                render+= ' selected="yes"';
+            }
+            render+= '>' + item.title + '</option>';
+        
+        }
+        return render;
+    }]
+];
+
+Chatterbox.template.settings.item.dropdown.events = [['change', 'select']];
+Chatterbox.template.settings.item.dropdown.frame = '{title}{text}';
 

@@ -884,6 +884,7 @@ div.wsc div.floater.settings div.bookwrap div.book {
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page {
   display: none;
+  overflow: auto;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page.active {
   display: block;
@@ -893,17 +894,31 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item {
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child {
+  border: none;
+}
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item.centered {
   text-align: center;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p {
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p {
   padding: 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p {
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p + p {
   padding: 5px 10px 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child {
-  border: none;
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item .formwrap {
+  padding: 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane {
+  overflow: hidden;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .left {
+  float: left;
+  width: 35%;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .right {
+  float: right;
+  width: 60%;
 }
 div.wsc div.floater.settings footer {
   width: 100%;
@@ -1129,6 +1144,7 @@ div.wsc.wsct_default div.floater.settings h2 {
 div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #0d4d69;
   border-radius: 0;
+  background-color: #81aac5;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs .active .tab {
   background-color: #cedbe2;
@@ -1352,6 +1368,7 @@ div.wsc.wsct_dAmn div.floater.settings h2 {
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #9eaea0;
   border-radius: 0;
+  background-color: #bbc6b9;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs .active .tab {
   background-color: #dce7dc;

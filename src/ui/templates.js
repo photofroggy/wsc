@@ -195,3 +195,55 @@ Chatterbox.template.settings.item.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
 
+Chatterbox.template.settings.item.dropdown = {};
+Chatterbox.template.settings.item.dropdown.keys = [
+    ['title', '{title}', function( title ) {
+        if( title.length == 0 )
+            return '';
+        return '<h3>' + title + '</h3>';
+    }],
+    ['text', '{text}', function( text ) {
+        if( text.length == 0 ) {
+            return '<div class="formwrap">\
+                                            <form>\
+                                                <select>\
+                                                    {items}\
+                                                </select>\
+                                            </form>\
+                                        </div>';
+        }
+        return '<div class="twopane">\
+                                        <div class="text left">\
+                                            <p>' + replaceAll(text, '\n\n', '\n</p><p>\n') + '</p>\
+                                        </div>\
+                                        <div class="formwrap right">\
+                                            <form>\
+                                                <select>\
+                                                    {items}\
+                                                </select>\
+                                            </form>\
+                                        </div>\
+                                    </div>';
+    }],
+    ['items', '{items}', function( items ) {
+        if( items.length == 0 )
+            return '';
+        render = '';
+        
+        for( i in items ) {
+        
+            item = items[i];
+            render+= '<option value="' + item.value + '"';
+            if( item.selected ) {
+                render+= ' selected="yes"';
+            }
+            render+= '>' + item.title + '</option>';
+        
+        }
+        return render;
+    }]
+];
+
+Chatterbox.template.settings.item.dropdown.events = [['change', 'select']];
+Chatterbox.template.settings.item.dropdown.frame = '{title}{text}';
+

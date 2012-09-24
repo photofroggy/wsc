@@ -283,6 +283,7 @@
                     a.tab {
                         border-color: $inner-border;
                         border-radius: 0;
+                        background-color: $heading-bg;
                     }
                     .active .tab {
                         background-color: $log-bg;
