@@ -1,10 +1,3 @@
-@mixin button-gradient($start, $init, $slope, $bg) {
-    background: -webkit-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -moz-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -ms-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -o-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-}
 
 @mixin wsc-theme($base: #075C70,
     $chrome: #406D8B,

@@ -1,0 +1,30 @@
+
+@mixin settings {
+    div.floater.settings {
+        h2 {
+            padding: 10px;
+            border-bottom: 1px solid black;
+        }
+        
+        div.bookwrap {
+            margin: 10px 10px 0px 10px;
+            nav.tabs {
+                padding: 0px 5px;
+            }
+            div.book {
+                padding: 10px;
+            }
+        }
+        
+        footer {
+            width: 100%;
+            padding: 10px 5px;
+            overflow: hidden;
+            a.button {
+                margin: 0px 5px;
+            }
+        }
+    }
+}
+
+

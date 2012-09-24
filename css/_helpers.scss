@@ -1,0 +1,18 @@
+
+@mixin button-gradient($start, $init, $slope, $bg) {
+    background: -webkit-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -moz-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -ms-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: -o-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+    background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
+}
+
+@mixin round-top($r) {
+    -webkit-border-top-left-radius: $r;
+    -webkit-border-top-right-radius: $r;
+    -moz-border-radius-topleft: $r;
+    -moz-border-radius-topright: $r;
+    border-top-left-radius: $r;
+    border-top-right-radius: $r;
+}
+
