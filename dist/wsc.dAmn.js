@@ -3204,7 +3204,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.6';
+Chatterbox.VERSION = '0.4.7';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4396,6 +4396,9 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
     this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    if( this.settings.open ) {
+        this.settings.window.resize();
+    }
 
 };
 /**
@@ -4432,9 +4435,47 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.manager.view.append(wrap);
     this.window = this.manager.view.find('.floater.settings');
+    this.saveb = this.window.find('a.button.save');
+    this.closeb = this.window.find('a.button.close');
+    
+    var settings = this;
+    this.saveb.click(
+        function( event ) {
+            // Save stuff.
+            return false;
+        }
+    );
+    
+    this.closeb.click(
+        function( event ) {
+            settings.window.remove();
+            settings.manager.nav.settings.open = false;
+            settings.manager.nav.settings.window = null;
+            return false;
+        }
+    );
+    
+    this.resize();
 
 };
 
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.prototype.resize = function(  ) {
+
+    inner = this.window.find('.inner');
+    head = inner.find('h2');
+    wrap = inner.find('.bookwrap');
+    book = wrap.find('.book');
+    tabs = wrap.find('nav.tabs');
+    foot = inner.find('footer');
+    wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 10);
+    book.height(wrap.innerHeight() - tabs.outerHeight() - 25);
+
+};
 
 /**
  * Settings options object.
@@ -4836,13 +4877,18 @@ Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{cont
  */
 Chatterbox.template.settings = {};
 
-Chatterbox.template.settings.main = '<h2>Settings<a href="#closesettings" class="close iconic x"></a></h2>\
-                            <nav class="tabs">\
-                                <ul>{tabs}</ul>\
-                            </nav>\
-                            <div class="book">\
-                                {pages}\
-                            </div>';
+Chatterbox.template.settings.main = '<h2>Settings</h2>\
+                            <div class="bookwrap">\
+                                <nav class="tabs">\
+                                    <ul>{tabs}</ul>\
+                                </nav>\
+                                <div class="book">\
+                                    {pages}\
+                                </div>\
+                            </div>\
+                            <footer>\
+                                <a href="#save" class="button save">Save</a> <a href="#close" class="button close">Close</a>\
+                            </footer>';
 
 
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\

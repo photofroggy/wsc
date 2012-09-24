@@ -815,7 +815,7 @@ div.wsc a.button:hover,
 div.wsc form.msg input[type="submit"]:hover {
   cursor: pointer;
 }
-div.wsc a.close {
+div.wsc a.iconic.close {
   background: none;
   height: 13px;
   width: 13px;
@@ -831,7 +831,7 @@ div.wsc a.close {
   -moz-box-shadow: 0px 1px 1px black;
   box-shadow: 0px 1px 1px black;
 }
-div.wsc a.close:hover {
+div.wsc a.iconic.close:hover {
   background: none;
   border: 1px solid black;
   cursor: pointer;
@@ -845,11 +845,32 @@ div.wsc div.floater {
   left: 20%;
   width: 60%;
   height: 80%;
+}
+div.wsc div.floater div.inner {
+  height: 100%;
   background-color: white;
   border: 1px solid black;
 }
-div.wsc div.floater.settings div.inner {
+div.wsc div.floater.settings h2 {
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+div.wsc div.floater.settings div.bookwrap {
+  margin: 10px 10px 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap nav.tabs {
+  padding: 0px 15px;
+}
+div.wsc div.floater.settings div.bookwrap div.book {
+  padding: 10px;
+}
+div.wsc div.floater.settings footer {
+  width: 100%;
+  padding: 10px 5px;
   overflow: hidden;
+}
+div.wsc div.floater.settings footer a.button {
+  margin: 0px 5px;
 }
 
 /* Themes */
@@ -903,7 +924,7 @@ div.wsc.wsct_default form.msg input[type="submit"]:active {
   color: #aae1ee;
   text-shadow: 0px -1px #1773a0;
 }
-div.wsc.wsct_default a.close {
+div.wsc.wsct_default a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -915,7 +936,7 @@ div.wsc.wsct_default a.close {
   border-color: #075c70;
   text-decoration: none;
 }
-div.wsc.wsct_default a.close:hover {
+div.wsc.wsct_default a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
@@ -1055,6 +1076,23 @@ div.wsc.wsct_default div.chatwindow div.userinfo div.info a:hover {
   color: white;
   text-decoration: none;
 }
+div.wsc.wsct_default div.floater div.inner {
+  background-color: #406d8b;
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.settings h2 {
+  background-color: #81aac5;
+  color: #063b63;
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs a.tab {
+  background-color: #cedbe2;
+  border: none;
+  border-radius: 0;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
+  background-color: #cedbe2;
+}
 
 /* dAmn style theme */
 div.wsc.wsct_dAmn {
@@ -1103,7 +1141,7 @@ div.wsc.wsct_dAmn a.button:active, div.wsc.wsct_dAmn form.msg input[type="submit
   color: #bad5c0;
   text-shadow: 0px -1px #002409;
 }
-div.wsc.wsct_dAmn a.close {
+div.wsc.wsct_dAmn a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1115,7 +1153,7 @@ div.wsc.wsct_dAmn a.close {
   border-color: #2c3635;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn a.close:hover {
+div.wsc.wsct_dAmn a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #f74738 5%, #a22d23 97%);
@@ -1254,4 +1292,21 @@ div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a {
 div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a:hover {
   color: #2c3635;
   text-decoration: underline;
+}
+div.wsc.wsct_dAmn div.floater div.inner {
+  background-color: #d0dbd0;
+  border-color: #858585;
+}
+div.wsc.wsct_dAmn div.floater.settings h2 {
+  background-color: #bbc6b9;
+  color: #2c3635;
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
+  background-color: #dce7dc;
+  border: none;
+  border-radius: 0;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
+  background-color: #dce7dc;
 }

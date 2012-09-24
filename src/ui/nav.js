@@ -69,5 +69,8 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
     this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    if( this.settings.open ) {
+        this.settings.window.resize();
+    }
 
 };

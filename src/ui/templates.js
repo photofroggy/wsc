@@ -163,13 +163,18 @@ Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{cont
  */
 Chatterbox.template.settings = {};
 
-Chatterbox.template.settings.main = '<h2>Settings<a href="#closesettings" class="close iconic x"></a></h2>\
-                            <nav class="tabs">\
-                                <ul>{tabs}</ul>\
-                            </nav>\
-                            <div class="book">\
-                                {pages}\
-                            </div>';
+Chatterbox.template.settings.main = '<h2>Settings</h2>\
+                            <div class="bookwrap">\
+                                <nav class="tabs">\
+                                    <ul>{tabs}</ul>\
+                                </nav>\
+                                <div class="book">\
+                                    {pages}\
+                                </div>\
+                            </div>\
+                            <footer>\
+                                <a href="#save" class="button save">Save</a> <a href="#close" class="button close">Close</a>\
+                            </footer>';
 
 
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\

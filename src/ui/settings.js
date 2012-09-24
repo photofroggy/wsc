@@ -32,9 +32,47 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.manager.view.append(wrap);
     this.window = this.manager.view.find('.floater.settings');
+    this.saveb = this.window.find('a.button.save');
+    this.closeb = this.window.find('a.button.close');
+    
+    var settings = this;
+    this.saveb.click(
+        function( event ) {
+            // Save stuff.
+            return false;
+        }
+    );
+    
+    this.closeb.click(
+        function( event ) {
+            settings.window.remove();
+            settings.manager.nav.settings.open = false;
+            settings.manager.nav.settings.window = null;
+            return false;
+        }
+    );
+    
+    this.resize();
 
 };
 
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.prototype.resize = function(  ) {
+
+    inner = this.window.find('.inner');
+    head = inner.find('h2');
+    wrap = inner.find('.bookwrap');
+    book = wrap.find('.book');
+    tabs = wrap.find('nav.tabs');
+    foot = inner.find('footer');
+    wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 10);
+    book.height(wrap.innerHeight() - tabs.outerHeight() - 25);
+
+};
 
 /**
  * Settings options object.
