@@ -1,11 +1,6 @@
 
 @mixin settings {
     div.floater.settings {
-        h2 {
-            padding: 10px;
-            border-bottom: 1px solid black;
-        }
-        
         div.bookwrap {
             margin: 10px 10px 0px 10px;
             nav.tabs {
@@ -13,6 +8,32 @@
             }
             div.book {
                 padding: 10px;
+                border: 1px solid black;
+                div.page {
+                    display: none;
+                    &.active {
+                        display: block;
+                    }
+                    div.item {
+                        &.centered {
+                            text-align: center;
+                        }
+                        &.text {
+                            p {
+                                padding: 0px 10px;
+                            }
+                            p + p {
+                                padding: 5px 10px 0px 10px;
+                            }
+                        }
+                        border-bottom: 1px solid black;
+                        padding-bottom: 5px;
+                        margin-bottom: 5px;
+                        &:last-child {
+                            border: none;
+                        }
+                    }
+                }
             }
         }
         
@@ -21,7 +42,7 @@
             padding: 10px 5px;
             overflow: hidden;
             a.button {
-                margin: 0px 5px;
+                margin-left: 5px;
             }
         }
     }

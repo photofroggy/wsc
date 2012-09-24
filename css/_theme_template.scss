@@ -281,13 +281,21 @@
             div.bookwrap {
                 nav.tabs {
                     a.tab {
-                        background-color: $log-bg;
-                        border: none;
+                        border-color: $inner-border;
                         border-radius: 0;
+                    }
+                    .active .tab {
+                        background-color: $log-bg;
                     }
                 }
                 div.book {
                     background-color: $log-bg;
+                    border-color: $inner-border;
+                    div.page {
+                        div.item {
+                            border-color: $inner-border;
+                        }
+                    }
                 }
             }
         }

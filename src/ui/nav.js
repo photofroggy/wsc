@@ -29,6 +29,15 @@ Chatterbox.Navigation = function( ui ) {
             };
             
             nav.manager.trigger('settings.open', evt);
+            nav.manager.trigger('settings.open.ran', evt);
+            
+            about = evt.settings.page('About', true);
+            about.item('text', {
+                'ref': 'about-chatterbox',
+                'wclass': 'centered',
+                'text': 'Using <a href="http://github.com/photofroggy/wsc/">Chatterbox</a> version ' + Chatterbox.VERSION + ' ' + Chatterbox.STATE + ' by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>.'
+            });
+            
             nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
             nav.settings.window.build();
             nav.settings.open = true;

@@ -855,10 +855,22 @@ div.wsc div.floater div.inner {
   height: 100%;
   background-color: white;
   border: 1px solid black;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 20px black;
+  -moz-box-shadow: 0px 0px 20px black;
+  box-shadow: 0px 0px 20px black;
 }
-div.wsc div.floater.settings h2 {
+div.wsc div.floater div.inner h2 {
   padding: 10px;
   border-bottom: 1px solid black;
+  border-top-left-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
 }
 div.wsc div.floater.settings div.bookwrap {
   margin: 10px 10px 0px 10px;
@@ -868,6 +880,30 @@ div.wsc div.floater.settings div.bookwrap nav.tabs {
 }
 div.wsc div.floater.settings div.bookwrap div.book {
   padding: 10px;
+  border: 1px solid black;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page {
+  display: none;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page.active {
+  display: block;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item {
+  border-bottom: 1px solid black;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.centered {
+  text-align: center;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p {
+  padding: 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p {
+  padding: 5px 10px 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child {
+  border: none;
 }
 div.wsc div.floater.settings footer {
   width: 100%;
@@ -875,7 +911,7 @@ div.wsc div.floater.settings footer {
   overflow: hidden;
 }
 div.wsc div.floater.settings footer a.button {
-  margin: 0px 5px;
+  margin-left: 5px;
 }
 
 /* Themes */
@@ -1091,12 +1127,18 @@ div.wsc.wsct_default div.floater.settings h2 {
   border-color: #0d4d69;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs a.tab {
-  background-color: #cedbe2;
-  border: none;
+  border-color: #0d4d69;
   border-radius: 0;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs .active .tab {
+  background-color: #cedbe2;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
   background-color: #cedbe2;
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item {
+  border-color: #0d4d69;
 }
 
 /* dAmn style theme */
@@ -1308,10 +1350,16 @@ div.wsc.wsct_dAmn div.floater.settings h2 {
   border-color: #9eaea0;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
-  background-color: #dce7dc;
-  border: none;
+  border-color: #9eaea0;
   border-radius: 0;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs .active .tab {
+  background-color: #dce7dc;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
   background-color: #dce7dc;
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item {
+  border-color: #9eaea0;
 }

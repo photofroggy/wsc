@@ -2072,16 +2072,31 @@ wsc.defaults.Extension = function( client ) {
             // some ui business.
             
             this.client.ui.on('settings.open', this.settings_page.bind(extension));
+            this.client.ui.on('settings.open.ran', this.about_page.bind(extension));
         },
         
         settings_page: function( e, ui ) {
         
             page = e.settings.page('Main');
             page.item('text', {
+                'ref': 'description',
                 'text': 'This will eventually have a whole thing of settings to use. Honest!'
             });
-            
-            console.log(page, page.render());
+        
+        },
+        
+        about_page: function( e, ui ) {
+        
+            page = e.settings.page('About', true);
+            page.item('text', {
+                'ref': 'about-wsc',
+                'title': 'Wsc',
+                'text': 'Currently using <a href="http://github.com/photofroggy/wsc/">wsc</a>\
+                        version ' + wsc.VERSION + ' ' + wsc.STATE + '.\n\nWsc\
+                        works using HTML5, javascript, and CSS3. WebSocket is used for the connection\
+                        where possible. The source code for this client is pretty huge.\n\nWsc was created\
+                        by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>'
+            });
         
         },
         
@@ -3204,7 +3219,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.9';
+Chatterbox.VERSION = '0.4.10';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4356,6 +4371,15 @@ Chatterbox.Navigation = function( ui ) {
             };
             
             nav.manager.trigger('settings.open', evt);
+            nav.manager.trigger('settings.open.ran', evt);
+            
+            about = evt.settings.page('About', true);
+            about.item('text', {
+                'ref': 'about-chatterbox',
+                'wclass': 'centered',
+                'text': 'Using <a href="http://github.com/photofroggy/wsc/">Chatterbox</a> version ' + Chatterbox.VERSION + ' ' + Chatterbox.STATE + ' by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>.'
+            });
+            
             nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
             nav.settings.window.build();
             nav.settings.open = true;
@@ -4426,10 +4450,6 @@ Chatterbox.Settings.prototype.build = function(  ) {
 
     wrap = Chatterbox.template.popup;
     swindow = Chatterbox.template.settings.main;
-    
-    pages = this.config.render();
-    swindow = replaceAll(swindow, '{tabs}', pages[0]);
-    swindow = replaceAll(swindow, '{pages}', pages[1]);
     wrap = replaceAll(wrap, '{content}', swindow);
     wrap = replaceAll(wrap, '{ref}', 'settings');
     
@@ -4437,8 +4457,14 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.window = this.manager.view.find('.floater.settings');
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.button.close');
+    this.tabs = this.window.find('nav.tabs ul.tabs');
+    this.book = this.window.find('div.book');
     
+    this.config.build(this);
+    
+    //this.window.draggable();
     this.window.find('ul.tabs li').first().addClass('active');
+    this.window.find('div.book div.page').first().addClass('active');
     
     var settings = this;
     this.saveb.click(
@@ -4471,11 +4497,26 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     inner = this.window.find('.inner');
     head = inner.find('h2');
     wrap = inner.find('.bookwrap');
-    book = wrap.find('.book');
-    tabs = wrap.find('nav.tabs');
     foot = inner.find('footer');
-    wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 10);
-    book.height(wrap.innerHeight() - tabs.outerHeight() - 25);
+    wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
+    this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+
+};
+
+/**
+ * Switch the window to view the given page.
+ * 
+ * @method switch_page
+ * @param page {Object} Settings window page object. This should be the page
+ *   that you want to bring into focus.
+ */
+Chatterbox.Settings.prototype.switch_page = function( page ) {
+
+    active = this.tabs.find('li.active').first();
+    activeref = active.prop('id').split('-', 1)[0];
+    active = this.config.page(activeref.split('_').join(' '));
+    active.hide();
+    page.show();
 
 };
 
@@ -4517,25 +4558,18 @@ Chatterbox.Settings.Config.prototype.find_page = function( name ) {
 };
 
 /**
- * Return the settings pages rendered as html strings.
+ * Render and display the settings pages in the given settings window.
  * 
- * @method render
- * @return {Array} Settings pages HTML array.
+ * @method build
+ * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Config.prototype.render = function(  ) {
+Chatterbox.Settings.Config.prototype.build = function( window ) {
 
-    pages = ['', ''];
-    
     for( i in this.pages ) {
     
-        page = this.pages[i];
-        parts = page.render();
-        pages[0]+= parts[0];
-        pages[1]+= parts[1];
+        this.pages[i].build(window);
     
     }
-    
-    return pages;
 
 };
 
@@ -4544,15 +4578,22 @@ Chatterbox.Settings.Config.prototype.render = function(  ) {
  * 
  * @method page
  * @param name {String} Name of the page to get or set.
+ * @param [push=false] {Boolean} When adding the page, should push be used in
+ *   place of unshift? Default is `false`, meaning use unshift.
  * @return {Chatterbox.Settings.Page} Settings page associated with `name`.
  */
-Chatterbox.Settings.Config.prototype.page = function( name ) {
+Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     page = this.find_page(name);
+    push = push || false;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name);
-        this.pages.unshift(page);
+        if( push ) {
+            this.pages.push(page);
+        } else {
+            this.pages.unshift(page);
+        }
     }
     
     return page;
@@ -4578,40 +4619,79 @@ Chatterbox.Settings.Page = function( name ) {
 };
 
 /**
- * Return the settings page rendered as an html string.
+ * Render and display the settings page in the given settings window.
  * 
- * @method render
- * @return {Array} A pair of HTML strings. The Settings page tab HTML, and the Settings page HTML.
+ * @method build
+ * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Page.prototype.render = function(  ) {
+Chatterbox.Settings.Page.prototype.build = function( window ) {
 
     tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
     page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
-    page = replaceAll(page, '{content}', this.content());
     page = replaceAll(page, '{page-name}', this.name);
-    return [tab, page];
+    window.tabs.append(tab);
+    window.book.append(page);
+    
+    this.view = window.book.find('div#' + this.ref + '-page');
+    this.tab = window.tabs.find('li#' + this.ref + '-tab');
+    
+    var page = this;
+    this.tab.find('a').click(
+        function( event ) {
+            if( page.tab.hasClass('active') )
+                return false;
+            window.switch_page(page);
+            return false;
+        }
+    );
+    
+    this.content();
 
 };
 
 /**
- * Return the page contents rendered as an html string.
+ * Display the page's contents.
  * 
  * @method content
- * @return {String} The contents of the settings page as a string.
  */
 Chatterbox.Settings.Page.prototype.content = function(  ) {
-
-    content = '';
     
     for( i in this.items ) {
     
-        item = this.items[i];
-        content+= item.render();
+        this.items[i].build(this.view);
     
     }
+
+};
+
+/**
+ * Bring the page into view.
+ * 
+ * @method show
+ */
+Chatterbox.Settings.Page.prototype.show = function(  ) {
+
+    if( !this.tab.hasClass('active') )
+        this.tab.addClass('active');
     
-    return content;
+    if( !this.view.hasClass('active') )
+        this.view.addClass('active');
+
+};
+
+/**
+ * Hide the page from view.
+ * 
+ * @method hide
+ */
+Chatterbox.Settings.Page.prototype.hide = function(  ) {
+
+    if( this.tab.hasClass('active') )
+        this.tab.removeClass('active');
+    
+    if( this.view.hasClass('active') )
+        this.view.removeClass('active');
 
 };
 
@@ -4621,12 +4701,20 @@ Chatterbox.Settings.Page.prototype.content = function(  ) {
  * @method item
  * @param type {String} The type of item to add to the page.
  * @param options {Object} Item options.
+ * @param [shift=false] {Boolean} Should unshift be used when adding the item?
  * @return {Object} A settings page item object.
  */
-Chatterbox.Settings.Page.prototype.item = function( type, options ) {
+Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
+    shift = shift || false;
     item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
-    this.items.push(item);
+    
+    if( shift ) {
+        this.items.unshift(item);
+    } else {
+        this.items.push(item);
+    }
+    
     return item;
 
 };
@@ -4644,29 +4732,45 @@ Chatterbox.Settings.Item = function( type, options ) {
 
     this.options = options || {};
     this.type = type || 'base';
+    this.items = [];
 
 };
 
 /**
- * Returns the settings page item rendered as an html string.
+ * Render and display the settings page item.
  * 
- * @method render
- * @return {String} Rendered page item.
+ * @method build
+ * @param page {Object} Settings page object.
  */
-Chatterbox.Settings.Item.prototype.render = function(  ) {
+Chatterbox.Settings.Item.prototype.build = function( page ) {
 
     if( !this.options.hasOwnProperty('ref') )
-        return '';
+        return;
     
     content = this.content();
     
     if( content === false )
-        return '';
+        return;
     
     item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
     item = replaceAll(item, '{ref}', this.options.ref);
+    item = replaceAll(item, '{class}', (this.options['wclass'] || ''));
     item = replaceAll(item, '{content}', content);
-    return item;
+    page.append(item);
+    this.hooks(page.find('div.item.' + this.options.ref));
+    
+    if( !this.options.hasOwnProperty('subitems') )
+        return;
+    
+    for( i in this.options.subitems ) {
+    
+        iopt = this.options.subitems[i];
+        type = iopt[0];
+        options = iopt[1];
+        item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+        item.build(page.find('.item.' + this.ref + ' div.item.sub#' + String(i)));
+    
+    }
 
 };
 
@@ -4693,17 +4797,21 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
     for( i in item.keys ) {
     
         key = item.keys[i];
-        
-        if( !this.options.hasOwnProperty(key[0]) )
-            return false;
-        
-        content = replaceAll( content, key[1], ( key[2] || stub )( this.options[key[0]] ) );
+        content = replaceAll( content, key[1], ( key[2] || stub )( ( this.options[key[0]] || '' ) ) );
     
     }
     
     return content;
 
 };
+
+/**
+ * Apply event callbacks to the page item.
+ * 
+ * @method hooks
+ * @param item {Object} Page item jQuery object.
+ */
+Chatterbox.Settings.Item.prototype.hooks = function( item ) {};
 
 /**
  * Method stub for UI events.
@@ -4878,39 +4986,36 @@ Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{cont
  * @class settings
  */
 Chatterbox.template.settings = {};
-
 Chatterbox.template.settings.main = '<h2>Settings</h2>\
                             <div class="bookwrap">\
                                 <nav class="tabs">\
-                                    <ul class="tabs">{tabs}</ul>\
+                                    <ul class="tabs"></ul>\
                                 </nav>\
-                                <div class="book">\
-                                    {pages}\
-                                </div>\
+                                <div class="book"></div>\
                             </div>\
                             <footer>\
                                 <a href="#save" class="button save">Save</a> <a href="#close" class="button close">Close</a>\
                             </footer>';
 
-
-Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
-                                {content}\
-                            </div>';
-
-Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
-
+Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';
+Chatterbox.template.settings.tab = '<li id="{ref}-tab"><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
 
 Chatterbox.template.settings.item = {};
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}">\
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref} {class}">\
                                     {content}\
                                 </div>';
 
 Chatterbox.template.settings.item.text = {};
 Chatterbox.template.settings.item.text.keys = [
+    ['title', '{title}', function( title ) {
+        if( title.length == 0 )
+            return '';
+        return '<h3>' + title + '</h3>';
+    }],
     ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
 ];
 
-Chatterbox.template.settings.item.text.frame = '<p>\
+Chatterbox.template.settings.item.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
 

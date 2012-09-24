@@ -37,16 +37,31 @@ wsc.defaults.Extension = function( client ) {
             // some ui business.
             
             this.client.ui.on('settings.open', this.settings_page.bind(extension));
+            this.client.ui.on('settings.open.ran', this.about_page.bind(extension));
         },
         
         settings_page: function( e, ui ) {
         
             page = e.settings.page('Main');
             page.item('text', {
+                'ref': 'description',
                 'text': 'This will eventually have a whole thing of settings to use. Honest!'
             });
-            
-            console.log(page, page.render());
+        
+        },
+        
+        about_page: function( e, ui ) {
+        
+            page = e.settings.page('About', true);
+            page.item('text', {
+                'ref': 'about-wsc',
+                'title': 'Wsc',
+                'text': 'Currently using <a href="http://github.com/photofroggy/wsc/">wsc</a>\
+                        version ' + wsc.VERSION + ' ' + wsc.STATE + '.\n\nWsc\
+                        works using HTML5, javascript, and CSS3. WebSocket is used for the connection\
+                        where possible. The source code for this client is pretty huge.\n\nWsc was created\
+                        by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>'
+            });
         
         },
         

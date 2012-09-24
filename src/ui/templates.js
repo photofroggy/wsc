@@ -162,39 +162,36 @@ Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{cont
  * @class settings
  */
 Chatterbox.template.settings = {};
-
 Chatterbox.template.settings.main = '<h2>Settings</h2>\
                             <div class="bookwrap">\
                                 <nav class="tabs">\
-                                    <ul class="tabs">{tabs}</ul>\
+                                    <ul class="tabs"></ul>\
                                 </nav>\
-                                <div class="book">\
-                                    {pages}\
-                                </div>\
+                                <div class="book"></div>\
                             </div>\
                             <footer>\
                                 <a href="#save" class="button save">Save</a> <a href="#close" class="button close">Close</a>\
                             </footer>';
 
-
-Chatterbox.template.settings.page = '<div class="page" id="{ref}-page">\
-                                {content}\
-                            </div>';
-
-Chatterbox.template.settings.tab = '<li><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
-
+Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';
+Chatterbox.template.settings.tab = '<li id="{ref}-tab"><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
 
 Chatterbox.template.settings.item = {};
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}">\
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref} {class}">\
                                     {content}\
                                 </div>';
 
 Chatterbox.template.settings.item.text = {};
 Chatterbox.template.settings.item.text.keys = [
+    ['title', '{title}', function( title ) {
+        if( title.length == 0 )
+            return '';
+        return '<h3>' + title + '</h3>';
+    }],
     ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
 ];
 
-Chatterbox.template.settings.item.text.frame = '<p>\
+Chatterbox.template.settings.item.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
 
