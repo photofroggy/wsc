@@ -7,12 +7,25 @@
     background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
 }
 
-@mixin round-top($r) {
-    -webkit-border-top-left-radius: $r;
-    -webkit-border-top-right-radius: $r;
-    -moz-border-radius-topleft: $r;
-    -moz-border-radius-topright: $r;
-    border-top-left-radius: $r;
-    border-top-right-radius: $r;
+@mixin round-corner($x, $y, $params) {
+    border-#{$x}-#{$y}-radius: $params;
+    -moz-border-radius-#{$x}#{$y}: $params;
+    -webkit-border-#{$x}-#{$y}-radius: $params;
 }
 
+@mixin round-box($params) {
+    border-radius: $params;
+    -moz-border-radius: $params;
+    -webkit-border-radius: $params;
+}
+
+@mixin round-top($r) {
+    @include round-corner(top, left, $r);
+    @include round-corner(top, right, $r);
+}
+
+@mixin shadow($params) {
+    -webkit-box-shadow: $params;
+    -moz-box-shadow: $params;
+    box-shadow: $params;
+}
