@@ -72,6 +72,18 @@ wsc.defaults.Extension = function( client ) {
                     
                         client.ui.theme(client.ui.view.find(this).val());
                     
+                    },
+                    'save': function( event ) {
+                    
+                        if( event.input == null )
+                            return;
+                        orig.theme = event.input.val();
+                    
+                    },
+                    'close': function( event ) {
+                    
+                        client.ui.theme(orig.theme);
+                    
                     }
                 }
             });

@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.11';
+Chatterbox.VERSION = '0.4.12';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1244,6 +1244,7 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.window = this.manager.view.find('.floater.settings');
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.button.close');
+    this.scb = this.window.find('a.button.saveclose');
     this.tabs = this.window.find('nav.tabs ul.tabs');
     this.book = this.window.find('div.book');
     
@@ -1256,16 +1257,21 @@ Chatterbox.Settings.prototype.build = function(  ) {
     var settings = this;
     this.saveb.click(
         function( event ) {
-            // Save stuff.
+            settings.save();
             return false;
         }
     );
     
     this.closeb.click(
         function( event ) {
-            settings.window.remove();
-            settings.manager.nav.settings.open = false;
-            settings.manager.nav.settings.window = null;
+            settings.close();
+            return false;
+        }
+    );
+    this.scb.click(
+        function( event ) {
+            settings.save();
+            settings.close();
             return false;
         }
     );
@@ -1304,6 +1310,21 @@ Chatterbox.Settings.prototype.switch_page = function( page ) {
     active = this.config.page(activeref.split('_').join(' '));
     active.hide();
     page.show();
+
+};
+
+Chatterbox.Settings.prototype.save = function(  ) {
+
+    this.config.save(this);
+
+};
+
+Chatterbox.Settings.prototype.close = function(  ) {
+
+    this.window.remove();
+    this.manager.nav.settings.open = false;
+    this.manager.nav.settings.window = null;
+    this.config.close(this);
 
 };
 
@@ -1384,6 +1405,26 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
     }
     
     return page;
+
+};
+
+Chatterbox.Settings.Config.prototype.save = function( window ) {
+
+    for( i in this.pages ) {
+    
+        this.pages[i].save(window);
+    
+    }
+
+};
+
+Chatterbox.Settings.Config.prototype.close = function( window ) {
+
+    for( i in this.pages ) {
+    
+        this.pages[i].close(window);
+    
+    }
 
 };
 
@@ -1506,6 +1547,26 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
 };
 
+Chatterbox.Settings.Page.prototype.save = function( window ) {
+
+    for( i in this.items ) {
+    
+        this.items[i].save(window, this);
+    
+    }
+
+};
+
+Chatterbox.Settings.Page.prototype.close = function( window ) {
+
+    for( i in this.items ) {
+    
+        this.items[i].close(window, this);
+    
+    }
+
+};
+
 
 /**
  * A base class for settings page items.
@@ -1520,6 +1581,7 @@ Chatterbox.Settings.Item = function( type, options ) {
     this.options = options || {};
     this.type = type || 'base';
     this.items = [];
+    this.view = null;
 
 };
 
@@ -1544,7 +1606,8 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     item = replaceAll(item, '{class}', (this.options['wclass'] || ''));
     item = replaceAll(item, '{content}', content);
     page.append(item);
-    this.hooks(page.find('div.item.' + this.options.ref));
+    this.view = page.find('.item.'+this.options.ref);
+    this.hooks(this.view);
     
     if( !this.options.hasOwnProperty('subitems') )
         return;
@@ -1632,6 +1695,52 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
  * @method _event_stub
  */
 Chatterbox.Settings.Item.prototype._event_stub = function(  ) {};
+
+Chatterbox.Settings.Item.prototype._get_cb = function( event ) {
+
+    if( !this.options.hasOwnProperty('event') )
+        return this._event_stub;
+    
+    return this.options.event[event] || this._event_stub;
+
+};
+
+Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
+
+    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
+        return false;
+    
+    titem = Chatterbox.template.settings.item[this.type];
+    
+    if( !titem.hasOwnProperty('events') )
+        return false;
+    
+    for( i in titem.events ) {
+    
+        pair = titem.events[i];
+        
+        if( pair[0] == event )
+            return pair;
+    
+    }
+
+};
+
+Chatterbox.Settings.Item.prototype.save = function( window, page ) {
+
+    pair = this._get_ep('inspect');
+    inps = pair == false ? null : this.view.find(pair[1]);
+    closecb = this._get_cb('save')( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+
+};
+
+Chatterbox.Settings.Item.prototype.close = function( window, page ) {
+
+    pair = this._get_ep('inspect');
+    inps = pair == false ? null : this.view.find(pair[1]);
+    closecb = this._get_cb('close')( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+
+};
 
 
 /**
@@ -1840,7 +1949,7 @@ Chatterbox.template.settings.main = '<h2>Settings</h2>\
                                 <div class="book"></div>\
                             </div>\
                             <footer>\
-                                <a href="#save" class="button save">Save</a> <a href="#close" class="button close">Close</a>\
+                                <a href="#save" class="button save">Save</a> <a href="#saveclose" class="button saveclose">Save & Close</a> <a href="#close" class="button close">Close</a>\
                             </footer>';
 
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';
@@ -1914,6 +2023,6 @@ Chatterbox.template.settings.item.dropdown.keys = [
     }]
 ];
 
-Chatterbox.template.settings.item.dropdown.events = [['change', 'select']];
+Chatterbox.template.settings.item.dropdown.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.dropdown.frame = '{title}{text}';
 
