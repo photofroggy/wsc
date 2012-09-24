@@ -9,20 +9,9 @@
             list-style: none;
             margin: 0px;
             float: left;
-            
-            &#chattabs {
-                float: left;
-                list-style: none;
-                padding: 14px 8px 0;
-                overflow: hidden;
-                height: 30px;
-                li {
-                    margin-right: 2px;
-                }
-            }
+            padding: 14px 8px 0;
     
             &#tabnav {
-                float: left;
                 padding: 10px 20px;
                 li {
                     margin-top: -2px;
@@ -37,57 +26,83 @@
             li {
                 float: left;
                 margin-top: 2px;
-                &.hidden { display: none; }
+            }
+            
+            &.tabs {
+                overflow: hidden;
+                height: 30px;
+            
+                li {
+                    margin-right: 2px;
                 
-                a.tab {
-                    text-decoration: none;
-                    padding: 4px 5px;
-                    -webkit-border-top-left-radius: 5px;
-                    -webkit-border-top-right-radius: 5px;
-                    -moz-border-radius-topleft: 5px;
-                    -moz-border-radius-topright: 5px;
-                    border-top-left-radius: 5px;
-                    border-top-right-radius: 5px;
-                    border: 1px solid black;
-                    border-bottom: none;
-                    display: block;
-                    margin-top: -1px;
-                    &:hover {
-                        text-decoration: none;
-                        border: 1px solid black;
-                        border-bottom: none;
-                        padding: 9px 5px;
-                        margin-top: -11px;
-                    }
-                }
-                
-                a.close {
-                    display: none;
-                }
-                
-                &.active {
-                    margin-top: 0px;
                     a.tab {
-                        padding: 7px;
-                        padding-right: 24px;
+                        text-decoration: none;
+                        padding: 4px 5px;
                         border: 1px solid black;
                         border-bottom: none;
-                        margin-top: -4px;
+                        display: block;
+                        margin-top: -1px;
                         &:hover {
-                            padding: 7px;
-                            padding-right: 24px;
-                            margin-top: -4px;
+                            text-decoration: none;
+                            border: 1px solid black;
+                            border-bottom: none;
+                            padding: 9px 5px;
+                            margin-top: -11px;
                         }
                     }
-                    a.close {
-                        display: block;
-                        position: relative;
-                        top: -25px;
-                        right: 5px;
-                        float: right;
+                
+                    &.active {
+                        margin-top: 0px;
+                        a.tab {
+                            padding: 7px;
+                            border: 1px solid black;
+                            border-bottom: none;
+                            margin-top: -4px;
+                            &:hover {
+                                padding: 7px;
+                                margin-top: -4px;
+                            }
+                        }
                     }
                 }
             
+                &#chattabs {
+                    li {
+                        &.hidden { display: none; }
+                        
+                        a.tab {
+                            -webkit-border-top-left-radius: 5px;
+                            -webkit-border-top-right-radius: 5px;
+                            -moz-border-radius-topleft: 5px;
+                            -moz-border-radius-topright: 5px;
+                            border-top-left-radius: 5px;
+                            border-top-right-radius: 5px;
+                            &:hover {
+                            }
+                        }
+                        
+                        a.close {
+                            display: none;
+                        }
+                        
+                        &.active {
+                            a.tab {
+                                padding-right: 24px;
+                                &:hover {
+                                    padding-right: 24px;
+                                }
+                            }
+                            a.close {
+                                display: block;
+                                position: relative;
+                                top: -25px;
+                                right: 5px;
+                                float: right;
+                            }
+                        }
+                    
+                    }
+                }
             }
         
         }

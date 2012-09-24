@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.7';
+Chatterbox.VERSION = '0.4.8';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1240,6 +1240,8 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.button.close');
     
+    this.window.find('ul.tabs li').first().addClass('active');
+    
     var settings = this;
     this.saveb.click(
         function( event ) {
@@ -1557,7 +1559,7 @@ Chatterbox.render = function( template, fill ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs"></ul>\
+Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -1682,7 +1684,7 @@ Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<h2>Settings</h2>\
                             <div class="bookwrap">\
                                 <nav class="tabs">\
-                                    <ul>{tabs}</ul>\
+                                    <ul class="tabs">{tabs}</ul>\
                                 </nav>\
                                 <div class="book">\
                                     {pages}\

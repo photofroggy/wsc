@@ -35,6 +35,8 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.button.close');
     
+    this.window.find('ul.tabs li').first().addClass('active');
+    
     var settings = this;
     this.saveb.click(
         function( event ) {
