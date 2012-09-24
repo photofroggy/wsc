@@ -908,6 +908,9 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p, div
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p + p {
   padding: 5px 10px 0px 10px;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item h3 {
+  padding-bottom: 5px;
+}
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item .formwrap {
   padding: 0px 10px;
 }
@@ -915,12 +918,12 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane {
   overflow: hidden;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .left {
-  float: left;
-  width: 35%;
+  max-width: 35%;
+  display: inline-block;
+  margin-right: 10px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .right {
-  float: right;
-  width: 60%;
+  display: inline-block;
 }
 div.wsc div.floater.settings footer {
   width: 100%;

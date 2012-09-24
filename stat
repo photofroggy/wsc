@@ -5,24 +5,48 @@ import sys
 import os.path
 import argparse
 
-parser = argparse.ArgumentParser(description='Display line counts for a source file.')
-parser.add_argument('file', help='source file to get line count for')
-args = parser.parse_args()
 
-base = os.path.basename(args.file)
-dir = os.path.dirname(args.file)
-file = open(os.path.abspath(os.path.join(dir, base)), 'r')
-data = file.read().split('\n');
+def linecount(file):
+    base = os.path.basename(file)
+    dir = os.path.dirname(file)
+    file = open(os.path.abspath(os.path.join(dir, base)), 'r')
+    lc = len(file.read().split('\n'));
+    nlc = lc
+    
+    try:
+        file.close()
+        file = open(os.path.abspath(os.path.join(dir, 'nom.' + base)), 'r')
+        nlc = len(file.read().split('\n'))
+    except Exception:
+        pass
+    
+    return [lc, nlc]
 
-if not '.css' in base:
-    file.close()
-    file = open(os.path.abspath(os.path.join(dir, 'nom.' + base)), 'r')
-    nd = file.read().split('\n')
-else:
-    nd = []
 
-dispb = base
-sys.stdout.write('>>   ' + dispb.ljust(17) + ' | ')
-sys.stdout.write(str(len(data)).rjust(5) + ' | '+str(len(nd)).rjust(5)+'\n')
-sys.stdout.flush()
+def countup(files):
+    info = {
+        'names': [],
+        'count': 0,
+        'ncount': 0
+    }
+    
+    for file in files:
+        info['names'].append(os.path.basename(file))
+        lc = linecount(file)
+        info['count']+= lc[0]
+        info['ncount']+= lc[1]
+    
+    return info
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Display line counts for a source file.')
+    parser.add_argument('file', nargs='+', help='source file to get line count for')
+    args = parser.parse_args()
+    
+    data = countup(args.file)
+    dispb = '+'.join(data['names'])
+    sys.stdout.write('>>   ' + dispb.ljust(20) + ' | ')
+    sys.stdout.write(str(data['count']).ljust(6) + ' | '+str(data['ncount']).ljust(6)+'\n')
+    sys.stdout.flush()
 

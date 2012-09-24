@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.14';
+Chatterbox.VERSION = '0.4.15';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1738,7 +1738,8 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
     }
     
     for( i in cb ) {
-        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
 
 };
@@ -1755,7 +1756,8 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
     }
     
     for( i in cb ) {
-        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
 
 };
@@ -2000,27 +2002,7 @@ Chatterbox.template.settings.item.dropdown.keys = [
         return '<h3>' + title + '</h3>';
     }],
     ['text', '{text}', function( text ) {
-        if( text.length == 0 ) {
-            return '<div class="formwrap">\
-                                            <form>\
-                                                <select>\
-                                                    {items}\
-                                                </select>\
-                                            </form>\
-                                        </div>';
-        }
-        return '<div class="twopane">\
-                                        <div class="text left">\
-                                            <p>' + replaceAll(text, '\n\n', '\n</p><p>\n') + '</p>\
-                                        </div>\
-                                        <div class="formwrap right">\
-                                            <form>\
-                                                <select>\
-                                                    {items}\
-                                                </select>\
-                                            </form>\
-                                        </div>\
-                                    </div>';
+        return replaceAll(text, '\n\n', '\n</p><p>\n');
     }],
     ['items', '{items}', function( items ) {
         if( items.length == 0 )
@@ -2042,5 +2024,16 @@ Chatterbox.template.settings.item.dropdown.keys = [
 ];
 
 Chatterbox.template.settings.item.dropdown.events = [['change', 'select'],['inspect', 'select']];
-Chatterbox.template.settings.item.dropdown.frame = '{title}{text}';
+Chatterbox.template.settings.item.dropdown.frame = '{title}<div class="twopane">\
+                                        <div class="text left">\
+                                            <p>{text}</p>\
+                                        </div>\
+                                        <div class="formwrap right">\
+                                            <form>\
+                                                <select>\
+                                                    {items}\
+                                                </select>\
+                                            </form>\
+                                        </div>\
+                                    </div>';
 

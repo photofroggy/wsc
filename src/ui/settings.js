@@ -524,7 +524,8 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
     }
     
     for( i in cb ) {
-        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
 
 };
@@ -541,7 +542,8 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
     }
     
     for( i in cb ) {
-        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
 
 };

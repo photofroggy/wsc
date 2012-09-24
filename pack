@@ -30,9 +30,11 @@ java -jar /usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar -o di
 echo ">> Moving to test bed..."
 ./mvlh
 echo ">> Line Count"
-echo ">>   file              | raw   | nom"
+echo ">>   file                 | raw    | nom"
 ./stat dist/wsc.js
 ./stat dist/wsc.dAmn.js
 ./stat dist/chatterbox.js
 ./stat dist/wsc.css
+./stat dist/wsc.js dist/wsc.css
+./stat dist/wsc.dAmn.js dist/wsc.css
 echo ">> Done!"

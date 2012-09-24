@@ -88,6 +88,14 @@ wsc.defaults.Extension = function( client ) {
                 }
             });
             
+            /*
+            page.item('dropdown', {
+                'ref': 'theme',
+                'title': 'Themes',
+                'items': themes
+            })
+            */
+            
             page.item('text', {
                 'ref': 'debug',
                 'wclass': 'faint',
