@@ -90,6 +90,7 @@ wsc.defaults.Extension = function( client ) {
             
             page.item('text', {
                 'ref': 'debug',
+                'wclass': 'faint',
                 'title': 'Debug Information',
                 'text': 'User Agent: <code>' + this.client.settings.agent + '</code>'
             });

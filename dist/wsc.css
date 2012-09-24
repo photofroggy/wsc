@@ -891,11 +891,13 @@ div.wsc div.floater.settings div.bookwrap div.book div.page.active {
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item {
   border-bottom: 1px solid black;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
+  padding: 5px 5px 15px 5px;
+  margin-bottom: 10px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child {
   border: none;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item.centered {
   text-align: center;
@@ -1136,6 +1138,9 @@ div.wsc.wsct_default div.floater div.inner {
   background-color: #406d8b;
   border-color: #0d4d69;
 }
+div.wsc.wsct_default div.floater.settings {
+  color: #3e7a88;
+}
 div.wsc.wsct_default div.floater.settings h2 {
   background-color: #81aac5;
   color: #063b63;
@@ -1154,7 +1159,13 @@ div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
   border-color: #0d4d69;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item {
-  border-color: #0d4d69;
+  border-color: #8cb3c4;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item.faint p {
+  color: #5fa4b4;
+}
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item h3 {
+  color: #063b63;
 }
 
 /* dAmn style theme */
@@ -1360,6 +1371,9 @@ div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;
   border-color: #858585;
 }
+div.wsc.wsct_dAmn div.floater.settings {
+  color: #515c52;
+}
 div.wsc.wsct_dAmn div.floater.settings h2 {
   background-color: #bbc6b9;
   color: #2c3635;
@@ -1378,5 +1392,11 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
   border-color: #9eaea0;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item {
-  border-color: #9eaea0;
+  border-color: #c3cac4;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item.faint p {
+  color: #848684;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item h3 {
+  color: #2c3635;
 }

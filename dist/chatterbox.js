@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.12';
+Chatterbox.VERSION = '0.4.13';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1163,7 +1163,7 @@ Chatterbox.Navigation = function( ui ) {
             about = evt.settings.page('About', true);
             about.item('text', {
                 'ref': 'about-chatterbox',
-                'wclass': 'centered',
+                'wclass': 'centered faint',
                 'text': 'Using <a href="http://github.com/photofroggy/wsc/">Chatterbox</a> version ' + Chatterbox.VERSION + ' ' + Chatterbox.STATE + ' by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>.'
             });
             

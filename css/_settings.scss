@@ -17,10 +17,12 @@
                     }
                     div.item {
                         border-bottom: 1px solid black;
-                        padding-bottom: 5px;
-                        margin-bottom: 5px;
+                        padding: 5px 5px 15px 5px;
+                        margin-bottom: 10px;
                         &:last-child {
                             border: none;
+                            padding-bottom: 5px;
+                            margin-bottom: 10px;
                         }
                         &.centered {
                             text-align: center;

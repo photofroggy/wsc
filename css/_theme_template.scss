@@ -79,7 +79,12 @@
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
-    $noise: #223740) {
+    $noise: #223740,
+    $settings-color: #3E7A88,
+    $settings-outer-border: #0D4D69,
+    $settings-inner-border: #0D4D69,
+    $settings-item-border: #8CB3C4,
+    $settings-item-faint-color: #5FA4B4) {
     
     color: $base;
     a {
@@ -269,19 +274,20 @@
     div.floater {
         div.inner {
             background-color: $chrome;
-            border-color: $outer-border;
+            border-color: $settings-outer-border;
         }
         
         &.settings {
+            color: $settings-color;
             h2 {
                 background-color: $heading-bg;
                 color: $heading-color;
-                border-color: $inner-border;
+                border-color: $settings-inner-border;
             }
             div.bookwrap {
                 nav.tabs {
                     a.tab {
-                        border-color: $inner-border;
+                        border-color: $settings-inner-border;
                         border-radius: 0;
                         background-color: $heading-bg;
                     }
@@ -291,10 +297,18 @@
                 }
                 div.book {
                     background-color: $log-bg;
-                    border-color: $inner-border;
+                    border-color: $settings-inner-border;
                     div.page {
                         div.item {
-                            border-color: $inner-border;
+                            border-color: $settings-item-border;
+                            &.faint {
+                                p {
+                                    color: $settings-item-faint-color;
+                                }
+                            }
+                            h3 {
+                                color: $heading-color;
+                            }
                         }
                     }
                 }
