@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.13';
+Chatterbox.VERSION = '0.4.14';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1730,7 +1730,16 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     pair = this._get_ep('inspect');
     inps = pair == false ? null : this.view.find(pair[1]);
-    closecb = this._get_cb('save')( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+    cb = this._get_cb('save');
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+        return;
+    }
+    
+    for( i in cb ) {
+        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+    }
 
 };
 
@@ -1738,7 +1747,16 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
     pair = this._get_ep('inspect');
     inps = pair == false ? null : this.view.find(pair[1]);
-    closecb = this._get_cb('close')( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+    cb = this._get_cb('close');
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
+        return;
+    }
+    
+    for( i in cb ) {
+        cb[i]( { 'input': inps[i] || inps, 'item': this, 'page': page, 'window': window } );
+    }
 
 };
 
