@@ -864,7 +864,6 @@ div.wsc div.floater div.inner {
 }
 div.wsc div.floater div.inner h2 {
   padding: 10px;
-  border-bottom: 1px solid black;
   border-top-left-radius: 10px;
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
@@ -1146,13 +1145,17 @@ div.wsc.wsct_default div.floater div.inner {
   background-color: #406d8b;
   border-color: #0d4d69;
 }
+div.wsc.wsct_default div.floater h2 {
+  background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -moz-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -ms-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: -o-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background: linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
+  background-color: #406d8b;
+  color: white;
+}
 div.wsc.wsct_default div.floater.settings {
   color: #3e7a88;
-}
-div.wsc.wsct_default div.floater.settings h2 {
-  background-color: #81aac5;
-  color: #063b63;
-  border-color: #0d4d69;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #0d4d69;
@@ -1379,13 +1382,17 @@ div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;
   border-color: #858585;
 }
+div.wsc.wsct_dAmn div.floater h2 {
+  background: -webkit-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -moz-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -ms-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: -o-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background: linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
+  background-color: #d0dbd0;
+  color: #2c3635;
+}
 div.wsc.wsct_dAmn div.floater.settings {
   color: #515c52;
-}
-div.wsc.wsct_dAmn div.floater.settings h2 {
-  background-color: #bbc6b9;
-  color: #2c3635;
-  border-color: #9eaea0;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #9eaea0;

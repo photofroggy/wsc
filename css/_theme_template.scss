@@ -80,6 +80,12 @@
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
     $noise: #223740,
+    $pu-h-bg: #406D8B,
+    $pu-h-color: white,
+    $pu-h-bgs: top,
+    $pu-h-bgi: #D3EDFF,
+    $pu-h-bgsl: #55A5DB,
+    $pu-h-bgbg: #406D8B,
     $settings-color: #3E7A88,
     $settings-outer-border: #0D4D69,
     $settings-inner-border: #0D4D69,
@@ -277,13 +283,14 @@
             border-color: $settings-outer-border;
         }
         
+        h2 {
+            @include button-gradient($pu-h-bgs, $pu-h-bgi, $pu-h-bgsl, $pu-h-bgbg);
+            background-color: $pu-h-bg;
+            color: $pu-h-color;
+        }
+        
         &.settings {
             color: $settings-color;
-            h2 {
-                background-color: $heading-bg;
-                color: $heading-color;
-                border-color: $settings-inner-border;
-            }
             div.bookwrap {
                 nav.tabs {
                     a.tab {

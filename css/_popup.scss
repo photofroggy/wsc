@@ -15,7 +15,6 @@
             @include shadow(0px 0px 20px black);
             h2 {
                 padding: 10px;
-                border-bottom: 1px solid black;
                 @include round-top(10px);
             }
         }
