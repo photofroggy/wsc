@@ -2121,8 +2121,22 @@ wsc.defaults.Extension = function( client ) {
                 'text': 'Use this window to view and change your settings.\n\nAt\
                         the bottom of this settings page you can see some debug\
                         information, which can come in handy if something goes\
-                        wrong.'
+                        wrong.',/*
+                'subitems': [
+                    [ 'text', {
+                        'ref': 'intro-sub',
+                        'title': 'Sneak',
+                        'text': 'You can have one thing stacked on top of another.\
+                                Brilliant.'
+                    }]
+                ]*/
             });
+            
+            themes = [];
+            for( i in client.ui.settings.themes ) {
+                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
+                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+            }
             
             page.item('dropdown', {
                 'ref': 'clock',
@@ -2150,15 +2164,37 @@ wsc.defaults.Extension = function( client ) {
                         client.ui.clock(orig.clock);
                     
                     }
-                }
+                },
+                /*'subitems': [
+                    ['dropdown', {
+                        'ref': 'theme',
+                        'title': 'Theme',
+                        'text': 'Set the theme for the client',
+                        'items': themes,
+                        'event': {
+                            'change': function( event ) {
+                            
+                                client.ui.theme(client.ui.view.find(this).val());
+                            
+                            },
+                            'save': function( event ) {
+                            
+                                if( event.input == null )
+                                    return;
+                                orig.theme = event.input.val();
+                            
+                            },
+                            'close': function( event ) {
+                            
+                                client.ui.theme(orig.theme);
+                            
+                            }
+                        }
+                    }]
+                ]*/
             });
             
-            themes = [];
-            for( i in client.ui.settings.themes ) {
-                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
-                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
-            }
-            
+            /* */
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Theme',
@@ -2184,6 +2220,7 @@ wsc.defaults.Extension = function( client ) {
                     }
                 }
             });
+            /* */
             
             /* 
             page.item('dropdown', {
@@ -2197,7 +2234,8 @@ wsc.defaults.Extension = function( client ) {
                 'ref': 'debug',
                 'wclass': 'faint',
                 'title': 'Debug Information',
-                'text': 'User Agent: <code>' + this.client.settings.agent + '</code>'
+                'text': 'Chat Agent: <code>' + this.client.settings.agent + '</code>\n\nUser\
+                        Agent: <code>' + navigator.userAgent + '</code>'
             });
         
         },
@@ -3336,7 +3374,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.16';
+Chatterbox.VERSION = '0.4.17';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5030,8 +5068,15 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
         iopt = this.options.subitems[i];
         type = iopt[0];
         options = iopt[1];
-        item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
-        item.build(page.find('.item.' + this.ref + ' div.item.sub#' + String(i)));
+        sitem = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+        
+        cls = [ 'stacked' ];
+        if( sitem.options.wclass )
+            cls.push(sitem.options.wclass);
+        sitem.options.wclass = cls.join(' ');
+        
+        sitem.build(this.view);
+        this.items.push(sitem);
     
     }
 
@@ -5162,6 +5207,12 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
         sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
+    
+    for( i in this.items ) {
+    
+        this.items[i].save( window, page );
+    
+    }
 
 };
 
@@ -5179,6 +5230,12 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
     for( i in cb ) {
         sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+    }
+    
+    for( i in this.items ) {
+    
+        this.items[i].close( window, page );
+    
     }
 
 };

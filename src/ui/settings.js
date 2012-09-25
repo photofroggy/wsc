@@ -407,8 +407,15 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
         iopt = this.options.subitems[i];
         type = iopt[0];
         options = iopt[1];
-        item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
-        item.build(page.find('.item.' + this.ref + ' div.item.sub#' + String(i)));
+        sitem = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+        
+        cls = [ 'stacked' ];
+        if( sitem.options.wclass )
+            cls.push(sitem.options.wclass);
+        sitem.options.wclass = cls.join(' ');
+        
+        sitem.build(this.view);
+        this.items.push(sitem);
     
     }
 
@@ -539,6 +546,12 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
         sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
+    
+    for( i in this.items ) {
+    
+        this.items[i].save( window, page );
+    
+    }
 
 };
 
@@ -556,6 +569,12 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
     for( i in cb ) {
         sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+    }
+    
+    for( i in this.items ) {
+    
+        this.items[i].close( window, page );
+    
     }
 
 };

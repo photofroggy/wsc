@@ -54,8 +54,22 @@ wsc.defaults.Extension = function( client ) {
                 'text': 'Use this window to view and change your settings.\n\nAt\
                         the bottom of this settings page you can see some debug\
                         information, which can come in handy if something goes\
-                        wrong.'
+                        wrong.',/*
+                'subitems': [
+                    [ 'text', {
+                        'ref': 'intro-sub',
+                        'title': 'Sneak',
+                        'text': 'You can have one thing stacked on top of another.\
+                                Brilliant.'
+                    }]
+                ]*/
             });
+            
+            themes = [];
+            for( i in client.ui.settings.themes ) {
+                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
+                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+            }
             
             page.item('dropdown', {
                 'ref': 'clock',
@@ -83,15 +97,37 @@ wsc.defaults.Extension = function( client ) {
                         client.ui.clock(orig.clock);
                     
                     }
-                }
+                },
+                /*'subitems': [
+                    ['dropdown', {
+                        'ref': 'theme',
+                        'title': 'Theme',
+                        'text': 'Set the theme for the client',
+                        'items': themes,
+                        'event': {
+                            'change': function( event ) {
+                            
+                                client.ui.theme(client.ui.view.find(this).val());
+                            
+                            },
+                            'save': function( event ) {
+                            
+                                if( event.input == null )
+                                    return;
+                                orig.theme = event.input.val();
+                            
+                            },
+                            'close': function( event ) {
+                            
+                                client.ui.theme(orig.theme);
+                            
+                            }
+                        }
+                    }]
+                ]*/
             });
             
-            themes = [];
-            for( i in client.ui.settings.themes ) {
-                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
-                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
-            }
-            
+            /* */
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Theme',
@@ -117,6 +153,7 @@ wsc.defaults.Extension = function( client ) {
                     }
                 }
             });
+            /* */
             
             /* 
             page.item('dropdown', {
@@ -130,7 +167,8 @@ wsc.defaults.Extension = function( client ) {
                 'ref': 'debug',
                 'wclass': 'faint',
                 'title': 'Debug Information',
-                'text': 'User Agent: <code>' + this.client.settings.agent + '</code>'
+                'text': 'Chat Agent: <code>' + this.client.settings.agent + '</code>\n\nUser\
+                        Agent: <code>' + navigator.userAgent + '</code>'
             });
         
         },

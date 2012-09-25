@@ -24,6 +24,11 @@
                             padding-bottom: 5px;
                             margin-bottom: 10px;
                         }
+                        &.stack {
+                            border: none;
+                            padding: 5px 0px 0px 0px;
+                            margin-bottom: 0px;
+                        }
                         &.centered {
                             text-align: center;
                         }

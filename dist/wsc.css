@@ -899,6 +899,11 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child 
   padding-bottom: 5px;
   margin-bottom: 10px;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item.stack {
+  border: none;
+  padding: 5px 0px 0px 0px;
+  margin-bottom: 0px;
+}
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item.centered {
   text-align: center;
 }
