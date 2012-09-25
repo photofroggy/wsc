@@ -213,17 +213,56 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  * @param msg {String} Message to send.
  */
 Chatterbox.Channel.prototype.log_item = function( msg ) {
-    var ts = new Date().toTimeString().slice(0, 8);
+    var date = new Date();
+    ts = '';
+    
+    if( this.manager.settings.clock ) {
+        ts = formatTime('{HH}:{mm}:{ss}', date);
+    } else {
+        ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
+    }
+        
     data = {
         'ts': ts,
-        'message': msg};
+        'ms': date.getTime(),
+        'message': msg
+    };
+    
     this.manager.trigger( 'log_item.before', data );
+    
     // Add content.
-    this.wrap.append(Chatterbox.render('logitem', {'ts': data.ts, 'message': data.message}));
+    this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    
     // Scrollio
     this.scroll();
     this.noise();
+};
+
+/**
+ * Rewrite time signatures for all messages. Woo.
+ * 
+ * @method retime
+ */
+Chatterbox.Channel.prototype.retime = function(  ) {
+
+    var tsf = '';
+    var wrap = this.wrap;
+
+    if( this.manager.settings.clock ) {
+        tsf = '{HH}:{mm}:{ss}';
+    } else {
+        tsf = '{hh}:{mm}:{ss} {mr}';
+    }
+
+    wrap.find('span.ts').each(function( index, span ) {
+    
+        el = wrap.find(span);
+        time = new Date(parseInt(el.prop('id')));
+        el.text(formatTime(tsf, time));
+    
+    });
+
 };
 
 /**

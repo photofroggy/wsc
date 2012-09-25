@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.15';
+Chatterbox.VERSION = '0.4.16';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -29,7 +29,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
-        'domain': 'website.com'
+        'domain': 'website.com',
+        'clock': true
     };
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
@@ -141,8 +142,34 @@ Chatterbox.UI.prototype.format_ns = function( ns ) {
     return ns;
 };
 
+/**
+ * Set the event emitter object in use by the UI lib.
+ * 
+ * @method set_events
+ * @param events {Object} EventEmitter object.
+ */
 Chatterbox.UI.prototype.set_events = function( events ) {
     this.events = events || this.events;
+};
+
+/**
+ * Set the clock to 24 hour or 12 hour. Or get the current mode.
+ * True means 24 hour, false means 12 hour.
+ * 
+ * @method clock
+ * @param [mode] {Boolean} What mode to set the clock to.
+ * @return {Boolean} The mode of the clock.
+ */
+Chatterbox.UI.prototype.clock = function( mode ) {
+
+    if( mode === undefined || mode == this.settings.clock )
+        return this.settings.clock;
+    
+    this.settings.clock = mode;
+    this.chatbook.retime();
+    
+    return this.settings.clock;
+
 };
 
 /**

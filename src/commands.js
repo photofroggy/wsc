@@ -46,6 +46,7 @@ wsc.defaults.Extension = function( client ) {
             var client = this.client;
             var orig = {};
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
+            orig.clock = client.ui.clock();
             
             page.item('text', {
                 'ref': 'intro',
@@ -54,6 +55,35 @@ wsc.defaults.Extension = function( client ) {
                         the bottom of this settings page you can see some debug\
                         information, which can come in handy if something goes\
                         wrong.'
+            });
+            
+            page.item('dropdown', {
+                'ref': 'clock',
+                'title': 'Clock',
+                'text': 'Choose between 24 hour and 12 hour',
+                'items': [
+                    { 'value': '1', 'title': '24 hour', 'selected': orig.clock },
+                    { 'value': '0', 'title': '12 hour', 'selected': !orig.clock }
+                ],
+                'event': {
+                    'change': function( event ) {
+                    
+                        client.ui.clock(client.ui.view.find(this).val() == '1');
+                    
+                    },
+                    'save': function( event ) {
+                    
+                        if( event.input == null )
+                            return;
+                        orig.clock = event.input.val() == '1';
+                    
+                    },
+                    'close': function( event ) {
+                    
+                        client.ui.clock(orig.clock);
+                    
+                    }
+                }
             });
             
             themes = [];
@@ -65,7 +95,7 @@ wsc.defaults.Extension = function( client ) {
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Theme',
-                'text': 'Set the theme for the client.',
+                'text': 'Set the theme for the client',
                 'items': themes,
                 'event': {
                     'change': function( event ) {
@@ -88,13 +118,13 @@ wsc.defaults.Extension = function( client ) {
                 }
             });
             
-            /*
+            /* 
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Themes',
                 'items': themes
             })
-            */
+            /* */
             
             page.item('text', {
                 'ref': 'debug',

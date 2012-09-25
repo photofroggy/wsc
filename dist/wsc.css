@@ -911,7 +911,7 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p,
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item h3 {
   padding-bottom: 5px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item .formwrap {
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item form {
   padding: 0px 10px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane {
@@ -949,14 +949,14 @@ div.wsc.wsct_default a:hover {
 }
 div.wsc.wsct_default a.button,
 div.wsc.wsct_default form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background: linear-gradient(top, #d3edff 0%, #298fd3 5%, #406d8b 97%);
-  background-color: #406d8b;
+  background: -webkit-linear-gradient(top, #d7fcff 0%, #42bec9 5%, #0c8a8f 97%);
+  background: -moz-linear-gradient(top, #d7fcff 0%, #42bec9 5%, #0c8a8f 97%);
+  background: -ms-linear-gradient(top, #d7fcff 0%, #42bec9 5%, #0c8a8f 97%);
+  background: -o-linear-gradient(top, #d7fcff 0%, #42bec9 5%, #0c8a8f 97%);
+  background: linear-gradient(top, #d7fcff 0%, #42bec9 5%, #0c8a8f 97%);
+  background-color: #0c8a8f;
   border-color: #406d8b;
-  color: #aae1ee;
+  color: #d4f4fc;
   text-shadow: 0px -1px #0a384e;
   text-decoration: none;
 }
@@ -969,20 +969,20 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
   background: linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
   background-color: #681b1b;
   border-color: #611a14;
-  color: #aae1ee;
+  color: #d4f4fc;
   text-shadow: 0px -1px #1773a0;
   text-decoration: none;
 }
 div.wsc.wsct_default a.button:active,
 div.wsc.wsct_default form.msg input[type="submit"]:active {
-  background: -webkit-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
-  background: -moz-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
-  background: -ms-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
-  background: -o-linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
-  background: linear-gradient(top, #d3edff 0%, #1b4968 5%, #1c78b6 97%);
-  background-color: #1c78b6;
+  background: -webkit-linear-gradient(top, #d7fcff 0%, #0c8a8f 5%, #42bec9 97%);
+  background: -moz-linear-gradient(top, #d7fcff 0%, #0c8a8f 5%, #42bec9 97%);
+  background: -ms-linear-gradient(top, #d7fcff 0%, #0c8a8f 5%, #42bec9 97%);
+  background: -o-linear-gradient(top, #d7fcff 0%, #0c8a8f 5%, #42bec9 97%);
+  background: linear-gradient(top, #d7fcff 0%, #0c8a8f 5%, #42bec9 97%);
+  background-color: #42bec9;
   border-color: #406d8b;
-  color: #aae1ee;
+  color: #d4f4fc;
   text-shadow: 0px -1px #1773a0;
 }
 div.wsc.wsct_default a.iconic.close {

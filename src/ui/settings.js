@@ -387,9 +387,13 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     if( content === false )
         return;
     
+    wclass = '';
+    if( this.options.hasOwnProperty('wclass') )
+        wclass = ' ' + this.options.wclass;
+    
     item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
     item = replaceAll(item, '{ref}', this.options.ref);
-    item = replaceAll(item, '{class}', (this.options['wclass'] || ''));
+    item = replaceAll(item, '{class}', wclass);
     item = replaceAll(item, '{content}', content);
     page.append(item);
     this.view = page.find('.item.'+this.options.ref);
@@ -428,6 +432,14 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
         return false;
     
     content = item.frame;
+    
+    if( this.type != 'text' && this.options.hasOwnProperty('text') && content.indexOf('{text}') < 0 ) {
+    
+        content = replaceAll(content, '{title}', '');
+        content = replaceAll(Chatterbox.template.settings.item.twopane.frame, '{template}', content);
+    
+    }
+    
     stub = function( item ) { return item; };
     
     for( i in item.keys ) {

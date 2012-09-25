@@ -551,6 +551,38 @@ function getscrollbarWidth() {
     }
     return scrollbarWidth;
 }
+
+function zeroPad( number, width ) {
+    width = width || 2;
+    width -= number.toString().length;
+    if ( width > 0 ) {
+        return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+    }
+    return number + "";
+}
+
+function formatTime( format, date ) {
+    date = date || new Date();
+    
+    HH = date.getHours();
+    hh = HH;
+    format = replaceAll(format, '{mm}', zeroPad(date.getMinutes(), 2));
+    format = replaceAll(format, '{ss}', zeroPad(date.getSeconds(), 2));
+    mr = 'am';
+    
+    if( hh > 11 ) {
+        mr = 'pm';
+        if( hh > 12 )
+            hh = hh / 2;
+    } else if( hh == 0 ) {
+        hh = '12';
+    }
+    
+    format = replaceAll(format, '{hh}', zeroPad(hh, 2));
+    format = replaceAll(format, '{HH}', zeroPad(HH, 2));
+    format = replaceAll(format, '{mr}', mr);
+    return format;
+}
 /* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
@@ -2081,6 +2113,7 @@ wsc.defaults.Extension = function( client ) {
             var client = this.client;
             var orig = {};
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
+            orig.clock = client.ui.clock();
             
             page.item('text', {
                 'ref': 'intro',
@@ -2089,6 +2122,35 @@ wsc.defaults.Extension = function( client ) {
                         the bottom of this settings page you can see some debug\
                         information, which can come in handy if something goes\
                         wrong.'
+            });
+            
+            page.item('dropdown', {
+                'ref': 'clock',
+                'title': 'Clock',
+                'text': 'Choose between 24 hour and 12 hour',
+                'items': [
+                    { 'value': '1', 'title': '24 hour', 'selected': orig.clock },
+                    { 'value': '0', 'title': '12 hour', 'selected': !orig.clock }
+                ],
+                'event': {
+                    'change': function( event ) {
+                    
+                        client.ui.clock(client.ui.view.find(this).val() == '1');
+                    
+                    },
+                    'save': function( event ) {
+                    
+                        if( event.input == null )
+                            return;
+                        orig.clock = event.input.val() == '1';
+                    
+                    },
+                    'close': function( event ) {
+                    
+                        client.ui.clock(orig.clock);
+                    
+                    }
+                }
             });
             
             themes = [];
@@ -2100,7 +2162,7 @@ wsc.defaults.Extension = function( client ) {
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Theme',
-                'text': 'Set the theme for the client.',
+                'text': 'Set the theme for the client',
                 'items': themes,
                 'event': {
                     'change': function( event ) {
@@ -2123,13 +2185,13 @@ wsc.defaults.Extension = function( client ) {
                 }
             });
             
-            /*
+            /* 
             page.item('dropdown', {
                 'ref': 'theme',
                 'title': 'Themes',
                 'items': themes
             })
-            */
+            /* */
             
             page.item('text', {
                 'ref': 'debug',
@@ -3274,7 +3336,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.15';
+Chatterbox.VERSION = '0.4.16';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -3297,7 +3359,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'theme': 'wsct_default',
         'monitor': ['~Monitor', true],
         'username': '',
-        'domain': 'website.com'
+        'domain': 'website.com',
+        'clock': true
     };
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
@@ -3409,8 +3472,34 @@ Chatterbox.UI.prototype.format_ns = function( ns ) {
     return ns;
 };
 
+/**
+ * Set the event emitter object in use by the UI lib.
+ * 
+ * @method set_events
+ * @param events {Object} EventEmitter object.
+ */
 Chatterbox.UI.prototype.set_events = function( events ) {
     this.events = events || this.events;
+};
+
+/**
+ * Set the clock to 24 hour or 12 hour. Or get the current mode.
+ * True means 24 hour, false means 12 hour.
+ * 
+ * @method clock
+ * @param [mode] {Boolean} What mode to set the clock to.
+ * @return {Boolean} The mode of the clock.
+ */
+Chatterbox.UI.prototype.clock = function( mode ) {
+
+    if( mode === undefined || mode == this.settings.clock )
+        return this.settings.clock;
+    
+    this.settings.clock = mode;
+    this.chatbook.retime();
+    
+    return this.settings.clock;
+
 };
 
 /**
@@ -3810,17 +3899,56 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  * @param msg {String} Message to send.
  */
 Chatterbox.Channel.prototype.log_item = function( msg ) {
-    var ts = new Date().toTimeString().slice(0, 8);
+    var date = new Date();
+    ts = '';
+    
+    if( this.manager.settings.clock ) {
+        ts = formatTime('{HH}:{mm}:{ss}', date);
+    } else {
+        ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
+    }
+        
     data = {
         'ts': ts,
-        'message': msg};
+        'ms': date.getTime(),
+        'message': msg
+    };
+    
     this.manager.trigger( 'log_item.before', data );
+    
     // Add content.
-    this.wrap.append(Chatterbox.render('logitem', {'ts': data.ts, 'message': data.message}));
+    this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    
     // Scrollio
     this.scroll();
     this.noise();
+};
+
+/**
+ * Rewrite time signatures for all messages. Woo.
+ * 
+ * @method retime
+ */
+Chatterbox.Channel.prototype.retime = function(  ) {
+
+    var tsf = '';
+    var wrap = this.wrap;
+
+    if( this.manager.settings.clock ) {
+        tsf = '{HH}:{mm}:{ss}';
+    } else {
+        tsf = '{hh}:{mm}:{ss} {mr}';
+    }
+
+    wrap.find('span.ts').each(function( index, span ) {
+    
+        el = wrap.find(span);
+        time = new Date(parseInt(el.prop('id')));
+        el.text(formatTime(tsf, time));
+    
+    });
+
 };
 
 /**
@@ -4257,6 +4385,19 @@ Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log_item(msg);
+    }
+
+};
+
+/**
+ * Rewrite timestamps for all open channels.
+ * 
+ * @method retime
+ */
+Chatterbox.Chatbook.prototype.retime = function(  ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].retime();
     }
 
 };
@@ -4869,9 +5010,13 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     if( content === false )
         return;
     
+    wclass = '';
+    if( this.options.hasOwnProperty('wclass') )
+        wclass = ' ' + this.options.wclass;
+    
     item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
     item = replaceAll(item, '{ref}', this.options.ref);
-    item = replaceAll(item, '{class}', (this.options['wclass'] || ''));
+    item = replaceAll(item, '{class}', wclass);
     item = replaceAll(item, '{content}', content);
     page.append(item);
     this.view = page.find('.item.'+this.options.ref);
@@ -4910,6 +5055,14 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
         return false;
     
     content = item.frame;
+    
+    if( this.type != 'text' && this.options.hasOwnProperty('text') && content.indexOf('{text}') < 0 ) {
+    
+        content = replaceAll(content, '{title}', '');
+        content = replaceAll(Chatterbox.template.settings.item.twopane.frame, '{template}', content);
+    
+    }
+    
     stub = function( item ) { return item; };
     
     for( i in item.keys ) {
@@ -5181,7 +5334,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.
@@ -5243,19 +5396,52 @@ Chatterbox.template.settings.main = '<h2>Settings</h2>\
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';
 Chatterbox.template.settings.tab = '<li id="{ref}-tab"><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
 
+// Key renderers.
+Chatterbox.template.settings.krender = {};
+Chatterbox.template.settings.krender.title = function( title ) {
+    if( title.length == 0 )
+        return '';
+    return '<h3>' + title + '</h3>';
+};
+Chatterbox.template.settings.krender.text = function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); };
+Chatterbox.template.settings.krender.dditems = function( items ) {
+    if( items.length == 0 )
+        return '';
+    render = '';
+    
+    for( i in items ) {
+    
+        item = items[i];
+        render+= '<option value="' + item.value + '"';
+        if( item.selected ) {
+            render+= ' selected="yes"';
+        }
+        render+= '>' + item.title + '</option>';
+    
+    }
+    return render;
+};
+
 Chatterbox.template.settings.item = {};
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref} {class}">\
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">\
                                     {content}\
                                 </div>';
+                                
+Chatterbox.template.settings.item.twopane = {};
+Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
+                                        <div class="text left">\
+                                            <p>{text}</p>\
+                                        </div>\
+                                        <div class="right">\
+                                            {template}\
+                                        </div>\
+                                    </div>';
+
 
 Chatterbox.template.settings.item.text = {};
 Chatterbox.template.settings.item.text.keys = [
-    ['title', '{title}', function( title ) {
-        if( title.length == 0 )
-            return '';
-        return '<h3>' + title + '</h3>';
-    }],
-    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
+    ['title', '{title}', Chatterbox.template.settings.krender.title],
+    ['text', '{text}', Chatterbox.template.settings.krender.text]
 ];
 
 Chatterbox.template.settings.item.text.frame = '{title}<p>\
@@ -5264,46 +5450,17 @@ Chatterbox.template.settings.item.text.frame = '{title}<p>\
 
 Chatterbox.template.settings.item.dropdown = {};
 Chatterbox.template.settings.item.dropdown.keys = [
-    ['title', '{title}', function( title ) {
-        if( title.length == 0 )
-            return '';
-        return '<h3>' + title + '</h3>';
-    }],
-    ['text', '{text}', function( text ) {
-        return replaceAll(text, '\n\n', '\n</p><p>\n');
-    }],
-    ['items', '{items}', function( items ) {
-        if( items.length == 0 )
-            return '';
-        render = '';
-        
-        for( i in items ) {
-        
-            item = items[i];
-            render+= '<option value="' + item.value + '"';
-            if( item.selected ) {
-                render+= ' selected="yes"';
-            }
-            render+= '>' + item.title + '</option>';
-        
-        }
-        return render;
-    }]
+    ['title', '{title}', Chatterbox.template.settings.krender.title],
+    ['text', '{text}', Chatterbox.template.settings.krender.text],
+    ['items', '{items}', Chatterbox.template.settings.krender.dditems]
 ];
 
 Chatterbox.template.settings.item.dropdown.events = [['change', 'select'],['inspect', 'select']];
-Chatterbox.template.settings.item.dropdown.frame = '{title}<div class="twopane">\
-                                        <div class="text left">\
-                                            <p>{text}</p>\
-                                        </div>\
-                                        <div class="formwrap right">\
-                                            <form>\
+Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 <select>\
                                                     {items}\
                                                 </select>\
-                                            </form>\
-                                        </div>\
-                                    </div>';
+                                            </form>';
 
 // @include templates.js
 // @include lib.js

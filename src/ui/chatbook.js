@@ -203,3 +203,16 @@ Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
 };
 
+/**
+ * Rewrite timestamps for all open channels.
+ * 
+ * @method retime
+ */
+Chatterbox.Chatbook.prototype.retime = function(  ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].retime();
+    }
+
+};
+

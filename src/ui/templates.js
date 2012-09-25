@@ -114,7 +114,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.
@@ -176,19 +176,52 @@ Chatterbox.template.settings.main = '<h2>Settings</h2>\
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';
 Chatterbox.template.settings.tab = '<li id="{ref}-tab"><a href="#{ref}" class="tab" id="{ref}-tab">{name}</a></li>';
 
+// Key renderers.
+Chatterbox.template.settings.krender = {};
+Chatterbox.template.settings.krender.title = function( title ) {
+    if( title.length == 0 )
+        return '';
+    return '<h3>' + title + '</h3>';
+};
+Chatterbox.template.settings.krender.text = function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); };
+Chatterbox.template.settings.krender.dditems = function( items ) {
+    if( items.length == 0 )
+        return '';
+    render = '';
+    
+    for( i in items ) {
+    
+        item = items[i];
+        render+= '<option value="' + item.value + '"';
+        if( item.selected ) {
+            render+= ' selected="yes"';
+        }
+        render+= '>' + item.title + '</option>';
+    
+    }
+    return render;
+};
+
 Chatterbox.template.settings.item = {};
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref} {class}">\
+Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">\
                                     {content}\
                                 </div>';
+                                
+Chatterbox.template.settings.item.twopane = {};
+Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
+                                        <div class="text left">\
+                                            <p>{text}</p>\
+                                        </div>\
+                                        <div class="right">\
+                                            {template}\
+                                        </div>\
+                                    </div>';
+
 
 Chatterbox.template.settings.item.text = {};
 Chatterbox.template.settings.item.text.keys = [
-    ['title', '{title}', function( title ) {
-        if( title.length == 0 )
-            return '';
-        return '<h3>' + title + '</h3>';
-    }],
-    ['text', '{text}', function( text ) { return replaceAll(text, '\n\n', '\n</p><p>\n'); }]
+    ['title', '{title}', Chatterbox.template.settings.krender.title],
+    ['text', '{text}', Chatterbox.template.settings.krender.text]
 ];
 
 Chatterbox.template.settings.item.text.frame = '{title}<p>\
@@ -197,44 +230,15 @@ Chatterbox.template.settings.item.text.frame = '{title}<p>\
 
 Chatterbox.template.settings.item.dropdown = {};
 Chatterbox.template.settings.item.dropdown.keys = [
-    ['title', '{title}', function( title ) {
-        if( title.length == 0 )
-            return '';
-        return '<h3>' + title + '</h3>';
-    }],
-    ['text', '{text}', function( text ) {
-        return replaceAll(text, '\n\n', '\n</p><p>\n');
-    }],
-    ['items', '{items}', function( items ) {
-        if( items.length == 0 )
-            return '';
-        render = '';
-        
-        for( i in items ) {
-        
-            item = items[i];
-            render+= '<option value="' + item.value + '"';
-            if( item.selected ) {
-                render+= ' selected="yes"';
-            }
-            render+= '>' + item.title + '</option>';
-        
-        }
-        return render;
-    }]
+    ['title', '{title}', Chatterbox.template.settings.krender.title],
+    ['text', '{text}', Chatterbox.template.settings.krender.text],
+    ['items', '{items}', Chatterbox.template.settings.krender.dditems]
 ];
 
 Chatterbox.template.settings.item.dropdown.events = [['change', 'select'],['inspect', 'select']];
-Chatterbox.template.settings.item.dropdown.frame = '{title}<div class="twopane">\
-                                        <div class="text left">\
-                                            <p>{text}</p>\
-                                        </div>\
-                                        <div class="formwrap right">\
-                                            <form>\
+Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 <select>\
                                                     {items}\
                                                 </select>\
-                                            </form>\
-                                        </div>\
-                                    </div>';
+                                            </form>';
 
