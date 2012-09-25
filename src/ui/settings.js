@@ -29,7 +29,7 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.manager.view.append(wrap);
     this.window = this.manager.view.find('.floater.settings');
     this.saveb = this.window.find('a.button.save');
-    this.closeb = this.window.find('a.button.close');
+    this.closeb = this.window.find('a.close');
     this.scb = this.window.find('a.button.saveclose');
     this.tabs = this.window.find('nav.tabs ul.tabs');
     this.book = this.window.find('div.book');

@@ -170,7 +170,7 @@ Chatterbox.template.settings.main = '<h2>Settings</h2>\
                                 <div class="book"></div>\
                             </div>\
                             <footer>\
-                                <a href="#save" class="button save">Save</a> <a href="#saveclose" class="button saveclose">Save & Close</a> <a href="#close" class="button close">Close</a>\
+                                <a href="#save" class="button save">Save</a> <a href="#saveclose" class="button saveclose">Save & Close</a> <a href="#close" class="button close big square iconic x"></a>\
                             </footer>';
 
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';

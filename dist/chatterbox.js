@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.18';
+Chatterbox.VERSION = '0.4.19';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1322,7 +1322,7 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.manager.view.append(wrap);
     this.window = this.manager.view.find('.floater.settings');
     this.saveb = this.window.find('a.button.save');
-    this.closeb = this.window.find('a.button.close');
+    this.closeb = this.window.find('a.close');
     this.scb = this.window.find('a.button.saveclose');
     this.tabs = this.window.find('nav.tabs ul.tabs');
     this.book = this.window.find('div.book');
@@ -2079,7 +2079,7 @@ Chatterbox.template.settings.main = '<h2>Settings</h2>\
                                 <div class="book"></div>\
                             </div>\
                             <footer>\
-                                <a href="#save" class="button save">Save</a> <a href="#saveclose" class="button saveclose">Save & Close</a> <a href="#close" class="button close">Close</a>\
+                                <a href="#save" class="button save">Save</a> <a href="#saveclose" class="button saveclose">Save & Close</a> <a href="#close" class="button close big square iconic x"></a>\
                             </footer>';
 
 Chatterbox.template.settings.page = '<div class="page" id="{ref}-page"></div>';

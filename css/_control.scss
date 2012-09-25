@@ -61,6 +61,7 @@
         width: 13px;
         background-color: black;
         color: white;
+        border: 1px solid black;
         text-align: center;
         line-height: 1em;
         @include round-box(20px);
@@ -71,8 +72,16 @@
             background: none;
             border: 1px solid black;
             cursor: pointer;
-            @include shadow(inset 0px 1px 0px black);
+            @include shadow(0px 1px 1px black);
         
+        }
+        &.big {
+            height: 25px;
+            width: 25px;
+            font-size: 25px;
+        }
+        &.square {
+            @include round-box(5px);
         }
     }
 
