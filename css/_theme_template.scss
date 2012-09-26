@@ -49,8 +49,8 @@
     $close: #FFF6E4,
     $closeh: #FFF6E4,
     $closea: #FFF6E4,
-    $closeb: #580808,
-    $closeab: #580808,
+    $closeb: #6B0101,
+    $closeab: #6B0101,
     $closehb: #035261,
     $closed: none,
     $closehd: none,
@@ -68,9 +68,6 @@
     $close-abgi: #FFA69E,
     $close-abgsl: #B1362C,
     $close-abgbg: #FC6053,
-    $close-bs: #834D4D,
-    $close-abs: #5A0808,
-    $close-hbs: #116788,
     $tab-bgs: top,
     $tab-bgi: #D3EDFF,
     $tab-bgsl: #2893DA,
@@ -143,22 +140,21 @@
         color: $close;
         text-shadow: 0px -1px $close-shadow;
         font-weight: bold;
-        border-color: $base;
+        border-color: $closeb;
         text-decoration: $closed;
-        @include shadow(0px 1px 1px $close-bs);
         &:hover {
             @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
             color: $closeh;
             text-shadow: 0px -1px $close-shadow;
             text-decoration: $closehd;
-            @include shadow(0px 1px 1px $close-hbs);
+            border-color: $closehb;
         }
         &:active {
             @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
             color: $closea;
             text-shadow: 0px -1px $close-shadow;
             text-decoration: $closead;
-            @include shadow(inset 0px 1px 1px $close-abs);
+            border-color: $closeab;
         }
     }
     
@@ -329,6 +325,15 @@
                     div.page {
                         div.item {
                             border-color: $settings-item-border;
+                            &:hover {
+                                dfn::after {
+                                    border-color: $settings-inner-border;
+                                    border-left-color: $settings-item-border;
+                                    background-color: $log-bg;
+                                    color: $settings-item-faint-color;
+                                    font-style: normal;
+                                }
+                            }
                             &.faint {
                                 p {
                                     color: $settings-item-faint-color;

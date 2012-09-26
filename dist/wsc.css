@@ -802,18 +802,18 @@ div.wsc form.msg input[type="submit"] {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   font-size: 13px;
-  -webkit-box-shadow: 0px 1px 1px black;
-  -moz-box-shadow: 0px 1px 1px black;
-  box-shadow: 0px 1px 1px black;
+  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.button:active,
 div.wsc form.msg input[type="submit"]:active {
   background: none;
   border: 1px solid black;
   cursor: pointer;
-  -webkit-box-shadow: inset 0px 1px 1px black;
-  -moz-box-shadow: inset 0px 1px 1px black;
-  box-shadow: inset 0px 1px 1px black;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.button:hover,
 div.wsc form.msg input[type="submit"]:hover {
@@ -869,9 +869,9 @@ div.wsc div.floater div.inner {
   border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
-  -webkit-box-shadow: 0px 0px 20px black;
-  -moz-box-shadow: 0px 0px 20px black;
-  box-shadow: 0px 0px 20px black;
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.43);
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.43);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.43);
 }
 div.wsc div.floater div.inner h2 {
   padding: 10px;
@@ -922,6 +922,30 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p, div
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p + p {
   padding: 5px 10px 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
+  content: attr(title);
+  display: block;
+  position: absolute;
+  top: 93px;
+  right: -179px;
+  padding: 10px 20px;
+  width: 150px;
+  border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-box-shadow: 10px 0px 20px rgba(0, 0, 0, 0.13);
+  -moz-box-shadow: 10px 0px 20px rgba(0, 0, 0, 0.13);
+  box-shadow: 10px 0px 20px rgba(0, 0, 0, 0.13);
+  border: 1px solid black;
+  border-left: 1px dashed black;
+  background-color: white;
+  color: black;
+  text-align: left;
+  white-space: pre-wrap;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page div.item h3 {
   padding-bottom: 5px;
@@ -1014,11 +1038,8 @@ div.wsc.wsct_default a.iconic.close {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
-  border-color: #075c70;
+  border-color: #6b0101;
   text-decoration: none;
-  -webkit-box-shadow: 0px 1px 1px #834d4d;
-  -moz-box-shadow: 0px 1px 1px #834d4d;
-  box-shadow: 0px 1px 1px #834d4d;
 }
 div.wsc.wsct_default a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1029,9 +1050,7 @@ div.wsc.wsct_default a.iconic.close:hover {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   text-decoration: none;
-  -webkit-box-shadow: 0px 1px 1px #116788;
-  -moz-box-shadow: 0px 1px 1px #116788;
-  box-shadow: 0px 1px 1px #116788;
+  border-color: #035261;
 }
 div.wsc.wsct_default a.iconic.close:active {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
@@ -1042,9 +1061,7 @@ div.wsc.wsct_default a.iconic.close:active {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   text-decoration: none;
-  -webkit-box-shadow: inset 0px 1px 1px #5a0808;
-  -moz-box-shadow: inset 0px 1px 1px #5a0808;
-  box-shadow: inset 0px 1px 1px #5a0808;
+  border-color: #6b0101;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.tab {
   background: -webkit-linear-gradient(top, #d3edff 0%, #2893da 5%, #306080 97%);
@@ -1207,6 +1224,13 @@ div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item {
   border-color: #8cb3c4;
 }
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
+  border-color: #0d4d69;
+  border-left-color: #8cb3c4;
+  background-color: #cedbe2;
+  color: #5fa4b4;
+  font-style: normal;
+}
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item.faint p {
   color: #5fa4b4;
 }
@@ -1270,11 +1294,8 @@ div.wsc.wsct_dAmn a.iconic.close {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
-  border-color: #2c3635;
+  border-color: #6b0101;
   text-decoration: none;
-  -webkit-box-shadow: 0px 1px 1px #834d4d;
-  -moz-box-shadow: 0px 1px 1px #834d4d;
-  box-shadow: 0px 1px 1px #834d4d;
 }
 div.wsc.wsct_dAmn a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1285,9 +1306,7 @@ div.wsc.wsct_dAmn a.iconic.close:hover {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   text-decoration: none;
-  -webkit-box-shadow: 0px 1px 1px #116788;
-  -moz-box-shadow: 0px 1px 1px #116788;
-  box-shadow: 0px 1px 1px #116788;
+  border-color: #035261;
 }
 div.wsc.wsct_dAmn a.iconic.close:active {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
@@ -1298,9 +1317,7 @@ div.wsc.wsct_dAmn a.iconic.close:active {
   color: #fff6e4;
   text-shadow: 0px -1px #311604;
   text-decoration: none;
-  -webkit-box-shadow: inset 0px 1px 1px #5a0808;
-  -moz-box-shadow: inset 0px 1px 1px #5a0808;
-  box-shadow: inset 0px 1px 1px #5a0808;
+  border-color: #6b0101;
 }
 div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab {
   background: -webkit-linear-gradient(top, #f9fff9 0%, #d5e4d5 5%, #adbdad 97%);
@@ -1462,6 +1479,13 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item {
   border-color: #c3cac4;
+}
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
+  border-color: #9eaea0;
+  border-left-color: #c3cac4;
+  background-color: #dce7dc;
+  color: #848684;
+  font-style: normal;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item.faint p {
   color: #848684;

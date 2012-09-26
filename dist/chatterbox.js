@@ -1687,7 +1687,16 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
     item = replaceAll(item, '{ref}', this.options.ref);
     item = replaceAll(item, '{class}', wclass);
+    
+    if( this.options.hasOwnProperty('hint') ) {
+    
+        item = replaceAll(item, '{content}', Chatterbox.template.settings.item.hint.frame);
+        item = replaceAll(item, '{hint}', this.options.hint);
+    
+    }
+    
     item = replaceAll(item, '{content}', content);
+    
     page.append(item);
     this.view = page.find('.item.'+this.options.ref);
     this.hooks(this.view);
@@ -2116,6 +2125,8 @@ Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">
                                     {content}\
                                 </div>';
                                 
+Chatterbox.template.settings.item.hint = {};
+Chatterbox.template.settings.item.hint.frame = '<dfn class="hint" title="{hint}"></dfn>{content}';
 Chatterbox.template.settings.item.twopane = {};
 Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
                                         <div class="text left">\

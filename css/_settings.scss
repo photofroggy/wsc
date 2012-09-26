@@ -40,6 +40,26 @@
                                 padding: 5px 10px 0px 10px;
                             }
                         }
+                        &:hover {
+                            dfn::after {
+                                content: attr(title);
+                                display: block;
+                                position: absolute;
+                                top: 93px;
+                                right: -179px;
+                                padding: 10px 20px;
+                                width: 150px;
+                                @include round-corner(top, right, 5px);
+                                @include round-corner(bottom, right, 5px);
+                                @include shadow(10px 0px 20px rgba(0, 0, 0, 0.13));
+                                border: 1px solid black;
+                                border-left: 1px dashed black;
+                                background-color: white;
+                                color: black;
+                                text-align: left;
+                                white-space: pre-wrap;
+                            }
+                        }
                         h3 {
                             padding-bottom: 5px;
                         }

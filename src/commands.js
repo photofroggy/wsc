@@ -132,6 +132,7 @@ wsc.defaults.Extension = function( client ) {
                 'ref': 'theme',
                 'title': 'Theme',
                 'text': 'Set the theme for the client',
+                'hint': 'The theme determines what the client GUI looks like.\n\nAt the moment, the only themes available are the default theme, and the dAmn theme.\n\nThe dAmn theme is easier on the eyes; I shall have to rework the default theme, using the dAmn theme as a reference.',
                 'items': themes,
                 'event': {
                     'change': function( event ) {
