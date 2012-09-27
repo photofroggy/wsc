@@ -1488,7 +1488,7 @@ wsc.Protocol = function( tablumps ) {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
         'join': ['<span class="servermsg">** Join {ns}: "{e}" *</span>', true],
-        'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{*r}</em></span>', true],
+        'part': ['<span class="servermsg">** Part {ns}: "{e}" * <em>{r}</em></span>', true],
         'property': ['<span class="servermsg">** Got {p} for {ns} *</span>', true],
         'recv_msg': ['<span class="cmsg user u-{user}"><strong>&lt;{user}&gt;</strong></span><span class="cmsg u-{user}">{message}</span>'],
         'recv_npmsg': ['<span class="cmsg user u-{user}"><strong>&lt;{user}&gt;</strong></span><span class="cmsg u-{user}">{message}</span>'],
@@ -1496,7 +1496,7 @@ wsc.Protocol = function( tablumps ) {
         'recv_join': ['<span class="cevent bg">** {user} has joined *</span>'],
         'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
         'recv_privchg': ['<span class="cevent">** {user} has been made a member of {pc} by {by} *</span>'],
-        'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{*r}</em></span>'],
+        'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{r}</em></span>'],
         'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} with: {privs} *</span>'],
         'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} with: {privs} *</span>'],
         'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
@@ -3375,7 +3375,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.19';
+Chatterbox.VERSION = '0.4.20';
 Chatterbox.STATE = 'beta';
 
 /**
