@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.21';
+Chatterbox.VERSION = '0.4.22';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1304,6 +1304,13 @@ Chatterbox.Settings = function( ui, config ) {
 
     this.manager = ui;
     this.config = config;
+    this.window = null;
+    this.saveb = null;
+    this.closeb = null;
+    this.scb = null;
+    this.tabs = null;
+    this.book = null;
+    this.changed = false;
 
 };
 
@@ -1334,6 +1341,8 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.window.find('div.book div.page').first().addClass('active');
     
     var settings = this;
+    this.window.find('form').bind('change', function(  ) { settings.changed = true; });
+    
     this.saveb.click(
         function( event ) {
             settings.save();
@@ -1343,6 +1352,10 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.closeb.click(
         function( event ) {
+            if( settings.changed ) {
+                if( !confirm( 'Are you sure? You will lose any unsaved changes.') )
+                    return false;
+            }
             settings.close();
             return false;
         }
@@ -1395,6 +1408,7 @@ Chatterbox.Settings.prototype.switch_page = function( page ) {
 Chatterbox.Settings.prototype.save = function(  ) {
 
     this.config.save(this);
+    this.changed = false;
 
 };
 
@@ -1783,10 +1797,10 @@ Chatterbox.Settings.Item.prototype._get_cb = function( event ) {
 
 Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return false;
+    var titem = Chatterbox.template.settings.item.get(this.selector);
     
-    titem = Chatterbox.template.settings.item[this.type];
+    if( titem == null )
+        return false;
     
     if( !titem.hasOwnProperty('events') )
         return false;
@@ -1810,12 +1824,11 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
-        return;
-    }
-    
-    for( i in cb ) {
-        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
-        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+    } else {
+        for( i in cb ) {
+            sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+            cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+        }
     }
     
     for( i in this.items ) {
@@ -1958,12 +1971,11 @@ Chatterbox.render = function( template, fill ) {
             return '';
         html = html[part];
     }
-    //console.log('1::::',html);
+    
     if( html.hasOwnProperty('frame') ) {
         tmpl = html;
         renderer = html.render || {};
         html = html.frame;
-        //console.log(tmpl);
         if( tmpl.hasOwnProperty('pre') ) {
             if( typeof tmpl.pre == 'function' ) {
                 html = tmpl.pre( html, fill );
@@ -1974,12 +1986,11 @@ Chatterbox.render = function( template, fill ) {
             }
         }
     }
-    //console.log('2::::',fill);
+    
     for( key in fill ) {
-        //console.log(renderer, key, fill[key]);
         html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' , fill));
     }
-    //console.log('3::::',html);
+    
     if( tmpl != null ) {
         if( tmpl.hasOwnProperty('post') ) {
             if( typeof tmpl.post == 'function' ) {
@@ -2195,12 +2206,12 @@ Chatterbox.template.settings.item.get = function( type ) {
 
 };
 
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">\
+Chatterbox.template.settings.item.wrap = '<section class="item {type} {ref}{class}">\
                                     {content}\
-                                </div>';
+                                </section>';
                                 
 Chatterbox.template.settings.item.hint = {};
-Chatterbox.template.settings.item.hint.frame = '<dfn class="hint" title="{hint}"></dfn>{content}';
+Chatterbox.template.settings.item.hint.frame = '<aside class="hint">{hint}</aside>{content}';
 Chatterbox.template.settings.item.hint.prep = function( html, data ) {
 
     if( !data.hasOwnProperty('hint') )
@@ -2249,8 +2260,8 @@ Chatterbox.template.settings.item.text.frame = '{title}<p>\
 
 Chatterbox.template.settings.item.dropdown = {};
 Chatterbox.template.settings.item.dropdown.pre = [
-    Chatterbox.template.settings.item.hint.prep,
-    Chatterbox.template.settings.item.twopane.wrap
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
 ];
 
 Chatterbox.template.settings.item.dropdown.render = {
@@ -2265,5 +2276,24 @@ Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 <select>\
                                                     {items}\
                                                 </select>\
+                                            </form>';
+
+Chatterbox.template.settings.item.form = {};
+Chatterbox.template.settings.item.form.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.form.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.dditems
+};
+
+Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
+//Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
+Chatterbox.template.settings.item.form.frame = '{title}<form>\
+                                                <section></section>\
+                                                <section></section>\
                                             </form>';
 

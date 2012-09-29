@@ -891,6 +891,7 @@ div.wsc div.floater.settings div.bookwrap nav.tabs {
 div.wsc div.floater.settings div.bookwrap div.book {
   padding: 10px;
   border: 1px solid black;
+  overflow: auto;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page {
   display: none;
@@ -899,33 +900,32 @@ div.wsc div.floater.settings div.bookwrap div.book div.page {
 div.wsc div.floater.settings div.bookwrap div.book div.page.active {
   display: block;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item {
   border-bottom: 1px solid black;
   padding: 5px 5px 15px 5px;
   margin-bottom: 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item:last-child {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item:last-child {
   border: none;
   padding-bottom: 5px;
   margin-bottom: 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.stack {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.stack {
   border: none;
   padding: 5px 0px 0px 0px;
   margin-bottom: 0px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.centered {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.centered {
   text-align: center;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.text p, div.wsc div.floater.settings div.bookwrap div.book div.page .item .text p {
   padding: 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item.text p + p, div.wsc div.floater.settings div.bookwrap div.book div.page div.item .text p + p {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.text p + p, div.wsc div.floater.settings div.bookwrap div.book div.page .item .text p + p {
   padding: 5px 10px 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
-  content: attr(title);
-  display: block;
+div.wsc div.floater.settings div.bookwrap div.book div.page .item aside.hint {
+  opacity: 0;
   position: absolute;
   top: 93px;
   right: -179px;
@@ -946,23 +946,34 @@ div.wsc div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::
   color: black;
   text-align: left;
   white-space: pre-wrap;
+  -webkit-transition: opacity 0.5s ease-in;
+  -moz-transition: opacity 0.5s ease-in;
+  -o-transition: opacity 0.5s ease-in;
+  transition: opacity 0.5s ease-in;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item h3 {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item:hover aside.hint {
+  opacity: 1;
+  -webkit-transition: opacity 0.5s ease-in;
+  -moz-transition: opacity 0.5s ease-in;
+  -o-transition: opacity 0.5s ease-in;
+  transition: opacity 0.5s ease-in;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item h3 {
   padding-bottom: 5px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item form {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item form {
   padding: 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane {
   overflow: hidden;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .left {
-  max-width: 35%;
-  display: inline-block;
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .left {
+  max-width: 250px;
   margin-right: 10px;
+  float: left;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page div.item .twopane .right {
-  display: inline-block;
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .right {
+  float: left;
 }
 div.wsc div.floater.settings footer {
   width: 100%;
@@ -1221,20 +1232,20 @@ div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
   background-color: #cedbe2;
   border-color: #0d4d69;
 }
-div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item {
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item {
   border-color: #8cb3c4;
 }
-div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item aside.hint {
   border-color: #0d4d69;
   border-left-color: #8cb3c4;
   background-color: #cedbe2;
   color: #5fa4b4;
   font-style: normal;
 }
-div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item.faint p {
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item.faint p {
   color: #5fa4b4;
 }
-div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page div.item h3 {
+div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #063b63;
 }
 
@@ -1477,19 +1488,19 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
   background-color: #dce7dc;
   border-color: #9eaea0;
 }
-div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item {
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item {
   border-color: #c3cac4;
 }
-div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item:hover dfn::after {
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item aside.hint {
   border-color: #9eaea0;
   border-left-color: #c3cac4;
   background-color: #dce7dc;
   color: #848684;
   font-style: normal;
 }
-div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item.faint p {
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item.faint p {
   color: #848684;
 }
-div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page div.item h3 {
+div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #2c3635;
 }

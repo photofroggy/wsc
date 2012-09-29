@@ -29,3 +29,17 @@
     -moz-box-shadow: $params;
     box-shadow: $params;
 }
+
+@mixin transitionp($prop, $val) {
+    -webkit-transition-#{$prop}: $val;
+    -moz-transition-#{$prop}: $val;
+    -o-transition-#{$prop}: $val;
+    transition-#{$prop}: $val;
+}
+
+@mixin transition($val) {
+    -webkit-transition: $val;
+    -moz-transition: $val;
+    -o-transition: $val;
+    transition: $val;
+}

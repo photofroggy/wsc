@@ -11,6 +11,13 @@ Chatterbox.Settings = function( ui, config ) {
 
     this.manager = ui;
     this.config = config;
+    this.window = null;
+    this.saveb = null;
+    this.closeb = null;
+    this.scb = null;
+    this.tabs = null;
+    this.book = null;
+    this.changed = false;
 
 };
 
@@ -41,6 +48,8 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.window.find('div.book div.page').first().addClass('active');
     
     var settings = this;
+    this.window.find('form').bind('change', function(  ) { settings.changed = true; });
+    
     this.saveb.click(
         function( event ) {
             settings.save();
@@ -50,6 +59,10 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.closeb.click(
         function( event ) {
+            if( settings.changed ) {
+                if( !confirm( 'Are you sure? You will lose any unsaved changes.') )
+                    return false;
+            }
             settings.close();
             return false;
         }
@@ -102,6 +115,7 @@ Chatterbox.Settings.prototype.switch_page = function( page ) {
 Chatterbox.Settings.prototype.save = function(  ) {
 
     this.config.save(this);
+    this.changed = false;
 
 };
 
@@ -490,10 +504,10 @@ Chatterbox.Settings.Item.prototype._get_cb = function( event ) {
 
 Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return false;
+    var titem = Chatterbox.template.settings.item.get(this.selector);
     
-    titem = Chatterbox.template.settings.item[this.type];
+    if( titem == null )
+        return false;
     
     if( !titem.hasOwnProperty('events') )
         return false;
@@ -517,12 +531,11 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
-        return;
-    }
-    
-    for( i in cb ) {
-        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
-        cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+    } else {
+        for( i in cb ) {
+            sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+            cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
+        }
     }
     
     for( i in this.items ) {

@@ -171,7 +171,7 @@ function formatTime( format, date ) {
     if( hh > 11 ) {
         mr = 'pm';
         if( hh > 12 )
-            hh = hh / 2;
+            hh = hh - 12;
     } else if( hh == 0 ) {
         hh = '12';
     }

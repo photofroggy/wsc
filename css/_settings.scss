@@ -9,13 +9,14 @@
             div.book {
                 padding: 10px;
                 border: 1px solid black;
+                overflow: auto;
                 div.page {
                     display: none;
                     overflow: auto;
                     &.active {
                         display: block;
                     }
-                    div.item {
+                    .item {
                         border-bottom: 1px solid black;
                         padding: 5px 5px 15px 5px;
                         margin-bottom: 10px;
@@ -40,24 +41,28 @@
                                 padding: 5px 10px 0px 10px;
                             }
                         }
+                        aside.hint {
+                            opacity: 0;
+                            position: absolute;
+                            top: 93px;
+                            right: -179px;
+                            padding: 10px 20px;
+                            width: 150px;
+                            @include round-corner(top, right, 5px);
+                            @include round-corner(bottom, right, 5px);
+                            @include shadow(10px 0px 20px rgba(0, 0, 0, 0.13));
+                            border: 1px solid black;
+                            border-left: 1px dashed black;
+                            background-color: white;
+                            color: black;
+                            text-align: left;
+                            white-space: pre-wrap;
+                            @include transition(opacity 0.5s ease-in);
+                        }
                         &:hover {
-                            dfn::after {
-                                content: attr(title);
-                                display: block;
-                                position: absolute;
-                                top: 93px;
-                                right: -179px;
-                                padding: 10px 20px;
-                                width: 150px;
-                                @include round-corner(top, right, 5px);
-                                @include round-corner(bottom, right, 5px);
-                                @include shadow(10px 0px 20px rgba(0, 0, 0, 0.13));
-                                border: 1px solid black;
-                                border-left: 1px dashed black;
-                                background-color: white;
-                                color: black;
-                                text-align: left;
-                                white-space: pre-wrap;
+                            aside.hint {
+                                opacity: 1;
+                                @include transition(opacity 0.5s ease-in);
                             }
                         }
                         h3 {
@@ -69,12 +74,12 @@
                         .twopane {
                             overflow: hidden;
                             .left {
-                                max-width: 35%;
-                                display: inline-block;
+                                max-width: 250px;
                                 margin-right: 10px;
+                                float: left;
                             }
                             .right {
-                                display: inline-block;
+                                float: left;
                             }
                         }
                     }

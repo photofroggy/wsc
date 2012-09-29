@@ -26,12 +26,11 @@ Chatterbox.render = function( template, fill ) {
             return '';
         html = html[part];
     }
-    //console.log('1::::',html);
+    
     if( html.hasOwnProperty('frame') ) {
         tmpl = html;
         renderer = html.render || {};
         html = html.frame;
-        //console.log(tmpl);
         if( tmpl.hasOwnProperty('pre') ) {
             if( typeof tmpl.pre == 'function' ) {
                 html = tmpl.pre( html, fill );
@@ -42,12 +41,11 @@ Chatterbox.render = function( template, fill ) {
             }
         }
     }
-    //console.log('2::::',fill);
+    
     for( key in fill ) {
-        //console.log(renderer, key, fill[key]);
         html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' , fill));
     }
-    //console.log('3::::',html);
+    
     if( tmpl != null ) {
         if( tmpl.hasOwnProperty('post') ) {
             if( typeof tmpl.post == 'function' ) {
@@ -263,12 +261,12 @@ Chatterbox.template.settings.item.get = function( type ) {
 
 };
 
-Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">\
+Chatterbox.template.settings.item.wrap = '<section class="item {type} {ref}{class}">\
                                     {content}\
-                                </div>';
+                                </section>';
                                 
 Chatterbox.template.settings.item.hint = {};
-Chatterbox.template.settings.item.hint.frame = '<dfn class="hint" title="{hint}"></dfn>{content}';
+Chatterbox.template.settings.item.hint.frame = '<aside class="hint">{hint}</aside>{content}';
 Chatterbox.template.settings.item.hint.prep = function( html, data ) {
 
     if( !data.hasOwnProperty('hint') )
@@ -317,8 +315,8 @@ Chatterbox.template.settings.item.text.frame = '{title}<p>\
 
 Chatterbox.template.settings.item.dropdown = {};
 Chatterbox.template.settings.item.dropdown.pre = [
-    Chatterbox.template.settings.item.hint.prep,
-    Chatterbox.template.settings.item.twopane.wrap
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
 ];
 
 Chatterbox.template.settings.item.dropdown.render = {
@@ -333,5 +331,24 @@ Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 <select>\
                                                     {items}\
                                                 </select>\
+                                            </form>';
+
+Chatterbox.template.settings.item.form = {};
+Chatterbox.template.settings.item.form.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.form.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.dditems
+};
+
+Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
+//Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
+Chatterbox.template.settings.item.form.frame = '{title}<form>\
+                                                <section></section>\
+                                                <section></section>\
                                             </form>';
 

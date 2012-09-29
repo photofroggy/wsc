@@ -323,16 +323,14 @@
                     background-color: $log-bg;
                     border-color: $settings-inner-border;
                     div.page {
-                        div.item {
+                        .item {
                             border-color: $settings-item-border;
-                            &:hover {
-                                dfn::after {
-                                    border-color: $settings-inner-border;
-                                    border-left-color: $settings-item-border;
-                                    background-color: $log-bg;
-                                    color: $settings-item-faint-color;
-                                    font-style: normal;
-                                }
+                            aside.hint {
+                                border-color: $settings-inner-border;
+                                border-left-color: $settings-item-border;
+                                background-color: $log-bg;
+                                color: $settings-item-faint-color;
+                                font-style: normal;
                             }
                             &.faint {
                                 p {

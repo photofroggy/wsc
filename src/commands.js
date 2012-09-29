@@ -75,6 +75,7 @@ wsc.defaults.Extension = function( client ) {
                 'ref': 'clock',
                 'title': 'Clock',
                 'text': 'Choose between 24 hour and 12 hour',
+                'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
                 'items': [
                     { 'value': '1', 'title': '24 hour', 'selected': orig.clock },
                     { 'value': '0', 'title': '12 hour', 'selected': !orig.clock }
@@ -89,6 +90,7 @@ wsc.defaults.Extension = function( client ) {
                     
                         if( event.input == null )
                             return;
+                        console.log(event.input.val());
                         orig.clock = event.input.val() == '1';
                     
                     },
