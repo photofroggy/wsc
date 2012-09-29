@@ -321,7 +321,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+    item = Chatterbox.Settings.Item.get( type, options );
     
     if( shift ) {
         this.items.unshift(item);
@@ -366,6 +366,7 @@ Chatterbox.Settings.Item = function( type, options ) {
 
     this.options = options || {};
     this.type = type || 'base';
+    this.selector = this.type.toLowerCase();
     this.items = [];
     this.view = null;
 
@@ -384,23 +385,18 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     
     content = this.content();
     
-    if( content === false )
+    if( content.length == 0 )
         return;
     
     wclass = '';
     if( this.options.hasOwnProperty('wclass') )
         wclass = ' ' + this.options.wclass;
     
-    item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
-    item = replaceAll(item, '{ref}', this.options.ref);
-    item = replaceAll(item, '{class}', wclass);
-    
-    if( this.options.hasOwnProperty('hint') ) {
-    
-        item = replaceAll(item, '{content}', Chatterbox.template.settings.item.hint.frame);
-        item = replaceAll(item, '{hint}', this.options.hint);
-    
-    }
+    item = Chatterbox.render('settings.item.wrap', {
+        'type': this.type.toLowerCase().split('.').join('-'),
+        'ref': this.options.ref,
+        'class': wclass
+    });
     
     item = replaceAll(item, '{content}', content);
     
@@ -416,7 +412,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
         iopt = this.options.subitems[i];
         type = iopt[0];
         options = iopt[1];
-        sitem = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+        sitem = Chatterbox.Settings.Item.get( type, options );
         
         cls = [ 'stacked' ];
         if( sitem.options.wclass )
@@ -439,33 +435,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.prototype.content = function(  ) {
 
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return false;
-    
-    item = Chatterbox.template.settings.item[this.type];
-    
-    if( !item.hasOwnProperty('keys') || !item.hasOwnProperty('frame') )
-        return false;
-    
-    content = item.frame;
-    
-    if( this.type != 'text' && this.options.hasOwnProperty('text') && content.indexOf('{text}') < 0 ) {
-    
-        content = replaceAll(content, '{title}', '');
-        content = replaceAll(Chatterbox.template.settings.item.twopane.frame, '{template}', content);
-    
-    }
-    
-    stub = function( item ) { return item; };
-    
-    for( i in item.keys ) {
-    
-        key = item.keys[i];
-        content = replaceAll( content, key[1], ( key[2] || stub )( ( this.options[key[0]] || '' ) ) );
-    
-    }
-    
-    return content;
+    return Chatterbox.render('settings.item.' + this.type.toLowerCase(), this.options);
 
 };
 
@@ -480,12 +450,11 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
     if( !this.options.hasOwnProperty('event') )
         return;
     
-    events = this.options.event;
-        
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return;
+    var events = this.options.event;
+    var titem = Chatterbox.template.settings.item.get(this.selector);
     
-    titem = Chatterbox.template.settings.item[this.type];
+    if( titem == false )
+        return;
     
     if( !titem.hasOwnProperty('events') )
         return;
@@ -587,6 +556,51 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
     }
 
 };
+
+/* Create a new Settings Item object.
+ * 
+ * @method get
+ * @param type {String} The type of item to create.
+ * @param options {Object} Item options.
+ * @return {Object} Settings item object.
+ */
+Chatterbox.Settings.Item.get = function( type, options ) {
+
+    types = type.split('.');
+    item = Chatterbox.Settings.Item;
+    
+    for( i in types ) {
+        cls = types[i];
+        if( !item.hasOwnProperty( cls ) ) {
+            item = Chatterbox.Settings.Item;
+            break;
+        }
+        item = item[cls];
+    }
+    
+    return new item( type, options );
+
+};
+
+
+/**
+ * HTML form as a single settings page item.
+ * This item should be given settings items to use as form fields.
+ * 
+ * @class Form
+ * @constructor
+ * @param type {String} The type of item this item is.
+ * @param options {Object} Item options.
+ */
+Chatterbox.Settings.Form = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.elements = [];
+
+};
+
+Chatterbox.Settings.Form.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Form.prototype.constructor = Chatterbox.Settings.Form;
 
 
 /**

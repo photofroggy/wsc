@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.20';
+Chatterbox.VERSION = '0.4.21';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1614,7 +1614,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    item = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+    item = Chatterbox.Settings.Item.get( type, options );
     
     if( shift ) {
         this.items.unshift(item);
@@ -1659,6 +1659,7 @@ Chatterbox.Settings.Item = function( type, options ) {
 
     this.options = options || {};
     this.type = type || 'base';
+    this.selector = this.type.toLowerCase();
     this.items = [];
     this.view = null;
 
@@ -1677,23 +1678,18 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     
     content = this.content();
     
-    if( content === false )
+    if( content.length == 0 )
         return;
     
     wclass = '';
     if( this.options.hasOwnProperty('wclass') )
         wclass = ' ' + this.options.wclass;
     
-    item = replaceAll(Chatterbox.template.settings.item.wrap, '{type}', this.type);
-    item = replaceAll(item, '{ref}', this.options.ref);
-    item = replaceAll(item, '{class}', wclass);
-    
-    if( this.options.hasOwnProperty('hint') ) {
-    
-        item = replaceAll(item, '{content}', Chatterbox.template.settings.item.hint.frame);
-        item = replaceAll(item, '{hint}', this.options.hint);
-    
-    }
+    item = Chatterbox.render('settings.item.wrap', {
+        'type': this.type.toLowerCase().split('.').join('-'),
+        'ref': this.options.ref,
+        'class': wclass
+    });
     
     item = replaceAll(item, '{content}', content);
     
@@ -1709,7 +1705,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
         iopt = this.options.subitems[i];
         type = iopt[0];
         options = iopt[1];
-        sitem = new ( Chatterbox.Settings.Item[type[0].toUpperCase() + type.substr(1)] || Chatterbox.Settings.Item )( type, options );
+        sitem = Chatterbox.Settings.Item.get( type, options );
         
         cls = [ 'stacked' ];
         if( sitem.options.wclass )
@@ -1732,33 +1728,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.prototype.content = function(  ) {
 
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return false;
-    
-    item = Chatterbox.template.settings.item[this.type];
-    
-    if( !item.hasOwnProperty('keys') || !item.hasOwnProperty('frame') )
-        return false;
-    
-    content = item.frame;
-    
-    if( this.type != 'text' && this.options.hasOwnProperty('text') && content.indexOf('{text}') < 0 ) {
-    
-        content = replaceAll(content, '{title}', '');
-        content = replaceAll(Chatterbox.template.settings.item.twopane.frame, '{template}', content);
-    
-    }
-    
-    stub = function( item ) { return item; };
-    
-    for( i in item.keys ) {
-    
-        key = item.keys[i];
-        content = replaceAll( content, key[1], ( key[2] || stub )( ( this.options[key[0]] || '' ) ) );
-    
-    }
-    
-    return content;
+    return Chatterbox.render('settings.item.' + this.type.toLowerCase(), this.options);
 
 };
 
@@ -1773,12 +1743,11 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
     if( !this.options.hasOwnProperty('event') )
         return;
     
-    events = this.options.event;
-        
-    if( !Chatterbox.template.settings.item.hasOwnProperty(this.type) )
-        return;
+    var events = this.options.event;
+    var titem = Chatterbox.template.settings.item.get(this.selector);
     
-    titem = Chatterbox.template.settings.item[this.type];
+    if( titem == false )
+        return;
     
     if( !titem.hasOwnProperty('events') )
         return;
@@ -1881,6 +1850,51 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
 };
 
+/* Create a new Settings Item object.
+ * 
+ * @method get
+ * @param type {String} The type of item to create.
+ * @param options {Object} Item options.
+ * @return {Object} Settings item object.
+ */
+Chatterbox.Settings.Item.get = function( type, options ) {
+
+    types = type.split('.');
+    item = Chatterbox.Settings.Item;
+    
+    for( i in types ) {
+        cls = types[i];
+        if( !item.hasOwnProperty( cls ) ) {
+            item = Chatterbox.Settings.Item;
+            break;
+        }
+        item = item[cls];
+    }
+    
+    return new item( type, options );
+
+};
+
+
+/**
+ * HTML form as a single settings page item.
+ * This item should be given settings items to use as form fields.
+ * 
+ * @class Form
+ * @constructor
+ * @param type {String} The type of item this item is.
+ * @param options {Object} Item options.
+ */
+Chatterbox.Settings.Form = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.elements = [];
+
+};
+
+Chatterbox.Settings.Form.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Form.prototype.constructor = Chatterbox.Settings.Form;
+
 
 /**
  * Drop down menu as a settings page item.
@@ -1933,8 +1947,10 @@ Chatterbox.template = {};
  */
 Chatterbox.render = function( template, fill ) {
 
-    html = Chatterbox.template;
-    tparts = template.split('.');
+    var html = Chatterbox.template;
+    var tparts = template.split('.');
+    var renderer = {};
+    var tmpl = null;
     
     for( ind in tparts ) {
         part = tparts[ind];
@@ -1942,16 +1958,56 @@ Chatterbox.render = function( template, fill ) {
             return '';
         html = html[part];
     }
-    
+    //console.log('1::::',html);
+    if( html.hasOwnProperty('frame') ) {
+        tmpl = html;
+        renderer = html.render || {};
+        html = html.frame;
+        //console.log(tmpl);
+        if( tmpl.hasOwnProperty('pre') ) {
+            if( typeof tmpl.pre == 'function' ) {
+                html = tmpl.pre( html, fill );
+            } else {
+                for( i in tmpl.pre ) {
+                    html = tmpl.pre[i]( html, fill );
+                }
+            }
+        }
+    }
+    //console.log('2::::',fill);
     for( key in fill ) {
-        if( !fill.hasOwnProperty(key) )
-            continue;
-        html = replaceAll(html, '{'+key+'}', fill[key]);
+        //console.log(renderer, key, fill[key]);
+        html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' , fill));
+    }
+    //console.log('3::::',html);
+    if( tmpl != null ) {
+        if( tmpl.hasOwnProperty('post') ) {
+            if( typeof tmpl.post == 'function' ) {
+                html = tmpl.post( html, fill );
+            } else {
+                for( i in tmpl.post ) {
+                    html = tmpl.post[i]( html, fill );
+                }
+            }
+        }
     }
     
     return html;
 
 };
+
+Chatterbox.template.render_stub = function( data ) { return data; };
+Chatterbox.template.clean = function( keys ) {
+
+    return function( html, fill ) {
+        for( i in keys ) {
+            html = replaceAll( html, '{'+keys[i]+'}', '' );
+        }
+        return html;
+    };
+
+};
+
 
 /**
  * This template provides the HTML for a chat client's main view.
@@ -2121,12 +2177,42 @@ Chatterbox.template.settings.krender.dditems = function( items ) {
 };
 
 Chatterbox.template.settings.item = {};
+Chatterbox.template.settings.item.get = function( type ) {
+
+    var tp = type.split('.');
+    var item = Chatterbox.template.settings.item;
+    
+    for( i in tp ) {
+        tc = tp[i];
+        if( item.hasOwnProperty(tc) ) {
+            item = item[tc];
+            continue;
+        }
+        return null;
+    }
+    
+    return item;
+
+};
+
 Chatterbox.template.settings.item.wrap = '<div class="item {type} {ref}{class}">\
                                     {content}\
                                 </div>';
                                 
 Chatterbox.template.settings.item.hint = {};
 Chatterbox.template.settings.item.hint.frame = '<dfn class="hint" title="{hint}"></dfn>{content}';
+Chatterbox.template.settings.item.hint.prep = function( html, data ) {
+
+    if( !data.hasOwnProperty('hint') )
+        return html;
+    
+    return Chatterbox.render('settings.item.hint', {
+        'hint': data.hint,
+        'content': html
+    });
+
+};
+
 Chatterbox.template.settings.item.twopane = {};
 Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
                                         <div class="text left">\
@@ -2137,24 +2223,43 @@ Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
                                         </div>\
                                     </div>';
 
+Chatterbox.template.settings.item.twopane.wrap = function( html, data ) {
+
+    html = replaceAll(
+        Chatterbox.template.settings.item.twopane.frame, 
+        '{template}',
+        replaceAll(html, '{title}', '')
+    );
+    
+    return html;
+
+};
 
 Chatterbox.template.settings.item.text = {};
-Chatterbox.template.settings.item.text.keys = [
-    ['title', '{title}', Chatterbox.template.settings.krender.title],
-    ['text', '{text}', Chatterbox.template.settings.krender.text]
-];
+Chatterbox.template.settings.item.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.text.post = Chatterbox.template.clean(['title', 'text']);
+Chatterbox.template.settings.item.text.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
 
 Chatterbox.template.settings.item.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
 
 Chatterbox.template.settings.item.dropdown = {};
-Chatterbox.template.settings.item.dropdown.keys = [
-    ['title', '{title}', Chatterbox.template.settings.krender.title],
-    ['text', '{text}', Chatterbox.template.settings.krender.text],
-    ['items', '{items}', Chatterbox.template.settings.krender.dditems]
+Chatterbox.template.settings.item.dropdown.pre = [
+    Chatterbox.template.settings.item.hint.prep,
+    Chatterbox.template.settings.item.twopane.wrap
 ];
 
+Chatterbox.template.settings.item.dropdown.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.dditems
+};
+
+Chatterbox.template.settings.item.dropdown.post = Chatterbox.template.clean(['title', 'items']);
 Chatterbox.template.settings.item.dropdown.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 <select>\

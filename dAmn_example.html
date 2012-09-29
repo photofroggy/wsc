@@ -12,17 +12,18 @@
         <script type="text/javascript" src="./dist/wsc.js"></script>
         <script type="text/javascript">
             $(function() {
-                $('.main').wsc( 'init', {
-                    "domain": 'deviantart.com',
+                client = $('.main').wsc( 'init', {
                     "server": 'ws://address',
-                    "client": 'dAmnClient', // Needs to send the right client name.
-                    "tablumps": dAmnLumps, // Tablump resolvers lolol.
                     "username": 'username',
                     "pk": 'token',
                     "autojoin": '#Channel'
                 });
+                
+                // Enable support for dAmn.
+                client.add_extension(wsc.dAmn.Extension);
+                
                 // Start connecting to the WebSocket proxy.
-                $('.main').wsc( 'connect' );
+                client.connect();
             });
         </script>
     </head>

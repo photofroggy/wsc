@@ -48,7 +48,7 @@ wsc.defaults.Extension = function( client ) {
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
             orig.clock = client.ui.clock();
             
-            page.item('text', {
+            page.item('Text', {
                 'ref': 'intro',
                 'title': 'Main',
                 'text': 'Use this window to view and change your settings.\n\nAt\
@@ -56,7 +56,7 @@ wsc.defaults.Extension = function( client ) {
                         information, which can come in handy if something goes\
                         wrong.',/*
                 'subitems': [
-                    [ 'text', {
+                    [ 'Text', {
                         'ref': 'intro-sub',
                         'title': 'Sneak',
                         'text': 'You can have one thing stacked on top of another.\
@@ -71,7 +71,7 @@ wsc.defaults.Extension = function( client ) {
                 themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
             }
             
-            page.item('dropdown', {
+            page.item('Dropdown', {
                 'ref': 'clock',
                 'title': 'Clock',
                 'text': 'Choose between 24 hour and 12 hour',
@@ -99,7 +99,7 @@ wsc.defaults.Extension = function( client ) {
                     }
                 },
                 /*'subitems': [
-                    ['dropdown', {
+                    ['Dropdown', {
                         'ref': 'theme',
                         'title': 'Theme',
                         'text': 'Set the theme for the client',
@@ -128,7 +128,7 @@ wsc.defaults.Extension = function( client ) {
             });
             
             /* */
-            page.item('dropdown', {
+            page.item('Dropdown', {
                 'ref': 'theme',
                 'title': 'Theme',
                 'text': 'Set the theme for the client',
@@ -164,7 +164,7 @@ wsc.defaults.Extension = function( client ) {
             })
             /* */
             
-            page.item('text', {
+            page.item('Text', {
                 'ref': 'debug',
                 'wclass': 'faint',
                 'title': 'Debug Information',
@@ -177,7 +177,7 @@ wsc.defaults.Extension = function( client ) {
         about_page: function( e, ui ) {
         
             page = e.settings.page('About', true);
-            page.item('text', {
+            page.item('Text', {
                 'ref': 'about-wsc',
                 'title': 'Wsc',
                 'text': 'Currently using <a href="http://github.com/photofroggy/wsc/">wsc</a>\
