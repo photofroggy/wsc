@@ -804,7 +804,6 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
     for( i in this.fields ) {
     
         field = this.fields[i];
-        console.log(field);
         data[field.ref] = field.get();
     
     }
@@ -830,7 +829,7 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
  */
 Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
 
-    data = {};
+    var data = {};
     
     for( i in this.fields ) {
     
@@ -840,7 +839,7 @@ Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
     }
     
     cb = this._get_cb('save');
-    console.log(cb);
+    
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
@@ -932,7 +931,11 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     this.field = this.fwrap.find('.'+this.ref);
     this.view = this.fwrap;
     var field = this;
-    this.field.bind('change', function( event ) { field.value = field.view.find(this).val(); });
+    this.value = this.field.val();
+    this.field.bind('change', function( event ) {
+        console.log(field.view.find(this));
+        field.value = field.view.find(this).val();
+    });
 
 };
 
@@ -1013,8 +1016,9 @@ Chatterbox.Settings.Item.Form.Radio.prototype.build = function( form ) {
     );
     
     this.fwrap = form.fsection.find('div.'+this.ref+'.field');
-    this.field = this.fwrap.find('input[name='+this.ref+']:radio');
-    this.value = this.field.val();
+    this.field = this.fwrap.find('input:radio');
+    this.value = this.fwrap.find('input[checked]:radio').val();
+    
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.fwrap.find(this).val();
@@ -1081,7 +1085,8 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
     
     Chatterbox.Settings.Item.prototype.build.call( this, page );
     this.field = this.view.find('input:radio');
-    this.value = this.field.val();
+    this.value = this.view.find('input[checked]:radio').val();
+    
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.view.find(this).val();

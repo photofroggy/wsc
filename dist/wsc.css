@@ -566,6 +566,15 @@ div.wsc nav.tabs ul.tabs#chattabs li.active a.close {
   right: 5px;
   float: right;
 }
+div.wsc nav.tabs ul.tabs#chattabs.hc li.active a.tab {
+  padding-right: 7px;
+}
+div.wsc nav.tabs ul.tabs#chattabs.hc li.active a.tab:hover {
+  padding-right: 7px;
+}
+div.wsc nav.tabs ul.tabs#chattabs.hc li.active a.close {
+  display: none;
+}
 div.wsc a {
   text-decoration: none;
 }

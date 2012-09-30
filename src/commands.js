@@ -47,6 +47,7 @@ wsc.defaults.Extension = function( client ) {
             var orig = {};
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
             orig.clock = client.ui.clock();
+            orig.tc = client.ui.nav.closer();
             
             themes = [];
             for( i in client.ui.settings.themes ) {
@@ -61,12 +62,12 @@ wsc.defaults.Extension = function( client ) {
                         the different pages to see what settings can be changed.',
             });
             
-            
             page.item('Form', {
                 'ref': 'ui',
                 'title': 'UI',
                 'hint': '<b>Timestamp:</b> Choose between a 24 hour clock and\
-                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the client.',
+                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the\
+                        client.\n\n<b>Close Tabs:</b> Turn tab close buttons on/off.',
                 'fields': [
                     ['Dropdown', {
                         'ref': 'theme',
@@ -76,11 +77,17 @@ wsc.defaults.Extension = function( client ) {
                     ['Radio', {
                         'ref': 'clock',
                         'label': 'Timestamp Format',
-                        'text': 'Choose between 24 hour and 12 hour',
-                        'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
                         'items': [
                             { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
                             { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                        ]
+                    }],
+                    ['Radio', {
+                        'ref': 'tabclose',
+                        'label': 'Close Tabs',
+                        'items': [
+                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
+                            { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
                         ]
                     }],
                 ],
@@ -88,14 +95,17 @@ wsc.defaults.Extension = function( client ) {
                     'change': function( event ) {
                         client.ui.clock(event.data.clock == '24');
                         client.ui.theme(event.data.theme);
+                        client.ui.nav.closer(event.data.tabclose == 'yes');
                     },
                     'save': function( event ) {
-                        orig.clock = event.data.clock;
+                        orig.clock = event.data.clock == '24';
                         orig.theme = event.data.theme;
+                        orig.tc = event.data.tabclose == 'on';
                     },
                     'close': function( event ) {
                         client.ui.clock(orig.clock);
                         client.ui.theme(orig.theme);
+                        client.ui.nav.closer(orig.tc);
                     }
                 }
             });

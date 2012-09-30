@@ -16,6 +16,7 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
+    this.showclose = true;
     
     var nav = this;
     this.settingsb.click(
@@ -83,3 +84,31 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
     }
 
 };
+
+/**
+ * Set or get the visibility of tab close buttons.
+ * 
+ * @method closer
+ * @param [visible] {Boolean} Should the close buttons be shown?
+ * @return {Boolean} Whether or not the close buttons are visible.
+ */
+Chatterbox.Navigation.prototype.closer = function( visible ) {
+
+    if( visible == undefined || visible == this.showclose )
+        return this.showclose;
+    
+    this.showclose = visible;
+    if( this.showclose ) {
+        if( !this.tabs.hasClass('hc') )
+            return;
+        this.tabs.removeClass('hc');
+        return;
+    }
+    
+    if( this.tabs.hasClass('hc') )
+        return;
+    this.tabs.addClass('hc');
+
+};
+
+

@@ -2114,6 +2114,7 @@ wsc.defaults.Extension = function( client ) {
             var orig = {};
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
             orig.clock = client.ui.clock();
+            orig.tc = client.ui.nav.closer();
             
             themes = [];
             for( i in client.ui.settings.themes ) {
@@ -2128,12 +2129,12 @@ wsc.defaults.Extension = function( client ) {
                         the different pages to see what settings can be changed.',
             });
             
-            
             page.item('Form', {
                 'ref': 'ui',
                 'title': 'UI',
                 'hint': '<b>Timestamp:</b> Choose between a 24 hour clock and\
-                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the client.',
+                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the\
+                        client.\n\n<b>Close Tabs:</b> Turn tab close buttons on/off.',
                 'fields': [
                     ['Dropdown', {
                         'ref': 'theme',
@@ -2143,11 +2144,17 @@ wsc.defaults.Extension = function( client ) {
                     ['Radio', {
                         'ref': 'clock',
                         'label': 'Timestamp Format',
-                        'text': 'Choose between 24 hour and 12 hour',
-                        'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
                         'items': [
                             { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
                             { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                        ]
+                    }],
+                    ['Radio', {
+                        'ref': 'tabclose',
+                        'label': 'Close Tabs',
+                        'items': [
+                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
+                            { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
                         ]
                     }],
                 ],
@@ -2155,14 +2162,17 @@ wsc.defaults.Extension = function( client ) {
                     'change': function( event ) {
                         client.ui.clock(event.data.clock == '24');
                         client.ui.theme(event.data.theme);
+                        client.ui.nav.closer(event.data.tabclose == 'yes');
                     },
                     'save': function( event ) {
-                        orig.clock = event.data.clock;
+                        orig.clock = event.data.clock == '24';
                         orig.theme = event.data.theme;
+                        orig.tc = event.data.tabclose == 'on';
                     },
                     'close': function( event ) {
                         client.ui.clock(orig.clock);
                         client.ui.theme(orig.theme);
+                        client.ui.nav.closer(orig.tc);
                     }
                 }
             });
@@ -3311,7 +3321,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.24';
+Chatterbox.VERSION = '0.4.25';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4529,6 +4539,7 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
+    this.showclose = true;
     
     var nav = this;
     this.settingsb.click(
@@ -4596,6 +4607,34 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
     }
 
 };
+
+/**
+ * Set or get the visibility of tab close buttons.
+ * 
+ * @method closer
+ * @param [visible] {Boolean} Should the close buttons be shown?
+ * @return {Boolean} Whether or not the close buttons are visible.
+ */
+Chatterbox.Navigation.prototype.closer = function( visible ) {
+
+    if( visible == undefined || visible == this.showclose )
+        return this.showclose;
+    
+    this.showclose = visible;
+    if( this.showclose ) {
+        if( !this.tabs.hasClass('hc') )
+            return;
+        this.tabs.removeClass('hc');
+        return;
+    }
+    
+    if( this.tabs.hasClass('hc') )
+        return;
+    this.tabs.addClass('hc');
+
+};
+
+
 /**
  * Settings popup window.
  * Provides stuff for doing things. Yay.
@@ -5402,7 +5441,6 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
     for( i in this.fields ) {
     
         field = this.fields[i];
-        console.log(field);
         data[field.ref] = field.get();
     
     }
@@ -5428,7 +5466,7 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
  */
 Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
 
-    data = {};
+    var data = {};
     
     for( i in this.fields ) {
     
@@ -5438,7 +5476,7 @@ Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
     }
     
     cb = this._get_cb('save');
-    console.log(cb);
+    
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
@@ -5530,7 +5568,11 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     this.field = this.fwrap.find('.'+this.ref);
     this.view = this.fwrap;
     var field = this;
-    this.field.bind('change', function( event ) { field.value = field.view.find(this).val(); });
+    this.value = this.field.val();
+    this.field.bind('change', function( event ) {
+        console.log(field.view.find(this));
+        field.value = field.view.find(this).val();
+    });
 
 };
 
@@ -5611,8 +5653,9 @@ Chatterbox.Settings.Item.Form.Radio.prototype.build = function( form ) {
     );
     
     this.fwrap = form.fsection.find('div.'+this.ref+'.field');
-    this.field = this.fwrap.find('input[name='+this.ref+']:radio');
-    this.value = this.field.val();
+    this.field = this.fwrap.find('input:radio');
+    this.value = this.fwrap.find('input[checked]:radio').val();
+    
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.fwrap.find(this).val();
@@ -5679,7 +5722,8 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
     
     Chatterbox.Settings.Item.prototype.build.call( this, page );
     this.field = this.view.find('input:radio');
-    this.value = this.field.val();
+    this.value = this.view.find('input[checked]:radio').val();
+    
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.view.find(this).val();

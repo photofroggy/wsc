@@ -97,6 +97,17 @@
                         }
                     
                     }
+                    &.hc li.active {
+                        a.tab {
+                            padding-right: 7px;
+                            &:hover {
+                                padding-right: 7px;
+                            }
+                        }
+                        a.close {
+                            display: none;
+                        }
+                    }
                 }
             }
         
