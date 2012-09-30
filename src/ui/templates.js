@@ -348,7 +348,30 @@ Chatterbox.template.settings.item.form.render = {
 Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
 //Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.form.frame = '{title}<form>\
-                                                <section></section>\
-                                                <section></section>\
+                                                <section class="labels"></section>\
+                                                <section class="fields"></section>\
                                             </form>';
+
+Chatterbox.template.settings.item.form.label = {};
+Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label']);
+Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label"><label for="{ref}">{label}</label></div>';
+
+Chatterbox.template.settings.item.form.field = {};
+Chatterbox.template.settings.item.form.field.wrap = {};
+Chatterbox.template.settings.item.form.field.wrap.post = Chatterbox.template.clean(['ref', 'field']);
+Chatterbox.template.settings.item.form.field.wrap.frame = '<div class="{ref} field">{field}</div>';
+
+Chatterbox.template.settings.item.form.field.dropdown = {};
+Chatterbox.template.settings.item.form.field.dropdown.render = { 'items': Chatterbox.template.settings.krender.dditems };
+Chatterbox.template.settings.item.form.field.dropdown.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.dropdown.frame = '<select class="{ref}">{items}</select>';
+
+Chatterbox.template.settings.item.form.field.textfield = {};
+Chatterbox.template.settings.item.form.field.textfield.post = Chatterbox.template.clean(['ref']);
+Chatterbox.template.settings.item.form.field.textfield.frame = '<input type="text" class="{ref}" />';
+
+Chatterbox.template.settings.item.form.field.textarea = {};
+Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref']);
+Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20"></textarea>';
+
 

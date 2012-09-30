@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.22';
+Chatterbox.VERSION = '0.4.23';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1385,6 +1385,7 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+    this.config.resize();
 
 };
 
@@ -1405,6 +1406,11 @@ Chatterbox.Settings.prototype.switch_page = function( page ) {
 
 };
 
+/**
+ * Save settings.
+ * 
+ * @method save
+ */
 Chatterbox.Settings.prototype.save = function(  ) {
 
     this.config.save(this);
@@ -1412,6 +1418,11 @@ Chatterbox.Settings.prototype.save = function(  ) {
 
 };
 
+/**
+ * Close settings.
+ * 
+ * @method close
+ */
 Chatterbox.Settings.prototype.close = function(  ) {
 
     this.window.remove();
@@ -1475,6 +1486,21 @@ Chatterbox.Settings.Config.prototype.build = function( window ) {
 };
 
 /**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Config.prototype.resize = function(  ) {
+
+    for( i in this.pages ) {
+    
+        this.pages[i].resize();
+    
+    }
+
+};
+
+/**
  * Get a settings page.
  * 
  * @method page
@@ -1501,6 +1527,12 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
 };
 
+/**
+ * Save settings.
+ * 
+ * @method save
+ * @param window {Object} The settings window.
+ */
 Chatterbox.Settings.Config.prototype.save = function( window ) {
 
     for( i in this.pages ) {
@@ -1511,6 +1543,12 @@ Chatterbox.Settings.Config.prototype.save = function( window ) {
 
 };
 
+/**
+ * Close settings.
+ * 
+ * @method close
+ * @param window {Object} The settings window.
+ */
 Chatterbox.Settings.Config.prototype.close = function( window ) {
 
     for( i in this.pages ) {
@@ -1587,6 +1625,21 @@ Chatterbox.Settings.Page.prototype.content = function(  ) {
 };
 
 /**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Page.prototype.resize = function(  ) {
+
+    for( i in this.items ) {
+    
+        this.items[i].resize();
+    
+    }
+
+};
+
+/**
  * Bring the page into view.
  * 
  * @method show
@@ -1640,6 +1693,12 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
 };
 
+/**
+ * Save page data.
+ * 
+ * @method save
+ * @param window {Object} The settings window.
+ */
 Chatterbox.Settings.Page.prototype.save = function( window ) {
 
     for( i in this.items ) {
@@ -1650,6 +1709,12 @@ Chatterbox.Settings.Page.prototype.save = function( window ) {
 
 };
 
+/**
+ * Window closed.
+ * 
+ * @method close
+ * @param window {Object} The settings window.
+ */
 Chatterbox.Settings.Page.prototype.close = function( window ) {
 
     for( i in this.items ) {
@@ -1742,7 +1807,22 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.prototype.content = function(  ) {
 
-    return Chatterbox.render('settings.item.' + this.type.toLowerCase(), this.options);
+    return Chatterbox.render('settings.item.' + this.selector, this.options);
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.prototype.resize = function(  ) {
+
+    for( i in this.items ) {
+    
+        this.items[i].resize();
+    
+    }
 
 };
 
@@ -1786,6 +1866,13 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
  */
 Chatterbox.Settings.Item.prototype._event_stub = function(  ) {};
 
+/**
+ * Get an item event callback.
+ * 
+ * @method _get_cb
+ * @param event {String} Item event to get callbacks for.
+ * @return {Function} Item event callback.
+ */
 Chatterbox.Settings.Item.prototype._get_cb = function( event ) {
 
     if( !this.options.hasOwnProperty('event') )
@@ -1795,6 +1882,13 @@ Chatterbox.Settings.Item.prototype._get_cb = function( event ) {
 
 };
 
+/**
+ * Get an item event pair.
+ * 
+ * @method _get_ep
+ * @param event {String} Item event to get an event pair for.
+ * @return {Function} Item event pair.
+ */
 Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 
     var titem = Chatterbox.template.settings.item.get(this.selector);
@@ -1816,6 +1910,13 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 
 };
 
+/**
+ * Save page item data.
+ * 
+ * @method save
+ * @param window {Object} The settings window.
+ * @param page {Object} The settings page this item belongs to.
+ */
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     pair = this._get_ep('inspect');
@@ -1839,6 +1940,13 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
 };
 
+/**
+ * Called when the settings window is closed.
+ * 
+ * @method close
+ * @param window {Object} The settings window.
+ * @param page {Object} The settings page this item belongs to.
+ */
 Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
     pair = this._get_ep('inspect');
@@ -1868,17 +1976,20 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
  * @method get
  * @param type {String} The type of item to create.
  * @param options {Object} Item options.
+ * @param [base] {Object} Object to fetch the item from. Defaults to
+     `Chatterbox.Settings.Item`.
+ * @param [defaultc] {Class} Default class to use for the item.
  * @return {Object} Settings item object.
  */
-Chatterbox.Settings.Item.get = function( type, options ) {
+Chatterbox.Settings.Item.get = function( type, options, base, defaultc ) {
 
     types = type.split('.');
-    item = Chatterbox.Settings.Item;
+    item = base || Chatterbox.Settings.Item;
     
     for( i in types ) {
         cls = types[i];
         if( !item.hasOwnProperty( cls ) ) {
-            item = Chatterbox.Settings.Item;
+            item = defaultc || Chatterbox.Settings.Item;
             break;
         }
         item = item[cls];
@@ -1898,15 +2009,245 @@ Chatterbox.Settings.Item.get = function( type, options ) {
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
  */
-Chatterbox.Settings.Form = function( type, options ) {
+Chatterbox.Settings.Item.Form = function( type, options ) {
 
     Chatterbox.Settings.Item.call(this, type, options);
-    this.elements = [];
+    this.form = null;
+    this.fields = [];
+    this.lsection = null;
+    this.fsection = null;
 
 };
 
-Chatterbox.Settings.Form.prototype = new Chatterbox.Settings.Item();
-Chatterbox.Settings.Form.prototype.constructor = Chatterbox.Settings.Form;
+Chatterbox.Settings.Item.Form.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Form.prototype.constructor = Chatterbox.Settings.Item.Form;
+
+/*
+ * Create a form field object.
+ * 
+ * @method field
+ * @param type {String} The type of form field to get.
+ * @param options {Object} Field options.
+ * @return {Object} Form field object.
+ */
+Chatterbox.Settings.Item.Form.field = function( type, options ) {
+
+    return Chatterbox.Settings.Item.get( type, options, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
+
+};
+
+/**
+ * Build the form.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
+
+    Chatterbox.Settings.Item.prototype.build.call(this, page);
+    
+    if( this.view == null )
+        return;
+    
+    this.lsection = this.view.find('section.labels');
+    this.fsection = this.view.find('section.fields');
+    
+    if( !this.options.hasOwnProperty('fields') )
+        return;
+    
+    for( i in this.options.fields ) {
+        f = this.options.fields[i];
+        field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
+        this.fields.push( field );
+        field.build( this );
+    }
+    
+    this.form = this.view.find('form');
+    var form = this;
+    this.form.bind('change', function( event ) { form.change(); });
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.prototype.resize = function(  ) {
+
+    for( i in this.fields ) {
+    
+        this.fields[i].resize();
+    
+    }
+
+};
+
+/**
+ * Called when there is a change in the form.
+ * 
+ * @method change
+ * @param window {Object} The settings window.
+ * @param page {Object} The settings page this item belongs to.
+ */
+Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
+
+    data = {};
+    
+    for( i in this.fields ) {
+    
+        field = this.fields[i];
+        data[field.ref] = field.get();
+    
+    }
+    
+    cb = this._get_cb('change');
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'data': data, 'form': this } );
+    } else {
+        for( i in cb ) {
+            cb[i]( { 'data': data, 'form': this } );
+        }
+    }
+
+};
+
+/**
+ * Save form data.
+ * 
+ * @method save
+ * @param window {Object} The settings window.
+ * @param page {Object} The settings page this form belongs to.
+ */
+Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
+
+    data = {};
+    
+    for( i in this.fields ) {
+    
+        field = this.fields[i];
+        data[field.ref] = field.get();
+    
+    }
+    
+    cb = this._get_cb('save');
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
+    } else {
+        for( i in cb ) {
+            cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
+        }
+    }
+
+};
+
+/**
+ * Called when the settings window is closed.
+ * 
+ * @method close
+ * @param window {Object} The settings window.
+ * @param page {Object} The settings page this item belongs to.
+ */
+Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
+
+    data = {};
+    
+    for( i in this.fields ) {
+    
+        field = this.fields[i];
+        data[field.ref] = field.get();
+    
+    }
+    
+    cb = this._get_cb('close');
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
+    } else {
+        for( i in cb ) {
+            cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
+        }
+    }
+
+};
+
+
+/**
+ * Base class for form fields.
+ * 
+ * @class Field
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Field = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.ref = this.options['ref'] || 'ref';
+    this.label = null;
+    this.field = null;
+
+};
+
+Chatterbox.Settings.Item.Form.Field.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Form.Field.prototype.constructor = Chatterbox.Settings.Item.Form.Field;
+
+/**
+ * Build the form field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
+
+    form.lsection.append(
+        Chatterbox.render('settings.item.form.label', {
+            'ref': this.ref,
+            'label': this.options['label'] || ''
+        })
+    );
+    
+    this.label = form.lsection.find('label.' + this.ref);
+    this.lwrap = form.lsection.find('.'+this.ref+'.label');
+    
+    form.fsection.append(
+        Chatterbox.render('settings.item.form.field.wrap', {
+            'ref': this.ref,
+            'field': Chatterbox.render('settings.item.form.field.' + this.selector, this.options)
+        })
+    );
+    
+    this.fwrap = form.fsection.find('div.'+this.ref+'.field');
+    this.field = this.fwrap.find('.'+this.ref);
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Field.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.field.height() );
+
+};
+
+/**
+ * Get field data.
+ * 
+ * @method get
+ * @return {Object} data.
+ */
+Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
+
+    if( this.field == null )
+        return '';
+    return this.field.val();
+
+};
 
 
 /**
@@ -2293,7 +2634,30 @@ Chatterbox.template.settings.item.form.render = {
 Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
 //Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.form.frame = '{title}<form>\
-                                                <section></section>\
-                                                <section></section>\
+                                                <section class="labels"></section>\
+                                                <section class="fields"></section>\
                                             </form>';
+
+Chatterbox.template.settings.item.form.label = {};
+Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label']);
+Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label"><label for="{ref}">{label}</label></div>';
+
+Chatterbox.template.settings.item.form.field = {};
+Chatterbox.template.settings.item.form.field.wrap = {};
+Chatterbox.template.settings.item.form.field.wrap.post = Chatterbox.template.clean(['ref', 'field']);
+Chatterbox.template.settings.item.form.field.wrap.frame = '<div class="{ref} field">{field}</div>';
+
+Chatterbox.template.settings.item.form.field.dropdown = {};
+Chatterbox.template.settings.item.form.field.dropdown.render = { 'items': Chatterbox.template.settings.krender.dditems };
+Chatterbox.template.settings.item.form.field.dropdown.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.dropdown.frame = '<select class="{ref}">{items}</select>';
+
+Chatterbox.template.settings.item.form.field.textfield = {};
+Chatterbox.template.settings.item.form.field.textfield.post = Chatterbox.template.clean(['ref']);
+Chatterbox.template.settings.item.form.field.textfield.frame = '<input type="text" class="{ref}" />';
+
+Chatterbox.template.settings.item.form.field.textarea = {};
+Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref']);
+Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20"></textarea>';
+
 

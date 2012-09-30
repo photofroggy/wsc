@@ -975,6 +975,20 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .left
 div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .right {
   float: left;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section {
+  float: left;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section.labels {
+  max-width: 150px;
+  margin: 0px 20px 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section.labels .label {
+  padding: 6px 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section .field {
+  overflow: hidden;
+  padding: 5px 0px;
+}
 div.wsc div.floater.settings footer {
   width: 100%;
   padding: 10px 5px;

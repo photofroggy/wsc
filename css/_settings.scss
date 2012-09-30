@@ -82,6 +82,22 @@
                                 float: left;
                             }
                         }
+                        &.form {
+                            section {
+                                float: left;
+                                &.labels {
+                                    max-width: 150px;
+                                    margin: 0px 20px 0px 10px;
+                                    .label {
+                                        padding: 6px 0px;
+                                    }
+                                }
+                                .field {
+                                    overflow: hidden;
+                                    padding: 5px 0px;
+                                }
+                            }
+                        }
                     }
                 }
             }
