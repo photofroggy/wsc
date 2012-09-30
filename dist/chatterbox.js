@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.25';
+Chatterbox.VERSION = '0.4.26';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1086,6 +1086,15 @@ Chatterbox.Control = function( ui ) {
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
+    this.mli = this.form.find('textarea.msg');
+    this.ci = this.input;
+    this.ml = false;
+    this.mlb = this.view.find('a[href~=#multiline].button');
+    
+    var ctrl = this;
+    this.mlb.click(function( event ) {
+        ctrl.multiline( !ctrl.multiline() );
+    });
 
 };
 
@@ -1095,7 +1104,7 @@ Chatterbox.Control = function( ui ) {
  * @method focus
  */
 Chatterbox.Control.prototype.focus = function( ) {
-    this.input.focus();
+    this.ci.focus();
 };
 
 /**
@@ -1109,7 +1118,8 @@ Chatterbox.Control.prototype.resize = function( ) {
         width: '100%'});
     // Form dimensionals.
     this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 80});
+    this.input.css({'width': this.manager.view.width() - 90});
+    this.mli.css({'width': this.manager.view.width() - 90});
 };
 
 
@@ -1133,12 +1143,45 @@ Chatterbox.Control.prototype.height = function( ) {
  *   `submit`.
  */
 Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    if( this.manager.mozilla )
+    if( this.manager.mozilla ) {
         this.input.keypress( onkeypress || this._onkeypress );
-    else
+        this.mli.keypress( onkeypress || this._onkeypress );
+    } else {
         this.input.keydown( onkeypress || this._onkeypress );
+        this.mli.keydown( onkeypress || this._onkeypress );
+    }
     
     this.form.submit( onsubmit || this._onsubmit );
+};
+
+/**
+ * Set or get multiline input mode.
+ * 
+ * @method multiline
+ * @param [on] {Boolean} Use multiline input?
+ * @return {Boolean} Current mode.
+ */
+Chatterbox.Control.prototype.multiline = function( on ) {
+
+    if( on == undefined || this.ml == on )
+        return this.ml;
+    
+    this.ml = on;
+    
+    if( this.ml ) {
+        this.input.css('display', 'none');
+        this.mli.css('display', 'inline-block');
+        this.ci = this.mli;
+        this.manager.resize();
+        return this.ml;
+    }
+    
+    this.mli.css('display', 'none');
+    this.input.css('display', 'inline-block');
+    this.ci = this.input;
+    this.manager.resize();
+    return this.mli;
+
 };
 
 Chatterbox.Control.prototype._onkeypress = function( event ) {};
@@ -1151,16 +1194,16 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.input.val();
+    d = this.ci.val();
     i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
-        this.input.val('');
+        this.ci.val('');
         return d;
     }
     
     chunk = d.slice(i + 1);
-    this.input.val( d.slice(0, i) );
+    this.ci.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
         return this.chomp();
@@ -1175,11 +1218,11 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.input.val();
+    d = this.ci.val();
     if( !d )
-        this.input.val(data);
+        this.ci.val(data);
     else
-        this.input.val(d + ' ' + data);
+        this.ci.val(d + ' ' + data);
 };
 
 /**
@@ -1188,9 +1231,12 @@ Chatterbox.Control.prototype.unchomp = function( data ) {
  * @method get_text
  * @return {String} The text currently in the input box.
  */
-Chatterbox.Control.prototype.get_text = function(  ) {
+Chatterbox.Control.prototype.get_text = function( text ) {
 
-    return this.input.val();
+    if( text == undefined )
+        return this.ci.val();
+    this.ci.val( text || '' );
+    return this.ci.val();
 
 };
 
@@ -1202,7 +1248,7 @@ Chatterbox.Control.prototype.get_text = function(  ) {
  */
 Chatterbox.Control.prototype.set_text = function( text ) {
 
-    this.input.val( text || '' );
+    this.ci.val( text || '' );
 
 };
 
@@ -2565,6 +2611,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
+                <textarea class="msg"></textarea>\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
@@ -2781,6 +2828,9 @@ Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
 
 Chatterbox.template.settings.item.twopane.wrap = function( html, data ) {
 
+    if( !data.hasOwnProperty('text') )
+        return html;
+    
     html = replaceAll(
         Chatterbox.template.settings.item.twopane.frame, 
         '{template}',

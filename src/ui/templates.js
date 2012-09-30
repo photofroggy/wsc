@@ -100,6 +100,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
             <form class="msg">\
                 <input type="text" class="msg" />\
+                <textarea class="msg"></textarea>\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
@@ -316,6 +317,9 @@ Chatterbox.template.settings.item.twopane.frame = '{title}<div class="twopane">\
 
 Chatterbox.template.settings.item.twopane.wrap = function( html, data ) {
 
+    if( !data.hasOwnProperty('text') )
+        return html;
+    
     html = replaceAll(
         Chatterbox.template.settings.item.twopane.frame, 
         '{template}',

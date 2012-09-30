@@ -797,9 +797,21 @@ div.wsc div.chatcontrol form.msg {
   margin: 0px;
   margin-bottom: 5px;
   width: 100%;
+  overflow: hidden;
 }
 div.wsc div.chatcontrol form.msg input.msg {
   line-height: 1.6em;
+  display: inline-block;
+  float: left;
+}
+div.wsc div.chatcontrol form.msg textarea.msg {
+  display: none;
+  line-height: 1.6em;
+  float: left;
+}
+div.wsc div.chatcontrol form.msg input[type="submit"] {
+  float: left;
+  margin-left: 10px;
 }
 div.wsc a.button,
 div.wsc form.msg input[type="submit"] {
@@ -1006,7 +1018,10 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.i
 div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field.radio {
   padding: 7px 0px 5px 0px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item .form .field.radio {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item form {
+  overflow: hidden;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item form .field.radio {
   padding: 10px 0px 7px 0px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox {

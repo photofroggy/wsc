@@ -102,8 +102,11 @@
                                 }
                             }
                         }
-                        .form .field.radio {
-                            padding: 10px 0px 7px 0px;
+                        form {
+                            .field.radio {
+                                padding: 10px 0px 7px 0px;
+                            }
+                            overflow: hidden;
                         }
                         .radiobox {
                             overflow: hidden;

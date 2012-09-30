@@ -25,10 +25,21 @@
             margin: 0px;
             margin-bottom: 5px;
             width: 100%;
-        }
-        
-        form.msg input.msg {
-            line-height: 1.6em;
+            overflow: hidden;
+            input.msg {
+                line-height: 1.6em;
+                display: inline-block;
+                float: left;
+            }
+            textarea.msg {
+                display: none;
+                line-height: 1.6em;
+                float: left;
+            }
+            input[type="submit"] {
+                float: left;
+                margin-left: 10px;
+            }
         }
     
     }

@@ -65,9 +65,9 @@ wsc.defaults.Extension = function( client ) {
             page.item('Form', {
                 'ref': 'ui',
                 'title': 'UI',
-                'hint': '<b>Timestamp:</b> Choose between a 24 hour clock and\
-                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the\
-                        client.\n\n<b>Close Tabs:</b> Turn tab close buttons on/off.',
+                'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
+                        a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
+                        client.\n\n<b>Close Tabs</b><br/>Turn tab close buttons on/off.',
                 'fields': [
                     ['Dropdown', {
                         'ref': 'theme',
