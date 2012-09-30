@@ -241,6 +241,31 @@ Chatterbox.template.settings.krender.dditems = function( items ) {
     }
     return render;
 };
+Chatterbox.template.settings.krender.radioitems = function( items ) {
+    if( items.length == 0 )
+        return '';
+    render = '';
+    labels = [];
+    fields = [];
+    
+    for( i in items ) {
+    
+        item = items[i];
+        labels.push(Chatterbox.render('settings.item.form.label', {
+            'ref': item.value,
+            'label': item.title
+        }));
+        
+        ritem = '<div class="'+item.value+' field radio"><input class="'+item.value+'" type="radio" name="'+item.name+'" value="' + item.value + '"'
+        if( item.selected ) {
+            ritem+= ' checked="yes"';
+        }
+        fields.push(ritem + ' /></div>');
+    
+    }
+    
+    return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
+};
 
 Chatterbox.template.settings.item = {};
 Chatterbox.template.settings.item.get = function( type ) {
@@ -333,6 +358,22 @@ Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 </select>\
                                             </form>';
 
+Chatterbox.template.settings.item.radio = {};
+Chatterbox.template.settings.item.radio.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.radio.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.radioitems
+};
+
+Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
+Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
+Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
+
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
@@ -345,7 +386,7 @@ Chatterbox.template.settings.item.form.render = {
     'items': Chatterbox.template.settings.krender.dditems
 };
 
-Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
+Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'text', 'items']);
 //Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.form.frame = '{title}<form>\
                                                 <section class="labels"></section>\
@@ -373,5 +414,10 @@ Chatterbox.template.settings.item.form.field.textfield.frame = '<input type="tex
 Chatterbox.template.settings.item.form.field.textarea = {};
 Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref']);
 Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20"></textarea>';
+
+Chatterbox.template.settings.item.form.field.radio = {};
+Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbox.template.settings.krender.radioitems };
+Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
 
 

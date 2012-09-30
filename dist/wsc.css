@@ -833,17 +833,19 @@ div.wsc a.iconic.close {
   -webkit-border-radius: 20px;
   font-size: 13px;
   padding: 1px;
-  -webkit-box-shadow: 0px 1px 1px black;
-  -moz-box-shadow: 0px 1px 1px black;
-  box-shadow: 0px 1px 1px black;
+  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.iconic.close:hover {
   background: none;
   border: 1px solid black;
   cursor: pointer;
-  -webkit-box-shadow: 0px 1px 1px black;
-  -moz-box-shadow: 0px 1px 1px black;
-  box-shadow: 0px 1px 1px black;
+}
+div.wsc a.iconic.close:active {
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.iconic.close.big {
   height: 25px;
@@ -975,19 +977,37 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .left
 div.wsc div.floater.settings div.bookwrap div.book div.page .item .twopane .right {
   float: left;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) {
   float: left;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section.labels {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item).labels {
   max-width: 150px;
   margin: 0px 20px 0px 10px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section.labels .label {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item).labels .label {
   padding: 6px 0px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item.form section .field {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item).fields {
+  padding-right: 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field {
   overflow: hidden;
   padding: 5px 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field.radio {
+  padding: 7px 0px 5px 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .form .field.radio {
+  padding: 10px 0px 7px 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox {
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #B1B1B1;
+  float: left;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox form {
+  padding: 0px;
 }
 div.wsc div.floater.settings footer {
   width: 100%;

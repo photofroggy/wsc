@@ -42,7 +42,6 @@
         @include round-box(5px);
         font-size: 13px;
         @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
-        
         &:active {
             background: none;
             border: 1px solid black;
@@ -67,13 +66,14 @@
         @include round-box(20px);
         font-size: 13px;
         padding: 1px;
-        @include shadow(0px 1px 1px black);
+        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:hover {
             background: none;
             border: 1px solid black;
             cursor: pointer;
-            @include shadow(0px 1px 1px black);
-        
+        }
+        &:active {
+            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
         }
         &.big {
             height: 25px;

@@ -2115,123 +2115,57 @@ wsc.defaults.Extension = function( client ) {
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
             orig.clock = client.ui.clock();
             
-            page.item('Text', {
-                'ref': 'intro',
-                'title': 'Main',
-                'text': 'Use this window to view and change your settings.\n\nAt\
-                        the bottom of this settings page you can see some debug\
-                        information, which can come in handy if something goes\
-                        wrong.',/*
-                'subitems': [
-                    [ 'Text', {
-                        'ref': 'intro-sub',
-                        'title': 'Sneak',
-                        'text': 'You can have one thing stacked on top of another.\
-                                Brilliant.'
-                    }]
-                ]*/
-            });
-            
             themes = [];
             for( i in client.ui.settings.themes ) {
                 name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
                 themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
             }
             
-            page.item('Dropdown', {
-                'ref': 'clock',
-                'title': 'Clock',
-                'text': 'Choose between 24 hour and 12 hour',
-                'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
-                'items': [
-                    { 'value': '1', 'title': '24 hour', 'selected': orig.clock },
-                    { 'value': '0', 'title': '12 hour', 'selected': !orig.clock }
+            page.item('Text', {
+                'ref': 'intro',
+                'title': 'Main',
+                'text': 'Use this window to view and change your settings.\n\nCheck\
+                        the different pages to see what settings can be changed.',
+            });
+            
+            
+            page.item('Form', {
+                'ref': 'ui',
+                'title': 'UI',
+                'hint': '<b>Timestamp:</b> Choose between a 24 hour clock and\
+                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the client.',
+                'fields': [
+                    ['Dropdown', {
+                        'ref': 'theme',
+                        'label': 'Theme',
+                        'items': themes
+                    }],
+                    ['Radio', {
+                        'ref': 'clock',
+                        'label': 'Timestamp Format',
+                        'text': 'Choose between 24 hour and 12 hour',
+                        'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
+                        'items': [
+                            { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
+                            { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                        ]
+                    }],
                 ],
                 'event': {
                     'change': function( event ) {
-                    
-                        client.ui.clock(client.ui.view.find(this).val() == '1');
-                    
+                        client.ui.clock(event.data.clock == '24');
+                        client.ui.theme(event.data.theme);
                     },
                     'save': function( event ) {
-                    
-                        if( event.input == null )
-                            return;
-                        console.log(event.input.val());
-                        orig.clock = event.input.val() == '1';
-                    
+                        orig.clock = event.data.clock;
+                        orig.theme = event.data.theme;
                     },
                     'close': function( event ) {
-                    
                         client.ui.clock(orig.clock);
-                    
-                    }
-                },
-                /*'subitems': [
-                    ['Dropdown', {
-                        'ref': 'theme',
-                        'title': 'Theme',
-                        'text': 'Set the theme for the client',
-                        'items': themes,
-                        'event': {
-                            'change': function( event ) {
-                            
-                                client.ui.theme(client.ui.view.find(this).val());
-                            
-                            },
-                            'save': function( event ) {
-                            
-                                if( event.input == null )
-                                    return;
-                                orig.theme = event.input.val();
-                            
-                            },
-                            'close': function( event ) {
-                            
-                                client.ui.theme(orig.theme);
-                            
-                            }
-                        }
-                    }]
-                ]*/
-            });
-            
-            /* */
-            page.item('Dropdown', {
-                'ref': 'theme',
-                'title': 'Theme',
-                'text': 'Set the theme for the client',
-                'hint': 'The theme determines what the client GUI looks like.\n\nAt the moment, the only themes available are the default theme, and the dAmn theme.\n\nThe dAmn theme is easier on the eyes; I shall have to rework the default theme, using the dAmn theme as a reference.',
-                'items': themes,
-                'event': {
-                    'change': function( event ) {
-                    
-                        client.ui.theme(client.ui.view.find(this).val());
-                    
-                    },
-                    'save': function( event ) {
-                    
-                        if( event.input == null )
-                            return;
-                        orig.theme = event.input.val();
-                    
-                    },
-                    'close': function( event ) {
-                    
                         client.ui.theme(orig.theme);
-                    
                     }
                 }
             });
-            /* */
-            
-            /* 
-            page.item('dropdown', {
-                'ref': 'theme',
-                'title': 'Themes',
-                'items': themes
-            })
-            /* */
             
             page.item('Text', {
                 'ref': 'debug',
@@ -3377,7 +3311,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.23';
+Chatterbox.VERSION = '0.4.24';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5290,15 +5224,15 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
  */
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
-    pair = this._get_ep('inspect');
-    inps = pair == false ? null : this.view.find(pair[1]);
-    cb = this._get_cb('save');
+    var pair = this._get_ep('inspect');
+    var inps = pair == false ? null : this.view.find(pair[1]);
+    var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
     } else {
         for( i in cb ) {
-            sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+            var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
             cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
         }
     }
@@ -5468,6 +5402,7 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
     for( i in this.fields ) {
     
         field = this.fields[i];
+        console.log(field);
         data[field.ref] = field.get();
     
     }
@@ -5503,7 +5438,7 @@ Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
     }
     
     cb = this._get_cb('save');
-    
+    console.log(cb);
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
@@ -5559,6 +5494,7 @@ Chatterbox.Settings.Item.Form.Field = function( type, options ) {
     this.ref = this.options['ref'] || 'ref';
     this.label = null;
     this.field = null;
+    this.value = '';
 
 };
 
@@ -5592,6 +5528,9 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     
     this.fwrap = form.fsection.find('div.'+this.ref+'.field');
     this.field = this.fwrap.find('.'+this.ref);
+    this.view = this.fwrap;
+    var field = this;
+    this.field.bind('change', function( event ) { field.value = field.view.find(this).val(); });
 
 };
 
@@ -5614,9 +5553,149 @@ Chatterbox.Settings.Item.Form.Field.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 
-    if( this.field == null )
-        return '';
-    return this.field.val();
+    return this.value;
+
+};
+
+
+/**
+ * Form radio field.
+ * 
+ * @class Radio
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Radio = function( type, options ) {
+
+    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
+    this.items = {};
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Form.Radio.prototype = new Chatterbox.Settings.Item.Form.Field();
+Chatterbox.Settings.Item.Form.Radio.prototype.constructor = Chatterbox.Settings.Item.Form.Radio;
+
+/**
+ * Build the radio field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Radio.prototype.build = function( form ) {
+
+    form.lsection.append(
+        Chatterbox.render('settings.item.form.label', {
+            'ref': this.ref,
+            'label': this.options['label'] || ''
+        })
+    );
+    
+    this.label = form.lsection.find('label.' + this.ref);
+    this.lwrap = form.lsection.find('.'+this.ref+'.label');
+    
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.ref;
+            this.items[item.ref] = '';
+        }
+    }
+    
+    form.fsection.append(
+        Chatterbox.render('settings.item.form.field.wrap', {
+            'ref': this.ref,
+            'field': Chatterbox.render('settings.item.form.field.radio', this.options)
+        })
+    );
+    
+    this.fwrap = form.fsection.find('div.'+this.ref+'.field');
+    this.field = this.fwrap.find('input[name='+this.ref+']:radio');
+    this.value = this.field.val();
+    var radio = this;
+    this.field.bind('change', function( event ) {
+        radio.value = radio.fwrap.find(this).val();
+    });
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Radio.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.fwrap.find('.radiobox').height() );
+
+};
+
+/**
+ * Get field data.
+ * 
+ * @method get
+ * @return {Object} data.
+ */
+Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
+
+    return this.value;
+
+};
+
+
+/**
+ * Radio box item.
+ * 
+ * @class Radio
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Radio = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Radio.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Radio.prototype.constructor = Chatterbox.Settings.Item.Radio;
+
+/**
+ * Build the radio field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
+
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.options['ref'] || 'ref';
+        }
+    }
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    this.field = this.view.find('input:radio');
+    this.value = this.field.val();
+    var radio = this;
+    this.field.bind('change', function( event ) {
+        radio.value = radio.view.find(this).val();
+    });
+
+};
+
+/**
+ * Get field data.
+ * 
+ * @method get
+ * @return {Object} data.
+ */
+Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
+
+    return this.value;
 
 };
 
@@ -5898,6 +5977,31 @@ Chatterbox.template.settings.krender.dditems = function( items ) {
     }
     return render;
 };
+Chatterbox.template.settings.krender.radioitems = function( items ) {
+    if( items.length == 0 )
+        return '';
+    render = '';
+    labels = [];
+    fields = [];
+    
+    for( i in items ) {
+    
+        item = items[i];
+        labels.push(Chatterbox.render('settings.item.form.label', {
+            'ref': item.value,
+            'label': item.title
+        }));
+        
+        ritem = '<div class="'+item.value+' field radio"><input class="'+item.value+'" type="radio" name="'+item.name+'" value="' + item.value + '"'
+        if( item.selected ) {
+            ritem+= ' checked="yes"';
+        }
+        fields.push(ritem + ' /></div>');
+    
+    }
+    
+    return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
+};
 
 Chatterbox.template.settings.item = {};
 Chatterbox.template.settings.item.get = function( type ) {
@@ -5990,6 +6094,22 @@ Chatterbox.template.settings.item.dropdown.frame = '{title}<form>\
                                                 </select>\
                                             </form>';
 
+Chatterbox.template.settings.item.radio = {};
+Chatterbox.template.settings.item.radio.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.radio.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.radioitems
+};
+
+Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
+Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
+Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
+
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
@@ -6002,7 +6122,7 @@ Chatterbox.template.settings.item.form.render = {
     'items': Chatterbox.template.settings.krender.dditems
 };
 
-Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'items']);
+Chatterbox.template.settings.item.form.post = Chatterbox.template.clean(['title', 'text', 'items']);
 //Chatterbox.template.settings.item.form.events = [['change', 'select'],['inspect', 'select']];
 Chatterbox.template.settings.item.form.frame = '{title}<form>\
                                                 <section class="labels"></section>\
@@ -6030,6 +6150,11 @@ Chatterbox.template.settings.item.form.field.textfield.frame = '<input type="tex
 Chatterbox.template.settings.item.form.field.textarea = {};
 Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref']);
 Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20"></textarea>';
+
+Chatterbox.template.settings.item.form.field.radio = {};
+Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbox.template.settings.krender.radioitems };
+Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
 
 
 // @include templates.js

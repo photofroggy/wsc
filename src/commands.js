@@ -48,123 +48,57 @@ wsc.defaults.Extension = function( client ) {
             orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
             orig.clock = client.ui.clock();
             
-            page.item('Text', {
-                'ref': 'intro',
-                'title': 'Main',
-                'text': 'Use this window to view and change your settings.\n\nAt\
-                        the bottom of this settings page you can see some debug\
-                        information, which can come in handy if something goes\
-                        wrong.',/*
-                'subitems': [
-                    [ 'Text', {
-                        'ref': 'intro-sub',
-                        'title': 'Sneak',
-                        'text': 'You can have one thing stacked on top of another.\
-                                Brilliant.'
-                    }]
-                ]*/
-            });
-            
             themes = [];
             for( i in client.ui.settings.themes ) {
                 name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
                 themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
             }
             
-            page.item('Dropdown', {
-                'ref': 'clock',
-                'title': 'Clock',
-                'text': 'Choose between 24 hour and 12 hour',
-                'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
-                'items': [
-                    { 'value': '1', 'title': '24 hour', 'selected': orig.clock },
-                    { 'value': '0', 'title': '12 hour', 'selected': !orig.clock }
+            page.item('Text', {
+                'ref': 'intro',
+                'title': 'Main',
+                'text': 'Use this window to view and change your settings.\n\nCheck\
+                        the different pages to see what settings can be changed.',
+            });
+            
+            
+            page.item('Form', {
+                'ref': 'ui',
+                'title': 'UI',
+                'hint': '<b>Timestamp:</b> Choose between a 24 hour clock and\
+                        a 12 hour clock.\n\n<b>Theme:</b> Change the look of the client.',
+                'fields': [
+                    ['Dropdown', {
+                        'ref': 'theme',
+                        'label': 'Theme',
+                        'items': themes
+                    }],
+                    ['Radio', {
+                        'ref': 'clock',
+                        'label': 'Timestamp Format',
+                        'text': 'Choose between 24 hour and 12 hour',
+                        'hint': 'This setting determines the format used for the timestamps that appear next to messages in the channel log views.',
+                        'items': [
+                            { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
+                            { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                        ]
+                    }],
                 ],
                 'event': {
                     'change': function( event ) {
-                    
-                        client.ui.clock(client.ui.view.find(this).val() == '1');
-                    
+                        client.ui.clock(event.data.clock == '24');
+                        client.ui.theme(event.data.theme);
                     },
                     'save': function( event ) {
-                    
-                        if( event.input == null )
-                            return;
-                        console.log(event.input.val());
-                        orig.clock = event.input.val() == '1';
-                    
+                        orig.clock = event.data.clock;
+                        orig.theme = event.data.theme;
                     },
                     'close': function( event ) {
-                    
                         client.ui.clock(orig.clock);
-                    
-                    }
-                },
-                /*'subitems': [
-                    ['Dropdown', {
-                        'ref': 'theme',
-                        'title': 'Theme',
-                        'text': 'Set the theme for the client',
-                        'items': themes,
-                        'event': {
-                            'change': function( event ) {
-                            
-                                client.ui.theme(client.ui.view.find(this).val());
-                            
-                            },
-                            'save': function( event ) {
-                            
-                                if( event.input == null )
-                                    return;
-                                orig.theme = event.input.val();
-                            
-                            },
-                            'close': function( event ) {
-                            
-                                client.ui.theme(orig.theme);
-                            
-                            }
-                        }
-                    }]
-                ]*/
-            });
-            
-            /* */
-            page.item('Dropdown', {
-                'ref': 'theme',
-                'title': 'Theme',
-                'text': 'Set the theme for the client',
-                'hint': 'The theme determines what the client GUI looks like.\n\nAt the moment, the only themes available are the default theme, and the dAmn theme.\n\nThe dAmn theme is easier on the eyes; I shall have to rework the default theme, using the dAmn theme as a reference.',
-                'items': themes,
-                'event': {
-                    'change': function( event ) {
-                    
-                        client.ui.theme(client.ui.view.find(this).val());
-                    
-                    },
-                    'save': function( event ) {
-                    
-                        if( event.input == null )
-                            return;
-                        orig.theme = event.input.val();
-                    
-                    },
-                    'close': function( event ) {
-                    
                         client.ui.theme(orig.theme);
-                    
                     }
                 }
             });
-            /* */
-            
-            /* 
-            page.item('dropdown', {
-                'ref': 'theme',
-                'title': 'Themes',
-                'items': themes
-            })
-            /* */
             
             page.item('Text', {
                 'ref': 'debug',
