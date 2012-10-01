@@ -265,10 +265,15 @@ wsc.Control.prototype.keypress = function( event ) {
     
     switch( key ) {
         case 13: // Enter
-            if( !this.ui.multiline() )
+            if( !this.ui.multiline() ) {
                 this.submit(event);
-            else
-                bubble = true;
+            } else {
+                if( event.shiftKey ) {
+                    this.submit(event);
+                } else {
+                    bubble = true;
+                }
+            }
             break;
         case 38: // Up
             this.scroll_history(true);

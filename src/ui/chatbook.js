@@ -44,6 +44,21 @@ Chatterbox.Chatbook.prototype.resize = function( height ) {
 };
 
 /**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.Chatbook.prototype.loop = function(  ) {
+
+    for( select in this.chan ) {
+        this.chan[select].loop();
+    }
+
+};
+
+/**
  * Get or set the channel object associated with the given namespace.
  * 
  * @method channel

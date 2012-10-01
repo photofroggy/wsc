@@ -211,6 +211,19 @@ Chatterbox.UI.prototype.resize = function() {
 };
 
 /**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.UI.prototype.loop = function(  ) {
+
+    this.chatbook.loop();
+
+};
+
+/**
  * Create a screen for channel `ns` in the UI, and initialise data
  * structures or some shit idk.
  * 

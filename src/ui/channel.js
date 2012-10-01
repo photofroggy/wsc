@@ -193,6 +193,25 @@ Chatterbox.Channel.prototype.resize = function( ) {
 };
 
 /**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.Channel.prototype.loop = function(  ) {
+
+    msgs = this.logpanel.find( '.logmsg' );
+    
+    if( msgs.length < 200 )
+        return;
+    
+    msgs.slice(0, msgs.length - 200).remove();
+    this.resize();
+
+};
+
+/**
  * Display a log message.
  * 
  * @method log
