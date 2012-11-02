@@ -35,7 +35,7 @@ wsc.Client = function( view, options, mozilla ) {
         "protocol": wsc.Protocol,
         "tablumps": wsc.Tablumps,
         "flow": wsc.Flow,
-        "ui": wsc.defauts.UI,
+        "ui": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',

@@ -3,12 +3,12 @@
  * Use different object methods to render the tablumps differently.
  * 
  * @example
- *   // Parse something.
- *   msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
- *   console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
- *   console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
- *   console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
- *   console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+ *     // Parse something.
+ *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
+ *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+ *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
+ *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  * 
  * @class TablumpString
  * @constructor

@@ -44,7 +44,7 @@ Chatterbox.Control.prototype.resize = function( ) {
         width: '100%'});
     // Form dimensionals.
     this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 90});
+    this.input.css({'width': this.manager.view.width() - 100});
     this.mli.css({'width': this.manager.view.width() - 90});
 };
 

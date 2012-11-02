@@ -1,4 +1,10 @@
 
+/**
+ * dAmn extension makes the client work with dAmn.
+ * 
+ * @class Extension
+ * @constructor
+ */
 wsc.dAmn.Extension = function( client ) {
 
     client.settings.client = 'dAmnClient';

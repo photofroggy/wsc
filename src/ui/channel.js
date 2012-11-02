@@ -477,7 +477,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
         },
         function( e ) {
             link.data('hover', 0);
-            chan.unhover_user(box, event);
+            chan.unhover_user(box, e);
         }
     );
 

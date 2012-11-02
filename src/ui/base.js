@@ -45,6 +45,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     
 };
 
+wsc.defaults.UI = Chatterbox.UI;
+
 /**
  * Used to trigger events.
  *

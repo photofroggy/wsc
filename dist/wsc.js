@@ -9,6 +9,32 @@ wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
+
+wsc.base = {};
+wsc.base.UI = function( view, options, mozilla, events ) {
+
+    this.LIB = 'base';
+    this.VERSION = '1';
+    this.STATE = 'rc';
+    this.channels = [];
+    
+};
+
+wsc.base.UI.prototype.build = function(  ) {};
+wsc.base.UI.prototype.on = function( event, handler ) {};
+wsc.base.UI.prototype.loop = function(  ) {};
+wsc.base.UI.prototype.create_channel = function( namespace, hidden ) {};
+wsc.base.UI.prototype.remove_channel = function( namespace ) {};
+wsc.base.UI.prototype.channel = function( namespace ) {};
+
+wsc.base.UI.Channel = function( namespace, hidden ) {
+
+    this.namespace = namespace;
+    this.hidden = hidden;
+
+};
+
+wsc.defaults.UI = wsc.base.UI;
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
@@ -1081,12 +1107,12 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
  * Use different object methods to render the tablumps differently.
  * 
  * @example
- *   // Parse something.
- *   msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
- *   console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
- *   console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
- *   console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
- *   console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+ *     // Parse something.
+ *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
+ *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+ *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
+ *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  * 
  * @class TablumpString
  * @constructor
@@ -2429,16 +2455,7 @@ wsc.Client.prototype.build = function(  ) {
  */
 wsc.Client.prototype.loop = function(  ) {
 
-    for( key in this.channelo ) {
-        c = this.channelo[key];
-        msgs = c.ui.logpanel.find( '.logmsg' );
-        
-        if( msgs.length < 200 )
-            continue;
-        
-        msgs.slice(0, msgs.length - 200).remove();
-        c.ui.resize();
-    }
+    this.ui.loop();
 
 };
 
@@ -3368,6 +3385,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     
 };
 
+wsc.defaults.UI = Chatterbox.UI;
+
 /**
  * Used to trigger events.
  *
@@ -3530,6 +3549,19 @@ Chatterbox.UI.prototype.resize = function() {
     //this.view.width( '100%' );
     this.nav.resize(  );
     this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
+
+};
+
+/**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.UI.prototype.loop = function(  ) {
+
+    this.chatbook.loop();
 
 };
 
@@ -3872,6 +3904,25 @@ Chatterbox.Channel.prototype.resize = function( ) {
 };
 
 /**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.Channel.prototype.loop = function(  ) {
+
+    msgs = this.logpanel.find( '.logmsg' );
+    
+    if( msgs.length < 200 )
+        return;
+    
+    msgs.slice(0, msgs.length - 200).remove();
+    this.resize();
+
+};
+
+/**
  * Display a log message.
  * 
  * @method log
@@ -4137,7 +4188,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
         },
         function( e ) {
             link.data('hover', 0);
-            chan.unhover_user(box, event);
+            chan.unhover_user(box, e);
         }
     );
 
@@ -4220,6 +4271,21 @@ Chatterbox.Chatbook.prototype.resize = function( height ) {
         var chan = this.chan[select];
         chan.resize();
     }
+};
+
+/**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ */
+Chatterbox.Chatbook.prototype.loop = function(  ) {
+
+    for( select in this.chan ) {
+        this.chan[select].loop();
+    }
+
 };
 
 /**
@@ -4441,7 +4507,7 @@ Chatterbox.Control.prototype.resize = function( ) {
         width: '100%'});
     // Form dimensionals.
     this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 90});
+    this.input.css({'width': this.manager.view.width() - 100});
     this.mli.css({'width': this.manager.view.width() - 90});
 };
 
