@@ -121,8 +121,8 @@ wsc.Control.prototype.append_history = function( data ) {
  */
 wsc.Control.prototype.scroll_history = function( up ) {
 
-    history = this.get_history();
-    data = this.ui.get_text();
+    var history = this.get_history();
+    var data = this.ui.get_text();
     
     if( history.index == -1 )
         if( data )
@@ -259,7 +259,7 @@ wsc.Control.prototype.submit = function( event ) {
  */
 wsc.Control.prototype.keypress = function( event ) {
 
-    key = event.which || event.keypress;
+    key = event.which || event.keyCode;
     ut = this.tab.hit;
     var bubble = false;
     
