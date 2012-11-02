@@ -469,7 +469,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
                 function(){ box.data('hover', 1); },
                 function( e ) {
                     box.data('hover', 0);
-                    chan.unhover_user( box, event );
+                    chan.unhover_user( box, e );
                 }
             );
             
