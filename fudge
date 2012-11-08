@@ -43,24 +43,33 @@ def package():
     
     notice('Compiling sources...')
     
+    mini = []
+    
     for package in conf['packs']:
         nnotice(package['dest'])
+        
         if 'sass' in package and package['sass']:
             sassy(package)
         else:
             jsbundle(package)
+        
+        if not 'mini' in package:
+            continue
+        
+        mini.append((package['dest'], package['mini']))
     
     notice('Nomming sources...')
     for source in conf['nom']:
         nnotice(source)
         nom(source)
     
-    yui = ['java'] + conf['yuic']
-    notice('Compressing sources...')
-    
-    for package in conf['min']:
-        nnotice(package['src'])
-        subprocess.call(yui + ['-o', '{0}'.format(package['dest']), package['src']])
+    if len(mini) > 0:
+        yui = ['java'] + conf['yuic']
+        notice('Compressing sources...')
+        
+        for package in mini:
+            nnotice(package[0])
+            subprocess.call(yui + ['-o', '{0}'.format(package[1]), package[0]])
     
     if 'post' in conf:
         notice('Running post scripts...')
