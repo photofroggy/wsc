@@ -2159,14 +2159,14 @@ wsc.defaults.Extension = function( client ) {
                 'title': 'UI',
                 'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
                         a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
-                        client.\n\n<b>Close Tabs</b><br/>Turn tab close buttons on/off.',
+                        client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
                 'fields': [
                     ['Dropdown', {
                         'ref': 'theme',
                         'label': 'Theme',
                         'items': themes
                     }],
-                    ['Radio', {
+                    ['Dropdown', {
                         'ref': 'clock',
                         'label': 'Timestamp Format',
                         'items': [
@@ -2174,12 +2174,11 @@ wsc.defaults.Extension = function( client ) {
                             { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                         ]
                     }],
-                    ['Radio', {
+                    ['Check', {
                         'ref': 'tabclose',
-                        'label': 'Close Tabs',
+                        'label': 'Close Buttons',
                         'items': [
-                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
-                            { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
+                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
                         ]
                     }],
                 ],
@@ -2187,12 +2186,12 @@ wsc.defaults.Extension = function( client ) {
                     'change': function( event ) {
                         client.ui.clock(event.data.clock == '24');
                         client.ui.theme(event.data.theme);
-                        client.ui.nav.closer(event.data.tabclose == 'yes');
+                        client.ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
                     },
                     'save': function( event ) {
                         orig.clock = event.data.clock == '24';
                         orig.theme = event.data.theme;
-                        orig.tc = event.data.tabclose == 'on';
+                        orig.tc = event.data.tabclose.indexOf('yes') > -1;
                     },
                     'close': function( event ) {
                         client.ui.clock(orig.clock);
@@ -5807,6 +5806,87 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 
 
 /**
+ * Form checkbox field.
+ * 
+ * @class Check
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Check = function( type, options ) {
+
+    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
+    this.items = {};
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Form.Check.prototype = new Chatterbox.Settings.Item.Form.Radio();
+Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.Item.Form.Check;
+
+/**
+ * Build the checkbox field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
+
+    form.lsection.append(
+        Chatterbox.render('settings.item.form.label', {
+            'ref': this.ref,
+            'label': this.options['label'] || ''
+        })
+    );
+    
+    this.label = form.lsection.find('label.' + this.ref);
+    this.lwrap = form.lsection.find('.'+this.ref+'.label');
+    
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.ref;
+            this.items[item.ref] = '';
+        }
+    }
+    
+    form.fsection.append(
+        Chatterbox.render('settings.item.form.field.wrap', {
+            'ref': this.ref,
+            'field': Chatterbox.render('settings.item.form.field.check', this.options)
+        })
+    );
+    
+    this.fwrap = form.fsection.find('div.'+this.ref+'.field');
+    this.field = this.fwrap.find('input:checkbox');
+    var check = this;
+    this.value = [];
+    this.fwrap.find('input[checked]:checkbox').each(function(  ) {
+        check.value.push(check.fwrap.find(this).val());
+    });
+    
+    this.field.bind('change', function( event ) {
+        check.value = [];
+        check.fwrap.find('input[checked]:checkbox').each(function(  ) {
+            check.value.push(check.fwrap.find(this).val());
+        });
+    });
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Check.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.fwrap.find('.checkbox').height() );
+
+};
+
+
+/**
  * Radio box item.
  * 
  * @class Radio
@@ -5846,6 +5926,57 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.view.find(this).val();
+    });
+
+};
+
+
+/**
+ * Check box item.
+ * 
+ * @class Check
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Check = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.value = [];
+
+};
+
+Chatterbox.Settings.Item.Check.prototype = new Chatterbox.Settings.Item.Radio();
+Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.Check;
+
+/**
+ * Build the checkbox field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
+
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.options['ref'] || 'ref';
+        }
+    }
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    this.field = this.view.find('input:check');
+    var check = this;
+    this.value = [];
+    this.view.find('input[checked]:checkbox').each(function(  ) {
+        check.value.push(check.view.find(this).val());
+    });
+    
+    this.field.bind('change', function( event ) {
+        check.value = [];
+        check.view.find('input[checked]:checkbox').each(function(  ) {
+            check.value.push(check.view.find(this).val());
+        });
     });
 
 };
@@ -6166,6 +6297,31 @@ Chatterbox.template.settings.krender.radioitems = function( items ) {
     
     return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
 };
+Chatterbox.template.settings.krender.checkitems = function( items ) {
+    if( items.length == 0 )
+        return '';
+    render = '';
+    labels = [];
+    fields = [];
+    
+    for( i in items ) {
+    
+        item = items[i];
+        labels.push(Chatterbox.render('settings.item.form.label', {
+            'ref': item.value,
+            'label': item.title
+        }));
+        
+        ritem = '<div class="'+item.value+' field check"><input class="'+item.value+'" type="checkbox" name="'+item.name+'" value="' + item.value + '"'
+        if( item.selected ) {
+            ritem+= ' checked="yes"';
+        }
+        fields.push(ritem + ' /></div>');
+    
+    }
+    
+    return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
+};
 
 Chatterbox.template.settings.item = {};
 Chatterbox.template.settings.item.get = function( type ) {
@@ -6322,6 +6478,11 @@ Chatterbox.template.settings.item.form.field.radio = {};
 Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbox.template.settings.krender.radioitems };
 Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
+
+Chatterbox.template.settings.item.form.field.check = {};
+Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
+Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
 
 
 /**

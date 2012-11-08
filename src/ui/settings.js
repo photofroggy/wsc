@@ -1051,6 +1051,87 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 
 
 /**
+ * Form checkbox field.
+ * 
+ * @class Check
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Check = function( type, options ) {
+
+    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
+    this.items = {};
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Form.Check.prototype = new Chatterbox.Settings.Item.Form.Radio();
+Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.Item.Form.Check;
+
+/**
+ * Build the checkbox field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
+
+    form.lsection.append(
+        Chatterbox.render('settings.item.form.label', {
+            'ref': this.ref,
+            'label': this.options['label'] || ''
+        })
+    );
+    
+    this.label = form.lsection.find('label.' + this.ref);
+    this.lwrap = form.lsection.find('.'+this.ref+'.label');
+    
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.ref;
+            this.items[item.ref] = '';
+        }
+    }
+    
+    form.fsection.append(
+        Chatterbox.render('settings.item.form.field.wrap', {
+            'ref': this.ref,
+            'field': Chatterbox.render('settings.item.form.field.check', this.options)
+        })
+    );
+    
+    this.fwrap = form.fsection.find('div.'+this.ref+'.field');
+    this.field = this.fwrap.find('input:checkbox');
+    var check = this;
+    this.value = [];
+    this.fwrap.find('input[checked]:checkbox').each(function(  ) {
+        check.value.push(check.fwrap.find(this).val());
+    });
+    
+    this.field.bind('change', function( event ) {
+        check.value = [];
+        check.fwrap.find('input[checked]:checkbox').each(function(  ) {
+            check.value.push(check.fwrap.find(this).val());
+        });
+    });
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Check.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.fwrap.find('.checkbox').height() );
+
+};
+
+
+/**
  * Radio box item.
  * 
  * @class Radio
@@ -1090,6 +1171,57 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
     var radio = this;
     this.field.bind('change', function( event ) {
         radio.value = radio.view.find(this).val();
+    });
+
+};
+
+
+/**
+ * Check box item.
+ * 
+ * @class Check
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Check = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.value = [];
+
+};
+
+Chatterbox.Settings.Item.Check.prototype = new Chatterbox.Settings.Item.Radio();
+Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.Check;
+
+/**
+ * Build the checkbox field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
+
+    if( this.options.hasOwnProperty('items') ) {
+        for( i in this.options.items ) {
+            var item = this.options.items[i];
+            item.name = this.options['ref'] || 'ref';
+        }
+    }
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    this.field = this.view.find('input:check');
+    var check = this;
+    this.value = [];
+    this.view.find('input[checked]:checkbox').each(function(  ) {
+        check.value.push(check.view.find(this).val());
+    });
+    
+    this.field.bind('change', function( event ) {
+        check.value = [];
+        check.view.find('input[checked]:checkbox').each(function(  ) {
+            check.value.push(check.view.find(this).val());
+        });
     });
 
 };

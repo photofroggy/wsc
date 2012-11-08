@@ -67,14 +67,14 @@ wsc.defaults.Extension = function( client ) {
                 'title': 'UI',
                 'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
                         a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
-                        client.\n\n<b>Close Tabs</b><br/>Turn tab close buttons on/off.',
+                        client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
                 'fields': [
                     ['Dropdown', {
                         'ref': 'theme',
                         'label': 'Theme',
                         'items': themes
                     }],
-                    ['Radio', {
+                    ['Dropdown', {
                         'ref': 'clock',
                         'label': 'Timestamp Format',
                         'items': [
@@ -82,12 +82,11 @@ wsc.defaults.Extension = function( client ) {
                             { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                         ]
                     }],
-                    ['Radio', {
+                    ['Check', {
                         'ref': 'tabclose',
-                        'label': 'Close Tabs',
+                        'label': 'Close Buttons',
                         'items': [
-                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
-                            { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
+                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
                         ]
                     }],
                 ],
@@ -95,12 +94,12 @@ wsc.defaults.Extension = function( client ) {
                     'change': function( event ) {
                         client.ui.clock(event.data.clock == '24');
                         client.ui.theme(event.data.theme);
-                        client.ui.nav.closer(event.data.tabclose == 'yes');
+                        client.ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
                     },
                     'save': function( event ) {
                         orig.clock = event.data.clock == '24';
                         orig.theme = event.data.theme;
-                        orig.tc = event.data.tabclose == 'on';
+                        orig.tc = event.data.tabclose.indexOf('yes') > -1;
                     },
                     'close': function( event ) {
                         client.ui.clock(orig.clock);
