@@ -37,102 +37,67 @@ def package():
     All this really does is create a load of files in the dist folder.
     '''
     conf = json.loads(fetch('packaging.json'))
-    notice('Cleaning ./{0}...'.format(conf['clean']))
+    notice('Cleaning {0}...'.format(conf['clean']))
     subprocess.call(['rm', '-f', os.path.join(conf['clean'], '*.js')])
     subprocess.call(['rm', '-f', os.path.join(conf['clean'], '*.css')])
+    yui = ['java'] + conf['yuic']
     
-    notice('Compiling sources...')
-    
-    mini = []
+    notice('Packaging items...')
     
     for package in conf['packs']:
         nnotice(package['dest'])
-        
-        if 'sass' in package and package['sass']:
-            sassy(package)
-        else:
-            jsbundle(package)
-        
-        if not 'mini' in package:
-            continue
-        
-        mini.append((package['dest'], package['mini']))
+        bundle(package)
+        nom(package['dest'])
+        subprocess.call(yui + ['-o', '{0}'.format(package['mini']), package['dest']])
     
-    notice('Nomming sources...')
-    for source in conf['nom']:
-        nnotice(source)
-        nom(source)
-    
-    if len(mini) > 0:
-        yui = ['java'] + conf['yuic']
-        notice('Compressing sources...')
-        
-        for package in mini:
-            nnotice(package[0])
-            subprocess.call(yui + ['-o', '{0}'.format(package[1]), package[0]])
-    
-    if 'post' in conf:
-        notice('Running post scripts...')
-        post = conf['post']
-        
-        if not isinstance(post, list):
-            subprocess.call([post])
-        else:
-            for scr in post:
+    notice('Running post scripts...')
+    try:
+        try:
+            subprocess.call([conf['post'] + ''])
+        except TypeError:
+            for scr in conf['post']:
                 subprocess.call([scr])
+    except KeyError:
+        pass
     
     notice('Done!')
 
 
-def sassy(package):
+def bundle(package):
     '''
-    Process a sass style package using sass.
+    Combine files in a given package into a single file.
     '''
-    cmd = ['sass']
-    cmd+= package.get('options', [])
-    cmd.append('{0}:{1}'.format(package['files'], package['dest']))
-    subprocess.call(cmd)
+    if package.get('sass', False):
+        subprocess.call(['sass'] + package.get('options', []) + ['{0}:{1}'.format(package['files'], package['dest'])])
+    else:
+        put_raw(package['dest'], fetch_bundle(package['files']))
 
 
-def jsbundle(package):
-    '''
-    Bundle a set of javascript files.
-    '''
-    put_raw(package['dest'], bundle(package['files']))
-
-
-def bundle(files):
+def fetch_bundle(files):
     '''
     Aggregate the contents of several files into one string.
     '''
-    if not isinstance(files, list):
-        return bundle(map(lambda f: os.path.join(files, f), os.listdir(files)))
+    try:
+        return ''.join([fetch(file) for file in files])
+    except IOError:
+        return fetch_bundle([os.path.join(files, f) for f in os.listdir(files)])
     
-    data = ''
-    
-    for file in files:
-        data+= fetch(file)
-    
-    return data
 
 
 def fetch(file):
     '''
     Fetch the contents of a single file.
     '''
-    f = open(str(file), 'r')
-    d = f.read()
-    f.close()
-    return d
+    with open(file, 'r') as f:
+        return f.read()
 
 
 def put_raw(file, contents):
     '''
     Save a file, wooo!
     '''
-    f = open(str(file), 'w')
-    f.write(contents)
-    f.close()
+    with open(file, 'w') as f:
+        f.write(contents)
 
 
 if __name__ == '__main__':
