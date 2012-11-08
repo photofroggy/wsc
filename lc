@@ -1,0 +1,9 @@
+echo ">> Line Count"
+echo ">>   file                 | raw    | nom"
+./stat dist/wsc.js
+./stat dist/wsc.dAmn.js
+./stat dist/chatterbox.js
+./stat dist/wsc.css
+./stat dist/wsc.js dist/wsc.css
+./stat dist/wsc.dAmn.js dist/wsc.css
+echo ">> Done!"

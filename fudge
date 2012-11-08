@@ -62,6 +62,16 @@ def package():
         nnotice(package['src'])
         subprocess.call(yui + ['-o', '{0}'.format(package['dest']), package['src']])
     
+    if 'post' in conf:
+        notice('Running post scripts...')
+        post = conf['post']
+        
+        if not isinstance(post, list):
+            subprocess.call([post])
+        else:
+            for scr in post:
+                subprocess.call([scr])
+    
     notice('Done!')
 
 
