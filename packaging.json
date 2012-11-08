@@ -87,5 +87,5 @@
             "dest": "dist/wsc.min.css"
         }
     ],
-    "post": "mvlh"
+    "post": "./mvlh"
 }
