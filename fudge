@@ -1,0 +1,120 @@
+#!/usr/bin/python
+
+''' fudge packer
+    Created by photofroggy.
+    
+    This script is designed to package javascript projects into their
+    distributable form using information from a configuration file.
+    
+    Also capable of using sass to compile CSS files.
+    
+    Uses YUI Compressor to minify scripts, so can minify Javascript and CSS.
+    
+    May add the ability to create executables for Python applications, but that
+    may be largely dependent on platform.
+'''
+
+import os
+import sys
+import json
+import os.path
+import subprocess
+from nomming import nom
+
+
+def notice(msg):
+    sys.stdout.write('>> {0}\n'.format(msg))
+    sys.stdout.flush()
+
+
+def nnotice(name):
+    notice('    {0}...'.format(os.path.basename(name)))
+
+
+def package():
+    '''
+    Create a package based on the configuration data in packaging.json.
+    All this really does is create a load of files in the dist folder.
+    '''
+    conf = json.loads(fetch('packaging.json'))
+    notice('Cleaning ./{0}...'.format(conf['clean']))
+    subprocess.call(['rm', '-f', os.path.join(conf['clean'], '*.js')])
+    subprocess.call(['rm', '-f', os.path.join(conf['clean'], '*.css')])
+    
+    notice('Compiling sources...')
+    
+    for package in conf['packs']:
+        nnotice(package['dest'])
+        if 'sass' in package and package['sass']:
+            sassy(package)
+        else:
+            jsbundle(package)
+    
+    notice('Nomming sources...')
+    for source in conf['nom']:
+        nnotice(source)
+        nom(source)
+    
+    yui = ['java'] + conf['yuic']
+    notice('Compressing sources...')
+    
+    for package in conf['min']:
+        nnotice(package['src'])
+        subprocess.call(yui + ['-o', '{0}'.format(package['dest']), package['src']])
+    
+    notice('Done!')
+
+
+def sassy(package):
+    '''
+    Process a sass style package using sass.
+    '''
+    cmd = ['sass']
+    cmd+= package.get('options', [])
+    cmd.append('{0}:{1}'.format(package['files'], package['dest']))
+    subprocess.call(cmd)
+
+
+def jsbundle(package):
+    '''
+    Bundle a set of javascript files.
+    '''
+    put_raw(package['dest'], bundle(package['files']))
+
+
+def bundle(files):
+    '''
+    Aggregate the contents of several files into one string.
+    '''
+    if not isinstance(files, list):
+        return bundle(map(lambda f: os.path.join(files, f), os.listdir(files)))
+    
+    data = ''
+    
+    for file in files:
+        data+= fetch(file)
+    
+    return data
+
+
+def fetch(file):
+    '''
+    Fetch the contents of a single file.
+    '''
+    f = open(str(file), 'r')
+    d = f.read()
+    f.close()
+    return d
+
+
+def put_raw(file, contents):
+    '''
+    Save a file, wooo!
+    '''
+    f = open(str(file), 'w')
+    f.write(contents)
+    f.close()
+
+
+if __name__ == '__main__':
+    package()

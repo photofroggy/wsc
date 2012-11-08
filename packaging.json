@@ -1,0 +1,90 @@
+{
+    "clean": "dist",
+    "packs": [
+        {
+            "dest": "dist/chatterbox.js",
+            "files": "src/ui"
+        },
+        {
+            "dest": "dist/dAmn.js",
+            "files": "src/dAmn"
+        },
+        {
+            "dest": "dist/wsc.js",
+            "files": [
+                "src/base.js",
+                "src/events.js",
+                "src/transport.js",
+                "src/lib.js",
+                "src/packet.js",
+                "src/channel.js",
+                "src/tablumps.js",
+                "src/protocol.js",
+                "src/flow.js",
+                "src/commands.js",
+                "src/client.js",
+                "src/control.js",
+                "dist/chatterbox.js",
+                "src/wsc.js"
+            ]
+        },
+        {
+            "dest": "dist/wsc.dAmn.js",
+            "files": [
+                "src/base.js",
+                "src/events.js",
+                "src/transport.js",
+                "src/lib.js",
+                "src/packet.js",
+                "src/channel.js",
+                "src/tablumps.js",
+                "src/protocol.js",
+                "src/flow.js",
+                "src/commands.js",
+                "src/client.js",
+                "src/control.js",
+                "dist/chatterbox.js",
+                "dist/dAmn.js",
+                "src/wsc.js"
+            ]
+        },
+        {
+            "sass": true,
+            "options": [
+                "--style",
+                "expanded"
+            ],
+            "dest": "dist/wsc.css",
+            "files": "css/wsc.scss"
+        }
+    ],
+    "nom": [
+        "dist/wsc.js",
+        "dist/wsc.dAmn.js",
+        "dist/chatterbox.js"
+    ],
+    "yuic": [
+        "-jar",
+        "/usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar",
+        "--line-break",
+        "1000"
+    ],
+    "min": [
+        {
+            "src": "dist/wsc.js",
+            "dest": "dist/wsc.min.js"
+        },
+        {
+            "src": "dist/wsc.dAmn.js",
+            "dest": "dist/wsc.dAmn.min.js"
+        },
+        {
+            "src": "dist/chatterbox.js",
+            "dest": "dist/chatterbox.min.js"
+        },
+        {
+            "src": "dist/wsc.css",
+            "dest": "dist/wsc.min.css"
+        }
+    ]
+}
