@@ -3,14 +3,17 @@
     "packs": [
         {
             "dest": "dist/chatterbox.js",
+            "mini": "dist/chatterbox.min.js",
             "files": "src/ui"
         },
         {
             "dest": "dist/dAmn.js",
+            "mini": "dist/dAmn.min.js",
             "files": "src/dAmn"
         },
         {
             "dest": "dist/wsc.js",
+            "mini": "dist/wsc.min.js",
             "files": [
                 "src/base.js",
                 "src/events.js",
@@ -30,6 +33,7 @@
         },
         {
             "dest": "dist/wsc.dAmn.js",
+            "mini": "dist/wsc.dAmn.min.js",
             "files": [
                 "src/base.js",
                 "src/events.js",
@@ -55,6 +59,7 @@
                 "expanded"
             ],
             "dest": "dist/wsc.css",
+            "mini": "dist/wsc.min.css",
             "files": "css/wsc.scss"
         }
     ],
@@ -68,24 +73,6 @@
         "/usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar",
         "--line-break",
         "1000"
-    ],
-    "min": [
-        {
-            "src": "dist/wsc.js",
-            "dest": "dist/wsc.min.js"
-        },
-        {
-            "src": "dist/wsc.dAmn.js",
-            "dest": "dist/wsc.dAmn.min.js"
-        },
-        {
-            "src": "dist/chatterbox.js",
-            "dest": "dist/chatterbox.min.js"
-        },
-        {
-            "src": "dist/wsc.css",
-            "dest": "dist/wsc.min.css"
-        }
     ],
     "post": "./mvlh"
 }

@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.53';
+wsc.VERSION = '0.8.54';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -534,8 +534,7 @@ replaceAllRaw = function ( text, search, replace ) {
 };
 
 replaceAll = function( text, search, replace ) {
-    search = new RegExp(EscapeRegExp(search), 'g');
-    return text.replace(search, replace || '');
+    return text.split(search).join(replace);
 };
 
 // Size of an associative array, wooo!
