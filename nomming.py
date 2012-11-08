@@ -6,15 +6,14 @@ import os.path
 def nom(file):
     base = os.path.basename(file)
     dir = os.path.dirname(file)
-    file = open(os.path.abspath(file), 'r')
-    data = file.read()
+    with open(os.path.abspath(file), 'r') as f:
+        data = f.read()
     data = re.sub('//.*(?=[\n\r])', '', data)
     pat = re.compile('/\*((?!\*\/).)*\*/', re.DOTALL | re.MULTILINE)
     data = re.sub(pat, '', data)
     data = re.sub('\n([\s]*)\n', '\n', data)
-    save = open(os.path.join(dir, 'nom.' + base), 'w')
-    save.write(data)
-    save.close()
+    with open(os.path.join(dir, 'nom.' + base), 'w') as f:
+        f.write(data)
 
 
 if __name__ == '__main__':

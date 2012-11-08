@@ -1,5 +1,11 @@
 {
-    "clean": "dist",
+    "clean": "./dist",
+    "yuic": [
+        "-jar",
+        "/usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar",
+        "--line-break",
+        "1000"
+    ],
     "packs": [
         {
             "dest": "dist/chatterbox.js",
@@ -63,16 +69,5 @@
             "files": "css/wsc.scss"
         }
     ],
-    "nom": [
-        "dist/wsc.js",
-        "dist/wsc.dAmn.js",
-        "dist/chatterbox.js"
-    ],
-    "yuic": [
-        "-jar",
-        "/usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar",
-        "--line-break",
-        "1000"
-    ],
-    "post": "./mvlh"
+    "post": ["./mvlh"]
 }
