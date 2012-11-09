@@ -147,9 +147,8 @@ wsc.defaults.Extension = function( client ) {
         },
         
         // Clear the channel's log.
-        clear: function( e ) {
-            this.client.cchannel.logpanel.find('p.logmsg').remove();
-            this.client.cchannel.resize();
+        clear: function( e, client ) {
+            client.cchannel.clear();
         },
     };
     

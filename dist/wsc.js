@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.54';
+wsc.VERSION = '0.8.55';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -780,6 +780,17 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
     if( this.ui == null )
         return;
     this.ui.server_message(msg, info);
+};
+
+/**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+wsc.Channel.prototype.clear = function(  ) {
+    if( this.ui == null )
+        return;
+    this.ui.clear();
 };
 
 /**
@@ -2181,9 +2192,8 @@ wsc.defaults.Extension = function( client ) {
         },
         
         // Clear the channel's log.
-        clear: function( e ) {
-            this.client.cchannel.logpanel.find('p.logmsg').remove();
-            this.client.cchannel.resize();
+        clear: function( e, client ) {
+            client.cchannel.clear();
         },
     };
     
@@ -3753,6 +3763,16 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'info': info};
     this.manager.trigger( 'server_message.before', data );
     this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+};
+
+/**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+Chatterbox.Channel.prototype.clear = function(  ) {
+    this.logpanel.find('li.logmsg').remove();
+    this.resize();
 };
 
 /**

@@ -119,6 +119,17 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+wsc.Channel.prototype.clear = function(  ) {
+    if( this.ui == null )
+        return;
+    this.ui.clear();
+};
+
+/**
  * Process a channel property packet.
  * 
  * @method property

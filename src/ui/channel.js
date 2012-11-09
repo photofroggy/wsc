@@ -243,6 +243,16 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+Chatterbox.Channel.prototype.clear = function(  ) {
+    this.logpanel.find('li.logmsg').remove();
+    this.resize();
+};
+
+/**
  * Set the channel header.
  * This can be the title or topic, determined by `head`.
  * 
