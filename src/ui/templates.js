@@ -43,7 +43,7 @@ Chatterbox.render = function( template, fill ) {
     }
     
     for( key in fill ) {
-        html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' , fill));
+        html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' ));
     }
     
     if( tmpl != null ) {
@@ -277,10 +277,12 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     for( i in items ) {
     
         item = items[i];
-        labels.push(Chatterbox.render('settings.item.form.label', {
-            'ref': item.value,
-            'label': item.title
-        }));
+        if( 'title' in item ) {
+            labels.push(Chatterbox.render('settings.item.form.label', {
+                'ref': item.value,
+                'label': item.title
+            }));
+        }
         
         ritem = '<div class="'+item.value+' field check"><input class="'+item.value+'" type="checkbox" name="'+item.name+'" value="' + item.value + '"'
         if( item.selected ) {
@@ -290,7 +292,11 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     
     }
     
-    return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
+    if( labels.length > 0 ) {
+        render+= '<section class="labels">' + labels.join('') + '</section>';
+    }
+    
+    return render + '</section><section class="fields">' + fields.join('') + '</section>';
 };
 
 Chatterbox.template.settings.item = {};
@@ -423,8 +429,8 @@ Chatterbox.template.settings.item.form.frame = '{title}<form>\
                                             </form>';
 
 Chatterbox.template.settings.item.form.label = {};
-Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label']);
-Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label"><label for="{ref}">{label}</label></div>';
+Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label', 'class']);
+Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label{class}"><label for="{ref}">{label}</label></div>';
 
 Chatterbox.template.settings.item.form.field = {};
 Chatterbox.template.settings.item.form.field.wrap = {};

@@ -1015,7 +1015,17 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.i
   overflow: hidden;
   padding: 5px 0px;
 }
-div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field.radio {
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field div {
+  padding: 0px 10px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field div .labels {
+  margin: 0px;
+  margin-right: 15px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field div .fields {
+  padding-right: 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field.radio, div.wsc div.floater.settings div.bookwrap div.book div.page .item section:not(.item) .field.check {
   padding: 7px 0px 5px 0px;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page .item form {

@@ -97,7 +97,17 @@
                             .field {
                                 overflow: hidden;
                                 padding: 5px 0px;
-                                &.radio {
+                                div {
+                                    padding: 0px 10px;
+                                    .labels {
+                                        margin: 0px;
+                                        margin-right: 15px;
+                                    }
+                                    .fields {
+                                        padding-right: 0px;
+                                    }
+                                }
+                                &.radio, &.check {
                                     padding: 7px 0px 5px 0px;
                                 }
                             }

@@ -913,7 +913,8 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
             'ref': this.ref,
-            'label': this.options['label'] || ''
+            'label': this.options['label'] || '',
+            'class': (this.options['class'] ? ' ' + this.options['class'] : '')
         })
     );
     
@@ -973,6 +974,8 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
  */
 Chatterbox.Settings.Item.Form.Radio = function( type, options ) {
 
+    options = options || {};
+    options['class'] = ( options['class'] ? (options['class'] + ' ') : '' ) + 'box';
     Chatterbox.Settings.Item.Form.Field.call(this, type, options);
     this.items = {};
     this.value = '';
@@ -1060,9 +1063,8 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
  */
 Chatterbox.Settings.Item.Form.Check = function( type, options ) {
 
-    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
-    this.items = {};
-    this.value = '';
+    Chatterbox.Settings.Item.Form.Radio.call(this, type, options);
+    this.value = [];
 
 };
 

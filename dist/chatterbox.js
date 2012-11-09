@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.26';
+Chatterbox.VERSION = '0.4.27';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -2330,7 +2330,8 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
             'ref': this.ref,
-            'label': this.options['label'] || ''
+            'label': this.options['label'] || '',
+            'class': (this.options['class'] ? ' ' + this.options['class'] : '')
         })
     );
     
@@ -2390,6 +2391,8 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
  */
 Chatterbox.Settings.Item.Form.Radio = function( type, options ) {
 
+    options = options || {};
+    options['class'] = ( options['class'] ? (options['class'] + ' ') : '' ) + 'box';
     Chatterbox.Settings.Item.Form.Field.call(this, type, options);
     this.items = {};
     this.value = '';
@@ -2477,9 +2480,8 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
  */
 Chatterbox.Settings.Item.Form.Check = function( type, options ) {
 
-    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
-    this.items = {};
-    this.value = '';
+    Chatterbox.Settings.Item.Form.Radio.call(this, type, options);
+    this.value = [];
 
 };
 
@@ -2735,7 +2737,7 @@ Chatterbox.render = function( template, fill ) {
     }
     
     for( key in fill ) {
-        html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' , fill));
+        html = replaceAll(html, '{'+key+'}', ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || '' ));
     }
     
     if( tmpl != null ) {
@@ -2969,10 +2971,12 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     for( i in items ) {
     
         item = items[i];
-        labels.push(Chatterbox.render('settings.item.form.label', {
-            'ref': item.value,
-            'label': item.title
-        }));
+        if( 'title' in item ) {
+            labels.push(Chatterbox.render('settings.item.form.label', {
+                'ref': item.value,
+                'label': item.title
+            }));
+        }
         
         ritem = '<div class="'+item.value+' field check"><input class="'+item.value+'" type="checkbox" name="'+item.name+'" value="' + item.value + '"'
         if( item.selected ) {
@@ -2982,7 +2986,11 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     
     }
     
-    return '<section class="labels">' + labels.join('') + '</section><section class="fields">' + fields.join('') + '</section>';
+    if( labels.length > 0 ) {
+        render+= '<section class="labels">' + labels.join('') + '</section>';
+    }
+    
+    return render + '</section><section class="fields">' + fields.join('') + '</section>';
 };
 
 Chatterbox.template.settings.item = {};
@@ -3115,8 +3123,8 @@ Chatterbox.template.settings.item.form.frame = '{title}<form>\
                                             </form>';
 
 Chatterbox.template.settings.item.form.label = {};
-Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label']);
-Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label"><label for="{ref}">{label}</label></div>';
+Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean(['ref', 'label', 'class']);
+Chatterbox.template.settings.item.form.label.frame = '<div class="{ref} label{class}"><label for="{ref}">{label}</label></div>';
 
 Chatterbox.template.settings.item.form.field = {};
 Chatterbox.template.settings.item.form.field.wrap = {};
