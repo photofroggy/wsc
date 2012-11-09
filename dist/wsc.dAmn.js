@@ -2077,6 +2077,7 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.say', this.say.bind(extension) );
             this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
             this.client.bind('cmd.clear', this.clear.bind(extension) );
+            this.client.bind('cmd.clearall', this.clearall.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
@@ -2194,6 +2195,13 @@ wsc.defaults.Extension = function( client ) {
         // Clear the channel's log.
         clear: function( e, client ) {
             client.cchannel.clear();
+        },
+        
+        // Clear all channel logs.
+        clearall: function( e, client ) {
+            for( c in client.channelo ) {
+                client.channelo[c].clear();
+            }
         },
     };
     
