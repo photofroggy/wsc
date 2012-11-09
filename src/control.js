@@ -276,10 +276,18 @@ wsc.Control.prototype.keypress = function( event ) {
             }
             break;
         case 38: // Up
-            this.scroll_history(true);
+            if( !this.ui.multiline() ) {
+                this.scroll_history(true);
+                break;
+            }
+            bubble = true;
             break;
         case 40: // Down
-            this.scroll_history(false);
+            if( !this.ui.multiline() ) {
+                this.scroll_history(false);
+                break;
+            }
+            bubble = true;
             break;
         case 9: // Tab
             this.tab_item( event );
