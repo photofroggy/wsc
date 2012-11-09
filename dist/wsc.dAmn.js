@@ -783,6 +783,18 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+wsc.Channel.prototype.show_whois = function( data ) {
+    if( this.ui == null )
+        return;
+    this.ui.show_whois(data);
+};
+
+/**
  * Process a channel property packet.
  * 
  * @method property
@@ -2197,7 +2209,6 @@ wsc.defaults.Extension = function( client ) {
         on_property: function( event, client ) {
             if(event.p != 'info')
                 return;
-            //console.log(event);
             
             subs = event.pkt.sub;
             data = subs.shift().arg;
@@ -2210,12 +2221,12 @@ wsc.defaults.Extension = function( client ) {
                 while( subs.length > 0 ) {
                     if( subs[0].cmd != 'ns' )
                         break;
-                    conn.channels.unshift( subs.shift().param );
+                    conn.channels.unshift( client.deform_ns(subs.shift().param) );
                 }
                 data.connections.push(conn);
             }
             
-            console.log(data);
+            client.cchannel.show_whois(data);
         },
     };
     
@@ -3785,6 +3796,16 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'info': info};
     this.manager.trigger( 'server_message.before', data );
     this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+};
+
+/**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+Chatterbox.Channel.prototype.show_whois = function( data ) {
+    console.log(data);
 };
 
 /**

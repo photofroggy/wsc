@@ -572,6 +572,16 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+Chatterbox.Channel.prototype.show_whois = function( data ) {
+    console.log(data);
+};
+
+/**
  * Set the channel header.
  * This can be the title or topic, determined by `head`.
  * 
