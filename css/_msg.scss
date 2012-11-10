@@ -78,9 +78,11 @@
         
         .whoiswrap {
             overflow: hidden;
+            white-space: nowrap;
             .avatar {
                 float: left;
                 padding: 5px;
+                background-color: black;
             }
             .info {
                 float: left;
@@ -94,6 +96,10 @@
                 section ul {
                     list-style: none;
                     padding-left: 15px;
+                    li {
+                        white-space: normal;
+                        word-wrap: break-word;
+                    }
                 }
             }
         }

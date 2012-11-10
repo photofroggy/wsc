@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.32';
+Chatterbox.VERSION = '0.5.33';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -699,7 +699,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
     this.scroll();
     
     var ui = this;
-    this.wrap.find('li.' + data.ref).find('a.close').click(
+    var box = this.wrap.find('li.' + data.ref);
+    box.find('a.close').click(
         function( e ) {
             ui.wrap.find(this).parent().remove();
             ui.resize();
@@ -707,6 +708,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
             return false;
         }
     );
+    
+    return box;
 };
 
 /**
@@ -764,7 +767,7 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
         info+= '<li>' + whois.info[i] + '</li>';
     }
     
-    this.log_info(
+    var box = this.log_info(
         'whois-'+data.username,
         Chatterbox.render('whoiswrap', {
             'avatar': whois.avatar,
@@ -775,6 +778,8 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
             })
         })
     );
+    
+    box.find('div.avatar').height( box.height() - 10 );
 };
 
 /**

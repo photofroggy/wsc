@@ -656,10 +656,12 @@ div.wsc div.chatbook .loginfo a.close {
 }
 div.wsc div.chatbook .loginfo .whoiswrap {
   overflow: hidden;
+  white-space: nowrap;
 }
 div.wsc div.chatbook .loginfo .whoiswrap .avatar {
   float: left;
   padding: 5px;
+  background-color: black;
 }
 div.wsc div.chatbook .loginfo .whoiswrap .info {
   float: left;
@@ -674,6 +676,10 @@ div.wsc div.chatbook .loginfo .whoiswrap .info ul {
 div.wsc div.chatbook .loginfo .whoiswrap .info section ul {
   list-style: none;
   padding-left: 15px;
+}
+div.wsc div.chatbook .loginfo .whoiswrap .info section ul li {
+  white-space: normal;
+  word-wrap: break-word;
 }
 div.wsc div.chatwindow {
   overflow: hidden;
@@ -1270,6 +1276,23 @@ div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, di
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #7290aa;
 }
+div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo {
+  background-color: #406d8b;
+  border-color: #0d4d69;
+  color: #afd7f5;
+}
+div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button) {
+  color: #ffb024;
+}
+div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):hover {
+  color: white;
+}
+div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
+  background-color: #81aac5;
+}
+div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
+  border-color: #0d4d69;
+}
 div.wsc.wsct_default div.chatcontrol {
   background-color: #406d8b;
 }
@@ -1525,6 +1548,23 @@ div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.w
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #797979;
+}
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo {
+  background-color: #d0dbd0;
+  border-color: #858585;
+  color: #2c3635;
+}
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button) {
+  color: #2c3635;
+}
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):hover {
+  color: #2c3635;
+}
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
+  background-color: #bbc6b9;
+}
+div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
+  border-color: #858585;
 }
 div.wsc.wsct_dAmn div.chatcontrol {
   background-color: #d0dbd0;

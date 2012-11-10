@@ -243,6 +243,26 @@
                         &.bg { color: $light; }
                     }
                 }
+                
+                .loginfo {
+                    background-color: $chrome;
+                    border-color: $outer-border;
+                    color: $chrome-color;
+                    a:not(.button) {
+                        color: $chrome-a;
+                        &:hover {
+                            color: $chrome-ah;
+                        }
+                    }
+                    .whoiswrap {
+                        .avatar {
+                            background-color: $heading-bg;
+                        }
+                        .info {
+                            border-color: $outer-border;
+                        }
+                    }
+                }
             }
             
         }
