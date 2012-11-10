@@ -4742,6 +4742,7 @@ Chatterbox.Control = function( ui ) {
     var ctrl = this;
     this.mlb.click(function( event ) {
         ctrl.multiline( !ctrl.multiline() );
+        return false;
     });
 
 };
