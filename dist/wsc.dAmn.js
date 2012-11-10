@@ -3509,7 +3509,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.30';
+Chatterbox.VERSION = '0.4.31';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6253,77 +6253,6 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
     return this.value;
 
 };
-
-
-/**
- * Drop down menu as a settings page item.
- * 
- * @class Dropdown
- * @constructor
- * @param type {String} The type of item this item is.
- * @param options {Object} Item options.
- */
-Chatterbox.Settings.Item.Dropdown = function( type, options ) {
-
-    Chatterbox.Settings.Item.call(this, type, options);
-
-};
-
-Chatterbox.Settings.Item.Dropdown.prototype = new Chatterbox.Settings.Item();
-Chatterbox.Settings.Item.Dropdown.prototype.constructor = Chatterbox.Settings.Item.Dropdown;
-/*
-Chatterbox.Settings.Item.Dropdown.prototype.hooks = function( item ) {
-
-    if( !this.options.hasOwnProperty('event') )
-        return;
-    
-    events = this.options.event;
-    
-    if( events.hasOwnProperty('change') ) {
-    
-        item.find('select').bind('change', events.change);
-    
-    }
-
-};*/
-
-
-/**
- * Text field item.
- * 
- * @class Textfield
- * @constructor
- * @param type {String} The type of field this field is.
- * @param options {Object} Field options.
- *
-Chatterbox.Settings.Item.Textfield = function( type, options ) {
-
-    Chatterbox.Settings.Item.call(this, type, options);
-    this.value = '';
-
-};
-
-Chatterbox.Settings.Item.Textfield.prototype = new Chatterbox.Settings.Item();
-Chatterbox.Settings.Item.Textfield.prototype.constructor = Chatterbox.Settings.Item.Textfield;
-
-/**
- * Build the textfield field.
- * 
- * @method build
- * @param page {Object} Settings page object.
- *
-Chatterbox.Settings.Item.Textfield.prototype.build = function( page ) {
-    
-    Chatterbox.Settings.Item.prototype.build.call( this, page );
-    /*this.field = this.view.find('input:radio');
-    this.value = this.view.find('input[checked]:radio').val();
-    
-    var radio = this;
-    this.field.bind('change', function( event ) {
-        radio.value = radio.view.find(this).val();
-    });* /
-
-};*/
 
 
 
