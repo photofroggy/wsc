@@ -38,7 +38,25 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
-    this.swidth = getscrollbarWidth();
+    this.swidth = ( function() { 
+        if ( $.browser.msie ) {
+            var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
+                    .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body'),
+                $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>')
+                    .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
+            scrollbarWidth = $textarea1.width() - $textarea2.width();
+            $textarea1.add($textarea2).remove();
+        } else {
+            var $div = $('<div />')
+                .css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: -1000 })
+                .prependTo('body').append('<div />').find('div')
+                    .css({ width: '100%', height: 200 });
+            scrollbarWidth = 100 - $div.width();
+            $div.parent().remove();
+        }
+        return scrollbarWidth;
+    } ) ();
+    console.log(this.swidth);
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
     this.STATE = Chatterbox.STATE;

@@ -124,9 +124,12 @@ Chatterbox.Channel.prototype.remove = function(  ) {
  */
 Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
-    scrolled = this.wrap.innerHeight() - this.logpanel.innerWidth() - 3;
-    scrolled = scrolled > 0 ? this.manager.swidth : 0;
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - (this.wrap.innerHeight() + scrolled));
+    // There is something wrong with the way web browsers work... or the way my code is working.
+    ws = this.wrap.prop('scrollWidth') - this.logpanel.innerWidth();
+    ws = ws > 0 ? this.manager.swidth : (this.manager.swidth * 2);
+    hs = this.wrap.prop('scrollHeight') - this.logpanel.innerHeight();
+    hsm = hs > 0 ? (this.manager.swidth * 4) : 0;
+    this.wrap.scrollTop(hs + ((ws + hsm)));
 };
 
 /**
