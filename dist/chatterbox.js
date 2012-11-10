@@ -56,7 +56,6 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         }
         return scrollbarWidth;
     } ) ();
-    console.log(this.swidth);
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
     this.STATE = Chatterbox.STATE;
