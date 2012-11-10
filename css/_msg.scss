@@ -56,5 +56,36 @@
         }
     
     }
+    
+    .loginfo {
+        margin: 5px;
+        padding: 0px;
+        vertical-align: middle;
+        position: relative;
+        line-height: 1.3em;
+        border: 1px solid black;
+        background-color: white;
+        
+        a.close {
+            display: block;
+            position: relative;
+            top: 5px;
+            right: 5px;
+            float: right;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .whoiswrap {
+            overflow: hidden;
+            .avatar {
+                float: left;
+            }
+            .info {
+                float: left;
+                background-color: white;
+            }
+        }
+    }
 
 }

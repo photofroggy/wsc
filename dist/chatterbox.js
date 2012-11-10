@@ -572,6 +572,33 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Display an info box in the channel log.
+ * 
+ * @method log_info
+ * @param content {String} Infobox contents.
+ */
+Chatterbox.Channel.prototype.log_info = function( ref, content ) {
+    data = {
+        'ns': this.namespace,
+        'ref': ref,
+        'content': content
+    };
+    this.manager.trigger( 'log_info.before', data );
+    delete data['ns'];
+    this.wrap.append(Chatterbox.render( 'loginfobox', data ));
+    this.scroll();
+    
+    var ui = this;
+    this.wrap.find('li.' + data.ref).find('a.close').click(
+        function( e ) {
+            ui.wrap.find(this).parent().remove();
+            ui.resize();
+            ui.scroll();
+        }
+    );
+};
+
+/**
  * Display a user's whois info.
  * 
  * @method show_whois
@@ -579,6 +606,54 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
  */
 Chatterbox.Channel.prototype.show_whois = function( data ) {
     console.log(data);
+    
+    var whois = {
+        'avatar': '<a href="#"><img height="50" width="50" alt="avatar"/></a>',
+        'username': data.symbol + data.username,
+        'info': [data.realname],
+        'conns': [],
+        'raw': data,
+    };
+    
+    for( i in data.connections ) {
+        rcon = data.connections[i];
+        whois.conns.push( [
+            [ 'online', rcon.online ],
+            [ 'idle', rcon.idle ],
+            [ 'chatrooms', rcon.channels.join(' ') ]
+        ] );
+    }
+    
+    this.manager.trigger( 'log_whois.before', whois );
+    
+    var conns = '';
+    for( i in whois.conns ) {
+        conn = whois.conns[i];
+        text = '<section class="conn"><p><em>connection ' + ((parseInt(i) + 1).toString()) + ':</em></p>';
+        text+= '<ul>';
+        for( x in conn ) {
+            text+= '<li><strong>' + conn[x][0] + ':</strong> ' + conn[x][1] + '</li>';
+        }
+        text+= '</ul>'
+        conns+= text + '</section>';
+    }
+    
+    var info = '';
+    for( i in whois.info ) {
+        info+= '<li>' + whois.info[i] + '</li>';
+    }
+    
+    this.log_info(
+        'whois-'+data.username,
+        Chatterbox.render('whoiswrap', {
+            'avatar': whois.avatar,
+            'info': Chatterbox.render('whoisinfo', {
+                'username': whois.username,
+                'info': info,
+                'connections': conns
+            })
+        })
+    );
 };
 
 /**
@@ -1333,3 +1408,11 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             </strong>\
                             <ul>{info}</ul></div>\
                         </div>';
+                        
+Chatterbox.template.loginfobox = '<li class="loginfo {ref}"><a href="#{ref}" class="close iconic x"></a>{content}</li>';
+Chatterbox.template.whois = {};
+Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
+                                <div class="avatar">{avatar}</div>\
+                                <div class="info">{info}</div>\
+                                </div>';
+Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';

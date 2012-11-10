@@ -142,3 +142,11 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             </strong>\
                             <ul>{info}</ul></div>\
                         </div>';
+                        
+Chatterbox.template.loginfobox = '<li class="loginfo {ref}"><a href="#{ref}" class="close iconic x"></a>{content}</li>';
+Chatterbox.template.whois = {};
+Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
+                                <div class="avatar">{avatar}</div>\
+                                <div class="info">{info}</div>\
+                                </div>';
+Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';

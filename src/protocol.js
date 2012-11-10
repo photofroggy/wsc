@@ -312,14 +312,17 @@ wsc.Protocol.prototype.log = function( client, event ) {
     
     msg = this.render(event, 'html');
     
-    if( !msgm[2] ) {
-        if( !msgm[1] )
-            client.ui.channel(event.ns).log_item(msg);
-        else
-            client.ui.channel(client.mns).log_item(msg);
-    } else {
-        client.ui.log_item(msg);
-    }
+    try {
+        if( !msgm[2] ) {
+            if( !msgm[1] ) {
+                client.ui.channel(event.ns).log_item(msg);
+            } else {
+                client.ui.channel(client.mns).log_item(msg);
+            }
+        } else {
+            client.ui.log_item(msg);
+        }
+    } catch(err) {}
 
 };
 
