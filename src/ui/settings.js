@@ -461,7 +461,6 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
 
     if( !this.options.hasOwnProperty('ref') )
         return;
-    
     content = this.content();
     
     if( content.length == 0 )
@@ -1188,7 +1187,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.Check = function( type, options ) {
 
-    Chatterbox.Settings.Item.call(this, type, options);
+    Chatterbox.Settings.Item.Radio.call(this, type, options);
     this.value = [];
 
 };
@@ -1212,7 +1211,7 @@ Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
     }
     
     Chatterbox.Settings.Item.prototype.build.call( this, page );
-    this.field = this.view.find('input:check');
+    this.field = this.view.find('input:checkbox');
     var check = this;
     this.value = [];
     this.view.find('input[checked]:checkbox').each(function(  ) {

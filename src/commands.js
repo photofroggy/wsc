@@ -112,6 +112,24 @@ wsc.defaults.Extension = function( client ) {
                 }
             });
             
+            /* * /
+            page.item('Radio', {
+                'ref': 'rfoo',
+                'title': 'Close Buttons',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                ]
+            });
+            page.item('Check', {
+                'ref': 'foo',
+                'title': 'Close Buttons',
+                'text': 'Testing out whether this works properly dawg.',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                ]
+            });
+            /* */
+            
             page.item('Text', {
                 'ref': 'debug',
                 'wclass': 'faint',

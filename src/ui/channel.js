@@ -333,6 +333,7 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
             ui.wrap.find(this).parent().remove();
             ui.resize();
             ui.scroll();
+            return false;
         }
     );
 };

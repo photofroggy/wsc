@@ -305,7 +305,7 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
         render+= '<section class="labels">' + labels.join('') + '</section>';
     }
     
-    return render + '</section><section class="fields">' + fields.join('') + '</section>';
+    return render + '<section class="fields">' + fields.join('') + '</section>';
 };
 
 Chatterbox.template.settings.item = {};
@@ -417,6 +417,22 @@ Chatterbox.template.settings.item.radio.render = {
 Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
 Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
 Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
+
+Chatterbox.template.settings.item.check = {};
+Chatterbox.template.settings.item.check.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.check.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.checkitems
+};
+
+Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
+Chatterbox.template.settings.item.check.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
+Chatterbox.template.settings.item.check.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [

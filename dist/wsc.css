@@ -955,6 +955,7 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item {
   border-bottom: 1px solid black;
   padding: 5px 5px 15px 5px;
   margin-bottom: 10px;
+  overflow: hidden;
 }
 div.wsc div.floater.settings div.bookwrap div.book div.page .item:last-child {
   border: none;
