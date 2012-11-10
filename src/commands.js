@@ -32,6 +32,9 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.say', this.say.bind(extension) );
             this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
             this.client.bind('cmd.clear', this.clear.bind(extension) );
+            this.client.bind('cmd.clearall', this.clearall.bind(extension) );
+            this.client.bind('cmd.whois', this.whois.bind(extension) );
+            this.client.bind('pkt.property', this.on_property.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
@@ -244,9 +247,44 @@ wsc.defaults.Extension = function( client ) {
         },
         
         // Clear the channel's log.
-        clear: function( e ) {
-            this.client.cchannel.logpanel.find('p.logmsg').remove();
-            this.client.cchannel.resize();
+        clear: function( e, client ) {
+            client.cchannel.clear();
+        },
+        
+        // Clear all channel logs.
+        clearall: function( e, client ) {
+            for( c in client.channelo ) {
+                client.channelo[c].clear();
+            }
+        },
+        
+        // Send a whois thingy.
+        whois: function( event, client ) {
+            client.whois( event.args.split(' ')[0] );
+        },
+        
+        // Process a property packet, hopefully retreive whois info.
+        on_property: function( event, client ) {
+            if(event.p != 'info')
+                return;
+            
+            subs = event.pkt.sub;
+            data = subs.shift().arg;
+            data.username = event.sns.substr(1);
+            data.connections = [];
+            
+            while( subs.length > 0 ) {
+                conn = subs.shift().arg;
+                conn.channels = [];
+                while( subs.length > 0 ) {
+                    if( subs[0].cmd != 'ns' )
+                        break;
+                    conn.channels.unshift( client.deform_ns(subs.shift().param) );
+                }
+                data.connections.push(conn);
+            }
+            
+            client.cchannel.show_whois(data);
         },
     };
     

@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.8.54';
+wsc.VERSION = '0.8.56';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -838,6 +838,29 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
     if( this.ui == null )
         return;
     this.ui.server_message(msg, info);
+};
+
+/**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+wsc.Channel.prototype.clear = function(  ) {
+    if( this.ui == null )
+        return;
+    this.ui.clear();
+};
+
+/**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+wsc.Channel.prototype.show_whois = function( data ) {
+    if( this.ui == null )
+        return;
+    this.ui.show_whois(data);
 };
 
 /**
@@ -1761,14 +1784,17 @@ wsc.Protocol.prototype.log = function( client, event ) {
     
     msg = this.render(event, 'html');
     
-    if( !msgm[2] ) {
-        if( !msgm[1] )
-            client.ui.channel(event.ns).log_item(msg);
-        else
-            client.ui.channel(client.mns).log_item(msg);
-    } else {
-        client.ui.log_item(msg);
-    }
+    try {
+        if( !msgm[2] ) {
+            if( !msgm[1] ) {
+                client.ui.channel(event.ns).log_item(msg);
+            } else {
+                client.ui.channel(client.mns).log_item(msg);
+            }
+        } else {
+            client.ui.log_item(msg);
+        }
+    } catch(err) {}
 
 };
 
@@ -2124,6 +2150,9 @@ wsc.defaults.Extension = function( client ) {
             this.client.bind('cmd.say', this.say.bind(extension) );
             this.client.bind('cmd.npmsg', this.npmsg.bind(extension) );
             this.client.bind('cmd.clear', this.clear.bind(extension) );
+            this.client.bind('cmd.clearall', this.clearall.bind(extension) );
+            this.client.bind('cmd.whois', this.whois.bind(extension) );
+            this.client.bind('pkt.property', this.on_property.bind(extension) );
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
@@ -2336,9 +2365,44 @@ wsc.defaults.Extension = function( client ) {
         },
         
         // Clear the channel's log.
-        clear: function( e ) {
-            this.client.cchannel.logpanel.find('p.logmsg').remove();
-            this.client.cchannel.resize();
+        clear: function( e, client ) {
+            client.cchannel.clear();
+        },
+        
+        // Clear all channel logs.
+        clearall: function( e, client ) {
+            for( c in client.channelo ) {
+                client.channelo[c].clear();
+            }
+        },
+        
+        // Send a whois thingy.
+        whois: function( event, client ) {
+            client.whois( event.args.split(' ')[0] );
+        },
+        
+        // Process a property packet, hopefully retreive whois info.
+        on_property: function( event, client ) {
+            if(event.p != 'info')
+                return;
+            
+            subs = event.pkt.sub;
+            data = subs.shift().arg;
+            data.username = event.sns.substr(1);
+            data.connections = [];
+            
+            while( subs.length > 0 ) {
+                conn = subs.shift().arg;
+                conn.channels = [];
+                while( subs.length > 0 ) {
+                    if( subs[0].cmd != 'ns' )
+                        break;
+                    conn.channels.unshift( client.deform_ns(subs.shift().param) );
+                }
+                data.connections.push(conn);
+            }
+            
+            client.cchannel.show_whois(data);
         },
     };
     
@@ -2978,7 +3042,7 @@ wsc.Client.prototype.set = function( namespace, property ) {
  */
 wsc.Client.prototype.whois = function( user ) {
 
-    this.send(wsc_packetstr('get', 'login:' + user, { 'p': property }));
+    this.send(wsc_packetstr('get', 'login:' + user, { 'p': 'info' }));
 
 };
 
@@ -4015,6 +4079,101 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'info': info};
     this.manager.trigger( 'server_message.before', data );
     this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+};
+
+/**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+Chatterbox.Channel.prototype.clear = function(  ) {
+    this.logpanel.find('li.logmsg').remove();
+    this.resize();
+};
+
+/**
+ * Display an info box in the channel log.
+ * 
+ * @method log_info
+ * @param content {String} Infobox contents.
+ */
+Chatterbox.Channel.prototype.log_info = function( ref, content ) {
+    data = {
+        'ns': this.namespace,
+        'ref': ref,
+        'content': content
+    };
+    this.manager.trigger( 'log_info.before', data );
+    delete data['ns'];
+    this.wrap.append(Chatterbox.render( 'loginfobox', data ));
+    this.scroll();
+    
+    var ui = this;
+    this.wrap.find('li.' + data.ref).find('a.close').click(
+        function( e ) {
+            ui.wrap.find(this).parent().remove();
+            ui.resize();
+            ui.scroll();
+        }
+    );
+};
+
+/**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+Chatterbox.Channel.prototype.show_whois = function( data ) {
+    console.log(data);
+    
+    var whois = {
+        'avatar': '<a href="#"><img height="50" width="50" alt="avatar"/></a>',
+        'username': data.symbol + data.username,
+        'info': [data.realname],
+        'conns': [],
+        'raw': data,
+    };
+    
+    for( i in data.connections ) {
+        rcon = data.connections[i];
+        whois.conns.push( [
+            [ 'online', rcon.online ],
+            [ 'idle', rcon.idle ],
+            [ 'chatrooms', rcon.channels.join(' ') ]
+        ] );
+    }
+    
+    this.manager.trigger( 'log_whois.before', whois );
+    
+    var conns = '';
+    for( i in whois.conns ) {
+        conn = whois.conns[i];
+        text = '<section class="conn"><p><em>connection ' + ((parseInt(i) + 1).toString()) + ':</em></p>';
+        text+= '<ul>';
+        for( x in conn ) {
+            text+= '<li><strong>' + conn[x][0] + ':</strong> ' + conn[x][1] + '</li>';
+        }
+        text+= '</ul>'
+        conns+= text + '</section>';
+    }
+    
+    var info = '';
+    for( i in whois.info ) {
+        info+= '<li>' + whois.info[i] + '</li>';
+    }
+    
+    this.log_info(
+        'whois-'+data.username,
+        Chatterbox.render('whoiswrap', {
+            'avatar': whois.avatar,
+            'info': Chatterbox.render('whoisinfo', {
+                'username': whois.username,
+                'info': info,
+                'connections': conns
+            })
+        })
+    );
 };
 
 /**
@@ -6229,6 +6388,15 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             <ul>{info}</ul></div>\
                         </div>';
 
+                        
+Chatterbox.template.loginfobox = '<li class="loginfo {ref}"><a href="#{ref}" class="close iconic x"></a>{content}</li>';
+Chatterbox.template.whois = {};
+Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
+                                <div class="avatar">{avatar}</div>\
+                                <div class="info">{info}</div>\
+                                </div>';
+Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
+
 /**
  * Container for popup shit.
  * 
@@ -6499,6 +6667,7 @@ Chatterbox.template.settings.item.form.field.check = {};
 Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+
 
 
 // @include templates.js

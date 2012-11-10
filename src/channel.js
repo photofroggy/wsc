@@ -119,6 +119,29 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+wsc.Channel.prototype.clear = function(  ) {
+    if( this.ui == null )
+        return;
+    this.ui.clear();
+};
+
+/**
+ * Display a user's whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user's information.
+ */
+wsc.Channel.prototype.show_whois = function( data ) {
+    if( this.ui == null )
+        return;
+    this.ui.show_whois(data);
+};
+
+/**
  * Process a channel property packet.
  * 
  * @method property

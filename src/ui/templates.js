@@ -189,6 +189,15 @@ Chatterbox.template.userinfo = '<div class="userinfo" id="{username}">\
                             <ul>{info}</ul></div>\
                         </div>';
 
+                        
+Chatterbox.template.loginfobox = '<li class="loginfo {ref}"><a href="#{ref}" class="close iconic x"></a>{content}</li>';
+Chatterbox.template.whois = {};
+Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
+                                <div class="avatar">{avatar}</div>\
+                                <div class="info">{info}</div>\
+                                </div>';
+Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
+
 /**
  * Container for popup shit.
  * 
@@ -459,5 +468,6 @@ Chatterbox.template.settings.item.form.field.check = {};
 Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+
 
 

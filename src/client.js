@@ -630,7 +630,7 @@ wsc.Client.prototype.set = function( namespace, property ) {
  */
 wsc.Client.prototype.whois = function( user ) {
 
-    this.send(wsc_packetstr('get', 'login:' + user, { 'p': property }));
+    this.send(wsc_packetstr('get', 'login:' + user, { 'p': 'info' }));
 
 };
 
