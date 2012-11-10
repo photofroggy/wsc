@@ -105,16 +105,7 @@ wsc.Client.prototype.build = function(  ) {
  */
 wsc.Client.prototype.loop = function(  ) {
 
-    for( key in this.channelo ) {
-        c = this.channelo[key];
-        msgs = c.ui.logpanel.find( '.logmsg' );
-        
-        if( msgs.length < 200 )
-            continue;
-        
-        msgs.slice(0, msgs.length - 200).remove();
-        c.ui.resize();
-    }
+    this.ui.loop();
 
 };
 

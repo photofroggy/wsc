@@ -38,6 +38,196 @@ wsc.defaults.Extension = function( client ) {
             // lol themes
             this.client.bind('cmd.theme', this.theme.bind(extension));
             // some ui business.
+            
+            this.client.ui.on('settings.open', this.settings_page.bind(extension));
+            this.client.ui.on('settings.open.ran', this.about_page.bind(extension));
+        },
+        
+        settings_page: function( e, ui ) {
+        
+            page = e.settings.page('Main');
+            var client = this.client;
+            var orig = {};
+            orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
+            orig.clock = client.ui.clock();
+            orig.tc = client.ui.nav.closer();
+            orig.username = client.settings.username;
+            orig.pk = client.settings.pk;
+            
+            themes = [];
+            for( i in client.ui.settings.themes ) {
+                name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
+                themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+            }
+            
+            page.item('Text', {
+                'ref': 'intro',
+                'title': 'Main',
+                'text': 'Use this window to view and change your settings.\n\nCheck\
+                        the different pages to see what settings can be changed.',
+            });
+            
+            page.item('Form', {
+                'ref': 'login',
+                'title': 'Login',
+                'text': 'Here you can change the username and token used to\
+                        log into the chat server.',
+                'fields': [
+                    ['Textfield', {
+                        'ref': 'username',
+                        'label': 'Username',
+                        'default': orig.username
+                    }],
+                    ['Textfield', {
+                        'ref': 'token',
+                        'label': 'Token',
+                        'default': orig.pk
+                    }]
+                ],
+                'event': {
+                    'save': function( event ) {
+                        client.settings.username = event.data.username;
+                        client.settings.pk = event.data.token;
+                    }
+                }
+            });
+            
+            page.item('Form', {
+                'ref': 'ui',
+                'title': 'UI',
+                'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
+                        a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
+                        client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
+                'fields': [
+                    ['Dropdown', {
+                        'ref': 'theme',
+                        'label': 'Theme',
+                        'items': themes
+                    }],
+                    ['Dropdown', {
+                        'ref': 'clock',
+                        'label': 'Timestamp Format',
+                        'items': [
+                            { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
+                            { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                        ]
+                    }],
+                    ['Check', {
+                        'ref': 'tabclose',
+                        'label': 'Close Buttons',
+                        'items': [
+                            { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                        ]
+                    }],
+                ],
+                'event': {
+                    'change': function( event ) {
+                        client.ui.clock(event.data.clock == '24');
+                        client.ui.theme(event.data.theme);
+                        client.ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
+                    },
+                    'save': function( event ) {
+                        orig.clock = event.data.clock == '24';
+                        orig.theme = event.data.theme;
+                        orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                    },
+                    'close': function( event ) {
+                        client.ui.clock(orig.clock);
+                        client.ui.theme(orig.theme);
+                        client.ui.nav.closer(orig.tc);
+                    }
+                }
+            });
+            
+            /* * /
+            page.item('Radio', {
+                'ref': 'rfoo',
+                'title': 'Close Buttons',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
+                    { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
+                ],
+                'event': {
+                    'change': function( event ) {
+                        console.log(client.ui.view.find(this).val(),event);
+                    },
+                    'save': function( event ) {
+                        console.log(event);
+                    }
+                }
+            });
+            /* * /
+            page.item('Check', {
+                'ref': 'foo',
+                'title': 'Close Buttons',
+                'text': 'Testing out whether this works properly dawg.',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                ],
+                'event': {
+                    'change': function( event ) {
+                        console.log(client.ui.view.find(this).prop('checked'),event);
+                    },
+                    'save': function( event ) {
+                        console.log(event);
+                    }
+                }
+            });
+            /* * /
+            page.item('Textfield', {
+                'ref': 'username',
+                'title': 'Username',
+                'text': 'The username you want to log in with.',
+                'default': orig.username,
+                'event': {
+                    'blur': function( event ) {
+                        console.log(client.ui.view.find(this).val(),event);
+                    },
+                    'save': function( event ) {
+                        console.log(event);
+                    }
+                }
+            });
+            /* * /
+            page.item('Textarea', {
+                'ref': 'rabble',
+                'title': 'Rabble',
+                'text': 'Tell us a bit about yourself, or something gay.',
+                'default': orig.username,
+                'event': {
+                    'blur': function( event ) {
+                        console.log(client.ui.view.find(this).val(),event);
+                    },
+                    'save': function( event ) {
+                        console.log(event);
+                    }
+                }
+            });
+            /* */
+            
+            page.item('Text', {
+                'ref': 'debug',
+                'wclass': 'faint',
+                'title': 'Debug Information',
+                'text': 'Chat Agent: <code>' + this.client.settings.agent + '</code>\n\nUser\
+                        Agent: <code>' + navigator.userAgent + '</code>'
+            });
+        
+        },
+        
+        about_page: function( e, ui ) {
+        
+            page = e.settings.page('About', true);
+            page.item('Text', {
+                'ref': 'about-wsc',
+                'title': 'Wsc',
+                'text': 'Currently using <a href="http://github.com/photofroggy/wsc/">wsc</a>\
+                        version ' + wsc.VERSION + ' ' + wsc.STATE + '.\n\nWsc\
+                        works using HTML5, javascript, and CSS3. WebSocket is used for the connection\
+                        where possible. The source code for this client is pretty huge.\n\nWsc was created\
+                        by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>'
+            });
+        
         },
         
         theme: function( e, client) {

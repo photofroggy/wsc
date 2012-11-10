@@ -1,10 +1,3 @@
-@mixin button-gradient($start, $init, $slope, $bg) {
-    background: -webkit-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -moz-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -ms-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -o-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-}
 
 @mixin wsc-theme($base: #075C70,
     $chrome: #406D8B,
@@ -30,9 +23,9 @@
     $log-ahd: none,
     $tab-a: white,
     $tab-ah: white,
-    $button: #AAE1EE,
-    $buttonh: #AAE1EE,
-    $buttona: #AAE1EE,
+    $button: #D4F4FC,
+    $buttonh: #D4F4FC,
+    $buttona: #D4F4FC,
     $buttond: none,
     $buttonhd: none,
     $buttonb: #406D8B,
@@ -42,30 +35,39 @@
     $buttonh-shadow: #1773A0, 
     $buttona-shadow: #1773A0, 
     $bgs: top,
-    $bgi: #D3EDFF,
-    $bgsl: #298FD3,
-    $bgbg: #406D8B,
+    $bgi: #D7FCFF,
+    $bgsl: #42BEC9,
+    $bgbg: #0C8A8F,
     $abgs: top,
-    $abgi: #D3EDFF,
-    $abgsl: #1B4968,
-    $abgbg: #1C78B6,
+    $abgi: #D7FCFF,
+    $abgsl: #0C8A8F,
+    $abgbg: #42BEC9,
     $hbgs: top,
     $hbgi: #FFD3D3,
     $hbgsl: #B61C1C,
     $hbgbg: #681B1B,
     $close: #FFF6E4,
     $closeh: #FFF6E4,
+    $closea: #FFF6E4,
+    $closeb: #6B0101,
+    $closeab: #6B0101,
+    $closehb: #035261,
     $closed: none,
     $closehd: none,
+    $closead: none,
     $close-shadow: #311604,
     $close-bgs: top,
     $close-bgi: #FFA69E,
     $close-bgsl: #FC6053,
     $close-bgbg: #B1362C,
     $close-hbgs: top,
-    $close-hbgi: #FFA69E,
-    $close-hbgsl: #F74738,
-    $close-hbgbg: #A22D23,
+    $close-hbgi: #A1DAFF,
+    $close-hbgsl: #5ABDF5,
+    $close-hbgbg: #147AAA,
+    $close-abgs: top,
+    $close-abgi: #FFA69E,
+    $close-abgsl: #B1362C,
+    $close-abgbg: #FC6053,
     $tab-bgs: top,
     $tab-bgi: #D3EDFF,
     $tab-bgsl: #2893DA,
@@ -86,7 +88,18 @@
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
-    $noise: #223740) {
+    $noise: #223740,
+    $pu-h-bg: #406D8B,
+    $pu-h-color: white,
+    $pu-h-bgs: top,
+    $pu-h-bgi: #D3EDFF,
+    $pu-h-bgsl: #55A5DB,
+    $pu-h-bgbg: #406D8B,
+    $settings-color: #3E7A88,
+    $settings-outer-border: #0D4D69,
+    $settings-inner-border: #0D4D69,
+    $settings-item-border: #8CB3C4,
+    $settings-item-faint-color: #5FA4B4) {
     
     color: $base;
     a {
@@ -122,18 +135,26 @@
         }
     }
     
-    a.close {
+    a.iconic.close {
         @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
         color: $close;
         text-shadow: 0px -1px $close-shadow;
         font-weight: bold;
-        border-color: $base;
+        border-color: $closeb;
         text-decoration: $closed;
         &:hover {
             @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
             color: $closeh;
             text-shadow: 0px -1px $close-shadow;
             text-decoration: $closehd;
+            border-color: $closehb;
+        }
+        &:active {
+            @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
+            color: $closea;
+            text-shadow: 0px -1px $close-shadow;
+            text-decoration: $closead;
+            border-color: $closeab;
         }
     }
     
@@ -268,6 +289,59 @@
                 &:hover {
                     color: $chrome-ah;
                     text-decoration: $usri-ahd;
+                }
+            }
+        }
+    }
+    
+    div.floater {
+        div.inner {
+            background-color: $chrome;
+            border-color: $settings-outer-border;
+        }
+        
+        h2 {
+            @include button-gradient($pu-h-bgs, $pu-h-bgi, $pu-h-bgsl, $pu-h-bgbg);
+            background-color: $pu-h-bg;
+            color: $pu-h-color;
+        }
+        
+        &.settings {
+            color: $settings-color;
+            div.bookwrap {
+                nav.tabs {
+                    a.tab {
+                        border-color: $settings-inner-border;
+                        border-radius: 0;
+                        background-color: $heading-bg;
+                    }
+                    .active .tab {
+                        background-color: $log-bg;
+                    }
+                }
+                div.book {
+                    background-color: $log-bg;
+                    border-color: $settings-inner-border;
+                    div.page {
+                        .item {
+                            border-color: $settings-item-border;
+                            aside.hint {
+                                border-color: $settings-inner-border;
+                                border-left-color: $settings-item-border;
+                                background-color: $log-bg;
+                                color: $settings-item-faint-color;
+                                font-style: normal;
+                            }
+                            &.faint {
+                                p {
+                                    color: $settings-item-faint-color;
+                                }
+                            }
+                            h3 {
+                                color: $heading-color;
+                            }
+                        }
+                    }
                 }
             }
         }

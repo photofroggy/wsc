@@ -148,3 +148,35 @@ function getscrollbarWidth() {
     }
     return scrollbarWidth;
 }
+
+function zeroPad( number, width ) {
+    width = width || 2;
+    width -= number.toString().length;
+    if ( width > 0 ) {
+        return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+    }
+    return number + "";
+}
+
+function formatTime( format, date ) {
+    date = date || new Date();
+    
+    HH = date.getHours();
+    hh = HH;
+    format = replaceAll(format, '{mm}', zeroPad(date.getMinutes(), 2));
+    format = replaceAll(format, '{ss}', zeroPad(date.getSeconds(), 2));
+    mr = 'am';
+    
+    if( hh > 11 ) {
+        mr = 'pm';
+        if( hh > 12 )
+            hh = hh - 12;
+    } else if( hh == 0 ) {
+        hh = '12';
+    }
+    
+    format = replaceAll(format, '{hh}', zeroPad(hh, 2));
+    format = replaceAll(format, '{HH}', zeroPad(HH, 2));
+    format = replaceAll(format, '{mr}', mr);
+    return format;
+}

@@ -13,7 +13,38 @@ Chatterbox.Navigation = function( ui ) {
     this.buttons = this.nav.find('#tabnav');
     this.tableft = this.buttons.find('.arrow_left');
     this.tabright = this.buttons.find('.arrow_right');
-    this.settings = this.buttons.find('.cog');
+    this.settingsb = this.buttons.find('#settings-button');
+    this.settings = {};
+    this.settings.open = false;
+    this.showclose = true;
+    
+    var nav = this;
+    this.settingsb.click(
+        function( event ) {
+            if( nav.settings.open )
+                return false;
+            
+            var evt = {
+                'e': event,
+                'settings': new Chatterbox.Settings.Config()
+            };
+            
+            nav.manager.trigger('settings.open', evt);
+            nav.manager.trigger('settings.open.ran', evt);
+            
+            about = evt.settings.page('About', true);
+            about.item('text', {
+                'ref': 'about-chatterbox',
+                'wclass': 'centered faint',
+                'text': 'Using <a href="http://github.com/photofroggy/wsc/">Chatterbox</a> version ' + Chatterbox.VERSION + ' ' + Chatterbox.STATE + ' by ~<a href="http://photofroggy.deviantart.com/">photofroggy</a>.'
+            });
+            
+            nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
+            nav.settings.window.build();
+            nav.settings.open = true;
+            return false;
+        }
+    );
 
 };
 
@@ -48,5 +79,36 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
     this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    if( this.settings.open ) {
+        this.settings.window.resize();
+    }
 
 };
+
+/**
+ * Set or get the visibility of tab close buttons.
+ * 
+ * @method closer
+ * @param [visible] {Boolean} Should the close buttons be shown?
+ * @return {Boolean} Whether or not the close buttons are visible.
+ */
+Chatterbox.Navigation.prototype.closer = function( visible ) {
+
+    if( visible == undefined || visible == this.showclose )
+        return this.showclose;
+    
+    this.showclose = visible;
+    if( this.showclose ) {
+        if( !this.tabs.hasClass('hc') )
+            return;
+        this.tabs.removeClass('hc');
+        return;
+    }
+    
+    if( this.tabs.hasClass('hc') )
+        return;
+    this.tabs.addClass('hc');
+
+};
+
+

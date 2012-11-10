@@ -121,8 +121,8 @@ wsc.Control.prototype.append_history = function( data ) {
  */
 wsc.Control.prototype.scroll_history = function( up ) {
 
-    history = this.get_history();
-    data = this.ui.get_text();
+    var history = this.get_history();
+    var data = this.ui.get_text();
     
     if( history.index == -1 )
         if( data )
@@ -259,19 +259,35 @@ wsc.Control.prototype.submit = function( event ) {
  */
 wsc.Control.prototype.keypress = function( event ) {
 
-    key = event.which || event.keypress;
+    key = event.which || event.keyCode;
     ut = this.tab.hit;
     var bubble = false;
     
     switch( key ) {
         case 13: // Enter
-            this.submit(event);
+            if( !this.ui.multiline() ) {
+                this.submit(event);
+            } else {
+                if( event.shiftKey ) {
+                    this.submit(event);
+                } else {
+                    bubble = true;
+                }
+            }
             break;
         case 38: // Up
-            this.scroll_history(true);
+            if( !this.ui.multiline() ) {
+                this.scroll_history(true);
+                break;
+            }
+            bubble = true;
             break;
         case 40: // Down
-            this.scroll_history(false);
+            if( !this.ui.multiline() ) {
+                this.scroll_history(false);
+                break;
+            }
+            bubble = true;
             break;
         case 9: // Tab
             this.tab_item( event );

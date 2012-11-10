@@ -4,11 +4,15 @@
  * Defines the style rules for the wsc GUI.
  */
 
+ 
+@import "helpers";
 @import "userlist";
 @import "nav";
 @import "msg";
 @import "heads";
 @import "control";
+@import "popup";
+@import "settings";
 @import "theme_template";
 
 /* Layout */
@@ -76,6 +80,8 @@ div.wsc {
     }
     
     @include control;
+    @include popup;
+    @include settings;
 
 }
 
@@ -134,6 +140,17 @@ div.wsc.wsct_dAmn {
         $buttonb: #20462A,
         $buttonab: #20462A,
         $button-shadow: #002409,
-        $buttona-shadow: #002409
+        $buttona-shadow: #002409,
+        $pu-h-bg: #D0DBD0,
+        $pu-h-color: #2C3635,
+        $pu-h-bgs: top,
+        $pu-h-bgi: #F9FFF9,
+        $pu-h-bgsl: #E2F1E2,
+        $pu-h-bgbg: #D0DBD0,
+        $settings-color: #515C52,
+        $settings-item-border: #C3CAC4,
+        $settings-inner-border: #9EAEA0,
+        $settings-outer-border: #858585,
+        $settings-item-faint-color: #848684
     );
 }

@@ -2,6 +2,12 @@
 wsc.dAmn.avatar = {};
 wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
 
+/**
+ * Produces an avatar link.
+ * 
+ * @class avatar_link
+ * @constructor
+ */
 wsc.dAmn.avatar.link = function( un, icon ) {
     icon = parseInt(icon);
     cachebuster = (icon >> 2) & 15;
