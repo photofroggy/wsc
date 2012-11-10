@@ -3,9 +3,7 @@
     div.floater {
         position: absolute;
         top: 5em;
-        left: 20%;
-        width: 60%;
-        height: 80%;
+        right: 20%;
         
         div.inner {
             height: 100%;
@@ -16,6 +14,14 @@
             h2 {
                 padding: 10px;
                 @include round-top(10px);
+                a.close {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                }
+            }
+            div.content {
+                margin: 10px;
             }
         }
         

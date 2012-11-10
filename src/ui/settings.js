@@ -9,17 +9,24 @@
  */
 Chatterbox.Settings = function( ui, config ) {
 
-    this.manager = ui;
+    Chatterbox.Popup.call( this, ui, {
+        'ref': 'settings',
+        'title': 'Settings',
+        'close': false,
+        'content': ''
+    } );
+    
     this.config = config;
-    this.window = null;
     this.saveb = null;
-    this.closeb = null;
     this.scb = null;
     this.tabs = null;
     this.book = null;
     this.changed = false;
 
 };
+
+Chatterbox.Settings.prototype = new Chatterbox.Popup();
+Chatterbox.Settings.prototype.constructor = Chatterbox.Settings;
 
 /**
  * Build the settings window.
@@ -28,13 +35,8 @@ Chatterbox.Settings = function( ui, config ) {
  */
 Chatterbox.Settings.prototype.build = function(  ) {
 
-    wrap = Chatterbox.template.popup;
-    swindow = Chatterbox.template.settings.main;
-    wrap = replaceAll(wrap, '{content}', swindow);
-    wrap = replaceAll(wrap, '{ref}', 'settings');
-    
-    this.manager.view.append(wrap);
-    this.window = this.manager.view.find('.floater.settings');
+    this.options.content = Chatterbox.template.settings.main;
+    Chatterbox.Popup.prototype.build.call(this);
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.close');
     this.scb = this.window.find('a.button.saveclose');

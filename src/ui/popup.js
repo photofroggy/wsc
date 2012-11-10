@@ -40,10 +40,10 @@ Chatterbox.Popup.prototype.build = function(  ) {
     };
     
     if( this.options.close ) {
-        fill.title+= '<a href="#close" class="button close big iconic x"></a>';
+        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
     }
     
-    Chatterbox.render( 'info', fill );
+    this.manager.view.append(Chatterbox.render( 'popup', fill ));
     this.window = this.manager.view.find('.floater.' + fill.ref);
     
     if( this.options.close ) {

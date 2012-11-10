@@ -204,7 +204,7 @@ Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
  * @property popup
  * @type String
  */
-Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2>{content}</div></div>';
+Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
 /**
  * Settings stuff.

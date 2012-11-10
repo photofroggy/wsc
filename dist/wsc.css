@@ -918,6 +918,11 @@ div.wsc a.iconic.close.big {
   width: 25px;
   font-size: 25px;
 }
+div.wsc a.iconic.close.medium {
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+}
 div.wsc a.iconic.close.square {
   border-radius: 5px;
   -moz-border-radius: 5px;
@@ -926,9 +931,7 @@ div.wsc a.iconic.close.square {
 div.wsc div.floater {
   position: absolute;
   top: 5em;
-  left: 20%;
-  width: 60%;
-  height: 80%;
+  right: 20%;
 }
 div.wsc div.floater div.inner {
   height: 100%;
@@ -950,8 +953,17 @@ div.wsc div.floater div.inner h2 {
   -moz-border-radius-topright: 10px;
   -webkit-border-top-right-radius: 10px;
 }
-div.wsc div.floater.settings div.bookwrap {
-  margin: 10px 10px 0px 10px;
+div.wsc div.floater div.inner h2 a.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+div.wsc div.floater div.inner div.content {
+  margin: 10px;
+}
+div.wsc div.floater.settings {
+  width: 60%;
+  height: 80%;
 }
 div.wsc div.floater.settings div.bookwrap nav.tabs {
   padding: 0px 5px;
