@@ -933,7 +933,6 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     var field = this;
     this.value = this.field.val();
     this.field.bind('change', function( event ) {
-        console.log(field.view.find(this));
         field.value = field.view.find(this).val();
     });
 
@@ -1269,6 +1268,44 @@ Chatterbox.Settings.Item.Dropdown.prototype.hooks = function( item ) {
         item.find('select').bind('change', events.change);
     
     }
+
+};*/
+
+
+/**
+ * Text field item.
+ * 
+ * @class Textfield
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ *
+Chatterbox.Settings.Item.Textfield = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Textfield.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Textfield.prototype.constructor = Chatterbox.Settings.Item.Textfield;
+
+/**
+ * Build the textfield field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ *
+Chatterbox.Settings.Item.Textfield.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    /*this.field = this.view.find('input:radio');
+    this.value = this.view.find('input[checked]:radio').val();
+    
+    var radio = this;
+    this.field.bind('change', function( event ) {
+        radio.value = radio.view.find(this).val();
+    });* /
 
 };*/
 

@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.4.29';
+Chatterbox.VERSION = '0.4.30';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -2446,7 +2446,6 @@ Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
     var field = this;
     this.value = this.field.val();
     this.field.bind('change', function( event ) {
-        console.log(field.view.find(this));
         field.value = field.view.find(this).val();
     });
 
@@ -2782,6 +2781,44 @@ Chatterbox.Settings.Item.Dropdown.prototype.hooks = function( item ) {
         item.find('select').bind('change', events.change);
     
     }
+
+};*/
+
+
+/**
+ * Text field item.
+ * 
+ * @class Textfield
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ *
+Chatterbox.Settings.Item.Textfield = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.value = '';
+
+};
+
+Chatterbox.Settings.Item.Textfield.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Textfield.prototype.constructor = Chatterbox.Settings.Item.Textfield;
+
+/**
+ * Build the textfield field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ *
+Chatterbox.Settings.Item.Textfield.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    /*this.field = this.view.find('input:radio');
+    this.value = this.view.find('input[checked]:radio').val();
+    
+    var radio = this;
+    this.field.bind('change', function( event ) {
+        radio.value = radio.view.find(this).val();
+    });* /
 
 };*/
 
@@ -3203,7 +3240,7 @@ Chatterbox.template.settings.item.radio.render = {
     'items': Chatterbox.template.settings.krender.radioitems
 };
 
-Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
+Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['ref', 'title', 'items']);
 Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
 Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
 
@@ -3219,9 +3256,39 @@ Chatterbox.template.settings.item.check.render = {
     'items': Chatterbox.template.settings.krender.checkitems
 };
 
-Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['{ref}', 'title', 'items']);
+Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['ref', 'title', 'items']);
 Chatterbox.template.settings.item.check.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
 Chatterbox.template.settings.item.check.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
+
+Chatterbox.template.settings.item.textfield = {};
+Chatterbox.template.settings.item.textfield.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.textfield.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.textfield.post = Chatterbox.template.clean(['ref', 'title', 'default']);
+Chatterbox.template.settings.item.textfield.events = [['blur', 'input'],['inspect', 'input']];
+Chatterbox.template.settings.item.textfield.frame = '{title}<div class="{ref} textfield"><form><input type="text" value="{default}" /></form></div>';
+
+Chatterbox.template.settings.item.textarea = {};
+Chatterbox.template.settings.item.textarea.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.textarea.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.textarea.post = Chatterbox.template.clean(['ref', 'title', 'default']);
+Chatterbox.template.settings.item.textarea.events = [['blur', 'textarea'],['inspect', 'textarea']];
+Chatterbox.template.settings.item.textarea.frame = '{title}<div class="{ref} textarea"><form><textarea rows="4" cols="20" value="{default}"></textarea></form></div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
@@ -3257,12 +3324,12 @@ Chatterbox.template.settings.item.form.field.dropdown.post = Chatterbox.template
 Chatterbox.template.settings.item.form.field.dropdown.frame = '<select class="{ref}">{items}</select>';
 
 Chatterbox.template.settings.item.form.field.textfield = {};
-Chatterbox.template.settings.item.form.field.textfield.post = Chatterbox.template.clean(['ref']);
-Chatterbox.template.settings.item.form.field.textfield.frame = '<input type="text" class="{ref}" />';
+Chatterbox.template.settings.item.form.field.textfield.post = Chatterbox.template.clean(['ref', 'default']);
+Chatterbox.template.settings.item.form.field.textfield.frame = '<input class="{ref}" type="text" value="{default}" />';
 
 Chatterbox.template.settings.item.form.field.textarea = {};
-Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref']);
-Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20"></textarea>';
+Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean(['ref', 'default']);
+Chatterbox.template.settings.item.form.field.textarea.frame = '<textarea class="{ref}" rows="4" cols="20" value="{default}"></textarea>';
 
 Chatterbox.template.settings.item.form.field.radio = {};
 Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbox.template.settings.krender.radioitems };
