@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.31';
+Chatterbox.VERSION = '0.5.32';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -716,23 +716,33 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
  * @param data {Object} Object containing a user's information.
  */
 Chatterbox.Channel.prototype.show_whois = function( data ) {
-    console.log(data);
     
     var whois = {
         'avatar': '<a href="#"><img height="50" width="50" alt="avatar"/></a>',
-        'username': data.symbol + data.username,
-        'info': [data.realname],
+        'username': '<b>' + data.symbol + data.username + '</b>',
+        'info': [],
         'conns': [],
         'raw': data,
     };
     
     for( i in data.connections ) {
         rcon = data.connections[i];
-        whois.conns.push( [
-            [ 'online', rcon.online ],
-            [ 'idle', rcon.idle ],
-            [ 'chatrooms', rcon.channels.join(' ') ]
-        ] );
+        mcon = [];
+        
+        if( rcon.online ) {
+            stamp = (new Date - (rcon.online * 1000));
+            mcon.push([ 'online', DateStamp(stamp / 1000) + formatTime(' [{HH}:{mm}:{ss}]', new Date(stamp)) ]);
+        }
+        if( rcon.idle )
+            mcon.push([ 'idle', timeLengthString(rcon.idle) ]);
+        if( rcon.agent )
+            mcon.push([ 'agent', rcon.agent ]);
+        if( rcon.debug )
+            mcon.push([ 'debug', rcon.debug ]);
+        
+        mcon.push([ 'chatrooms', rcon.channels.join(' ') ]);
+        
+        whois.conns.push(mcon);
     }
     
     this.manager.trigger( 'log_whois.before', whois );
@@ -912,7 +922,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     link.hover(
         function( e ) {
             user.info = [];
-            ed = { 'ns': chan.namespace, 'user': user};
+            ed = { 'ns': chan.namespace, 'user': user };
             chan.manager.trigger( 'userinfo.before', ed );
             user = ed.user;
             infoli = '';
@@ -1557,7 +1567,6 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.config.build(this);
     
-    //this.window.draggable();
     this.window.find('ul.tabs li').first().addClass('active');
     this.window.find('div.book div.page').first().addClass('active');
     

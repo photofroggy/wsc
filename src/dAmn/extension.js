@@ -33,5 +33,16 @@ wsc.dAmn.Extension = function( client ) {
         if( event.user.member.typename )
             event.user.info.push(event.user.member.typename);
     });
+    
+    client.ui.on( 'log_whois.before', function( event, ui ) {
+        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
+        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
+        
+        if( event.raw.realname )
+            event.info.push(event.raw.realname);
+        
+        if( event.raw.typename )
+            event.info.push(event.raw.typename);
+    } );
 
 };

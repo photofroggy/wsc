@@ -43,7 +43,6 @@ Chatterbox.Settings.prototype.build = function(  ) {
     
     this.config.build(this);
     
-    //this.window.draggable();
     this.window.find('ul.tabs li').first().addClass('active');
     this.window.find('div.book div.page').first().addClass('active');
     

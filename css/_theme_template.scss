@@ -137,23 +137,23 @@
     
     a.iconic.close {
         @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
-        color: $close;
+        color: $close !important;
         text-shadow: 0px -1px $close-shadow;
         font-weight: bold;
         border-color: $closeb;
-        text-decoration: $closed;
+        text-decoration: $closed !important;
         &:hover {
             @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
-            color: $closeh;
+            color: $closeh !important;
             text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closehd;
+            text-decoration: $closehd !important;
             border-color: $closehb;
         }
         &:active {
             @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
-            color: $closea;
+            color: $closea !important;
             text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closead;
+            text-decoration: $closead !important;
             border-color: $closeab;
         }
     }

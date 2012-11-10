@@ -659,10 +659,21 @@ div.wsc div.chatbook .loginfo .whoiswrap {
 }
 div.wsc div.chatbook .loginfo .whoiswrap .avatar {
   float: left;
+  padding: 5px;
 }
 div.wsc div.chatbook .loginfo .whoiswrap .info {
   float: left;
-  background-color: white;
+  padding: 5px;
+  border-left: 1px solid black;
+}
+div.wsc div.chatbook .loginfo .whoiswrap .info ul {
+  list-style: disc;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+div.wsc div.chatbook .loginfo .whoiswrap .info section ul {
+  list-style: none;
+  padding-left: 15px;
 }
 div.wsc div.chatwindow {
   overflow: hidden;
@@ -1143,11 +1154,11 @@ div.wsc.wsct_default a.iconic.close {
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -o-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
   border-color: #6b0101;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 div.wsc.wsct_default a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1155,9 +1166,9 @@ div.wsc.wsct_default a.iconic.close:hover {
   background: -ms-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -o-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
-  text-decoration: none;
+  text-decoration: none !important;
   border-color: #035261;
 }
 div.wsc.wsct_default a.iconic.close:active {
@@ -1166,9 +1177,9 @@ div.wsc.wsct_default a.iconic.close:active {
   background: -ms-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -o-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
-  text-decoration: none;
+  text-decoration: none !important;
   border-color: #6b0101;
 }
 div.wsc.wsct_default nav.tabs ul#chattabs li a.tab {
@@ -1399,11 +1410,11 @@ div.wsc.wsct_dAmn a.iconic.close {
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -o-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
   font-weight: bold;
   border-color: #6b0101;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 div.wsc.wsct_dAmn a.iconic.close:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1411,9 +1422,9 @@ div.wsc.wsct_dAmn a.iconic.close:hover {
   background: -ms-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -o-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
-  text-decoration: none;
+  text-decoration: none !important;
   border-color: #035261;
 }
 div.wsc.wsct_dAmn a.iconic.close:active {
@@ -1422,9 +1433,9 @@ div.wsc.wsct_dAmn a.iconic.close:active {
   background: -ms-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -o-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
-  color: #fff6e4;
+  color: #fff6e4 !important;
   text-shadow: 0px -1px #311604;
-  text-decoration: none;
+  text-decoration: none !important;
   border-color: #6b0101;
 }
 div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab {

@@ -180,3 +180,35 @@ function formatTime( format, date ) {
     format = replaceAll(format, '{mr}', mr);
     return format;
 }
+
+function oxlist( sequence ) {
+    last = sequence.pop();
+    ret = sequence.join(', ');
+    return ret + ( ret.length > 0 ? ', and ' : '' ) + last;
+}
+
+function pluralise( measure, num ) {
+    return measure + ( num == 1 ? '' : 's' );
+}
+
+function timeLengthString( length ) {
+    var elapsed = length;
+    var elarr = [];
+    elarr.unshift([ 'second', Math.round(elapsed % 60) ]);
+    elapsed /= Math.round(60);
+    elarr.unshift([ 'minute', Math.round(elapsed % 60) ]);
+    elapsed /= Math.round(60);
+    elarr.unshift([ 'hour', Math.round(elapsed % 24) ]);
+    elapsed /= Math.round(24);
+    elarr.unshift([ 'day', elapsed ]);
+    
+    ret = [];
+    for( i in elarr ) {
+        lapse = elarr[i];
+        if( lapse[1] < 1 )
+            continue;
+        ret.push( lapse[1].toString() + ' ' + pluralise(lapse[0], lapse[1]) ); 
+    }
+    
+    return oxlist(ret);
+}
