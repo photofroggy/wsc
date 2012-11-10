@@ -45,6 +45,20 @@ Chatterbox.Navigation = function( ui ) {
             return false;
         }
     );
+    
+    this.tableft.click(
+        function(  ) {
+            nav.manager.channel_left();
+            return false;
+        }
+    );
+    
+    this.tabright.click(
+        function(  ) {
+            nav.manager.channel_right();
+            return false;
+        }
+    );
 
 };
 

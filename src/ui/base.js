@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.35';
+Chatterbox.VERSION = '0.5.36';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -301,6 +301,29 @@ Chatterbox.UI.prototype.channel = function( namespace, chan ) {
 Chatterbox.UI.prototype.channels = function( ) {
     return this.chatbook.channels();
 };
+
+/**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ */
+Chatterbox.UI.prototype.channel_left = function(  ) {
+
+    this.chatbook.channel_left();
+
+};
+
+/**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ */
+Chatterbox.UI.prototype.channel_right = function(  ) {
+
+    this.chatbook.channel_right();
+
+};
+
 
 /**
  * Display a log message in the monitor channel.

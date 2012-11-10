@@ -259,8 +259,8 @@ wsc.Control.prototype.submit = function( event ) {
  */
 wsc.Control.prototype.keypress = function( event ) {
 
-    key = event.which || event.keyCode;
-    ut = this.tab.hit;
+    var key = event.which || event.keyCode;
+    var ut = this.tab.hit;
     var bubble = false;
     
     switch( key ) {
@@ -292,6 +292,20 @@ wsc.Control.prototype.keypress = function( event ) {
         case 9: // Tab
             this.tab_item( event );
             ut = false;
+            break;
+        case 219: // [
+            if( event.ctrlKey ) {
+                this.client.ui.channel_left();
+            } else {
+                bubble = true;
+            }
+            break;
+        case 221: // ] (using instead of +)
+            if( event.ctrlKey ) {
+                this.client.ui.channel_right();
+            } else {
+                bubble = true;
+            }
             break;
         default:
             bubble = true;

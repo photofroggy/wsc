@@ -125,10 +125,10 @@ Chatterbox.Channel.prototype.remove = function(  ) {
 Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     // There is something wrong with the way web browsers work... or the way my code is working.
-    ws = this.wrap.prop('scrollWidth') - this.logpanel.innerWidth();
-    ws = ws > 0 ? this.manager.swidth : (this.manager.swidth * 2);
-    hs = this.wrap.prop('scrollHeight') - this.logpanel.innerHeight();
-    hsm = hs > 0 ? (this.manager.swidth * 4) : 0;
+    var ws = this.wrap.prop('scrollWidth') - this.logpanel.innerWidth();
+    var ws = ws > 0 ? this.manager.swidth : (this.manager.swidth * 2);
+    var hs = this.wrap.prop('scrollHeight') - this.logpanel.innerHeight();
+    var hsm = hs > 0 ? (this.manager.swidth * 4) : 0;
     this.wrap.scrollTop(hs + ((ws + hsm)));
 };
 

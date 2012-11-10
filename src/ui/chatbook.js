@@ -152,10 +152,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     // Update the paper trail.
-    pos = this.trail.indexOf(chan.namespace);
-    if( pos >= 0 )
-        this.trail.splice(pos, 1);
-    this.trail.push(chan.namespace);
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.namespace,
@@ -187,6 +186,62 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     select = this.trail[this.trail.length - 1];
     this.toggle_channel(select);
     this.channel(select).resize();
+};
+
+/**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ */
+Chatterbox.Chatbook.prototype.channel_left = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index < 1 )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[--index]);
+        } catch( err ) {
+            return;
+        }
+        if( !nc.hidden )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
+};
+
+/**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ */
+Chatterbox.Chatbook.prototype.channel_right = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index == -1 || index >= (this.trail.length - 1) )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[++index]);
+        } catch( err ) {
+            return;
+        }
+        if( !nc.hidden )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
 };
 
 /**

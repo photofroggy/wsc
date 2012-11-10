@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.58';
+wsc.VERSION = '0.9.59';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -3424,8 +3424,8 @@ wsc.Control.prototype.submit = function( event ) {
  */
 wsc.Control.prototype.keypress = function( event ) {
 
-    key = event.which || event.keyCode;
-    ut = this.tab.hit;
+    var key = event.which || event.keyCode;
+    var ut = this.tab.hit;
     var bubble = false;
     
     switch( key ) {
@@ -3457,6 +3457,20 @@ wsc.Control.prototype.keypress = function( event ) {
         case 9: // Tab
             this.tab_item( event );
             ut = false;
+            break;
+        case 219: // [
+            if( event.ctrlKey ) {
+                this.client.ui.channel_left();
+            } else {
+                bubble = true;
+            }
+            break;
+        case 221: // ] (using instead of +)
+            if( event.ctrlKey ) {
+                this.client.ui.channel_right();
+            } else {
+                bubble = true;
+            }
             break;
         default:
             bubble = true;
@@ -3522,7 +3536,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.35';
+Chatterbox.VERSION = '0.5.36';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -3819,6 +3833,29 @@ Chatterbox.UI.prototype.channels = function( ) {
 };
 
 /**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ */
+Chatterbox.UI.prototype.channel_left = function(  ) {
+
+    this.chatbook.channel_left();
+
+};
+
+/**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ */
+Chatterbox.UI.prototype.channel_right = function(  ) {
+
+    this.chatbook.channel_right();
+
+};
+
+
+/**
  * Display a log message in the monitor channel.
  * 
  * @method monitor
@@ -4029,10 +4066,10 @@ Chatterbox.Channel.prototype.remove = function(  ) {
 Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     // There is something wrong with the way web browsers work... or the way my code is working.
-    ws = this.wrap.prop('scrollWidth') - this.logpanel.innerWidth();
-    ws = ws > 0 ? this.manager.swidth : (this.manager.swidth * 2);
-    hs = this.wrap.prop('scrollHeight') - this.logpanel.innerHeight();
-    hsm = hs > 0 ? (this.manager.swidth * 4) : 0;
+    var ws = this.wrap.prop('scrollWidth') - this.logpanel.innerWidth();
+    var ws = ws > 0 ? this.manager.swidth : (this.manager.swidth * 2);
+    var hs = this.wrap.prop('scrollHeight') - this.logpanel.innerHeight();
+    var hsm = hs > 0 ? (this.manager.swidth * 4) : 0;
     this.wrap.scrollTop(hs + ((ws + hsm)));
 };
 
@@ -4693,10 +4730,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     // Update the paper trail.
-    pos = this.trail.indexOf(chan.namespace);
-    if( pos >= 0 )
-        this.trail.splice(pos, 1);
-    this.trail.push(chan.namespace);
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.namespace,
@@ -4728,6 +4764,62 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     select = this.trail[this.trail.length - 1];
     this.toggle_channel(select);
     this.channel(select).resize();
+};
+
+/**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ */
+Chatterbox.Chatbook.prototype.channel_left = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index < 1 )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[--index]);
+        } catch( err ) {
+            return;
+        }
+        if( !nc.hidden )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
+};
+
+/**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ */
+Chatterbox.Chatbook.prototype.channel_right = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index == -1 || index >= (this.trail.length - 1) )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[++index]);
+        } catch( err ) {
+            return;
+        }
+        if( !nc.hidden )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
 };
 
 /**
@@ -4997,6 +5089,20 @@ Chatterbox.Navigation = function( ui ) {
             nav.settings.window = new Chatterbox.Settings( nav.manager, evt.settings );
             nav.settings.window.build();
             nav.settings.open = true;
+            return false;
+        }
+    );
+    
+    this.tableft.click(
+        function(  ) {
+            nav.manager.channel_left();
+            return false;
+        }
+    );
+    
+    this.tabright.click(
+        function(  ) {
+            nav.manager.channel_right();
             return false;
         }
     );
