@@ -1528,6 +1528,83 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
 
 
 /**
+ * Popup window base class.
+ * Should allow people to easily create popups... or something.
+ * Subclasses of the popups should provide a way of closing the popup, or
+ * maybe I could change things around a bit so there's always a close button in
+ * the top right corner. That said, the settings window looks good with the
+ * close button at the bottom. Maybe make that configurable. Use a flag to
+ * determine whether or not this class applies the close function or not?
+ * 
+ * @class Popup
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ */
+Chatterbox.Popup = function( ui, options ) {
+
+    this.manager = ui;
+    this.window = null;
+    this.closeb = null;
+    this.options = Object.extend({
+        'ref': 'popup',
+        'title': 'Popup',
+        'close': true,
+        'content': ''
+    }, (options || {}));
+
+};
+
+/**
+ * Build the popup window.
+ * This should be pretty easy.
+ *
+ * @method build
+ */
+Chatterbox.Popup.prototype.build = function(  ) {
+
+    var fill = {
+        'ref': this.options.ref,
+        'title': this.options.title,
+        'content': this.options.content
+    };
+    
+    if( this.options.close ) {
+        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
+    }
+    
+    this.manager.view.append(Chatterbox.render( 'popup', fill ));
+    this.window = this.manager.view.find('.floater.' + fill.ref);
+    
+    if( this.options.close ) {
+        this.closeb = this.window.find('a.close');
+        var popup = this;
+
+        this.closeb.click(
+            function( event ) {
+                popup.close();
+                return false;
+            }
+        );
+    }
+
+};
+
+/**
+ * Close the popup.
+ * 
+ * @method close
+ */
+Chatterbox.Popup.prototype.close = function(  ) {
+    
+    this.window.remove();
+    
+};
+
+
+
+
+
+/**
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
@@ -1538,17 +1615,24 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
  */
 Chatterbox.Settings = function( ui, config ) {
 
-    this.manager = ui;
+    Chatterbox.Popup.call( this, ui, {
+        'ref': 'settings',
+        'title': 'Settings',
+        'close': false,
+        'content': ''
+    } );
+    
     this.config = config;
-    this.window = null;
     this.saveb = null;
-    this.closeb = null;
     this.scb = null;
     this.tabs = null;
     this.book = null;
     this.changed = false;
 
 };
+
+Chatterbox.Settings.prototype = new Chatterbox.Popup();
+Chatterbox.Settings.prototype.constructor = Chatterbox.Settings;
 
 /**
  * Build the settings window.
@@ -1557,13 +1641,8 @@ Chatterbox.Settings = function( ui, config ) {
  */
 Chatterbox.Settings.prototype.build = function(  ) {
 
-    wrap = Chatterbox.template.popup;
-    swindow = Chatterbox.template.settings.main;
-    wrap = replaceAll(wrap, '{content}', swindow);
-    wrap = replaceAll(wrap, '{ref}', 'settings');
-    
-    this.manager.view.append(wrap);
-    this.window = this.manager.view.find('.floater.settings');
+    this.options.content = Chatterbox.template.settings.main;
+    Chatterbox.Popup.prototype.build.call(this);
     this.saveb = this.window.find('a.button.save');
     this.closeb = this.window.find('a.close');
     this.scb = this.window.find('a.button.saveclose');
@@ -2974,7 +3053,7 @@ Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
  * @property popup
  * @type String
  */
-Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{content}</div></div>';
+Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
 /**
  * Settings stuff.
@@ -2982,8 +3061,7 @@ Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner">{cont
  * @class settings
  */
 Chatterbox.template.settings = {};
-Chatterbox.template.settings.main = '<h2>Settings</h2>\
-                            <div class="bookwrap">\
+Chatterbox.template.settings.main = '<div class="bookwrap">\
                                 <nav class="tabs">\
                                     <ul class="tabs"></ul>\
                                 </nav>\
