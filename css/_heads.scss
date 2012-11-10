@@ -23,8 +23,8 @@
             }
             
             &.topic {
-                border: 1px solid black;
-                border-bottom: none;
+                border-bottom: 1px solid black;
+                /*border-bottom: none;*/
                 &.topic img { vertical-align: middle; }
             }
         

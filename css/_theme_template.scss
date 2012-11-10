@@ -219,6 +219,7 @@
         
         div.chatlog {
             background-color: $log-bg;
+            border-color: $inner-border;
             
             ul.logwrap {
                 
@@ -231,7 +232,6 @@
                     }
                 }
                 
-                border-color: $inner-border;
                 .logmsg {
                     color: $base;
                     &.highlight,

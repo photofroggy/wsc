@@ -688,6 +688,7 @@ div.wsc div.chatwindow div.chatlog {
   overflow: hidden;
   float: left;
   width: 100%;
+  border: 1px solid black;
 }
 div.wsc div.chatwindow div.chatlog a {
   padding: 0px;
@@ -699,7 +700,6 @@ div.wsc div.chatwindow div.chatlog img {
   vertical-align: middle;
 }
 div.wsc div.chatwindow div.chatlog ul.logwrap {
-  border: 1px solid black;
   overflow: auto;
   padding-bottom: 4px;
   list-style: none;
@@ -724,8 +724,8 @@ div.wsc div.chatwindow header div.title {
   padding-top: 0px;
 }
 div.wsc div.chatwindow header div.topic {
-  border: 1px solid black;
-  border-bottom: none;
+  border-bottom: 1px solid black;
+  /*border-bottom: none;*/
 }
 div.wsc div.chatwindow header div.topic.topic img {
   vertical-align: middle;
@@ -1267,8 +1267,6 @@ div.wsc.wsct_default div.chatwindow header div.topic {
 }
 div.wsc.wsct_default div.chatwindow div.chatlog {
   background-color: #cedbe2;
-}
-div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap {
   border-color: #0d4d69;
 }
 div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap a {
@@ -1540,8 +1538,6 @@ div.wsc.wsct_dAmn div.chatwindow header div.topic {
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog {
   background-color: #dce7dc;
-}
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap {
   border-color: #9eaea0;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a {

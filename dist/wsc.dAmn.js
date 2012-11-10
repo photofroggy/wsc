@@ -3541,7 +3541,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.34';
+Chatterbox.VERSION = '0.5.35';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4030,7 +4030,9 @@ Chatterbox.Channel.prototype.remove = function(  ) {
  */
 Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    scrolled = this.wrap.innerHeight() - this.logpanel.innerWidth() - 3;
+    scrolled = scrolled > 0 ? this.manager.swidth : 0;
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - (this.wrap.innerHeight() + scrolled));
 };
 
 /**
@@ -4041,7 +4043,7 @@ Chatterbox.Channel.prototype.scroll = function( ) {
  */
 Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
-    this.wrap.css({'padding-top': 0});
+    this.wrap.css({'padding-top': 0, 'height': 'auto'});
     wh = this.wrap.innerHeight();
     lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
     pad = lh - wh;
@@ -4074,7 +4076,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Log width.
     if( cu.css('display') != 'none') {
         cu.width(1);
-        userwidth = cu[0].scrollWidth + this.manager.swidth + 10;
+        userwidth = cu[0].scrollWidth + this.manager.swidth + 5;
         max = parseInt(cu.css('max-width').slice(0,-2));
         if( userwidth > max ) {
             userwidth = max;
@@ -4089,13 +4091,13 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Log panel dimensions
     this.logpanel.css({
         height: wh - 3,
-        width: cw});
+        width: cw - 3});
     
     // Scroll again just to make sure.
     this.scroll();
     
     // User list dimensions
-    cu.css({height: this.logpanel.innerHeight() - 3});
+    cu.css({height: this.logpanel.innerHeight()});
 };
 
 /**
@@ -4213,6 +4215,8 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
  */
 Chatterbox.Channel.prototype.clear = function(  ) {
     this.logpanel.find('li.logmsg').remove();
+    this.logpanel.find('li.loginfo').remove();
+    this.wrap.height(0);
     this.resize();
 };
 

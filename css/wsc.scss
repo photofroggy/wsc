@@ -53,6 +53,7 @@ div.wsc {
             overflow: hidden;
             float: left;
             width: 100%;
+            border: 1px solid black;
             
             a {
                 padding: 0px;
@@ -66,7 +67,6 @@ div.wsc {
             }
             
             ul.logwrap {
-                border: 1px solid black;
                 overflow: auto;
                 padding-bottom: 4px;
                 list-style: none;
