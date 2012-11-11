@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.62';
+wsc.VERSION = '0.9.63';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -38,7 +38,8 @@ wsc.defaults.UI = wsc.base.UI;
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
-/**
+
+/*
  * EventEmitter
  * Simple event framework, based off of NodeJS's EventEmitter
  * @class EventEmitter
@@ -878,7 +879,7 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
-    this.info[head]["content"] = e.value || '';
+    this.info[head]["content"] = e.value.html() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
     
@@ -6965,18 +6966,6 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
 
 
 
-// @include templates.js
-// @include lib.js
-// @include packet.js
-// @include channel.js
-// @include tablumps.js
-// @include protocol.js
-// @include commands.js
-// @include client.js
-// @include control.js
-// @include ui.js
-
-
 /*
  * wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
@@ -6984,9 +6973,6 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  */
 
 (function( $ ) {
-    
-    // Client containment.
-    //var client = null;
     
     $('*').hover(
         function( e ) {
@@ -6997,44 +6983,6 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
         }
     );
     
-    /**
-     * @function wsc
-     * 
-     * This function is the plugin method allowing you to run wsc using jQuery.
-     * The client is designed to work with jQuery, but the objects are
-     * abstracted out of this file/function to make it easier to maintain and
-     * such.
-     * 
-     * This function generates a new {wsc_client.client wsc_client object} if there is no client
-     * present in the window. Apart from that, this function can be used to
-     * invoke functions on the client object. 
-     * 
-     * @example
-     *  // Create a client inside div.container
-     *  $('.container').wsc( 'init' );
-     *  
-     *  // The above code will create a new chat client which will draw itself
-     *  // inside div.container on the page. This example is not too good as no
-     *  // configuration options have been supplied. The example connecting is an
-     *  // example of a simple configuration using dummy values. In this example,
-     *  // we also start a connection to the WebSocket chat server.
-     *  
-     *  $('.container').wsc( 'init', {
-     *      // Connection information.
-     *      'domain': 'mywebsite.com',
-     *      'server': 'ws://website.com/my/wsproxy:0000',
-     *      // Login details.
-     *      'username': 'username',
-     *      'pk': 'token'
-     *  });
-     *  
-     *  // After creating our client, we can start connecting to the server.
-     *  $('.container').wsc( 'connect' );
-     * 
-     * @param [String] method Name of the method to call on the client object.
-     * @param [Object] options Use this to pass arguments to the method being called.
-     * @return [Object] Client object on init, something else on different methods.
-     */
     $.fn.wsc = function( method, options ) {
         
         client = $(window).data('wscclient');
@@ -7064,7 +7012,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
         
         if( method == 'init' || ui === undefined ) {
             if( ui == undefined ) {
-                ui = new WscUI( $(this), options, ($.browser.mozilla || false) );
+                ui = new Chatterbox.UI( $(this), options, ($.browser.mozilla || false) );
                 $(window).resize(ui.resize);
             }
             $(window).data('wscui', ui);

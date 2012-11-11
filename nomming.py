@@ -8,9 +8,9 @@ def nom(file):
     dir = os.path.dirname(file)
     with open(os.path.abspath(file), 'r') as f:
         data = f.read()
-    data = re.sub('//.*(?=[\n\r])', '', data)
     pat = re.compile('/\*((?!\*\/).)*\*/', re.DOTALL | re.MULTILINE)
     data = re.sub(pat, '', data)
+    data = re.sub('//([^\'"]+)', '', data)
     data = re.sub('\n([\s]*)\n', '\n', data)
     with open(os.path.join(dir, 'nom.' + base), 'w') as f:
         f.write(data)

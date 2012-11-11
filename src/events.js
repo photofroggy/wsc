@@ -1,7 +1,8 @@
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
-/**
+
+/*
  * EventEmitter
  * Simple event framework, based off of NodeJS's EventEmitter
  * @class EventEmitter

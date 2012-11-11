@@ -174,7 +174,7 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
-    this.info[head]["content"] = e.value || '';
+    this.info[head]["content"] = e.value.html() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
     
