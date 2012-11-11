@@ -29,7 +29,7 @@ wsc.dAmn.avatar.link = function( un, icon ) {
         ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
             return un[i].toLowerCase();
         });
-        ico = ico.replacePArg( '{un}', un.toLowerCase() );
+        ico = replaceAll( ico, '{un}', un.toLowerCase() );
     }
     
     return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\

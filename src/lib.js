@@ -2,15 +2,6 @@
  * Generic useful functions or something.
  */
 
-// Function scope binding. Convoluted weirdness. Lol internet.
-Function.prototype.bind = function( scope ) {
-    var _function = this;
-    
-    return function () {
-        return _function.apply( scope, arguments );
-    };
-}; 
-
 // Some other constructor type thing?
 function scope_methods( scope, methods ) {
 
@@ -19,14 +10,6 @@ function scope_methods( scope, methods ) {
     }
 
 }
-
-Function.prototype.scope_methods = function( scope, methods ) {
-
-    for( cbn in methods ) {
-        scope[cbn] = methods[cbn].bind( scope );
-    }
-
-};
 
 // Alternate binding interface
 function bind( scope, cb ) {
@@ -78,23 +61,22 @@ function EscapeRegExp( text ) {
     ].join('|\\') + ')', 'g')), '\\$1');
 }
 
-// Replace all occurances of `search` with `replace`.
-String.prototype.replacePArg = function( search, replace ) {
-    return replaceAll(this, search, replace);
-};
-
-String.prototype.format = function() {
-  var args = arguments;
-  return this.replace(/{(\d+)}/g, function(match, number) { 
+String.format = function() {
+  var args = Array.prototype.slice.call(arguments);
+  var content = args.shift();
+  args = args.shift();
+  if( args.length == 0 )
+    return content;
+  var argsl = args.length;
+  
+  return content.replace(/{(\d+)}/g, function(match, number) {
+    if(argsl <= parseInt(number))
+        return match;
     return typeof args[number] != 'undefined'
       ? args[number]
       : match
     ;
   });
-};
-
-String.prototype.replaceAll = function ( search, replace ) {
-    return replaceAllRaw( this, search, replace );
 };
 
 // Replace all stuff with some shit idk.

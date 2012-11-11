@@ -306,7 +306,7 @@ wsc.Tablumps.prototype.renderOne = function( type, tag, working ) {
     
     // Parse the tablump if we can.
     if( typeof(renderer) == 'string' )
-        parsed = renderer.format.apply(renderer, cropping[0]);
+        parsed = String.format(renderer, cropping[0]);
     else
         parsed = renderer.call(this, cropping[0]);
     
