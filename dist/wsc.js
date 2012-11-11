@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.63';
+wsc.VERSION = '0.9.64';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -917,7 +917,6 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  */
 wsc.Channel.prototype.set_members = function( e ) {
     this.info.members = {};
-    this.info.users = [];
     
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
@@ -937,11 +936,13 @@ wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
     
+    var names = this.get_usernames();
     var pcs = {};
-    this.info.users.sort( caseInsensitiveSort );
     
-    for( i in this.info.users ) {
-        var un = this.info.users[i];
+    for( var i in names ) {
+        if( !names.hasOwnProperty(i) )
+            continue;
+        var un = names[i];
         var member = this.info.members[un];
         
         if( !( member['pc'] in pcs ) )
@@ -1005,10 +1006,22 @@ wsc.Channel.prototype.register_user = function( pkt ) {
         }
         this.info.members[un]["conn"]++;
     }
-    
-    if( this.info.users.indexOf(un) == -1 ) {
-        this.info.users.push( un );
+};
+
+/**
+ * Return a list of usernames, sorted alphabetically.
+ * 
+ * @method get_usernames
+ */
+wsc.Channel.prototype.get_usernames = function(  ) {
+
+    var names = [];
+    for( var name in this.info.members ) {
+        names.push(name);
     }
+    names.sort( caseInsensitiveSort );
+    return names;
+
 };
 
 /**
