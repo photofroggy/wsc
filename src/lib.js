@@ -152,7 +152,7 @@ function timeLengthString( length ) {
     elapsed /= Math.round(24);
     elarr.unshift([ 'day', elapsed ]);
     
-    ret = [];
+    var ret = [];
     for( i in elarr ) {
         lapse = elarr[i];
         if( lapse[1] < 1 )

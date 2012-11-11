@@ -385,7 +385,7 @@ wsc.Channel.prototype.recv_privchg = function( e ) {
     if( !member )
         return;
     
-    member['pc'] = event.pc;
+    member['pc'] = e.pc;
     this.set_user_list();
 };
 

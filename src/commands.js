@@ -10,6 +10,7 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.part', cmd_part );
         client.bind('cmd.title', cmd_title );
         client.bind('cmd.promote', cmd_promote );
+        client.bind('cmd.demote', cmd_demote );
         client.bind('cmd.me', cmd_action );
         client.bind('cmd.kick', cmd_kick );
         client.bind('cmd.raw', cmd_raw );
@@ -285,11 +286,17 @@ wsc.defaults.Extension = function( client ) {
     var cmd_title = function( e ) {
         client.set(e.target, 'title', e.args);
     };
-        
+    
     // Promote user
     var cmd_promote = function( e ) {
         var bits = e.args.split(' ');
         client.promote(e.target, bits[0], bits[1]);
+    };
+    
+    // Demote user
+    var cmd_demote = function( e ) {
+        var bits = e.args.split(' ');
+        client.demote(e.target, bits[0], bits[1]);
     };
         
     // Send a /me action thingy.
