@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.36';
+Chatterbox.VERSION = '0.5.37';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -775,9 +775,9 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
         'raw': data,
     };
     
-    for( i in data.connections ) {
-        rcon = data.connections[i];
-        mcon = [];
+    for( var i in data.connections ) {
+        var rcon = data.connections[i];
+        var mcon = [];
         
         if( rcon.online ) {
             stamp = (new Date - (rcon.online * 1000));
@@ -798,9 +798,9 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
     this.manager.trigger( 'log_whois.before', whois );
     
     var conns = '';
-    for( i in whois.conns ) {
-        conn = whois.conns[i];
-        text = '<section class="conn"><p><em>connection ' + ((parseInt(i) + 1).toString()) + ':</em></p>';
+    for( var i in whois.conns ) {
+        var conn = whois.conns[i];
+        var text = '<section class="conn"><p><em>connection ' + ((parseInt(i) + 1).toString()) + ':</em></p>';
         text+= '<ul>';
         for( x in conn ) {
             text+= '<li><strong>' + conn[x][0] + ':</strong> ' + conn[x][1] + '</li>';
@@ -810,7 +810,7 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
     }
     
     var info = '';
-    for( i in whois.info ) {
+    for( var i in whois.info ) {
         info+= '<li>' + whois.info[i] + '</li>';
     }
     
@@ -826,7 +826,11 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
         })
     );
     
-    box.find('div.avatar').height( box.height() - 10 );
+    var av = box.find('div.avatar');
+    var inf = box.find('div.info');
+    inf.width( box.find('.whoiswrap').width() - 100 );
+    av.height( box.height() - 10 );
+    this.scroll();
 };
 
 /**
