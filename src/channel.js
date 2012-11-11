@@ -232,18 +232,18 @@ wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
     
-    pcs = {};
+    var pcs = {};
     this.info.users.sort( caseInsensitiveSort );
     
     for( i in this.info.users ) {
-        un = this.info.users[i];
-        member = this.info.members[un];
+        var un = this.info.users[i];
+        var member = this.info.members[un];
         
         if( !( member['pc'] in pcs ) )
             pcs[member['pc']] = {'name': member['pc'], 'users': []};
         
-        conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        s = member.symbol;
+        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+        var s = member.symbol;
         uinfo = {
             'name': un,
             'symbol': s,
@@ -260,10 +260,10 @@ wsc.Channel.prototype.set_user_list = function( ) {
         pcs[member['pc']].users.push(uinfo);
     }
     
-    ulist = [];
+    var ulist = [];
     
     for(var index in this.info["pc_order"]) {
-        pc = this.info['pc'][this.info["pc_order"][index]];
+        var pc = this.info['pc'][this.info["pc_order"][index]];
         
         if( !( pc in pcs ) )
             continue;
@@ -288,7 +288,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
  * @param pkt {Object} User data.
  */
 wsc.Channel.prototype.register_user = function( pkt ) {
-    un = pkt["param"];
+    var un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt["arg"];
@@ -314,7 +314,7 @@ wsc.Channel.prototype.register_user = function( pkt ) {
  */
 wsc.Channel.prototype.remove_user = function( user, force ) {
     force = force || false;
-    member = this.info.members[user];
+    var member = this.info.members[user];
     
     if( member == undefined )
         return;
@@ -335,7 +335,7 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
  * @param e {Object} Event data for recv_join packet.
  */
 wsc.Channel.prototype.recv_join = function( e ) {
-    info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
+    var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
     this.set_user_list();
 };
@@ -361,8 +361,8 @@ wsc.Channel.prototype.recv_part = function( e ) {
  */
 wsc.Channel.prototype.recv_msg = function( e ) {
     
-    u = this.client.settings['username'].toLowerCase();
-    msg = e['message'].toLowerCase();
+    var u = this.client.settings['username'].toLowerCase();
+    var msg = e['message'].toLowerCase();
     
     if( msg.indexOf(u) < 0 )
         return;
@@ -379,7 +379,7 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    member = this.info.members[e.user];
+    var member = this.info.members[e.user];
     
     if( !member )
         return;
