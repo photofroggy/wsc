@@ -430,19 +430,6 @@ wsc.SocketIO.prototype.close = function(  ) {
  * Generic useful functions or something.
  */
 
-// Some other constructor type thing?
-function scope_methods( scope, methods ) {
-
-    for( cbn in methods ) {
-        scope[cbn] = methods[cbn].bind( scope );
-    }
-
-}
-
-// Alternate binding interface
-function bind( scope, cb ) {
-    return cb.bind( scope );
-}
 
 // Fetch url GET variable. 
 function $_GET( q, s ) {
