@@ -905,7 +905,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
-    this.info["pc_order"].sort(function(a,b){return b-a});
+    this.info["pc_order"].sort(function(a, b){ return b - a });
 };
 
 /**
@@ -915,16 +915,15 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_members = function( e ) {
-    pack = new wsc.Packet(e.pkt["body"]);
     this.info.members = {};
     this.info.users = [];
     
-    while(pack["cmd"] == "member") {
-        this.register_user(pack);
-        pack = new wsc.Packet(pack.body);
-        if(pack == null)
-            break;
+    for( var i in e.pkt.sub ) {
+        if( !e.pkt.sub.hasOwnProperty(i) )
+            continue;
+        this.register_user(e.pkt.sub[i]);
     }
+    
     this.set_user_list();
 };
 
