@@ -213,7 +213,7 @@ wsc.WebSocket.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(message);
+    return this.sock.send(encodeURIComponent(message));
 
 };
 
@@ -315,7 +315,7 @@ wsc.SocketIO.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(message);
+    return this.sock.send(encodeURIComponent(message));
 
 };
 

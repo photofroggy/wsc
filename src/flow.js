@@ -48,7 +48,7 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    var pack = new wsc.Packet(event.data);
+    var pack = new wsc.Packet(decodeURIComponent(event.data));
     
     if(pack == null)
         return;

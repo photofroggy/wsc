@@ -303,7 +303,7 @@ wsc.WebSocket.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(message);
+    return this.sock.send(encodeURIComponent(message));
 
 };
 
@@ -405,7 +405,7 @@ wsc.SocketIO.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(message);
+    return this.sock.send(encodeURIComponent(message));
 
 };
 
@@ -1829,7 +1829,7 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    var pack = new wsc.Packet(event.data);
+    var pack = new wsc.Packet(decodeURIComponent(event.data));
     
     if(pack == null)
         return;
@@ -7140,7 +7140,7 @@ wsc.dAmn.avatar.link = function( un, icon ) {
         ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
         
         ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
-            return un[i].toLowerCase();
+            return un[i] == '-' ? '_' : un[i].toLowerCase();
         });
         ico = replaceAll( ico, '{un}', un.toLowerCase() );
     }

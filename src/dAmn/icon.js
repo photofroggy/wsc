@@ -27,7 +27,7 @@ wsc.dAmn.avatar.link = function( un, icon ) {
         ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
         
         ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
-            return un[i].toLowerCase();
+            return un[i] == '-' ? '_' : un[i].toLowerCase();
         });
         ico = replaceAll( ico, '{un}', un.toLowerCase() );
     }
