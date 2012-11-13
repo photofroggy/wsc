@@ -59,7 +59,7 @@ wsc.Protocol = function( tablumps ) {
         }
         
     };
-    
+    //  'event': [ template, monitor, global ]
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
@@ -322,7 +322,10 @@ wsc.Protocol.prototype.log = function( client, event ) {
         } else {
             client.ui.log_item(msg);
         }
-    } catch(err) {}
+    } catch(err) {
+        console.log('>> Failed to log message for ' + event.sns + '::');
+        console.log('>> ' + msg);
+    }
 
 };
 

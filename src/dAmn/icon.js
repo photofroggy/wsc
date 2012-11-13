@@ -10,9 +10,9 @@ wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
  */
 wsc.dAmn.avatar.link = function( un, icon ) {
     icon = parseInt(icon);
-    cachebuster = (icon >> 2) & 15;
+    var cachebuster = (icon >> 2) & 15;
     icon = icon & 3;
-    ext = wsc.dAmn.avatar.ext[icon] || 'gif';
+    var ext = wsc.dAmn.avatar.ext[icon] || 'gif';
     
     if (cachebuster) {
         cachebuster = '?' + cachebuster;
@@ -24,9 +24,9 @@ wsc.dAmn.avatar.link = function( un, icon ) {
     if( icon == 0 ) { 
         ico = 'default';
     } else {
-        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+        var ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
         
-        ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
+        var ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
             return un[i] == '-' ? '_' : un[i].toLowerCase();
         });
         ico = replaceAll( ico, '{un}', un.toLowerCase() );

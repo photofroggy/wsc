@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.64';
+wsc.VERSION = '0.9.65';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -1042,7 +1042,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     if( member['conn'] > 0 && !force)
         return;
     
-    this.info.users.splice(this.info.users.indexOf(user), 1);
     delete this.info.members[user];
 };
 
@@ -1526,7 +1525,7 @@ wsc.Protocol = function( tablumps ) {
         }
         
     };
-    
+    //  'event': [ template, monitor, global ]
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
         'login': ['<span class="servermsg">** Login as {username}: "{e}" *</span>', false, true],
@@ -1789,7 +1788,10 @@ wsc.Protocol.prototype.log = function( client, event ) {
         } else {
             client.ui.log_item(msg);
         }
-    } catch(err) {}
+    } catch(err) {
+        console.log('>> Failed to log message for ' + event.sns + '::');
+        console.log('>> ' + msg);
+    }
 
 };
 
@@ -2132,7 +2134,8 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
         client.bind('cmd.whois', cmd_whois );
-        client.bind('pkt.property', pkt_on_property );
+        client.bind('pkt.property', pkt_property );
+        client.bind('pkt.get', pkt_get );
         // lol themes
         client.bind('cmd.theme', cmd_theme);
         // some ui business.
@@ -2458,7 +2461,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Process a property packet, hopefully retreive whois info.
-    var pkt_on_property = function( event, client ) {
+    var pkt_property = function( event, client ) {
         if(event.p != 'info')
             return;
         
@@ -2479,6 +2482,15 @@ wsc.defaults.Extension = function( client ) {
         }
         
         client.cchannel.show_whois(data);
+    };
+    
+    var pkt_get = function( event, client ) {
+    
+        if( event.ns.indexOf('login:') != 0 )
+            return;
+        
+        client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+    
     };
     
     init();
@@ -7137,9 +7149,9 @@ wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
  */
 wsc.dAmn.avatar.link = function( un, icon ) {
     icon = parseInt(icon);
-    cachebuster = (icon >> 2) & 15;
+    var cachebuster = (icon >> 2) & 15;
     icon = icon & 3;
-    ext = wsc.dAmn.avatar.ext[icon] || 'gif';
+    var ext = wsc.dAmn.avatar.ext[icon] || 'gif';
     
     if (cachebuster) {
         cachebuster = '?' + cachebuster;
@@ -7151,9 +7163,9 @@ wsc.dAmn.avatar.link = function( un, icon ) {
     if( icon == 0 ) { 
         ico = 'default';
     } else {
-        ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+        var ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
         
-        ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
+        var ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
             return un[i] == '-' ? '_' : un[i].toLowerCase();
         });
         ico = replaceAll( ico, '{un}', un.toLowerCase() );

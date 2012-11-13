@@ -19,7 +19,8 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
         client.bind('cmd.whois', cmd_whois );
-        client.bind('pkt.property', pkt_on_property );
+        client.bind('pkt.property', pkt_property );
+        client.bind('pkt.get', pkt_get );
         // lol themes
         client.bind('cmd.theme', cmd_theme);
         // some ui business.
@@ -345,7 +346,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Process a property packet, hopefully retreive whois info.
-    var pkt_on_property = function( event, client ) {
+    var pkt_property = function( event, client ) {
         if(event.p != 'info')
             return;
         
@@ -366,6 +367,15 @@ wsc.defaults.Extension = function( client ) {
         }
         
         client.cchannel.show_whois(data);
+    };
+    
+    var pkt_get = function( event, client ) {
+    
+        if( event.ns.indexOf('login:') != 0 )
+            return;
+        
+        client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+    
     };
     
     init();
