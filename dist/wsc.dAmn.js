@@ -639,6 +639,7 @@ wsc.Packet = function( data, separator ) {
                 sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;
+                sub.body = subs.slice(i + 1).join('\n\n');
                 pkt.sub.push( sub );
             }
         }
@@ -1514,14 +1515,7 @@ wsc.Protocol = function( tablumps ) {
     this.mapper = {
         "recv": function( packet, args, mapping ) {
             args.ns = packet.param;
-            sub = new wsc.Packet( packet.body );
-            
-            if( sub.cmd == 'admin' ) {
-                ssub = new wsc.Packet( sub.body );
-                return p.map(ssub, args, mapping);
-            }
-            
-            return p.map(sub, args, mapping);
+            return p.map(packet.sub[0], args, mapping);
         }
         
     };
@@ -1539,24 +1533,24 @@ wsc.Protocol = function( tablumps ) {
         'recv_part': ['<span class="cevent bg">** {user} has left * <em>{r}</em></span>'],
         'recv_privchg': ['<span class="cevent">** {user} has been made a member of {pc} by {by} *</span>'],
         'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{r}</em></span>'],
-        'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} with: {privs} *</span>'],
-        'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} with: {privs} *</span>'],
+        'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} * <em>{privs}</em></span>'],
+        'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} * <em>{privs}</em></span>'],
         'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
         'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} -- {affected} affected user(s) *</span>'],
         'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} -- {affected} affected user(s) *</span>'],
         'recv_admin_show': null,
         'recv_admin_showverbose': null,
-        'recv_admin_privclass': ['<span class="cevent admin">** Admin command "{command}" failed: {e} *</span>'],
+        'recv_admin_privclass': ['<span class="cevent admin">** Admin command "{command}" failed * <em>{e}</em></span>'],
         'kicked': ['<span class="servermsg">** You have been kicked by {user} * <em>{r}</em></span>'],
         'ping': null, //['<span class="servermsg">** Ping...</span>', true],
         'disconnect': ['<span class="servermsg">** You have been disconnected * <em>{e}</em></span>', false, true],
         // Stuff here is errors, yes?
         'send': ['<span class="servermsg">** Send error: <em>{e}</em></span>'],
-        'kick': ['<span class="servermsg">** Could not kick {user}: <em>{e}</em></span>'],
-        'get': ['<span class="servermsg">** Could not get {p} info for {ns}: <em>{e}</em></span>'],
-        'set': ['<span class="servermsg">** Could not set {p}: <em>{e}</em></span>'],
-        'kill': ['<span class="servermsg">** Kill error: <em>{e}</em></span>'],
-        'unknown': ['<span class="servermsg">** Received unknown packet in {ns}: <em>{packet}</em></span>', true],
+        'kick': ['<span class="servermsg">** Could not kick {user} * <em>{e}</em></span>'],
+        'get': ['<span class="servermsg">** Could not get {p} info for {ns} * <em>{e}</em></span>'],
+        'set': ['<span class="servermsg">** Could not set {p} * <em>{e}</em></span>'],
+        'kill': ['<span class="servermsg">** Kill error * <em>{e}</em></span>'],
+        'unknown': ['<span class="servermsg">** Received unknown packet in {ns} * <em>{packet}</em></span>', true],
     };
 
 };
@@ -1658,16 +1652,16 @@ wsc.Protocol.prototype.event = function( pkt ) {
  * @method map
  * @param packet {Object} Packet object.
  * @param event {Object} Event data object.
- * @param map {Object} Packet mapping data.
+ * @param mapping {Object} Packet mapping data.
  */
-wsc.Protocol.prototype.map = function( packet, event, map ) {
+wsc.Protocol.prototype.map = function( packet, event, mapping ) {
 
     for(var i in mapping) {
         if( mapping[i] == null)
             continue;
         
-        key = mapping[i];
-        skey = key;
+        var key = mapping[i];
+        var skey = key;
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:
@@ -1676,13 +1670,13 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
             // for n in map[event][1]: e.<map[event][1][n]> = packet.arg.<map[event][1][n]>
             case 1:
                 if( mapping[1] instanceof Array ) {
-                    for( n in mapping[1] ) {
+                    for( var n in mapping[1] ) {
                         key = mapping[1][n];
                         if( key instanceof Array ) {
                             event[key[1]] = packet['arg'][key[0]];
                             skey = key[1];
                         } else {
-                            k = key[0] == '*' ? key.slice(1) : key;
+                            var k = key[0] == '*' ? key.slice(1) : key;
                             event[key] = packet['arg'][k] || '';
                             skey = key;
                         }
@@ -1697,7 +1691,8 @@ wsc.Protocol.prototype.map = function( packet, event, map ) {
             // e.<map[event][2]> = packet.body
             case 2:
                 if( key instanceof Array ) {
-                    this.mapPacket(event, new wsc.Packet(packet['body']), key);
+                    packet.sub[0].sub = packet.sub.slice(1);
+                    this.map(packet.sub[0], event, key);
                 } else {
                     event[key] = packet['body'];
                 }
@@ -1735,6 +1730,9 @@ wsc.Protocol.prototype.render = function( event, format ) {
     msg = msgm[0];
     
     for( key in event ) {
+        if( !event.hasOwnProperty(key) || key == 'pkt' )
+            continue;
+        
         d = event[key];
         
         if( key == 'ns' || key == 'sns' ) {
@@ -2134,6 +2132,7 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
         client.bind('cmd.whois', cmd_whois );
+        client.bind('cmd.admin', cmd_admin );
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.get', pkt_get );
         // lol themes
@@ -2458,6 +2457,11 @@ wsc.defaults.Extension = function( client ) {
     // Send a whois thingy.
     var cmd_whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
+    };
+    
+    // Send an admin packet.
+    var cmd_admin = function( event, client ) {
+        client.admin( event.target, event.args );
     };
     
     // Process a property packet, hopefully retreive whois info.

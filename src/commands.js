@@ -19,6 +19,7 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
         client.bind('cmd.whois', cmd_whois );
+        client.bind('cmd.admin', cmd_admin );
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.get', pkt_get );
         // lol themes
@@ -343,6 +344,11 @@ wsc.defaults.Extension = function( client ) {
     // Send a whois thingy.
     var cmd_whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
+    };
+    
+    // Send an admin packet.
+    var cmd_admin = function( event, client ) {
+        client.admin( event.target, event.args );
     };
     
     // Process a property packet, hopefully retreive whois info.

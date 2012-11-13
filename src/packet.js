@@ -46,6 +46,7 @@ wsc.Packet = function( data, separator ) {
                 sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;
+                sub.body = subs.slice(i + 1).join('\n\n');
                 pkt.sub.push( sub );
             }
         }
