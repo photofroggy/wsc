@@ -339,7 +339,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
     data = data.slice(1);
     bits = data.split(' ');
-    cmdn = bits.shift();
+    cmdn = bits.shift().toLowerCase();
     ens = this.client.cchannel.namespace;
     etarget = ens;
     

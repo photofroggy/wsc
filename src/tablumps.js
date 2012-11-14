@@ -147,62 +147,49 @@ wsc.Tablumps.prototype.defaultMap = function () {
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '', '<b>', '\x1b[1m'],
-        '&/b\t': [0, '', '</b>', '\x1b[22m'],
-        '&i\t': [0, '', '<i>', '\x1b[3m'],
-        '&/i\t': [0, '', '</i>', '\x1b[23m'],
-        '&u\t': [0, '', '<u>', '\x1b[4m'],
-        '&/u\t': [0, '', '</u>', '\x1b[24m'],
-        '&s\t': [0, '', '<s>', '\x1b[9m'],
-        '&/s\t': [0, '', '</s>', '\x1b[29m'],
-        '&sup\t': [0, '/', '<sup>'],
-        '&/sup\t': [0, '/', '</sup>'],
-        '&sub\t': [0, '\\', '<sub>'],
-        '&/sub\t': [0, '\\', '</sub>'],
-        '&code\t': [0, '``', '<code>'],
-        '&/code\t': [0, '``', '</code>'],
-        '&p\t': [0, '\n', '<p>'],
-        '&/p\t': [0, '\n', '</p>'],
-        '&ul\t': [0, function( data ) { return this._list_start(); }, '<ul>'],
-        '&/ul\t': [0, function( data ) { return this._list_end(); }, '</ul>'],
-        '&ol\t': [0, function( data ) { return this._list_start(true); }, '<ol>'],
-        '&li\t': [0, function( data ) {
-                list = this._list[0] || {count: 0, ol: false};
-                list.count++;
-                buf = '\n';
-                for(var ind = 0; ind < this._dent; ind++) {
-                    buf = buf + '  ';
-                }
-                if( list.ol ) {
-                    buf = buf + String(list.count) + '.';
-                } else {
-                    buf = buf + '*';
-                }
-                return buf + ' ';
-            }, '<li>' ],
-        '&/li\t': [0, '\n', '</li>'],
-        '&/ol\t': [0, function( data ) { return this._list_end(true); }, '</ol>'],
+        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
+        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
+        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
+        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
+        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
+        '&sup\t': [0, '<sup>'],
+        '&/sup\t': [0, '</sup>'],
+        '&sub\t': [0, '<sub>'],
+        '&/sub\t': [0, '</sub>'],
+        '&code\t': [0, '<code>'],
+        '&/code\t': [0, '</code>'],
+        '&p\t': [0, '<p>'],
+        '&/p\t': [0, '</p>'],
+        '&ul\t': [0, '<ul>'],
+        '&/ul\t': [0, '</ul>'],
+        '&ol\t': [0, '<ol>'],
+        '&li\t': [0, '<li>' ],
+        '&/li\t': [0, '</li>'],
+        '&/ol\t': [0, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
+                return data[0] + ( (' (' + data[1] + ')') || '');
             },
             function( data ) {
                 t = data[1];
                 return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
             }
         ],
-        '&acro\t': [ 1, '[acro:{0}]', '<acronym title="{0}">' ],
-        '&/acro\t': [0, '[/acro]', '</acronym>'],
-        '&abbr\t': [ 1, '[abbr:{0}]', '<abbr title="{0}">'],
-        '&/abbr\t': [ 0, '[/abbr]', '</abbr>'],
-        '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '[iframe:{0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&/iframe\t': [ 0, '', '</iframe>'],
-        '&a\t': [ 2, '[link:{0}]', '<a target="_blank" href="{0}" title="{1}">' ],
-        '&/a\t': [ 0, '[/link]', '</a>'],
-        '&br\t': [ 0, '\n', '<br/>' ],
-        '&bcode\t': [0, '\n', '<span><pre><code>'],
-        '&/bcode\t': [0, '\n', '</code></pre></span>'],
+        '&acro\t': [ 1, '<acronym title="{0}">' ],
+        '&/acro\t': [0, '</acronym>'],
+        '&abbr\t': [ 1, '<abbr title="{0}">'],
+        '&/abbr\t': [ 0, '</abbr>'],
+        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&/iframe\t': [ 0, '</iframe>'],
+        '&a\t': [ 2, '<a href="{0}" title="{1}">' ],
+        '&/a\t': [ 0, '</a>'],
+        '&br\t': [ 0, '<br/>' ],
+        '&bcode\t': [0, '<bcode>', '<span><pre><code>'],
+        '&/bcode\t': [0, '</bcode>', '</code></pre></span>'],
         // Used to terminate a line.
         // Allows us to reset graphic rendition parameters.
         'EOF': [0, '', null, '\x1b[m']

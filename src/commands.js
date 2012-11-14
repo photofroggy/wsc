@@ -5,27 +5,40 @@ wsc.defaults.Extension = function( client ) {
     var init = function(  ) {
         // Commands.
         client.bind('cmd.set', cmd_setter );
-        client.bind('cmd.connect', cmd_connect );
+        client.bind('cmd.connect', cmd_connection );
+        
+        // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
         client.bind('cmd.part', cmd_part );
-        client.bind('cmd.title', cmd_title );
-        client.bind('cmd.promote', cmd_promote );
-        client.bind('cmd.demote', cmd_demote );
-        client.bind('cmd.me', cmd_action );
-        client.bind('cmd.kick', cmd_kick );
-        client.bind('cmd.raw', cmd_raw );
+        // send ...
         client.bind('cmd.say', cmd_say );
         client.bind('cmd.npmsg', cmd_npmsg );
+        client.bind('cmd.me', cmd_action );
+        client.bind('cmd.promote', cmd_chgpriv );
+        client.bind('cmd.demote', cmd_chgpriv );
+        client.bind('cmd.ban', cmd_ban );
+        client.bind('cmd.unban', cmd_ban );
+        client.bind('cmd.kick', cmd_killk );
+        //client.bind('cmd.get', cmd_get );
+        client.bind('cmd.whois', cmd_whois );
+        client.bind('cmd.title', cmd_title );
+        client.bind('cmd.topic', cmd_title );
+        client.bind('cmd.admin', cmd_admin );
+        client.bind('cmd.disconnect', cmd_connection );
+        client.bind('cmd.kill', cmd_killk );
+        client.bind('cmd.raw', cmd_raw );
+        
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
-        client.bind('cmd.whois', cmd_whois );
-        client.bind('cmd.admin', cmd_admin );
+        
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.get', pkt_get );
+        
+        client.bind('cmd.gettopic', cmd_gett);
+        
         // lol themes
         client.bind('cmd.theme', cmd_theme);
         // some ui business.
-        
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
     };
@@ -245,15 +258,15 @@ wsc.defaults.Extension = function( client ) {
         client.control.setLabel();
         
     };
-        
+    
     /**
      * @function connect
      * This command allows the user to force the client to connect to the server.
      */
-    var cmd_connect = function( e ) {
-        client.connect();
+    var cmd_connection = function( e ) {
+        client[e.cmd]();
     };
-        
+    
     // Join a channel
     var cmd_join = function( e ) {
         var chans = e.args.split(' ');
@@ -268,7 +281,7 @@ wsc.defaults.Extension = function( client ) {
         for( index in chans )
             client.join(chans[index]);
     };
-        
+    
     // Leave a channel
     var cmd_part = function( e ) {
         var chans = e.args.split(' ');
@@ -283,42 +296,50 @@ wsc.defaults.Extension = function( client ) {
         for( index in chans )
             client.part(chans[index]);
     };
-        
+    
     // Set the title
     var cmd_title = function( e ) {
-        client.set(e.target, 'title', e.args);
+        client.set(e.target, e.cmd, e.args);
     };
     
-    // Promote user
-    var cmd_promote = function( e ) {
+    // Promote or demote user
+    var cmd_chgpriv = function( e ) {
         var bits = e.args.split(' ');
-        client.promote(e.target, bits[0], bits[1]);
+        client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
-    // Demote user
-    var cmd_demote = function( e ) {
-        var bits = e.args.split(' ');
-        client.demote(e.target, bits[0], bits[1]);
+    // Ban user
+    var cmd_ban = function( e, client ) {
+        var args = e.args.split(' ');
+        var user = args.shift();
+        var cmd = e.cmd;
+        if( cmd == 'ban' && args.length > 0 ) {
+            client.kick( e.target, user, args.join(' ') );
+        }
+        client[cmd](e.target, user);
     };
-        
+    
     // Send a /me action thingy.
     var cmd_action = function( e ) {
         client.action(e.target, e.args);
     };
-        
+    
     // Send a raw packet.
     var cmd_raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
-        
-    // Kick someone.
-    var cmd_kick = function( e ) {
-        d = e.args.split(' ');
-        u = d.shift();
-        r = d.length > 0 ? d.join(' ') : null;
-        client.kick( e.target, u, r );
+    
+    // Kick or kill someone.
+    var cmd_killk = function( e, client ) {
+        var d = e.args.split(' ');
+        var u = d.shift();
+        var r = d.length > 0 ? d.join(' ') : null;
+        if( e.cmd == 'kick' )
+            client.kick( e.target, u, r );
+        else
+            client.kill( u, r );
     };
-        
+    
     // Say something.
     var cmd_say = function( e ) {
         client.say( e.target, e.args );
@@ -349,6 +370,12 @@ wsc.defaults.Extension = function( client ) {
     // Send an admin packet.
     var cmd_admin = function( event, client ) {
         client.admin( event.target, event.args );
+    };
+    
+    // Get the title or topic.
+    var cmd_gett = function( event, client ) {
+        var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
+        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.

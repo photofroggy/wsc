@@ -533,7 +533,7 @@ wsc.Client.prototype.demote = function( namespace, user, pc ) {
 wsc.Client.prototype.ban = function( namespace, user ) {
 
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('ban', user, {}, ( !pc ? '' : pc ))));
+        wsc_packetstr('ban', user)));
 
 };
 
@@ -616,7 +616,7 @@ wsc.Client.prototype.property = function( namespace, property ) {
  *   'topic'.
  * @param value {String} Value to set the property to.
  */
-wsc.Client.prototype.set = function( namespace, property ) {
+wsc.Client.prototype.set = function( namespace, property, value ) {
 
     this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
 

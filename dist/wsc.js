@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.65';
+wsc.VERSION = '0.9.66';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -880,7 +880,7 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
-    this.info[head]["content"] = e.value.html() || '';
+    this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
     
@@ -1268,62 +1268,49 @@ wsc.Tablumps.prototype.defaultMap = function () {
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '', '<b>', '\x1b[1m'],
-        '&/b\t': [0, '', '</b>', '\x1b[22m'],
-        '&i\t': [0, '', '<i>', '\x1b[3m'],
-        '&/i\t': [0, '', '</i>', '\x1b[23m'],
-        '&u\t': [0, '', '<u>', '\x1b[4m'],
-        '&/u\t': [0, '', '</u>', '\x1b[24m'],
-        '&s\t': [0, '', '<s>', '\x1b[9m'],
-        '&/s\t': [0, '', '</s>', '\x1b[29m'],
-        '&sup\t': [0, '/', '<sup>'],
-        '&/sup\t': [0, '/', '</sup>'],
-        '&sub\t': [0, '\\', '<sub>'],
-        '&/sub\t': [0, '\\', '</sub>'],
-        '&code\t': [0, '``', '<code>'],
-        '&/code\t': [0, '``', '</code>'],
-        '&p\t': [0, '\n', '<p>'],
-        '&/p\t': [0, '\n', '</p>'],
-        '&ul\t': [0, function( data ) { return this._list_start(); }, '<ul>'],
-        '&/ul\t': [0, function( data ) { return this._list_end(); }, '</ul>'],
-        '&ol\t': [0, function( data ) { return this._list_start(true); }, '<ol>'],
-        '&li\t': [0, function( data ) {
-                list = this._list[0] || {count: 0, ol: false};
-                list.count++;
-                buf = '\n';
-                for(var ind = 0; ind < this._dent; ind++) {
-                    buf = buf + '  ';
-                }
-                if( list.ol ) {
-                    buf = buf + String(list.count) + '.';
-                } else {
-                    buf = buf + '*';
-                }
-                return buf + ' ';
-            }, '<li>' ],
-        '&/li\t': [0, '\n', '</li>'],
-        '&/ol\t': [0, function( data ) { return this._list_end(true); }, '</ol>'],
+        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
+        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
+        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
+        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
+        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
+        '&sup\t': [0, '<sup>'],
+        '&/sup\t': [0, '</sup>'],
+        '&sub\t': [0, '<sub>'],
+        '&/sub\t': [0, '</sub>'],
+        '&code\t': [0, '<code>'],
+        '&/code\t': [0, '</code>'],
+        '&p\t': [0, '<p>'],
+        '&/p\t': [0, '</p>'],
+        '&ul\t': [0, '<ul>'],
+        '&/ul\t': [0, '</ul>'],
+        '&ol\t': [0, '<ol>'],
+        '&li\t': [0, '<li>' ],
+        '&/li\t': [0, '</li>'],
+        '&/ol\t': [0, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return '[link:' + data[0] + ']' + (data[1] || '') + '[/link]';
+                return data[0] + ( (' (' + data[1] + ')') || '');
             },
             function( data ) {
                 t = data[1];
                 return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
             }
         ],
-        '&acro\t': [ 1, '[acro:{0}]', '<acronym title="{0}">' ],
-        '&/acro\t': [0, '[/acro]', '</acronym>'],
-        '&abbr\t': [ 1, '[abbr:{0}]', '<abbr title="{0}">'],
-        '&/abbr\t': [ 0, '[/abbr]', '</abbr>'],
-        '&img\t': [ 3, '`{2}`({0})', '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '[iframe:{0}]', '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&/iframe\t': [ 0, '', '</iframe>'],
-        '&a\t': [ 2, '[link:{0}]', '<a target="_blank" href="{0}" title="{1}">' ],
-        '&/a\t': [ 0, '[/link]', '</a>'],
-        '&br\t': [ 0, '\n', '<br/>' ],
-        '&bcode\t': [0, '\n', '<span><pre><code>'],
-        '&/bcode\t': [0, '\n', '</code></pre></span>'],
+        '&acro\t': [ 1, '<acronym title="{0}">' ],
+        '&/acro\t': [0, '</acronym>'],
+        '&abbr\t': [ 1, '<abbr title="{0}">'],
+        '&/abbr\t': [ 0, '</abbr>'],
+        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&/iframe\t': [ 0, '</iframe>'],
+        '&a\t': [ 2, '<a href="{0}" title="{1}">' ],
+        '&/a\t': [ 0, '</a>'],
+        '&br\t': [ 0, '<br/>' ],
+        '&bcode\t': [0, '<bcode>', '<span><pre><code>'],
+        '&/bcode\t': [0, '</bcode>', '</code></pre></span>'],
         // Used to terminate a line.
         // Allows us to reset graphic rendition parameters.
         'EOF': [0, '', null, '\x1b[m']
@@ -1536,8 +1523,8 @@ wsc.Protocol = function( tablumps ) {
         'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} * <em>{privs}</em></span>'],
         'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} * <em>{privs}</em></span>'],
         'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
-        'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} -- {affected} affected user(s) *</span>'],
-        'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} -- {affected} affected user(s) *</span>'],
+        'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} * <em>{affected} affected user(s)</em></span>'],
+        'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} * <em>{affected} affected user(s)</em></span>'],
         'recv_admin_show': null,
         'recv_admin_showverbose': null,
         'recv_admin_privclass': ['<span class="cevent admin">** Admin command "{command}" failed * <em>{e}</em></span>'],
@@ -2118,27 +2105,40 @@ wsc.defaults.Extension = function( client ) {
     var init = function(  ) {
         // Commands.
         client.bind('cmd.set', cmd_setter );
-        client.bind('cmd.connect', cmd_connect );
+        client.bind('cmd.connect', cmd_connection );
+        
+        // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
         client.bind('cmd.part', cmd_part );
-        client.bind('cmd.title', cmd_title );
-        client.bind('cmd.promote', cmd_promote );
-        client.bind('cmd.demote', cmd_demote );
-        client.bind('cmd.me', cmd_action );
-        client.bind('cmd.kick', cmd_kick );
-        client.bind('cmd.raw', cmd_raw );
+        // send ...
         client.bind('cmd.say', cmd_say );
         client.bind('cmd.npmsg', cmd_npmsg );
+        client.bind('cmd.me', cmd_action );
+        client.bind('cmd.promote', cmd_chgpriv );
+        client.bind('cmd.demote', cmd_chgpriv );
+        client.bind('cmd.ban', cmd_ban );
+        client.bind('cmd.unban', cmd_ban );
+        client.bind('cmd.kick', cmd_killk );
+        //client.bind('cmd.get', cmd_get );
+        client.bind('cmd.whois', cmd_whois );
+        client.bind('cmd.title', cmd_title );
+        client.bind('cmd.topic', cmd_title );
+        client.bind('cmd.admin', cmd_admin );
+        client.bind('cmd.disconnect', cmd_connection );
+        client.bind('cmd.kill', cmd_killk );
+        client.bind('cmd.raw', cmd_raw );
+        
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
-        client.bind('cmd.whois', cmd_whois );
-        client.bind('cmd.admin', cmd_admin );
+        
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.get', pkt_get );
+        
+        client.bind('cmd.gettopic', cmd_gett);
+        
         // lol themes
         client.bind('cmd.theme', cmd_theme);
         // some ui business.
-        
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
     };
@@ -2358,15 +2358,15 @@ wsc.defaults.Extension = function( client ) {
         client.control.setLabel();
         
     };
-        
+    
     /**
      * @function connect
      * This command allows the user to force the client to connect to the server.
      */
-    var cmd_connect = function( e ) {
-        client.connect();
+    var cmd_connection = function( e ) {
+        client[e.cmd]();
     };
-        
+    
     // Join a channel
     var cmd_join = function( e ) {
         var chans = e.args.split(' ');
@@ -2381,7 +2381,7 @@ wsc.defaults.Extension = function( client ) {
         for( index in chans )
             client.join(chans[index]);
     };
-        
+    
     // Leave a channel
     var cmd_part = function( e ) {
         var chans = e.args.split(' ');
@@ -2396,42 +2396,50 @@ wsc.defaults.Extension = function( client ) {
         for( index in chans )
             client.part(chans[index]);
     };
-        
+    
     // Set the title
     var cmd_title = function( e ) {
-        client.set(e.target, 'title', e.args);
+        client.set(e.target, e.cmd, e.args);
     };
     
-    // Promote user
-    var cmd_promote = function( e ) {
+    // Promote or demote user
+    var cmd_chgpriv = function( e ) {
         var bits = e.args.split(' ');
-        client.promote(e.target, bits[0], bits[1]);
+        client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
-    // Demote user
-    var cmd_demote = function( e ) {
-        var bits = e.args.split(' ');
-        client.demote(e.target, bits[0], bits[1]);
+    // Ban user
+    var cmd_ban = function( e, client ) {
+        var args = e.args.split(' ');
+        var user = args.shift();
+        var cmd = e.cmd;
+        if( cmd == 'ban' && args.length > 0 ) {
+            client.kick( e.target, user, args.join(' ') );
+        }
+        client[cmd](e.target, user);
     };
-        
+    
     // Send a /me action thingy.
     var cmd_action = function( e ) {
         client.action(e.target, e.args);
     };
-        
+    
     // Send a raw packet.
     var cmd_raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
-        
-    // Kick someone.
-    var cmd_kick = function( e ) {
-        d = e.args.split(' ');
-        u = d.shift();
-        r = d.length > 0 ? d.join(' ') : null;
-        client.kick( e.target, u, r );
+    
+    // Kick or kill someone.
+    var cmd_killk = function( e, client ) {
+        var d = e.args.split(' ');
+        var u = d.shift();
+        var r = d.length > 0 ? d.join(' ') : null;
+        if( e.cmd == 'kick' )
+            client.kick( e.target, u, r );
+        else
+            client.kill( u, r );
     };
-        
+    
     // Say something.
     var cmd_say = function( e ) {
         client.say( e.target, e.args );
@@ -2462,6 +2470,12 @@ wsc.defaults.Extension = function( client ) {
     // Send an admin packet.
     var cmd_admin = function( event, client ) {
         client.admin( event.target, event.args );
+    };
+    
+    // Get the title or topic.
+    var cmd_gett = function( event, client ) {
+        var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
+        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.
@@ -3035,7 +3049,7 @@ wsc.Client.prototype.demote = function( namespace, user, pc ) {
 wsc.Client.prototype.ban = function( namespace, user ) {
 
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('ban', user, {}, ( !pc ? '' : pc ))));
+        wsc_packetstr('ban', user)));
 
 };
 
@@ -3118,7 +3132,7 @@ wsc.Client.prototype.property = function( namespace, property ) {
  *   'topic'.
  * @param value {String} Value to set the property to.
  */
-wsc.Client.prototype.set = function( namespace, property ) {
+wsc.Client.prototype.set = function( namespace, property, value ) {
 
     this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
 
@@ -3488,7 +3502,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
     data = data.slice(1);
     bits = data.split(' ');
-    cmdn = bits.shift();
+    cmdn = bits.shift().toLowerCase();
     ens = this.client.cchannel.namespace;
     etarget = ens;
     
