@@ -2132,6 +2132,8 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.clearall', cmd_clearall );
         
         client.bind('pkt.property', pkt_property );
+        client.bind('pkt.recv_admin_show', pkt_admin_show );
+        client.bind('pkt.recv_admin_showverbose', pkt_admin_show );
         client.bind('pkt.get', pkt_get );
         
         client.bind('cmd.gettopic', cmd_gett);
@@ -2508,6 +2510,12 @@ wsc.defaults.Extension = function( client ) {
             return;
         
         client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+    
+    };
+    
+    var pkt_admin_show = function( event, client ) {
+    
+        console.log(event);
     
     };
     
