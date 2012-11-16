@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.66';
+wsc.VERSION = '0.9.67';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -838,13 +838,26 @@ wsc.Channel.prototype.clear = function(  ) {
 /**
  * Display a user's whois info.
  * 
- * @method show_whois
+ * @method log_whois
  * @param data {Object} Object containing a user's information.
  */
-wsc.Channel.prototype.show_whois = function( data ) {
+wsc.Channel.prototype.log_whois = function( data ) {
     if( this.ui == null )
         return;
     this.ui.show_whois(data);
+};
+
+/**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ */
+wsc.Channel.prototype.log_pc = function( privileges, data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_pc(privileges, data);
 };
 
 /**
@@ -901,13 +914,29 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
     for(var i in lines) {
-        if( !lines[i] )
+        if( !lines.hasOwnProperty(i) )
             continue;
         bits = lines[i].split(":");
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
     this.info["pc_order"].sort(function(a, b){ return b - a });
+};
+
+/**
+ * Get the order of a given privilege class.
+ * 
+ * @method get_privclass_order
+ * @param name {String} Name of the privilege class to get the order of.
+ */
+wsc.Channel.prototype.get_privclass_order = function( name ) {
+    name = name.toLowerCase();
+    for( var i in this.info.pc ) {
+        if( !this.info.pc.hasOwnProperty(i) )
+            continue;
+        if( this.info.pc[i].toLowerCase() == name )
+            return i;
+    }
 };
 
 /**
@@ -2136,6 +2165,7 @@ wsc.defaults.Extension = function( client ) {
         client.bind('pkt.recv_admin_showverbose', pkt_admin_show );
         client.bind('pkt.get', pkt_get );
         
+        client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
         
         // lol themes
@@ -2501,7 +2531,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.show_whois(data);
+        client.cchannel.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -2515,7 +2545,27 @@ wsc.defaults.Extension = function( client ) {
     
     var pkt_admin_show = function( event, client ) {
     
-        console.log(event);
+        var chan = client.channel(event.ns);
+        var lines = event.info.split('\n');
+        var info = '';
+        var pcs = [];
+        var pc = '';
+        
+        for( var i in lines ) {
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            info = lines[i].split(' ');
+            
+            if( event.p == 'privclass' ) {
+                pcs.push([ info.shift(), info.shift().split('=')[1], info.join(' ') ]);
+            } else if( event.p == 'users' ) {
+                pc = info.shift().split(':', 1)[0];
+                pcs.push([ pc, chan.get_privclass_order( pc ), info.join(' ') ]);
+            }
+        }
+        
+        chan.log_pc(event.p == 'privclass', pcs);
     
     };
     
@@ -3542,7 +3592,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.38';
+Chatterbox.VERSION = '0.5.39';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4297,7 +4347,7 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
  * @method show_whois
  * @param data {Object} Object containing a user's information.
  */
-Chatterbox.Channel.prototype.show_whois = function( data ) {
+Chatterbox.Channel.prototype.log_whois = function( data ) {
     
     var whois = {
         'avatar': '<a href="#"><img height="50" width="50" alt="avatar"/></a>',
@@ -4363,6 +4413,41 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
     inf.width( box.find('.whoiswrap').width() - 100 );
     av.height( box.height() - 10 );
     this.scroll();
+};
+
+/**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ */
+Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
+
+    contents = '';
+    for( var i in data ) {
+        if( !data.hasOwnProperty(i) )
+            continue;
+        var pc = data[i];
+        var pcc = '';
+        if( pc[2].length == 0 ) {
+            pcc = '<em>' + ( privileges ? 'default privileges' : 'no members' ) + '</em>';
+        } else {
+            pcc = pc[2];
+        }
+        contents+= String.format('<li><em>{0}</em> <strong>{1}</strong>:<ul><li>{2}</li></ul></li>', [pc[1], pc[0], pcc ]);
+    }
+    
+    var info = {
+        'title': 'Privilege class ' + (privileges ? 'permissions' : 'members'),
+        'info': '<ul>' + contents + '</ul>'
+    };
+    
+    this.log_info(
+        'pc-' + ( privileges ? 'permissions' : 'members' ),
+        Chatterbox.render( 'pcinfo', info )
+    );
+
 };
 
 /**
@@ -6698,6 +6783,7 @@ Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
                                 <div class="info">{info}</div>\
                                 </div>';
 Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
+Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{info}</section>';
 
 /**
  * Container for popup shit.

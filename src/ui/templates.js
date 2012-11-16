@@ -197,6 +197,7 @@ Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
                                 <div class="info">{info}</div>\
                                 </div>';
 Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
+Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{info}</section>';
 
 /**
  * Container for popup shit.

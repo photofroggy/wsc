@@ -132,13 +132,26 @@ wsc.Channel.prototype.clear = function(  ) {
 /**
  * Display a user's whois info.
  * 
- * @method show_whois
+ * @method log_whois
  * @param data {Object} Object containing a user's information.
  */
-wsc.Channel.prototype.show_whois = function( data ) {
+wsc.Channel.prototype.log_whois = function( data ) {
     if( this.ui == null )
         return;
     this.ui.show_whois(data);
+};
+
+/**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ */
+wsc.Channel.prototype.log_pc = function( privileges, data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_pc(privileges, data);
 };
 
 /**
@@ -195,13 +208,29 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
     for(var i in lines) {
-        if( !lines[i] )
+        if( !lines.hasOwnProperty(i) )
             continue;
         bits = lines[i].split(":");
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
     this.info["pc_order"].sort(function(a, b){ return b - a });
+};
+
+/**
+ * Get the order of a given privilege class.
+ * 
+ * @method get_privclass_order
+ * @param name {String} Name of the privilege class to get the order of.
+ */
+wsc.Channel.prototype.get_privclass_order = function( name ) {
+    name = name.toLowerCase();
+    for( var i in this.info.pc ) {
+        if( !this.info.pc.hasOwnProperty(i) )
+            continue;
+        if( this.info.pc[i].toLowerCase() == name )
+            return i;
+    }
 };
 
 /**

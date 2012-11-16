@@ -75,10 +75,25 @@
             text-decoration: none;
             color: white;
         }
-        
-        .whoiswrap {
+        section {
             overflow: hidden;
             white-space: nowrap;
+        }
+        
+        .pcinfo {
+            padding: 5px;
+            ul {
+                list-style: none;
+                padding: 10px;
+                padding-top: 2px;
+                padding-bottom: 8px;
+                ul {
+                    padding-left: 20px;
+                }
+            }
+        }
+        
+        .whoiswrap {
             .avatar {
                 float: left;
                 padding: 5px;

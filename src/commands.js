@@ -36,6 +36,7 @@ wsc.defaults.Extension = function( client ) {
         client.bind('pkt.recv_admin_showverbose', pkt_admin_show );
         client.bind('pkt.get', pkt_get );
         
+        client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
         
         // lol themes
@@ -401,7 +402,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.show_whois(data);
+        client.cchannel.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -415,7 +416,27 @@ wsc.defaults.Extension = function( client ) {
     
     var pkt_admin_show = function( event, client ) {
     
-        console.log(event);
+        var chan = client.channel(event.ns);
+        var lines = event.info.split('\n');
+        var info = '';
+        var pcs = [];
+        var pc = '';
+        
+        for( var i in lines ) {
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            info = lines[i].split(' ');
+            
+            if( event.p == 'privclass' ) {
+                pcs.push([ info.shift(), info.shift().split('=')[1], info.join(' ') ]);
+            } else if( event.p == 'users' ) {
+                pc = info.shift().split(':', 1)[0];
+                pcs.push([ pc, chan.get_privclass_order( pc ), info.join(' ') ]);
+            }
+        }
+        
+        chan.log_pc(event.p == 'privclass', pcs);
     
     };
     

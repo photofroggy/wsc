@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.38';
+Chatterbox.VERSION = '0.5.39';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -761,7 +761,7 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
  * @method show_whois
  * @param data {Object} Object containing a user's information.
  */
-Chatterbox.Channel.prototype.show_whois = function( data ) {
+Chatterbox.Channel.prototype.log_whois = function( data ) {
     
     var whois = {
         'avatar': '<a href="#"><img height="50" width="50" alt="avatar"/></a>',
@@ -827,6 +827,41 @@ Chatterbox.Channel.prototype.show_whois = function( data ) {
     inf.width( box.find('.whoiswrap').width() - 100 );
     av.height( box.height() - 10 );
     this.scroll();
+};
+
+/**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ */
+Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
+
+    contents = '';
+    for( var i in data ) {
+        if( !data.hasOwnProperty(i) )
+            continue;
+        var pc = data[i];
+        var pcc = '';
+        if( pc[2].length == 0 ) {
+            pcc = '<em>' + ( privileges ? 'default privileges' : 'no members' ) + '</em>';
+        } else {
+            pcc = pc[2];
+        }
+        contents+= String.format('<li><em>{0}</em> <strong>{1}</strong>:<ul><li>{2}</li></ul></li>', [pc[1], pc[0], pcc ]);
+    }
+    
+    var info = {
+        'title': 'Privilege class ' + (privileges ? 'permissions' : 'members'),
+        'info': '<ul>' + contents + '</ul>'
+    };
+    
+    this.log_info(
+        'pc-' + ( privileges ? 'permissions' : 'members' ),
+        Chatterbox.render( 'pcinfo', info )
+    );
+
 };
 
 /**
@@ -3162,6 +3197,7 @@ Chatterbox.template.whoiswrap = '<div class="whoiswrap">\
                                 <div class="info">{info}</div>\
                                 </div>';
 Chatterbox.template.whoisinfo = '<p>{username}</p><ul>{info}</ul>{connections}';
+Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{info}</section>';
 
 /**
  * Container for popup shit.

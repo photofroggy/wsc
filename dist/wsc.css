@@ -654,9 +654,21 @@ div.wsc div.chatbook .loginfo a.close {
   text-decoration: none;
   color: white;
 }
-div.wsc div.chatbook .loginfo .whoiswrap {
+div.wsc div.chatbook .loginfo section {
   overflow: hidden;
   white-space: nowrap;
+}
+div.wsc div.chatbook .loginfo .pcinfo {
+  padding: 5px;
+}
+div.wsc div.chatbook .loginfo .pcinfo ul {
+  list-style: none;
+  padding: 10px;
+  padding-top: 2px;
+  padding-bottom: 8px;
+}
+div.wsc div.chatbook .loginfo .pcinfo ul ul {
+  padding-left: 20px;
 }
 div.wsc div.chatbook .loginfo .whoiswrap .avatar {
   float: left;
