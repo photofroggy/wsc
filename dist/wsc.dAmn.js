@@ -844,7 +844,7 @@ wsc.Channel.prototype.clear = function(  ) {
 wsc.Channel.prototype.log_whois = function( data ) {
     if( this.ui == null )
         return;
-    this.ui.show_whois(data);
+    this.ui.log_whois(data);
 };
 
 /**
@@ -1833,10 +1833,15 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
     client.trigger('closed', {name: 'closed', pkt: new wsc.Packet('connection closed\n\n')});
-    console.log(event);
+    
     if(client.connected) {
         client.ui.server_message("Connection closed");
         client.connected = false;
+        if( client.conn instanceof wsc.SocketIO ) {
+            client.ui.server_message("At the moment there is a problem with reconnecting under socket.io.");
+            client.ui.server_message("Refresh the page to connect.");
+            return;
+        }
     } else {
         client.ui.server_message("Connection failed");
     }
@@ -1852,7 +1857,7 @@ wsc.Flow.prototype.close = function( client, event ) {
     client.ui.server_message("Connecting in 2 seconds");
     
     setTimeout(function () {
-        client.conn.connect();
+        client.connect();
     }, 2000);
 
 }; 
@@ -2001,7 +2006,7 @@ wsc.Flow.prototype.part = function( event, client ) {
                         return;
                     break;
             }
-            this.process_data( { data: 'disconnect\ne='+e.r+'\n' } );
+            this.message( client, { data: 'disconnect\ne='+e.r+'\n' } );
         }
     } else {
         client.monitor('Couldn\'t leave ' + ns, event.e);
@@ -2124,6 +2129,18 @@ wsc.Flow.prototype.recv_privchg = function( event, client ) {
  */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
     client.channel(event.ns).recv_kicked( event );
+};
+
+/**
+ * Disconnected for some reason. Reconnect or forget it.
+ * 
+ * @method disconnect
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ */
+wsc.Flow.prototype.disconnect = function( event, client ) {
+    //client.disconnected(event);
+    this.close(client, event);
 };
 
 
@@ -2504,6 +2521,11 @@ wsc.defaults.Extension = function( client ) {
         client.admin( event.target, event.args );
     };
     
+    // Send an disconnect packet.
+    var cmd_admin = function( event, client ) {
+        client.disconnect(  );
+    };
+    
     // Get the title or topic.
     var cmd_gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
@@ -2586,6 +2608,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.mozilla = mozilla;
     this.fresh = true;
     this.attempts = 0;
+    this.connected = false;
     this.protocol = null;
     this.flow = null;
     this.ui = null;
@@ -2752,7 +2775,7 @@ wsc.Client.prototype.connect = function(  ) {
         return;
     
     this.attempts++;
-    
+    console.log('hey');
     // Start connecting!
     try {
         var client = this;
@@ -2772,13 +2795,28 @@ wsc.Client.prototype.connect = function(  ) {
 };
 
 /**
+ * Received a disconnect packet.
+ * 
+ * @method disconnected
+ * @param event {Object} Event data.
+ */
+wsc.Client.prototype.disconnected = function( event ) {
+
+    console.log('attempt reconnectiles');
+    this.close();
+
+};
+
+/**
  * Close the connection foo.
  * 
  * @method close
  */
 wsc.Client.prototype.close = function(  ) {
 
+    console.log(this.conn);
     this.conn.close();
+    //this.conn = null;
 
 };
 

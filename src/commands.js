@@ -375,6 +375,11 @@ wsc.defaults.Extension = function( client ) {
         client.admin( event.target, event.args );
     };
     
+    // Send an disconnect packet.
+    var cmd_admin = function( event, client ) {
+        client.disconnect(  );
+    };
+    
     // Get the title or topic.
     var cmd_gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';

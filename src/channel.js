@@ -138,7 +138,7 @@ wsc.Channel.prototype.clear = function(  ) {
 wsc.Channel.prototype.log_whois = function( data ) {
     if( this.ui == null )
         return;
-    this.ui.show_whois(data);
+    this.ui.log_whois(data);
 };
 
 /**

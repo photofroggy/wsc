@@ -12,6 +12,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.mozilla = mozilla;
     this.fresh = true;
     this.attempts = 0;
+    this.connected = false;
     this.protocol = null;
     this.flow = null;
     this.ui = null;
@@ -178,7 +179,7 @@ wsc.Client.prototype.connect = function(  ) {
         return;
     
     this.attempts++;
-    
+    console.log('hey');
     // Start connecting!
     try {
         var client = this;
@@ -198,13 +199,28 @@ wsc.Client.prototype.connect = function(  ) {
 };
 
 /**
+ * Received a disconnect packet.
+ * 
+ * @method disconnected
+ * @param event {Object} Event data.
+ */
+wsc.Client.prototype.disconnected = function( event ) {
+
+    console.log('attempt reconnectiles');
+    this.close();
+
+};
+
+/**
  * Close the connection foo.
  * 
  * @method close
  */
 wsc.Client.prototype.close = function(  ) {
 
+    console.log(this.conn);
     this.conn.close();
+    //this.conn = null;
 
 };
 
