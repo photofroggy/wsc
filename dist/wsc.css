@@ -644,6 +644,8 @@ div.wsc div.chatbook .loginfo {
   line-height: 1.3em;
   border: 1px solid black;
   background-color: white;
+  overflow: hidden;
+  white-space: nowrap;
 }
 div.wsc div.chatbook .loginfo a.close {
   display: block;

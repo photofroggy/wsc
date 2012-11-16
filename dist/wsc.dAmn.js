@@ -2775,7 +2775,7 @@ wsc.Client.prototype.connect = function(  ) {
         return;
     
     this.attempts++;
-    console.log('hey');
+    
     // Start connecting!
     try {
         var client = this;
@@ -4363,7 +4363,7 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
     };
     this.manager.trigger( 'log_info.before', data );
     delete data['ns'];
-    this.wrap.append(Chatterbox.render( 'loginfobox', data ));
+    var b = this.wrap.append(Chatterbox.render( 'loginfobox', data ));
     this.scroll();
     
     var ui = this;

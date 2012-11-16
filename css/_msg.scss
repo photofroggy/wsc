@@ -65,6 +65,8 @@
         line-height: 1.3em;
         border: 1px solid black;
         background-color: white;
+        overflow: hidden;
+        white-space: nowrap;
         
         a.close {
             display: block;

@@ -179,7 +179,7 @@ wsc.Client.prototype.connect = function(  ) {
         return;
     
     this.attempts++;
-    console.log('hey');
+    
     // Start connecting!
     try {
         var client = this;
