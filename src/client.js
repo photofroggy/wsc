@@ -199,19 +199,6 @@ wsc.Client.prototype.connect = function(  ) {
 };
 
 /**
- * Received a disconnect packet.
- * 
- * @method disconnected
- * @param event {Object} Event data.
- */
-wsc.Client.prototype.disconnected = function( event ) {
-
-    console.log('attempt reconnectiles');
-    this.close();
-
-};
-
-/**
  * Close the connection foo.
  * 
  * @method close

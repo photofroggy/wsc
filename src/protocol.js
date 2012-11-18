@@ -68,7 +68,7 @@ wsc.Protocol = function( tablumps ) {
         'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{r}</em></span>'],
         'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} * <em>{privs}</em></span>'],
         'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} * <em>{privs}</em></span>'],
-        'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
+        'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {pc} by {user} *</span>'],
         'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} * <em>{affected} affected user(s)</em></span>'],
         'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} * <em>{affected} affected user(s)</em></span>'],
         'recv_admin_show': null,

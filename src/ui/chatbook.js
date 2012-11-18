@@ -198,7 +198,7 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
     var ns = this.current.namespace;
     var index = this.trail.indexOf(ns);
     
-    if( index < 1 )
+    if( index < 0 )
         return;
     
     var nc = null;
@@ -206,7 +206,8 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
         try {
             nc = this.channel(this.trail[--index]);
         } catch( err ) {
-            return;
+            index = this.trail.length - 1;
+            nc = this.channel(this.trail[index]);
         }
         if( !nc.hidden )
             break;
@@ -226,7 +227,7 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
     var ns = this.current.namespace;
     var index = this.trail.indexOf(ns);
     
-    if( index == -1 || index >= (this.trail.length - 1) )
+    if( index == -1 )
         return;
     
     var nc = null;
@@ -234,7 +235,8 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
         try {
             nc = this.channel(this.trail[++index]);
         } catch( err ) {
-            return;
+            index = 0;
+            nc = this.channel(this.trail[0]);
         }
         if( !nc.hidden )
             break;

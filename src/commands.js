@@ -376,7 +376,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send an disconnect packet.
-    var cmd_admin = function( event, client ) {
+    var cmd_disconnect = function( event, client ) {
         client.disconnect(  );
     };
     

@@ -53,7 +53,7 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    var pack = new wsc.Packet(decodeURIComponent(event.data));
+    var pack = new wsc.Packet(decodeURIComponent(replaceAll(event.data, '+', ' ')));
     
     if(pack == null)
         return;
@@ -170,8 +170,8 @@ wsc.Flow.prototype.join = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.part = function( event, client ) {
-    ns = client.deform_ns(event.ns);
-    c = client.channel(ns);
+    var ns = client.deform_ns(event.ns);
+    var c = client.channel(ns);
     
     if(event.e == "ok") {
         info = '';
@@ -318,18 +318,6 @@ wsc.Flow.prototype.recv_privchg = function( event, client ) {
  */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
     client.channel(event.ns).recv_kicked( event );
-};
-
-/**
- * Disconnected for some reason. Reconnect or forget it.
- * 
- * @method disconnect
- * @param event {Object} Packet event data.
- * @param client {Object} Client object.
- */
-wsc.Flow.prototype.disconnect = function( event, client ) {
-    //client.disconnected(event);
-    this.close(client, event);
 };
 
 

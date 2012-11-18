@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.67';
+wsc.VERSION = '0.9.68';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -304,7 +304,7 @@ wsc.WebSocket.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(encodeURIComponent(message));
+    return this.sock.send(replaceAll(encodeURIComponent(message), ' ', '+'));
 
 };
 
@@ -406,7 +406,7 @@ wsc.SocketIO.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(encodeURIComponent(message));
+    return this.sock.send(replaceAll(encodeURIComponent(message), ' ', '+'));
 
 };
 
@@ -1551,7 +1551,7 @@ wsc.Protocol = function( tablumps ) {
         'recv_kicked': ['<span class="cevent">** {user} has been kicked by {by} * <em>{r}</em></span>'],
         'recv_admin_create': ['<span class="cevent admin">** Privilege class {pc} has been created by {user} * <em>{privs}</em></span>'],
         'recv_admin_update': ['<span class="cevent admin">** Privilege class {pc} has been updated by {user} * <em>{privs}</em></span>'],
-        'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {name} by {user} *</span>'],
+        'recv_admin_rename': ['<span class="cevent admin">** Privilege class {prev} has been renamed to {pc} by {user} *</span>'],
         'recv_admin_move': ['<span class="cevent admin">** All members of {prev} have been moved to {pc} by {user} * <em>{affected} affected user(s)</em></span>'],
         'recv_admin_remove': ['<span class="cevent admin">** Privilege class {pc} has been removed by {user} * <em>{affected} affected user(s)</em></span>'],
         'recv_admin_show': null,
@@ -1864,7 +1864,7 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    var pack = new wsc.Packet(decodeURIComponent(event.data));
+    var pack = new wsc.Packet(decodeURIComponent(replaceAll(event.data, '+', ' ')));
     
     if(pack == null)
         return;
@@ -1981,8 +1981,8 @@ wsc.Flow.prototype.join = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.part = function( event, client ) {
-    ns = client.deform_ns(event.ns);
-    c = client.channel(ns);
+    var ns = client.deform_ns(event.ns);
+    var c = client.channel(ns);
     
     if(event.e == "ok") {
         info = '';
@@ -2129,18 +2129,6 @@ wsc.Flow.prototype.recv_privchg = function( event, client ) {
  */
 wsc.Flow.prototype.recv_kicked = function( event, client ) {
     client.channel(event.ns).recv_kicked( event );
-};
-
-/**
- * Disconnected for some reason. Reconnect or forget it.
- * 
- * @method disconnect
- * @param event {Object} Packet event data.
- * @param client {Object} Client object.
- */
-wsc.Flow.prototype.disconnect = function( event, client ) {
-    //client.disconnected(event);
-    this.close(client, event);
 };
 
 
@@ -2522,7 +2510,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send an disconnect packet.
-    var cmd_admin = function( event, client ) {
+    var cmd_disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
@@ -2791,19 +2779,6 @@ wsc.Client.prototype.connect = function(  ) {
         this.monitor("Your browser does not support WebSockets. Sorry.");
         this.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
     }
-
-};
-
-/**
- * Received a disconnect packet.
- * 
- * @method disconnected
- * @param event {Object} Event data.
- */
-wsc.Client.prototype.disconnected = function( event ) {
-
-    console.log('attempt reconnectiles');
-    this.close();
 
 };
 
@@ -4905,7 +4880,7 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
     var ns = this.current.namespace;
     var index = this.trail.indexOf(ns);
     
-    if( index < 1 )
+    if( index < 0 )
         return;
     
     var nc = null;
@@ -4913,7 +4888,8 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
         try {
             nc = this.channel(this.trail[--index]);
         } catch( err ) {
-            return;
+            index = this.trail.length - 1;
+            nc = this.channel(this.trail[index]);
         }
         if( !nc.hidden )
             break;
@@ -4933,7 +4909,7 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
     var ns = this.current.namespace;
     var index = this.trail.indexOf(ns);
     
-    if( index == -1 || index >= (this.trail.length - 1) )
+    if( index == -1 )
         return;
     
     var nc = null;
@@ -4941,7 +4917,8 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
         try {
             nc = this.channel(this.trail[++index]);
         } catch( err ) {
-            return;
+            index = 0;
+            nc = this.channel(this.trail[0]);
         }
         if( !nc.hidden )
             break;
