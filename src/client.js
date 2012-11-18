@@ -236,17 +236,20 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
  * Channels with their tabs hidden are not counted.
  * 
  * @method channels
+ * @param names {Boolean} Return the names of the open channels?
  * @return {Integer} Number of channels open.
  */
-wsc.Client.prototype.channels = function(  ) {
+wsc.Client.prototype.channels = function( names ) {
 
-    chans = -1;
+    var chann = [];
     for(ns in this.channelo) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
         if( this.channelo[ns].hidden )
             continue;
-        chans++;
+        chann.push(this.channelo[ns].namespace);
     }
-    return chans;
+    return names ? chann : chann.length;
 
 };
 

@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.69';
+wsc.VERSION = '0.9.70';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -444,7 +444,7 @@ function $_GET( q, s ) {
 //This returns the unix time stamp as a JS Date object in the local timezone.
 function UnixTimestamp(ts) {
     ret = new Date(ts * 1000)
-    return ret
+    return ret;
 }
 
 var Months = [
@@ -1109,6 +1109,10 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_msg = function( e ) {
     
     var u = this.client.settings['username'].toLowerCase();
+    
+    if( u == e.user.toLowerCase() )
+        return;
+    
     var msg = e['message'].toLowerCase();
     
     if( msg.indexOf(u) < 0 )
@@ -1116,6 +1120,8 @@ wsc.Channel.prototype.recv_msg = function( e ) {
     
     if( this.ui != null)
         this.ui.highlight();
+    
+    this.client.trigger( 'pkt.recv_msg.highlighted', e );
 
 };
 
@@ -2136,6 +2142,13 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 
 wsc.defaults.Extension = function( client ) {
 
+    var ext = {};
+    ext.away = {};
+    ext.away.on = false;
+    ext.away.reason = '';
+    ext.away.last = {};
+    ext.away.ignore = [ '#devart' ];
+    
     var init = function(  ) {
         // Commands.
         client.bind('cmd.set', cmd_setter );
@@ -2170,8 +2183,13 @@ wsc.defaults.Extension = function( client ) {
         client.bind('pkt.recv_admin_showverbose', pkt_admin_show );
         client.bind('pkt.get', pkt_get );
         
+        
+        // Non-standard commands.
         client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
+        client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.setback', cmd_setback);
+        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         
         // lol themes
         client.bind('cmd.theme', cmd_theme);
@@ -2520,6 +2538,63 @@ wsc.defaults.Extension = function( client ) {
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
+    // Away message stuff.
+    var cmd_setaway = function( event, client ) {
+    
+        ext.away.on = true;
+        ext.away.reason = event.args;
+        var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
+        var chans = client.channels(true);
+        
+        for( var i in chans ) {
+            if( !chans.hasOwnProperty(i) )
+                continue;
+            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
+                continue;
+            client.action(chans[i], announce);
+        }
+    
+    };
+    
+    var cmd_setback = function( event, client ) {
+        ext.away.on = false;
+        var chans = client.channels(true);
+        
+        for( var i in chans ) {
+            if( !chans.hasOwnProperty(i) )
+                continue;
+            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
+                continue;
+            client.action(chans[i], 'is back');
+        }
+    };
+    
+    var pkt_highlighted = function( event, client ) {
+    
+        if( !ext.away.on )
+            return;
+        
+        if( ext.away.reason.length == 0 )
+            return;
+        
+        if( event.user == client.settings.username )
+            return;
+        
+        if( ext.away.ignore.indexOf( event.sns.toLowerCase() ) != -1 )
+            return;
+        
+        var t = new Date();
+        var ns = event.sns.toLowerCase();
+        
+        if( ns in ext.away.last )
+            if( (t - ext.away.last[ns]) <= 60000 )
+                return;
+        
+        client.say(event.ns, event.user + ': I am currently away; reason: ' + ext.away.reason);
+        ext.away.last[ns] = t;
+    
+    };
+    
     // Process a property packet, hopefully retreive whois info.
     var pkt_property = function( event, client ) {
         if(event.p != 'info')
@@ -2820,17 +2895,20 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
  * Channels with their tabs hidden are not counted.
  * 
  * @method channels
+ * @param names {Boolean} Return the names of the open channels?
  * @return {Integer} Number of channels open.
  */
-wsc.Client.prototype.channels = function(  ) {
+wsc.Client.prototype.channels = function( names ) {
 
-    chans = -1;
+    var chann = [];
     for(ns in this.channelo) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
         if( this.channelo[ns].hidden )
             continue;
-        chans++;
+        chann.push(this.channelo[ns].namespace);
     }
-    return chans;
+    return names ? chann : chann.length;
 
 };
 

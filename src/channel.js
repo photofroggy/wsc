@@ -403,6 +403,10 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_msg = function( e ) {
     
     var u = this.client.settings['username'].toLowerCase();
+    
+    if( u == e.user.toLowerCase() )
+        return;
+    
     var msg = e['message'].toLowerCase();
     
     if( msg.indexOf(u) < 0 )
@@ -410,6 +414,8 @@ wsc.Channel.prototype.recv_msg = function( e ) {
     
     if( this.ui != null)
         this.ui.highlight();
+    
+    this.client.trigger( 'pkt.recv_msg.highlighted', e );
 
 };
 

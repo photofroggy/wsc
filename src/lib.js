@@ -15,7 +15,7 @@ function $_GET( q, s ) {
 //This returns the unix time stamp as a JS Date object in the local timezone.
 function UnixTimestamp(ts) {
     ret = new Date(ts * 1000)
-    return ret
+    return ret;
 }
 
 var Months = [

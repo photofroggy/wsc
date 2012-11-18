@@ -2,6 +2,13 @@
 
 wsc.defaults.Extension = function( client ) {
 
+    var ext = {};
+    ext.away = {};
+    ext.away.on = false;
+    ext.away.reason = '';
+    ext.away.last = {};
+    ext.away.ignore = [ '#devart' ];
+    
     var init = function(  ) {
         // Commands.
         client.bind('cmd.set', cmd_setter );
@@ -36,8 +43,13 @@ wsc.defaults.Extension = function( client ) {
         client.bind('pkt.recv_admin_showverbose', pkt_admin_show );
         client.bind('pkt.get', pkt_get );
         
+        
+        // Non-standard commands.
         client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
+        client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.setback', cmd_setback);
+        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         
         // lol themes
         client.bind('cmd.theme', cmd_theme);
@@ -384,6 +396,63 @@ wsc.defaults.Extension = function( client ) {
     var cmd_gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+    };
+    
+    // Away message stuff.
+    var cmd_setaway = function( event, client ) {
+    
+        ext.away.on = true;
+        ext.away.reason = event.args;
+        var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
+        var chans = client.channels(true);
+        
+        for( var i in chans ) {
+            if( !chans.hasOwnProperty(i) )
+                continue;
+            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
+                continue;
+            client.action(chans[i], announce);
+        }
+    
+    };
+    
+    var cmd_setback = function( event, client ) {
+        ext.away.on = false;
+        var chans = client.channels(true);
+        
+        for( var i in chans ) {
+            if( !chans.hasOwnProperty(i) )
+                continue;
+            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
+                continue;
+            client.action(chans[i], 'is back');
+        }
+    };
+    
+    var pkt_highlighted = function( event, client ) {
+    
+        if( !ext.away.on )
+            return;
+        
+        if( ext.away.reason.length == 0 )
+            return;
+        
+        if( event.user == client.settings.username )
+            return;
+        
+        if( ext.away.ignore.indexOf( event.sns.toLowerCase() ) != -1 )
+            return;
+        
+        var t = new Date();
+        var ns = event.sns.toLowerCase();
+        
+        if( ns in ext.away.last )
+            if( (t - ext.away.last[ns]) <= 60000 )
+                return;
+        
+        client.say(event.ns, event.user + ': I am currently away; reason: ' + ext.away.reason);
+        ext.away.last[ns] = t;
+    
     };
     
     // Process a property packet, hopefully retreive whois info.
