@@ -57,6 +57,7 @@ Chatterbox.Channel.prototype.build = function( ) {
             'chan': chan,
             'e': e
         } );
+        return false;
     });
     
     var focus = true;

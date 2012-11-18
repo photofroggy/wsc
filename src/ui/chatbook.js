@@ -131,8 +131,8 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns, hidden ) {
  * @param ns {String} Namespace of the channel to view.
  */
 Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
-    chan = this.channel(ns);
-    prev = chan;
+    var chan = this.channel(ns);
+    var prev = chan;
     
     if( !chan )
         return;
@@ -173,19 +173,15 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     if( this.channels() == 0 ) 
         return;
     
-    chan = this.channel(ns);
+    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.selector];
     
+    if( this.current == chan )
+        this.channel_left();
+    
     rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
-    
-    if( this.current != chan )
-        return;
-    
-    select = this.trail[this.trail.length - 1];
-    this.toggle_channel(select);
-    this.channel(select).resize();
 };
 
 /**
@@ -209,6 +205,7 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
             index = this.trail.length - 1;
             nc = this.channel(this.trail[index]);
         }
+        
         if( !nc.hidden )
             break;
     }
