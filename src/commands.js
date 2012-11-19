@@ -3,16 +3,17 @@
 wsc.defaults.Extension = function( client ) {
 
     var ext = {};
-    ext.away = {};
-    ext.away.on = false;
-    ext.away.reason = '';
-    ext.away.last = {};
-    ext.away.ignore = [ '#devart' ];
+    ext.away = {
+        'on': false,
+        'reason': '',
+        'last': {},
+        'since': 0
+    };
     
     var init = function(  ) {
         // Commands.
-        client.bind('cmd.set', cmd_setter );
         client.bind('cmd.connect', cmd_connection );
+        client.bind('cmd.set', cmd_setter );
         
         // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
@@ -402,31 +403,23 @@ wsc.defaults.Extension = function( client ) {
     var cmd_setaway = function( event, client ) {
     
         ext.away.on = true;
+        ext.away.last = {};
+        ext.away.since = new Date();
         ext.away.reason = event.args;
         var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
-        var chans = client.channels(true);
         
-        for( var i in chans ) {
-            if( !chans.hasOwnProperty(i) )
-                continue;
-            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
-                continue;
-            client.action(chans[i], announce);
-        }
+        client.each_channel( function( ns ) {
+            client.action( ns, announce );
+        } );
     
     };
     
     var cmd_setback = function( event, client ) {
         ext.away.on = false;
-        var chans = client.channels(true);
         
-        for( var i in chans ) {
-            if( !chans.hasOwnProperty(i) )
-                continue;
-            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
-                continue;
-            client.action(chans[i], 'is back');
-        }
+        client.each_channel( function( ns ) {
+            client.action( ns, 'is back' );
+        } );
     };
     
     var pkt_highlighted = function( event, client ) {
@@ -440,7 +433,7 @@ wsc.defaults.Extension = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( ext.away.ignore.indexOf( event.sns.toLowerCase() ) != -1 )
+        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
             return;
         
         var t = new Date();
@@ -460,10 +453,11 @@ wsc.defaults.Extension = function( client ) {
         if(event.p != 'info')
             return;
         
-        subs = event.pkt.sub;
-        data = subs.shift().arg;
+        var subs = event.pkt.sub;
+        var data = subs.shift().arg;
         data.username = event.sns.substr(1);
         data.connections = [];
+        var conn = {};
         
         while( subs.length > 0 ) {
             conn = subs.shift().arg;

@@ -2147,12 +2147,11 @@ wsc.defaults.Extension = function( client ) {
     ext.away.on = false;
     ext.away.reason = '';
     ext.away.last = {};
-    ext.away.ignore = [ '#devart' ];
     
     var init = function(  ) {
         // Commands.
-        client.bind('cmd.set', cmd_setter );
         client.bind('cmd.connect', cmd_connection );
+        client.bind('cmd.set', cmd_setter );
         
         // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
@@ -2544,29 +2543,19 @@ wsc.defaults.Extension = function( client ) {
         ext.away.on = true;
         ext.away.reason = event.args;
         var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
-        var chans = client.channels(true);
         
-        for( var i in chans ) {
-            if( !chans.hasOwnProperty(i) )
-                continue;
-            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
-                continue;
-            client.action(chans[i], announce);
-        }
+        client.each_channel( function( ns ) {
+            client.action( ns, announce );
+        } );
     
     };
     
     var cmd_setback = function( event, client ) {
         ext.away.on = false;
-        var chans = client.channels(true);
         
-        for( var i in chans ) {
-            if( !chans.hasOwnProperty(i) )
-                continue;
-            if( ext.away.ignore.indexOf( ns.toLowerCase() ) > -1 )
-                continue;
-            client.action(chans[i], 'is back');
-        }
+        client.each_channel( function( ns ) {
+            client.action( ns, 'is back' );
+        } );
     };
     
     var pkt_highlighted = function( event, client ) {
@@ -2580,7 +2569,7 @@ wsc.defaults.Extension = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( ext.away.ignore.indexOf( event.sns.toLowerCase() ) != -1 )
+        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
             return;
         
         var t = new Date();
@@ -2679,6 +2668,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
+    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -2910,6 +2900,32 @@ wsc.Client.prototype.channels = function( names ) {
     }
     return names ? chann : chann.length;
 
+};
+
+/**
+ * Iterate through the different channels.
+ * 
+ * @method each_channel
+ * @param method {Function} Function to call for each channel.
+ */
+wsc.Client.prototype.each_channel = function( method, include ) {
+    
+    var chan = null;
+    
+    for( var ns in this.channelo ) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.channelo[ns];
+        
+        if( !include )
+            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+                continue;
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
 };
 
 /**
@@ -7318,6 +7334,8 @@ wsc.dAmn.Extension = function( client ) {
     client.protocol.tablumps.extend(wsc.dAmn.Tablumps());
     
     client.flow.dAmnServer = client.flow.chatserver;
+    
+    client.exclude.push( '#devart' );
     
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);

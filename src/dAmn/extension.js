@@ -24,6 +24,8 @@ wsc.dAmn.Extension = function( client ) {
     
     client.flow.dAmnServer = client.flow.chatserver;
     
+    client.exclude.push( '#devart' );
+    
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
         

@@ -20,6 +20,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
+    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -251,6 +252,32 @@ wsc.Client.prototype.channels = function( names ) {
     }
     return names ? chann : chann.length;
 
+};
+
+/**
+ * Iterate through the different channels.
+ * 
+ * @method each_channel
+ * @param method {Function} Function to call for each channel.
+ */
+wsc.Client.prototype.each_channel = function( method, include ) {
+    
+    var chan = null;
+    
+    for( var ns in this.channelo ) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.channelo[ns];
+        
+        if( !include )
+            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+                continue;
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
 };
 
 /**
