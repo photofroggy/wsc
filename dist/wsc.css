@@ -1416,7 +1416,8 @@ div.wsc.wsct_dAmn a:hover {
   color: #2c3635;
   text-decoration: underline;
 }
-div.wsc.wsct_dAmn a.button, div.wsc.wsct_dAmn form.msg input[type="submit"] {
+div.wsc.wsct_dAmn a.button,
+div.wsc.wsct_dAmn form.msg input[type="submit"] {
   background: -webkit-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
   background: -moz-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
   background: -ms-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
@@ -1428,7 +1429,8 @@ div.wsc.wsct_dAmn a.button, div.wsc.wsct_dAmn form.msg input[type="submit"] {
   text-shadow: 0px -1px #002409;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn a.button:hover, div.wsc.wsct_dAmn form.msg input[type="submit"]:hover {
+div.wsc.wsct_dAmn a.button:hover,
+div.wsc.wsct_dAmn form.msg input[type="submit"]:hover {
   background: -webkit-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
   background: -moz-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
   background: -ms-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
@@ -1440,7 +1442,8 @@ div.wsc.wsct_dAmn a.button:hover, div.wsc.wsct_dAmn form.msg input[type="submit"
   text-shadow: 0px -1px #1773a0;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn a.button:active, div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
+div.wsc.wsct_dAmn a.button:active,
+div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
   background: -webkit-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
   background: -moz-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
   background: -ms-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);

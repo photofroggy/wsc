@@ -56,7 +56,10 @@ def package():
             subprocess.call([conf['post'] + ''])
         except TypeError:
             for scr in conf['post']:
-                subprocess.call([scr])
+                try:
+                    subprocess.call([scr])
+                except Exception:
+                    notice('    Failed running {0}...'.format(scr))
     except KeyError:
         pass
     

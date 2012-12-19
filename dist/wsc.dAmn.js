@@ -2143,10 +2143,12 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 wsc.defaults.Extension = function( client ) {
 
     var ext = {};
-    ext.away = {};
-    ext.away.on = false;
-    ext.away.reason = '';
-    ext.away.last = {};
+    ext.away = {
+        'on': false,
+        'reason': '',
+        'last': {},
+        'since': 0
+    };
     
     var init = function(  ) {
         // Commands.
@@ -2541,6 +2543,8 @@ wsc.defaults.Extension = function( client ) {
     var cmd_setaway = function( event, client ) {
     
         ext.away.on = true;
+        ext.away.last = {};
+        ext.away.since = new Date();
         ext.away.reason = event.args;
         var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
         
@@ -2589,10 +2593,11 @@ wsc.defaults.Extension = function( client ) {
         if(event.p != 'info')
             return;
         
-        subs = event.pkt.sub;
-        data = subs.shift().arg;
+        var subs = event.pkt.sub;
+        var data = subs.shift().arg;
         data.username = event.sns.substr(1);
         data.connections = [];
+        var conn = {};
         
         while( subs.length > 0 ) {
             conn = subs.shift().arg;
