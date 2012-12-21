@@ -20,7 +20,7 @@ wsc.dAmn.Extension = function( client ) {
         'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
     });
     
-    client.protocol.tablumps.extend(wsc.dAmn.Tablumps());
+    client.protocol.mparser = new wsc.dAmn.TablumpParser;
     
     client.flow.dAmnServer = client.flow.chatserver;
     

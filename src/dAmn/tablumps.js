@@ -15,16 +15,19 @@
  * @param data {String} String possibly containing tablumps.
  * @param parser {Object} A reference to a tablumps parser. Not required.
  */
-wsc.TablumpString = function(data, parser) {
-    this._parser = parser || new wsc.Tablumps();
+wsc.dAmn.TablumpString = function(data, parser) {
+    this._parser = parser || new wsc.dAmn.Tablumps();
     this.raw = data;
     this._text = null;
     this._html = null;
     this._ansi = null;
 };
 
-with(wsc.TablumpString.prototype = new String) {
-    constructor = wsc.TablumpString;
+wsc.dAmn.TablumpString.prototype = new wsc.MessageString;
+wsc.dAmn.TablumpString.prototype.constructor = wsc.dAmn.TablumpString;
+
+with(wsc.dAmn.TablumpString.prototype = new String) {
+    constructor = wsc.dAmn.TablumpString;
     toString = valueOf = function() { return this.raw; };
 }
 
@@ -33,7 +36,7 @@ with(wsc.TablumpString.prototype = new String) {
  * 
  * Render the tablumps as HTML entities.
  */
-wsc.TablumpString.prototype.html = function() {
+wsc.dAmn.TablumpString.prototype.html = function() {
     if(this._html == null)
         this._html = this._parser.render(1, this.raw);
     return this._html;
@@ -45,7 +48,7 @@ wsc.TablumpString.prototype.html = function() {
  * Render the tablumps in plain text where possible. Some tablumps appear as
  * HTML entities even through this.
  */
-wsc.TablumpString.prototype.text = function() {
+wsc.dAmn.TablumpString.prototype.text = function() {
     if(this._text == null)
         this._text = this._parser.render(0, this.raw);
     return this._text;
@@ -59,7 +62,7 @@ wsc.TablumpString.prototype.text = function() {
  * For this rendering method to really be worth it, I'll actually have to move
  * away from the simple regex.
  */
-wsc.TablumpString.prototype.ansi = function() {
+wsc.dAmn.TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
         this._ansi = this._parser.render(2, this.raw);
     return this._ansi;
@@ -67,11 +70,11 @@ wsc.TablumpString.prototype.ansi = function() {
 
 
 /**
- * @object wsc.Tablumps
+ * @object wsc.dAmn.TablumpParser
  *
  * Constructor for the tablumps parser.
  */
-wsc.Tablumps = function(  ) {
+wsc.dAmn.TablumpParser = function(  ) {
 
     this.lumps = this.defaultMap();
     this._list = [];
@@ -79,12 +82,15 @@ wsc.Tablumps = function(  ) {
 
 };
 
+wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
+wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
+
 /**
  * @function registerMap
  *
  * I should probably deprecate this. Sets the rendering map to the given map.
  */
-wsc.Tablumps.prototype.registerMap = function( map ) {
+wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
@@ -93,7 +99,7 @@ wsc.Tablumps.prototype.registerMap = function( map ) {
  *
  * Add the given rendering items to the parser's render map.
  */
-wsc.Tablumps.prototype.extend = function( map ) {
+wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
         this.lumps[index] = map[index];
     }
@@ -103,7 +109,7 @@ wsc.Tablumps.prototype.extend = function( map ) {
  * @function _list_start
  * Initiate a list.
  */
-wsc.Tablumps.prototype._list_start = function( ol ) {
+wsc.dAmn.TablumpParser.prototype._list_start = function( ol ) {
     list = {};
     list.ol = ol || false;
     list.count = 0;
@@ -117,7 +123,7 @@ wsc.Tablumps.prototype._list_start = function( ol ) {
  * @function _list_end
  * Finish a list.
  */
-wsc.Tablumps.prototype._list_end = function( ) {
+wsc.dAmn.TablumpParser.prototype._list_end = function( ) {
     if( this._list.length == 0 ) {
         return '';
     }
@@ -132,7 +138,7 @@ wsc.Tablumps.prototype._list_end = function( ) {
  * 
  * Get all the default nonsense.
  */
-wsc.Tablumps.prototype.defaultMap = function () {
+wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
      * This object can be defined as follows:
      *     lumps[tag] => [ arguments, render[, render[, ...]] ]
@@ -201,10 +207,10 @@ wsc.Tablumps.prototype.defaultMap = function () {
 /**
  * @function parse
  *
- * Create a wsc.TablumpString obejct and return it.
+ * Create a wsc.dAmn.TablumpString obejct and return it.
  */
-wsc.Tablumps.prototype.parse = function( data, sep ) {
-    return new wsc.TablumpString(data, this);
+wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
+    return new wsc.dAmn.TablumpString(data, this);
 };
 
 /**
@@ -221,7 +227,7 @@ wsc.Tablumps.prototype.parse = function( data, sep ) {
  * where possible. Setting `flag` to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
  */
-wsc.Tablumps.prototype.render = function( flag, data ) {
+wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     if( !data )
         return '';
     
@@ -274,7 +280,7 @@ wsc.Tablumps.prototype.render = function( flag, data ) {
  * @function renderOne
  * Render a single tablump.
  */
-wsc.Tablumps.prototype.renderOne = function( type, tag, working ) {
+wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, working ) {
     lump = this.lumps[tag];
     
     // If we don't know how to parse the tag, leave it be!
@@ -308,7 +314,7 @@ wsc.Tablumps.prototype.renderOne = function( type, tag, working ) {
  * method is used to crop a specific number of arguments from a given
  * input.
  */
-wsc.Tablumps.prototype.tokens = function( data, limit, sep, end ) {
+wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit, sep, end ) {
     sep = sep || '\t';
     end = end || '&';
     tokens = [];
@@ -330,4 +336,6 @@ wsc.Tablumps.prototype.tokens = function( data, limit, sep, end ) {
     
     return [tokens, data];
 };
+
+
 

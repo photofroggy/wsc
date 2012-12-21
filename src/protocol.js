@@ -3,11 +3,11 @@
  * 
  * @class Protocol
  * @constructor
- * @param [tablumps=wsc.Tablumps] {Object} Tablumps parser instance.
+ * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
-wsc.Protocol = function( tablumps ) {
+wsc.Protocol = function( mparser ) {
 
-    this.tablumps = tablumps || new wsc.Tablumps;
+    this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
     // Mappings for every packet.
@@ -239,7 +239,7 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
             continue;
         
         k = skey.slice(1);
-        val = this.tablumps.parse( event[skey] );
+        val = this.mparser.parse( event[skey] );
         event[k] = val;
     }
 
