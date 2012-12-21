@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.70';
+wsc.VERSION = '0.9.71';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -6947,7 +6947,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.1.3';
+wsc.dAmn.VERSION = '0.2.4';
 wsc.dAmn.STATE = 'alpha';
 
 
