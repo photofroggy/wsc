@@ -327,7 +327,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         data = working;
         
         // Crop the tablump.
-        cropped = this.crop(flag, tag, working);
+        cropped = this.crop(tag, working);
         
         // Didn't manage to crop?
         if( cropped === null ) {
@@ -355,7 +355,7 @@ wsc.dAmn.TablumpParser.prototype.crop = function( tag, working ) {
     if( lump[0] == 0 )
         return [[tag, []], working];
     else {
-        var crop = this.tokens(working, lump[0], sep);
+        var crop = this.tokens(working, lump[0], '\t');
         return [[tag, crop[0]], crop[1]];
     }
 };
@@ -404,7 +404,7 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     // Replace the simpler tablumps which do not have arguments.
     //data = data.replace(this.repl[0], this.repl[1]);
     
-    return rendered + this.renderOne( flag, 'EOF', '' )[0];
+    return rendered + this.renderOne( flag, 'EOF', '' );
 };
 
 /**
@@ -421,7 +421,7 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     
     // Get our renderer.
     var renderer = lump[type] || lump[1];
-    
+    console.log
     // Parse the tablump if we can.
     if( typeof(renderer) == 'string' )
         return String.format(renderer, tokens);

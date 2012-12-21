@@ -1160,9 +1160,6 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
     this.raw = data;
-    this._text = null;
-    this._html = null;
-    this._ansi = null;
 };
 
 with(wsc.MessageString.prototype = new String) {
@@ -1171,9 +1168,7 @@ with(wsc.MessageString.prototype = new String) {
 }
 
 wsc.MessageString.prototype.html = function(  ) {
-    if(this._html == null)
-        this._html = this._parser.render(1, this);
-    return this._html;
+    return this.raw;
 };
 
 /**
@@ -1183,9 +1178,7 @@ wsc.MessageString.prototype.html = function(  ) {
  * HTML entities even through this.
  */
 wsc.MessageString.prototype.text = function() {
-    if(this._text == null)
-        this._text = this._parser.render(0, this);
-    return this._text;
+    return this.raw;
 };
 
 /**
@@ -1197,9 +1190,7 @@ wsc.MessageString.prototype.text = function() {
  * away from the simple regex.
  */
 wsc.MessageString.prototype.ansi = function() {
-    if(this._ansi == null)
-        this._ansi = this._parser.render(2, this);
-    return this._ansi;
+    return this.raw;
 };
 
 wsc.MessageParser = function(  ) {};
@@ -6954,7 +6945,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.1.2';
+wsc.dAmn.VERSION = '0.1.3';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -7373,7 +7364,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         data = working;
         
         // Crop the tablump.
-        cropped = this.crop(flag, tag, working);
+        cropped = this.crop(tag, working);
         
         // Didn't manage to crop?
         if( cropped === null ) {
@@ -7401,7 +7392,7 @@ wsc.dAmn.TablumpParser.prototype.crop = function( tag, working ) {
     if( lump[0] == 0 )
         return [[tag, []], working];
     else {
-        var crop = this.tokens(working, lump[0], sep);
+        var crop = this.tokens(working, lump[0], '\t');
         return [[tag, crop[0]], crop[1]];
     }
 };
@@ -7450,7 +7441,7 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     // Replace the simpler tablumps which do not have arguments.
     //data = data.replace(this.repl[0], this.repl[1]);
     
-    return rendered + this.renderOne( flag, 'EOF', '' )[0];
+    return rendered + this.renderOne( flag, 'EOF', '' );
 };
 
 /**
@@ -7467,7 +7458,7 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     
     // Get our renderer.
     var renderer = lump[type] || lump[1];
-    
+    console.log
     // Parse the tablump if we can.
     if( typeof(renderer) == 'string' )
         return String.format(renderer, tokens);

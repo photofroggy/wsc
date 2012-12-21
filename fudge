@@ -51,17 +51,20 @@ def package():
         subprocess.call(yui + ['-o', '{0}'.format(package['mini']), package['dest']])
     
     notice('Running post scripts...')
-    try:
-        try:
-            subprocess.call([conf['post'] + ''])
-        except TypeError:
+    if 'post' in conf:
+        if isinstance(conf['post'], list):
             for scr in conf['post']:
                 try:
                     subprocess.call([scr])
-                except Exception:
+                except Exception as e:
                     notice('    Failed running {0}...'.format(scr))
-    except KeyError:
-        pass
+                    print e
+        else:
+            try:
+                subprocess.call([conf['post'] + ''])
+            except Exception as e:
+                notice('    Failed running {0}...'.format(scr))
+                print e
     
     notice('Done!')
 
