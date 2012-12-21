@@ -7336,7 +7336,6 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
     var result = [];
     var ti = -1;
     var tag = '';
-    var working = '';
     var cropped = null;
     
     for( var i = 0; i < data.length; i++ ) {
@@ -7349,28 +7348,27 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         // the string at the current index. We don't need to parse
         // anything to the left of the index.
         result.push([ 'raw', data.substring(0, i) ]);
-        working = data.substring(i);
-        data = working;
-        i = -1;
+        data = data.substring(i);
+        i = 0;
         
         // Next make sure there is a tab character ending the tag.
-        ti = working.indexOf('\t');
+        ti = data.indexOf('\t');
         if( ti == -1 )
             continue;
         
         // Now we can crop the tag.
-        tag = working.substring(0, ti + 1);
-        working = working.substring(ti + 1);
-        data = working;
+        tag = data.substring(0, ti + 1);
+        data = data.substring(ti + 1);
         
         // Crop the tablump.
-        cropped = this.crop(tag, working);
+        cropped = this.crop(tag, data);
         
         // Didn't manage to crop?
         if( cropped === null ) {
             continue;
         }
         
+        i = -1;
         result.push(cropped[0]);
         data = cropped[1];
         
@@ -7395,7 +7393,7 @@ wsc.dAmn.TablumpParser.prototype.crop = function( tag, working ) {
     if( lump[0] == 0 )
         return [[tag, []], working];
     else {
-        var crop = this.tokens(working, lump[0], '\t');
+        var crop = this.tokens(working, lump[0]);
         return [[tag, crop[0]], crop[1]];
     }
 };
@@ -7475,14 +7473,12 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
  * method is used to crop a specific number of arguments from a given
  * input.
  */
-wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit, sep, end ) {
-    sep = sep || '\t';
-    end = end || '&';
+wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit ) {
     var tokens = [];
     var find = -1;
     
     for( i = limit; i > 0; i-- ) {
-        find = data.indexOf(sep);
+        find = data.indexOf('\t');
         
         if( find == -1 )
             break;
@@ -7490,7 +7486,7 @@ wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit, sep, end ) {
         tokens.push( data.substring(0, find) );
         data = data.substring(find + 1);
         
-        if( tokens[tokens.length - 1] == end ) {
+        if( tokens[tokens.length - 1] == '&' ) {
             tokens.pop();
             break;
         }
