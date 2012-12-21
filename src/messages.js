@@ -4,9 +4,6 @@
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
     this.raw = data;
-    this._text = null;
-    this._html = null;
-    this._ansi = null;
 };
 
 with(wsc.MessageString.prototype = new String) {
@@ -15,9 +12,7 @@ with(wsc.MessageString.prototype = new String) {
 }
 
 wsc.MessageString.prototype.html = function(  ) {
-    if(this._html == null)
-        this._html = this._parser.render(1, this);
-    return this._html;
+    return this.raw;
 };
 
 /**
@@ -27,9 +22,7 @@ wsc.MessageString.prototype.html = function(  ) {
  * HTML entities even through this.
  */
 wsc.MessageString.prototype.text = function() {
-    if(this._text == null)
-        this._text = this._parser.render(0, this);
-    return this._text;
+    return this.raw;
 };
 
 /**
@@ -41,9 +34,7 @@ wsc.MessageString.prototype.text = function() {
  * away from the simple regex.
  */
 wsc.MessageString.prototype.ansi = function() {
-    if(this._ansi == null)
-        this._ansi = this._parser.render(2, this);
-    return this._ansi;
+    return this.raw;
 };
 
 wsc.MessageParser = function(  ) {};
