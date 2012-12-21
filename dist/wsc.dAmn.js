@@ -1484,6 +1484,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
             d = event['sns'];
         }
         if( d.hasOwnProperty('_parser') ) {
+            console.log(d);
             switch(format) {
                 case 'text':
                     d = d.text();
@@ -1498,6 +1499,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
                     d = d.text();
                     break;
             }
+            console.log(d);
         }
         msg = replaceAll(msg, '{'+key+'}', d);
     }
@@ -7351,7 +7353,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         result.push([ 'raw', data.substring(0, i) ]);
         working = data.substring(i);
         data = working;
-        i = 1;
+        i = -1;
         
         // Next make sure there is a tab character ending the tag.
         ti = working.indexOf('\t');
@@ -7375,6 +7377,9 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         data = cropped[1];
         
     }
+    
+    if( data.length > 0 )
+        result.push(['raw', data]);
     
     return result;
 
@@ -7440,7 +7445,7 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     
     // Replace the simpler tablumps which do not have arguments.
     //data = data.replace(this.repl[0], this.repl[1]);
-    
+    console.log(rendered);
     return rendered + this.renderOne( flag, 'EOF', '' );
 };
 
