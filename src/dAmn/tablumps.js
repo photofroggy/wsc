@@ -406,7 +406,6 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     
     // Replace the simpler tablumps which do not have arguments.
     //data = data.replace(this.repl[0], this.repl[1]);
-    console.log(rendered);
     return rendered + this.renderOne( flag, 'EOF', '' );
 };
 
@@ -424,7 +423,6 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     
     // Get our renderer.
     var renderer = lump[type] || lump[1];
-    console.log
     // Parse the tablump if we can.
     if( typeof(renderer) == 'string' )
         return String.format(renderer, tokens);

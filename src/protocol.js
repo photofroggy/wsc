@@ -273,7 +273,6 @@ wsc.Protocol.prototype.render = function( event, format ) {
             d = event['sns'];
         }
         if( d.hasOwnProperty('_parser') ) {
-            console.log(d);
             switch(format) {
                 case 'text':
                     d = d.text();
@@ -288,7 +287,6 @@ wsc.Protocol.prototype.render = function( event, format ) {
                     d = d.text();
                     break;
             }
-            console.log(d);
         }
         msg = replaceAll(msg, '{'+key+'}', d);
     }
