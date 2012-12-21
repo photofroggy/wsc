@@ -51,17 +51,20 @@ def package():
         subprocess.call(yui + ['-o', '{0}'.format(package['mini']), package['dest']])
     
     notice('Running post scripts...')
-    try:
-        try:
-            subprocess.call([conf['post'] + ''])
-        except TypeError:
+    if 'post' in conf:
+        if isinstance(conf['post'], list):
             for scr in conf['post']:
                 try:
                     subprocess.call([scr])
-                except Exception:
+                except Exception as e:
                     notice('    Failed running {0}...'.format(scr))
-    except KeyError:
-        pass
+                    print e
+        else:
+            try:
+                subprocess.call([conf['post'] + ''])
+            except Exception as e:
+                notice('    Failed running {0}...'.format(scr))
+                print e
     
     notice('Done!')
 
@@ -80,10 +83,20 @@ def fetch_bundle(files):
     '''
     Aggregate the contents of several files into one string.
     '''
-    try:
-        return ''.join([fetch(file) for file in files])
-    except IOError:
-        return fetch_bundle([os.path.join(files, f) for f in os.listdir(files)])
+    if isinstance(files, list):
+        out = ''
+        for file in files:
+            try:
+                out+= fetch(file)
+            except IOError:
+                notice('        failed for {0}...'.format(file))
+        return out
+    else:
+        try:
+            return fetch_bundle([os.path.join(files, f) for f in os.listdir(files)])
+        except TypeError:
+            notice('        failed for {0}...'.format(files))
+            return ''
     
 
 

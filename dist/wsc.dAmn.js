@@ -1155,44 +1155,20 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 };
 
 /**
- * Represents a string that possibly contains tablumps.
- * Use different object methods to render the tablumps differently.
- * 
- * @example
- *     // Parse something.
- *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
- *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
- *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
- *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
- *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
- * 
- * @class TablumpString
- * @constructor
- * @param data {String} String possibly containing tablumps.
- * @param parser {Object} A reference to a tablumps parser. Not required.
+ * Rendered message object.
  */
-wsc.TablumpString = function(data, parser) {
-    this._parser = parser || new wsc.Tablumps();
+wsc.MessageString = function( data, parser ) {
+    this._parser = parser || new wsc.MessageParser();
     this.raw = data;
-    this._text = null;
-    this._html = null;
-    this._ansi = null;
 };
 
-with(wsc.TablumpString.prototype = new String) {
-    constructor = wsc.TablumpString;
+with(wsc.MessageString.prototype = new String) {
+    constructor = wsc.MessageParser;
     toString = valueOf = function() { return this.raw; };
 }
 
-/**
- * @function html
- * 
- * Render the tablumps as HTML entities.
- */
-wsc.TablumpString.prototype.html = function() {
-    if(this._html == null)
-        this._html = this._parser.render(1, this.raw);
-    return this._html;
+wsc.MessageString.prototype.html = function(  ) {
+    return this.raw;
 };
 
 /**
@@ -1201,10 +1177,8 @@ wsc.TablumpString.prototype.html = function() {
  * Render the tablumps in plain text where possible. Some tablumps appear as
  * HTML entities even through this.
  */
-wsc.TablumpString.prototype.text = function() {
-    if(this._text == null)
-        this._text = this._parser.render(0, this.raw);
-    return this._text;
+wsc.MessageString.prototype.text = function() {
+    return this.raw;
 };
 
 /**
@@ -1215,288 +1189,36 @@ wsc.TablumpString.prototype.text = function() {
  * For this rendering method to really be worth it, I'll actually have to move
  * away from the simple regex.
  */
-wsc.TablumpString.prototype.ansi = function() {
-    if(this._ansi == null)
-        this._ansi = this._parser.render(2, this.raw);
-    return this._ansi;
+wsc.MessageString.prototype.ansi = function() {
+    return this.raw;
 };
 
+wsc.MessageParser = function(  ) {};
 
-/**
- * @object wsc.Tablumps
- *
- * Constructor for the tablumps parser.
- */
-wsc.Tablumps = function(  ) {
+wsc.MessageParser.prototype.parse = function( data ) {
 
-    this.lumps = this.defaultMap();
-    this._list = [];
-    this._dent = 0;
+    return new wsc.MessageString(data, this);
 
 };
 
-/**
- * @function registerMap
- *
- * I should probably deprecate this. Sets the rendering map to the given map.
- */
-wsc.Tablumps.prototype.registerMap = function( map ) {
-    this.lumps = map;
-};
+wsc.MessageParser.prototype.render = function( mode, data ) {
 
-/**
- * @function extend
- *
- * Add the given rendering items to the parser's render map.
- */
-wsc.Tablumps.prototype.extend = function( map ) {
-    for(index in map) {
-        this.lumps[index] = map[index];
-    }
-};
-
-/**
- * @function _list_start
- * Initiate a list.
- */
-wsc.Tablumps.prototype._list_start = function( ol ) {
-    list = {};
-    list.ol = ol || false;
-    list.count = 0;
-    ret = this._list[0] ? '' : '\n';
-    this._dent++;
-    this._list.unshift(list);
-    return ret;
-};
-
-/**
- * @function _list_end
- * Finish a list.
- */
-wsc.Tablumps.prototype._list_end = function( ) {
-    if( this._list.length == 0 ) {
-        return '';
-    }
-    
-    list = this._list.shift();
-    this._dent--;
-    return ( this._dent == 0 && list.count == 0 ) ? '\n' : '';
-};
-
-/**
- * @function defaultMap
- * 
- * Get all the default nonsense.
- */
-wsc.Tablumps.prototype.defaultMap = function () {
-    /* Tablumps formatting rules.
-     * This object can be defined as follows:
-     *     lumps[tag] => [ arguments, render[, render[, ...]] ]
-     * ``tag`` is the tablumps-formatted tag to process.
-     * ``arguments`` is the number of arguments contained in the tablump.
-     * ``render`` defines a rendering for the tablump. The render argument
-     *            can be a formatting string or a function that returns a
-     *            string. The first render method should render plain text;
-     *            the second, html; the third, ansi escape sequences.
-     */
-    
-    return {
-        // There are a lot of 0 arg things here...
-        // Would use regex but that'd be less flexible.
-        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
-        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
-        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
-        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
-        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
-        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
-        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
-        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
-        '&sup\t': [0, '<sup>'],
-        '&/sup\t': [0, '</sup>'],
-        '&sub\t': [0, '<sub>'],
-        '&/sub\t': [0, '</sub>'],
-        '&code\t': [0, '<code>'],
-        '&/code\t': [0, '</code>'],
-        '&p\t': [0, '<p>'],
-        '&/p\t': [0, '</p>'],
-        '&ul\t': [0, '<ul>'],
-        '&/ul\t': [0, '</ul>'],
-        '&ol\t': [0, '<ol>'],
-        '&li\t': [0, '<li>' ],
-        '&/li\t': [0, '</li>'],
-        '&/ol\t': [0, '</ol>'],
-        '&link\t': [ 3,
-            function( data ) {
-                return data[0] + ( (' (' + data[1] + ')') || '');
-            },
-            function( data ) {
-                t = data[1];
-                return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
-            }
-        ],
-        '&acro\t': [ 1, '<acronym title="{0}">' ],
-        '&/acro\t': [0, '</acronym>'],
-        '&abbr\t': [ 1, '<abbr title="{0}">'],
-        '&/abbr\t': [ 0, '</abbr>'],
-        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
-        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
-        '&/iframe\t': [ 0, '</iframe>'],
-        '&a\t': [ 2, '<a href="{0}" title="{1}">' ],
-        '&/a\t': [ 0, '</a>'],
-        '&br\t': [ 0, '<br/>' ],
-        '&bcode\t': [0, '<bcode>', '<span><pre><code>'],
-        '&/bcode\t': [0, '</bcode>', '</code></pre></span>'],
-        // Used to terminate a line.
-        // Allows us to reset graphic rendition parameters.
-        'EOF': [0, '', null, '\x1b[m']
-    };
+    return data.raw;
 
 };
 
 
-/**
- * @function parse
- *
- * Create a wsc.TablumpString obejct and return it.
- */
-wsc.Tablumps.prototype.parse = function( data, sep ) {
-    return new wsc.TablumpString(data, this);
-};
-
-/**
- * @function render
- *
- * Render tablumps in a given format.
- * 
- * Here, the flag should be a number, and defines the index of the renderer
- * to use when rendering a tablump. Setting `flag` to 0 will result in the
- * first renderer being used. In the render map, the plain text renderers come
- * first, and also act as a default.
- * 
- * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
- * where possible. Setting `flag` to 2 causes the parser to render tablumps as
- * ANSI escape sequence formatted strings where possible.
- */
-wsc.Tablumps.prototype.render = function( flag, data ) {
-    if( !data )
-        return '';
-    
-    sep = '\t';
-    flag = flag + 1;
-    
-    for( var i = 0; i < data.length; i++ ) {
-        
-        // All tablumps start with &!
-        if( data[i] != '&' )
-            continue;
-        
-        // We want to work on extracting the tag. First thing is split
-        // the string at the current index. We don't need to parse
-        // anything to the left of the index.
-        primer = data.substring(0, i);
-        working = data.substring(i);
-        
-        // Next make sure there is a tab character ending the tag.
-        ti = working.indexOf('\t');
-        if( ti == -1 )
-            continue;
-        
-        // Now we can crop the tag.
-        tag = working.substring(0, ti + 1);
-        working = working.substring(ti + 1);
-        
-        // Render the tablump.
-        rendered = this.renderOne(flag, tag, working);
-        
-        // Didn't manage to render?
-        if( rendered === null ) {
-            i++;
-            continue;
-        }
-        
-        // Glue everything back together.
-        data = primer + rendered[0];
-        i = i + (rendered[1] - 1);
-        
-    }
-    
-    // Replace the simpler tablumps which do not have arguments.
-    //data = data.replace(this.repl[0], this.repl[1]);
-    
-    return data + this.renderOne( flag, 'EOF', '' )[0];
-};
-
-/**
- * @function renderOne
- * Render a single tablump.
- */
-wsc.Tablumps.prototype.renderOne = function( type, tag, working ) {
-    lump = this.lumps[tag];
-    
-    // If we don't know how to parse the tag, leave it be!
-    if( lump === undefined ) {
-        return null;
-    }
-
-    // Crop the rest of the tablump!
-    if( lump[0] == 0 )
-        cropping = [[], working];
-    else
-        cropping = this.tokens(working, lump[0], sep);
-    
-    // Get our renderer.
-    renderer = lump[type] || lump[1];
-    
-    // Parse the tablump if we can.
-    if( typeof(renderer) == 'string' )
-        parsed = String.format(renderer, cropping[0]);
-    else
-        parsed = renderer.call(this, cropping[0]);
-    
-    return [parsed + cropping[1], parsed.length];
-};
-
-/**
- * @function tokens
- * Return n tokens from any given input.
- *
- * Tablumps contain arguments which are separated by tab characters. This
- * method is used to crop a specific number of arguments from a given
- * input.
- */
-wsc.Tablumps.prototype.tokens = function( data, limit, sep, end ) {
-    sep = sep || '\t';
-    end = end || '&';
-    tokens = [];
-    
-    for( i = limit; i > 0; i-- ) {
-        find = data.indexOf(sep);
-        
-        if( find == -1 )
-            break;
-        
-        tokens.push( data.substring(0, find) );
-        data = data.substring(find + 1);
-        
-        if( tokens[tokens.length - 1] == end ) {
-            tokens.pop();
-            break;
-        }
-    }
-    
-    return [tokens, data];
-};
 
 /**
  * Parser for dAmn-like protocols.
  * 
  * @class Protocol
  * @constructor
- * @param [tablumps=wsc.Tablumps] {Object} Tablumps parser instance.
+ * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
-wsc.Protocol = function( tablumps ) {
+wsc.Protocol = function( mparser ) {
 
-    this.tablumps = tablumps || new wsc.Tablumps;
+    this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
     // Mappings for every packet.
@@ -1728,7 +1450,7 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
             continue;
         
         k = skey.slice(1);
-        val = this.tablumps.parse( event[skey] );
+        val = this.mparser.parse( event[skey] );
         event[k] = val;
     }
 
@@ -1762,6 +1484,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
             d = event['sns'];
         }
         if( d.hasOwnProperty('_parser') ) {
+            console.log(d);
             switch(format) {
                 case 'text':
                     d = d.text();
@@ -1776,6 +1499,7 @@ wsc.Protocol.prototype.render = function( event, format ) {
                     d = d.text();
                     break;
             }
+            console.log(d);
         }
         msg = replaceAll(msg, '{'+key+'}', d);
     }
@@ -2688,7 +2412,7 @@ wsc.Client = function( view, options, mozilla ) {
         "autojoin": "chat:channel",
         "control": wsc.Control,
         "protocol": wsc.Protocol,
-        "tablumps": wsc.Tablumps,
+        "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
         "ui": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
@@ -2711,7 +2435,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
-    this.protocol = new this.settings.protocol( new this.settings.tablumps() );
+    this.protocol = new this.settings.protocol( new this.settings.mparser() );
     this.flow = new this.settings.flow(this.protocol);
     
     this.build();
@@ -7223,15 +6947,295 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.1.1';
+wsc.dAmn.VERSION = '0.1.3';
 wsc.dAmn.STATE = 'alpha';
 
-/*
- * This function returns a map which can be used by the tablumps parser to parse
- * dAmn's tablumps.
+
+/**
+ * dAmn extension makes the client work with dAmn.
+ * 
+ * @class Extension
+ * @constructor
  */
-wsc.dAmn.Tablumps = function(  ) {
+wsc.dAmn.Extension = function( client ) {
+
+    client.settings.client = 'dAmnClient';
+    client.settings.clientver = '0.3';
+    client.settings.domain = 'deviantart.com';
+    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+    
+    client.protocol.extend_maps({
+        'dAmnServer': ['version']
+    });
+    
+    client.protocol.extend_messages({
+        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
+    });
+    
+    client.protocol.mparser = new wsc.dAmn.TablumpParser;
+    
+    client.flow.dAmnServer = client.flow.chatserver;
+    
+    client.exclude.push( '#devart' );
+    
+    client.ui.on( 'userinfo.before', function( event, ui ) {
+        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+        
+        if( event.user.member.realname )
+            event.user.info.push(event.user.member.realname);
+        
+        if( event.user.member.typename )
+            event.user.info.push(event.user.member.typename);
+    });
+    
+    client.ui.on( 'log_whois.before', function( event, ui ) {
+        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
+        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
+        
+        if( event.raw.realname )
+            event.info.push(event.raw.realname);
+        
+        if( event.raw.typename )
+            event.info.push(event.raw.typename);
+    } );
+
+};
+
+wsc.dAmn.avatar = {};
+wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
+
+/**
+ * Produces an avatar link.
+ * 
+ * @class avatar_link
+ * @constructor
+ */
+wsc.dAmn.avatar.link = function( un, icon ) {
+    icon = parseInt(icon);
+    var cachebuster = (icon >> 2) & 15;
+    icon = icon & 3;
+    var ext = wsc.dAmn.avatar.ext[icon] || 'gif';
+    
+    if (cachebuster) {
+        cachebuster = '?' + cachebuster;
+    }
+    else {
+        cachebuster = '';
+    }
+    
+    if( icon == 0 ) { 
+        ico = 'default';
+    } else {
+        var ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+        
+        var ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
+            return un[i] == '-' ? '_' : un[i].toLowerCase();
+        });
+        ico = replaceAll( ico, '{un}', un.toLowerCase() );
+    }
+    
+    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
+            alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
+};
+/**
+ * Represents a string that possibly contains tablumps.
+ * Use different object methods to render the tablumps differently.
+ * 
+ * @example
+ *     // Parse something.
+ *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
+ *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+ *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
+ *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+ * 
+ * @class TablumpString
+ * @constructor
+ * @param data {String} String possibly containing tablumps.
+ * @param parser {Object} A reference to a tablumps parser. Not required.
+ */
+wsc.dAmn.TablumpString = function(data, parser) {
+    this._parser = parser || new wsc.dAmn.Tablumps();
+    this.tokens = this._parser.tokenise(data);
+    this.raw = data;
+    this._text = null;
+    this._html = null;
+    this._ansi = null;
+};
+
+wsc.dAmn.TablumpString.prototype = new wsc.MessageString;
+wsc.dAmn.TablumpString.prototype.constructor = wsc.dAmn.TablumpString;
+
+with(wsc.dAmn.TablumpString.prototype = new String) {
+    constructor = wsc.dAmn.TablumpString;
+    toString = valueOf = function() { return this.raw; };
+}
+
+/**
+ * @function html
+ * 
+ * Render the tablumps as HTML entities.
+ */
+wsc.dAmn.TablumpString.prototype.html = function() {
+    if(this._html == null)
+        this._html = this._parser.render(1, this);
+    return this._html;
+};
+
+/**
+ * @function text
+ *
+ * Render the tablumps in plain text where possible. Some tablumps appear as
+ * HTML entities even through this.
+ */
+wsc.dAmn.TablumpString.prototype.text = function() {
+    if(this._text == null)
+        this._text = this._parser.render(0, this);
+    return this._text;
+};
+
+/**
+ * @function ansi
+ * 
+ * Render the tablumps with ANSI escape sequences.
+ * 
+ * For this rendering method to really be worth it, I'll actually have to move
+ * away from the simple regex.
+ */
+wsc.dAmn.TablumpString.prototype.ansi = function() {
+    if(this._ansi == null)
+        this._ansi = this._parser.render(2, this);
+    return this._ansi;
+};
+
+
+/**
+ * @object wsc.dAmn.TablumpParser
+ *
+ * Constructor for the tablumps parser.
+ */
+wsc.dAmn.TablumpParser = function(  ) {
+
+    this.lumps = this.defaultMap();
+    this._list = [];
+    this._dent = 0;
+
+};
+
+wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
+wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
+
+/**
+ * @function registerMap
+ *
+ * I should probably deprecate this. Sets the rendering map to the given map.
+ */
+wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
+    this.lumps = map;
+};
+
+/**
+ * @function extend
+ *
+ * Add the given rendering items to the parser's render map.
+ */
+wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
+    for(index in map) {
+        this.lumps[index] = map[index];
+    }
+};
+
+/**
+ * @function _list_start
+ * Initiate a list.
+ */
+wsc.dAmn.TablumpParser.prototype._list_start = function( ol ) {
+    list = {};
+    list.ol = ol || false;
+    list.count = 0;
+    ret = this._list[0] ? '' : '\n';
+    this._dent++;
+    this._list.unshift(list);
+    return ret;
+};
+
+/**
+ * @function _list_end
+ * Finish a list.
+ */
+wsc.dAmn.TablumpParser.prototype._list_end = function( ) {
+    if( this._list.length == 0 ) {
+        return '';
+    }
+    
+    list = this._list.shift();
+    this._dent--;
+    return ( this._dent == 0 && list.count == 0 ) ? '\n' : '';
+};
+
+/**
+ * @function defaultMap
+ * 
+ * Get all the default nonsense.
+ */
+wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
+    /* Tablumps formatting rules.
+     * This object can be defined as follows:
+     *     lumps[tag] => [ arguments, render[, render[, ...]] ]
+     * ``tag`` is the tablumps-formatted tag to process.
+     * ``arguments`` is the number of arguments contained in the tablump.
+     * ``render`` defines a rendering for the tablump. The render argument
+     *            can be a formatting string or a function that returns a
+     *            string. The first render method should render plain text;
+     *            the second, html; the third, ansi escape sequences.
+     */
+    
     return {
+        // There are a lot of 0 arg things here...
+        // Would use regex but that'd be less flexible.
+        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
+        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
+        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
+        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
+        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
+        '&sup\t': [0, '<sup>'],
+        '&/sup\t': [0, '</sup>'],
+        '&sub\t': [0, '<sub>'],
+        '&/sub\t': [0, '</sub>'],
+        '&code\t': [0, '<code>'],
+        '&/code\t': [0, '</code>'],
+        '&p\t': [0, '<p>'],
+        '&/p\t': [0, '</p>'],
+        '&ul\t': [0, '<ul>'],
+        '&/ul\t': [0, '</ul>'],
+        '&ol\t': [0, '<ol>'],
+        '&li\t': [0, '<li>' ],
+        '&/li\t': [0, '</li>'],
+        '&/ol\t': [0, '</ol>'],
+        '&link\t': [ 3,
+            function( data ) {
+                return data[0] + ( (' (' + data[1] + ')') || '');
+            },
+            function( data ) {
+                t = data[1];
+                return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
+            }
+        ],
+        '&acro\t': [ 1, '<acronym title="{0}">' ],
+        '&/acro\t': [0, '</acronym>'],
+        '&abbr\t': [ 1, '<abbr title="{0}">'],
+        '&/abbr\t': [ 0, '</abbr>'],
+        '&img\t': [ 3, '<img src="{0}" alt="{1}" title="{2}" />'],
+        '&iframe\t': [ 3, '<iframe src="{0}" width="{1}" height="{2}" />'],
+        '&/iframe\t': [ 0, '</iframe>'],
+        '&a\t': [ 2, '<a href="{0}" title="{1}">' ],
+        '&/a\t': [ 0, '</a>'],
+        '&br\t': [ 0, '<br/>' ],
+        '&bcode\t': [0, '<bcode>', '<span><pre><code>'],
+        '&/bcode\t': [0, '</bcode>', '</code></pre></span>'],
         '&avatar\t': [ 2,
             ':icon{0}:',
             function( data ) { return wsc.dAmn.avatar.link( data[0], data[1] ); }
@@ -7310,97 +7314,197 @@ wsc.dAmn.Tablumps = function(  ) {
                     th+'" alt=":thumb'+id+':" src="'+path+'" /></a>';
             }
         ],
+        'EOF': [0, '', null, '\x1b[m']
     };
 
 };
 
 
 /**
- * dAmn extension makes the client work with dAmn.
- * 
- * @class Extension
- * @constructor
+ * @function parse
+ *
+ * Create a wsc.dAmn.TablumpString obejct and return it.
  */
-wsc.dAmn.Extension = function( client ) {
+wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
+    return new wsc.dAmn.TablumpString(data, this);
+};
 
-    client.settings.client = 'dAmnClient';
-    client.settings.clientver = '0.3';
-    client.settings.domain = 'deviantart.com';
-    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
+
+    if( !data )
+        return [];
     
-    client.protocol.extend_maps({
-        'dAmnServer': ['version']
-    });
+    var sep = '\t';
+    var result = [];
+    var ti = -1;
+    var tag = '';
+    var working = '';
+    var cropped = null;
     
-    client.protocol.extend_messages({
-        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
-    });
-    
-    client.protocol.tablumps.extend(wsc.dAmn.Tablumps());
-    
-    client.flow.dAmnServer = client.flow.chatserver;
-    
-    client.exclude.push( '#devart' );
-    
-    client.ui.on( 'userinfo.before', function( event, ui ) {
-        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+    for( var i = 0; i < data.length; i++ ) {
         
-        if( event.user.member.realname )
-            event.user.info.push(event.user.member.realname);
+        // All tablumps start with &!
+        if( data[i] != '&' )
+            continue;
         
-        if( event.user.member.typename )
-            event.user.info.push(event.user.member.typename);
-    });
+        // We want to work on extracting the tag. First thing is split
+        // the string at the current index. We don't need to parse
+        // anything to the left of the index.
+        result.push([ 'raw', data.substring(0, i) ]);
+        working = data.substring(i);
+        data = working;
+        i = -1;
+        
+        // Next make sure there is a tab character ending the tag.
+        ti = working.indexOf('\t');
+        if( ti == -1 )
+            continue;
+        
+        // Now we can crop the tag.
+        tag = working.substring(0, ti + 1);
+        working = working.substring(ti + 1);
+        data = working;
+        
+        // Crop the tablump.
+        cropped = this.crop(tag, working);
+        
+        // Didn't manage to crop?
+        if( cropped === null ) {
+            continue;
+        }
+        
+        result.push(cropped[0]);
+        data = cropped[1];
+        
+    }
     
-    client.ui.on( 'log_whois.before', function( event, ui ) {
-        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
-        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
-        
-        if( event.raw.realname )
-            event.info.push(event.raw.realname);
-        
-        if( event.raw.typename )
-            event.info.push(event.raw.typename);
-    } );
+    if( data.length > 0 )
+        result.push(['raw', data]);
+    
+    return result;
 
 };
 
-wsc.dAmn.avatar = {};
-wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
+wsc.dAmn.TablumpParser.prototype.crop = function( tag, working ) {
+    var lump = this.lumps[tag];
+    
+    // If we don't know how to parse the tag, leave it be!
+    if( lump === undefined ) {
+        return null;
+    }
+    
+    // Crop the rest of the tablump!
+    if( lump[0] == 0 )
+        return [[tag, []], working];
+    else {
+        var crop = this.tokens(working, lump[0], '\t');
+        return [[tag, crop[0]], crop[1]];
+    }
+};
 
 /**
- * Produces an avatar link.
+ * @function render
+ *
+ * Render tablumps in a given format.
  * 
- * @class avatar_link
- * @constructor
+ * Here, the flag should be a number, and defines the index of the renderer
+ * to use when rendering a tablump. Setting `flag` to 0 will result in the
+ * first renderer being used. In the render map, the plain text renderers come
+ * first, and also act as a default.
+ * 
+ * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
+ * where possible. Setting `flag` to 2 causes the parser to render tablumps as
+ * ANSI escape sequence formatted strings where possible.
  */
-wsc.dAmn.avatar.link = function( un, icon ) {
-    icon = parseInt(icon);
-    var cachebuster = (icon >> 2) & 15;
-    icon = icon & 3;
-    var ext = wsc.dAmn.avatar.ext[icon] || 'gif';
+wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
+    if( !data )
+        return '';
     
-    if (cachebuster) {
-        cachebuster = '?' + cachebuster;
-    }
-    else {
-        cachebuster = '';
-    }
+    if( !data.hasOwnProperty('tokens') )
+        return '';
     
-    if( icon == 0 ) { 
-        ico = 'default';
-    } else {
-        var ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
+    flag = flag + 1;
+    var rendered = '';
+    var token = [];
+    
+    for( var i in data.tokens ) {
         
-        var ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
-            return un[i] == '-' ? '_' : un[i].toLowerCase();
-        });
-        ico = replaceAll( ico, '{un}', un.toLowerCase() );
+        if( !data.tokens.hasOwnProperty(i) )
+            continue;
+        
+        token = data.tokens[i];
+        
+        if( token[0] == 'raw' ) {
+            rendered+= token[1];
+            continue;
+        }
+        
+        rendered+= this.renderOne( flag, token[0], token[1] );
+        
     }
     
-    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
-            alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
+    // Replace the simpler tablumps which do not have arguments.
+    //data = data.replace(this.repl[0], this.repl[1]);
+    console.log(rendered);
+    return rendered + this.renderOne( flag, 'EOF', '' );
 };
+
+/**
+ * @function renderOne
+ * Render a single tablump.
+ */
+wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
+    var lump = this.lumps[tag];
+    
+    // If we don't know how to parse the tag, leave it be!
+    if( lump === undefined ) {
+        return '&' + tag + '\t' + tokens.join('\t');;
+    }
+    
+    // Get our renderer.
+    var renderer = lump[type] || lump[1];
+    console.log
+    // Parse the tablump if we can.
+    if( typeof(renderer) == 'string' )
+        return String.format(renderer, tokens);
+    else
+        return renderer.call(this, tokens);
+};
+
+/**
+ * @function tokens
+ * Return n tokens from any given input.
+ *
+ * Tablumps contain arguments which are separated by tab characters. This
+ * method is used to crop a specific number of arguments from a given
+ * input.
+ */
+wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit, sep, end ) {
+    sep = sep || '\t';
+    end = end || '&';
+    var tokens = [];
+    var find = -1;
+    
+    for( i = limit; i > 0; i-- ) {
+        find = data.indexOf(sep);
+        
+        if( find == -1 )
+            break;
+        
+        tokens.push( data.substring(0, find) );
+        data = data.substring(find + 1);
+        
+        if( tokens[tokens.length - 1] == end ) {
+            tokens.pop();
+            break;
+        }
+    }
+    
+    return [tokens, data];
+};
+
+
+
 /*
  * wsc - photofroggy
  * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like

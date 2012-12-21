@@ -35,7 +35,7 @@ wsc.Client = function( view, options, mozilla ) {
         "autojoin": "chat:channel",
         "control": wsc.Control,
         "protocol": wsc.Protocol,
-        "tablumps": wsc.Tablumps,
+        "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
         "ui": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
@@ -58,7 +58,7 @@ wsc.Client = function( view, options, mozilla ) {
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
-    this.protocol = new this.settings.protocol( new this.settings.tablumps() );
+    this.protocol = new this.settings.protocol( new this.settings.mparser() );
     this.flow = new this.settings.flow(this.protocol);
     
     this.build();
