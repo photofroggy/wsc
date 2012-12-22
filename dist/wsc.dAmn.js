@@ -6945,7 +6945,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.6';
+wsc.dAmn.VERSION = '0.2.7';
 wsc.dAmn.STATE = 'alpha';
 
 
