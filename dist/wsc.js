@@ -2499,7 +2499,35 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     var cmd_unignore = function( cmd ) {
     
-    
+        var users = cmd.args.split(' ');
+        var user = '';
+        var msg = '';
+        var mod = false;
+        
+        for( var i in users ) {
+            if( !users.hasOwnProperty( i ) )
+                continue;
+            
+            user = users[i];
+            if( user.length == 0 )
+                continue;
+            
+            mod = true;
+            msg = replaceAll( settings.unignore, '{user}', user.toLowerCase() );
+            if( msg.indexOf('/me ') == 0 ) {
+                msg = msg.substr(4);
+                client.action( cmd.target, msg );
+            } else {
+                client.say( cmd.target, msg );
+            }
+            
+            user = user.toLowerCase();
+            settings.ignored.splice( settings.ignored.indexOf(user), 1 );
+            //client.ui.unmute_user( user );
+        }
+        
+        if( mod )
+            save();
     
     };
     
