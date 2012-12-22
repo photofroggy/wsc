@@ -272,6 +272,11 @@ wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
     return new wsc.dAmn.TablumpString(data, this);
 };
 
+/**
+ * @function tokenise
+ * 
+ * Parse a message possibly containing tablumps into tokens.
+ */
 wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 
     if( !data )
