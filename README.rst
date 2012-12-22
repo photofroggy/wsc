@@ -7,6 +7,12 @@ the client only uses WebSockets as a transport, so to connect to dAmn's server u
 this client, a WebSocket proxy needs to be used.
 
 
+--------
+Setup
+--------
+You can serve the javascript and CSS files how you want. The CSS, however, expects
+the font files to be served on ``/font/``, on port 80.
+
 ---------
 How To
 ---------
