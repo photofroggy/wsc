@@ -10,8 +10,11 @@ this client, a WebSocket proxy needs to be used.
 --------
 Setup
 --------
-You can serve the javascript and CSS files how you want. The CSS, however, expects
-the font files to be served on ``/font/``, on port 80.
+* Serve the CSS and javascript files in ``./dist`` however you want.
+** File names containing ``.min.`` are minified versions of other sources.
+** Use the minified versions when deploying.
+* Serve the files in ``./font`` on ``/font/`` from the server, on port 80.
+** The CSS assumes the fonts are served here.
 
 ---------
 How To
