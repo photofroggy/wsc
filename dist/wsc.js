@@ -1914,8 +1914,22 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 };
 
 
+/**
+ * Ignore extension.
+ * 
+ * Implements the ignore functionality.
+ */
+wsc.defaults.Extension.Ignore = function( client ) {
 
 
+
+};
+
+
+
+/**
+ * This extension implements most of the default commands for wsc.
+ */
 wsc.defaults.Extension = function( client ) {
 
     var ext = {};

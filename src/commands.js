@@ -1,5 +1,8 @@
 
 
+/**
+ * This extension implements most of the default commands for wsc.
+ */
 wsc.defaults.Extension = function( client ) {
 
     var ext = {};
