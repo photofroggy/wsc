@@ -71,6 +71,16 @@ wsc.dAmn.TablumpString.prototype.ansi = function() {
 
 
 /**
+ * States for the parser.
+ */
+wsc.dAmn.PARSE = {
+    'RAW': 0,
+    'TAG': 1,
+    'ARG': 2
+};
+
+
+/**
  * @object wsc.dAmn.TablumpParser
  *
  * Constructor for the tablumps parser.
@@ -297,79 +307,90 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
     if( !data )
         return [];
     
-    var sep = '\t';
+    var state = wsc.dAmn.PARSE.RAW;
     var result = [];
-    var ti = -1;
-    var cropped = null;
+    var argbuf = '';
+    var argc = 0;
+    var item = [];
     var buf = '';
-    var orig = '';
+    var tag = '';
+    var c = '';
     
     for( var i = 0; i < data.length; i++ ) {
+    
+        c = data[i];
         
-        // All tablumps start with &!
-        if( data[i] != '&' )
-            continue;
+        switch(state) {
         
-        // We want to work on extracting the tag. First thing is split
-        // the string at the current index. We don't need to parse
-        // anything to the left of the index.
-        orig = data;
-        buf = data.substring(0, i);
+            case wsc.dAmn.PARSE.RAW:
+                if( c != '&' ) {
+                    buf+= c;
+                    break;
+                }
+                argbuf = c;
+                state = wsc.dAmn.PARSE.TAG
+                break;
+            
+            case wsc.dAmn.PARSE.TAG:
+                argbuf+= c;
+                if( c == ' ' || c == '\t' || c == '&' ) {
+                    if( c == ' ' || c == '&' || !this.lumps.hasOwnProperty(argbuf) ) {
+                        buf+= argbuf;
+                        if( c == '&' ) {
+                            i--;
+                            buf = buf.substr(0, buf.length-1);
+                        }
+                        state = wsc.dAmn.PARSE.RAW;
+                    } else {
+                        if( buf.length > 0 ) {
+                            result.push([ 'raw', buf ]);
+                            buf = '';
+                        }
+                        
+                        item = [argbuf, []];
+                        argc = this.lumps[argbuf][0];
+                        result.push(item);
+                        argbuf = '';
+                        
+                        if( argc > 0 ) {
+                            state = wsc.dAmn.PARSE.ARG;
+                        } else {
+                            state = wsc.dAmn.PARSE.RAW;
+                        }
+                    }
+                }
+                break;
+            
+            case wsc.dAmn.PARSE.ARG:
+                if( c == '\t' ) {
+                    argc--;
+                    
+                    if( argbuf == '&' ) {
+                        state = wsc.dAmn.PARSE.RAW;
+                        break;
+                    }
+                    
+                    item[1].push(argbuf);
+                    argbuf = '';
+                    
+                    if( argc == 0 )
+                        state = wsc.dAmn.PARSE.RAW;
+                    break;
+                }
+                
+                argbuf+= c;
+                break;
         
-        if( i > 0 )
-            data = data.substring(i);
-        
-        // Next make sure there is a tab character ending the tag.
-        ti = data.indexOf('\t');
-        if( ti == -1 ) {
-            data = orig;
-            continue;
         }
-        
-        // Crop the tablump.
-        cropped = this.crop(
-            data.substring(0, ti + 1),
-            data.substring(ti + 1)
-        );
-        
-        // Didn't manage to crop?
-        if( cropped === null ) {
-            data = orig;
-            continue;
-        }
-        
-        if( i > 0 ) {
-            result.push([ 'raw', buf ]);
-        }
-        
-        i = -1;
-        result.push(cropped[0]);
-        data = cropped[1];
-        
+    
     }
     
-    if( data.length > 0 )
-        result.push(['raw', data]);
+    if( buf.length > 0 ) {
+        result.push([ 'raw', buf ]);
+    }
     
     return result;
 
-};
-
-wsc.dAmn.TablumpParser.prototype.crop = function( tag, working ) {
-    var lump = this.lumps[tag];
-    
-    // If we don't know how to parse the tag, leave it be!
-    if( lump === undefined ) {
-        return null;
-    }
-    
-    // Crop the rest of the tablump!
-    if( lump[0] == 0 )
-        return [[tag, []], working];
-    else {
-        var crop = this.tokens(working, lump[0]);
-        return [[tag, crop[0]], crop[1]];
-    }
 };
 
 /**
@@ -436,36 +457,4 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     else
         return renderer.call(this, tokens);
 };
-
-/**
- * @function tokens
- * Return n tokens from any given input.
- *
- * Tablumps contain arguments which are separated by tab characters. This
- * method is used to crop a specific number of arguments from a given
- * input.
- */
-wsc.dAmn.TablumpParser.prototype.tokens = function( data, limit ) {
-    var tokens = [];
-    var find = -1;
-    
-    for( i = limit; i > 0; i-- ) {
-        find = data.indexOf('\t');
-        
-        if( find == -1 )
-            break;
-        
-        tokens.push( data.substring(0, find) );
-        data = data.substring(find + 1);
-        
-        if( tokens[tokens.length - 1] == '&' ) {
-            tokens.pop();
-            break;
-        }
-    }
-    
-    return [tokens, data];
-};
-
-
 
