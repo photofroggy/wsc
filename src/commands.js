@@ -513,5 +513,6 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Ignore(client);
 
 };
