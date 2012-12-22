@@ -2463,13 +2463,41 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     };
     
-    var cmd_ignore = function( event ) {
+    var cmd_ignore = function( cmd ) {
     
-    
+        var users = cmd.args.split(' ');
+        var user = '';
+        var msg = '';
+        var mod = false;
+        
+        for( var i in users ) {
+            if( !users.hasOwnProperty( i ) )
+                continue;
+            
+            user = users[i];
+            if( user.length == 0 )
+                continue;
+            
+            mod = true;
+            msg = replaceAll( settings.ignore, '{user}', user.toLowerCase() );
+            if( msg.indexOf('/me ') == 0 ) {
+                msg = msg.substr(4);
+                client.action( cmd.target, msg );
+            } else {
+                client.say( cmd.target, msg );
+            }
+            
+            user = user.toLowerCase();
+            settings.ignored.push(user);
+            //client.ui.mute_user( user );
+        }
+        
+        if( mod )
+            save();
     
     };
     
-    var cmd_unignore = function( event ) {
+    var cmd_unignore = function( cmd ) {
     
     
     
