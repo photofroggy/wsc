@@ -10,6 +10,7 @@
 wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
+    this.storage = new wsc.Storage;
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -46,6 +47,8 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
+    this.settings.theme = this.storage.get('theme', wsc.defaults.theme);
+    this.storage.set('theme', this.settings.theme);
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,

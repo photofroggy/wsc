@@ -145,6 +145,7 @@ wsc.defaults.Extension = function( client ) {
                     orig.clock = event.data.clock == '24';
                     orig.theme = event.data.theme;
                     orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                    client.storage.set('theme', 'wsct_' + orig.theme);
                 },
                 'close': function( event ) {
                     client.ui.clock(orig.clock);

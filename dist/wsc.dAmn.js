@@ -591,6 +591,60 @@ function timeLengthString( length ) {
     
     return oxlist(ret);
 }
+/**
+ * Storage object.
+ * Allows you to save stuffs yo.
+ */
+wsc.Storage = function( namespace, parent ) {
+
+    this.ns = namespace || null;
+    this.parent = parent || null;
+
+};
+
+/**
+ * Get a "folder".
+ */
+wsc.Storage.prototype.folder = function( namespace ) {
+
+    if( this.ns != null )
+        namespace = this.ns + '.' + namespace;
+    
+    return new wsc.Storage( namespace, this );
+
+};
+
+/**
+ * Get an item from storage.
+ */
+wsc.Storage.prototype.get = function( key, default_val ) {
+
+    if( this.ns != null )
+        key = this.ns + '.' + key;
+    
+    try {
+        if( !localStorage.hasOwnProperty(key) )
+            return default_val;
+        return localStorage[key];
+    } catch(err) {
+        return default_val;
+    }
+
+};
+
+/**
+ * Store an item.
+ */
+wsc.Storage.prototype.set = function( key, value ) {
+
+    if( this.ns != null )
+        key = this.ns + '.' + key;
+    
+    try {
+        localStorage[key] = value;
+    } catch(err) {  }
+
+};
 /* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
@@ -2007,6 +2061,7 @@ wsc.defaults.Extension = function( client ) {
                     orig.clock = event.data.clock == '24';
                     orig.theme = event.data.theme;
                     orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                    client.storage.set('theme', 'wsct_' + orig.theme);
                 },
                 'close': function( event ) {
                     client.ui.clock(orig.clock);
@@ -2385,6 +2440,7 @@ wsc.defaults.Extension = function( client ) {
 wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
+    this.storage = new wsc.Storage;
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -2421,6 +2477,8 @@ wsc.Client = function( view, options, mozilla ) {
     };
     
     view.extend( this.settings, options );
+    this.settings.theme = this.storage.get('theme', wsc.defaults.theme);
+    this.storage.set('theme', this.settings.theme);
     
     this.ui = new this.settings.ui( view, {
         'themes': this.settings.themes,
@@ -6957,6 +7015,9 @@ wsc.dAmn.STATE = 'alpha';
  */
 wsc.dAmn.Extension = function( client ) {
 
+    var storage = client.storage.folder('dAmn');
+    storage.set('loaded', (storage.get('loaded', 0) + 1));
+    console.log(storage.get('loaded'));
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
