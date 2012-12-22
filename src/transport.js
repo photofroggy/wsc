@@ -213,7 +213,7 @@ wsc.WebSocket.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(replaceAll(encodeURIComponent(message), ' ', '+'));
+    return this.sock.send(replaceAll(escape(message), '+', '%2B'));
 
 };
 

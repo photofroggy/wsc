@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.71';
+wsc.VERSION = '0.9.72';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -304,7 +304,7 @@ wsc.WebSocket.prototype.send = function( message ) {
     if( this.sock == null )
         return -1;
     
-    return this.sock.send(replaceAll(encodeURIComponent(message), ' ', '+'));
+    return this.sock.send(replaceAll(escape(message), '+', '%2B'));
 
 };
 
@@ -1592,7 +1592,7 @@ wsc.Flow.prototype.close = function( client, event ) {
 
 // Received data from WebSocket connection.
 wsc.Flow.prototype.message = function( client, event ) {
-    var pack = new wsc.Packet(decodeURIComponent(replaceAll(event.data, '+', ' ')));
+    var pack = new wsc.Packet(unescape(replaceAll(event.data, '+', ' ')));
     
     if(pack == null)
         return;
