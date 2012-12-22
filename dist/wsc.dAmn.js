@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.72';
+wsc.VERSION = '0.9.73';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -6945,7 +6945,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.5';
+wsc.dAmn.VERSION = '0.2.6';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -7324,6 +7324,8 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
  * Create a wsc.dAmn.TablumpString obejct and return it.
  */
 wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
+    data = replaceAll(data, '<', '&lt;');
+    data = replaceAll(data, '>', '&gt;');
     return new wsc.dAmn.TablumpString(data, this);
 };
 
@@ -7335,8 +7337,9 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
     var sep = '\t';
     var result = [];
     var ti = -1;
-    var tag = '';
     var cropped = null;
+    var buf = '';
+    var orig = '';
     
     for( var i = 0; i < data.length; i++ ) {
         
@@ -7347,25 +7350,33 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
         // We want to work on extracting the tag. First thing is split
         // the string at the current index. We don't need to parse
         // anything to the left of the index.
-        result.push([ 'raw', data.substring(0, i) ]);
-        data = data.substring(i);
-        i = 0;
+        orig = data;
+        buf = data.substring(0, i);
+        
+        if( i > 0 )
+            data = data.substring(i);
         
         // Next make sure there is a tab character ending the tag.
         ti = data.indexOf('\t');
-        if( ti == -1 )
+        if( ti == -1 ) {
+            data = orig;
             continue;
-        
-        // Now we can crop the tag.
-        tag = data.substring(0, ti + 1);
-        data = data.substring(ti + 1);
+        }
         
         // Crop the tablump.
-        cropped = this.crop(tag, data);
+        cropped = this.crop(
+            data.substring(0, ti + 1),
+            data.substring(ti + 1)
+        );
         
         // Didn't manage to crop?
         if( cropped === null ) {
+            data = orig;
             continue;
+        }
+        
+        if( i > 0 ) {
+            result.push([ 'raw', buf ]);
         }
         
         i = -1;
