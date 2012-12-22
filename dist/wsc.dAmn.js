@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.9.73';
+wsc.VERSION = '0.10.74';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -7016,7 +7016,6 @@ wsc.dAmn.STATE = 'alpha';
 wsc.dAmn.Extension = function( client ) {
 
     var storage = client.storage.folder('dAmn');
-    storage.set('loaded', (storage.get('loaded', 0) + 1));
     console.log(storage.get('loaded'));
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
