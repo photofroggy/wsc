@@ -1914,100 +1914,6 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 };
 
 
-/**
- * Ignore extension.
- * 
- * Implements the ignore functionality.
- */
-wsc.defaults.Extension.Ignore = function( client ) {
-
-    var settings = {};
-    var storage = client.folder('ignore');
-    var istore = storage.folder('ignored');
-    
-    var init = function(  ) {
-    
-        load();
-        save(); // Just in case we don't have the stuff stored in the first place.
-        
-        // Commands
-        client.bind('cmd.ignore', cmd_ignore);
-        client.bind('cmd.unignore', cmd_unignore);
-        
-        // Settings window
-        client.bind('settings.open', settings.page);
-    
-    };
-    
-    settings.page = function( event, ui ) {
-    
-        
-    
-    };
-    
-    var cmd_ignore = function( event ) {
-    
-    
-    
-    };
-    
-    var cmd_unignore = function( event ) {
-    
-    
-    
-    };
-    
-    var load = function(  ) {
-        
-        settings.ignore = storage.get('ignore', '/me is ignoring {user} now');
-        settings.unignore = storage.get('unignore', '/me is not ignoring {user} anymore');
-        settings.count = parseInt( storage.get( 'count', 0 ) );
-        settings.ignored = [];
-        
-        if( settings.count > 0 ) {
-            var tu = null;
-            for( var i = 0; i < settings.count; i++ ) {
-                tu = istore.get(i, null);
-                if( tu === null )
-                    continue;
-                settings.ignored.push(tu);
-            }
-        }
-        
-    };
-    
-    var save = function(  ) {
-    
-        storage.set('ignore', settings.ignore);
-        storage.set('unignore', settings.unignore);
-        
-        if( settings.count == 0 ) {
-            storage.set('count', 0);
-        } else {
-            var c = -1;
-            for( var i in settings.ignored.length ) {
-            
-                if( !settings.ignored.hasOwnProperty(i) )
-                    continue;
-                
-                c++;
-                istore.set( c, settings.ignored[i] );
-            
-            }
-            storage.set('count', c);
-        }
-    
-    };
-    
-    /**
-     * TODO:
-     *  Make handlers
-     */
-    
-    init();
-
-};
-
 
 
 /**
@@ -2526,6 +2432,100 @@ wsc.defaults.Extension = function( client ) {
     wsc.defaults.Extension.Ignore(client);
 
 };
+/**
+ * Ignore extension.
+ * 
+ * Implements the ignore functionality.
+ */
+wsc.defaults.Extension.Ignore = function( client ) {
+
+    var settings = {};
+    var storage = client.storage.folder('ignore');
+    var istore = storage.folder('ignored');
+    
+    var init = function(  ) {
+    
+        load();
+        save(); // Just in case we don't have the stuff stored in the first place.
+        
+        // Commands
+        client.bind('cmd.ignore', cmd_ignore);
+        client.bind('cmd.unignore', cmd_unignore);
+        
+        // Settings window
+        client.bind('settings.open', settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        
+    
+    };
+    
+    var cmd_ignore = function( event ) {
+    
+    
+    
+    };
+    
+    var cmd_unignore = function( event ) {
+    
+    
+    
+    };
+    
+    var load = function(  ) {
+        
+        settings.ignore = storage.get('ignore', '/me is ignoring {user} now');
+        settings.unignore = storage.get('unignore', '/me is not ignoring {user} anymore');
+        settings.count = parseInt( storage.get( 'count', 0 ) );
+        settings.ignored = [];
+        
+        if( settings.count > 0 ) {
+            var tu = null;
+            for( var i = 0; i < settings.count; i++ ) {
+                tu = istore.get(i, null);
+                if( tu === null )
+                    continue;
+                settings.ignored.push(tu);
+            }
+        }
+        
+    };
+    
+    var save = function(  ) {
+    
+        storage.set('ignore', settings.ignore);
+        storage.set('unignore', settings.unignore);
+        
+        if( settings.count == 0 ) {
+            storage.set('count', 0);
+        } else {
+            var c = -1;
+            for( var i in settings.ignored.length ) {
+            
+                if( !settings.ignored.hasOwnProperty(i) )
+                    continue;
+                
+                c++;
+                istore.set( c, settings.ignored[i] );
+            
+            }
+            storage.set('count', c);
+        }
+    
+    };
+    
+    /**
+     * TODO:
+     *  Make handlers
+     */
+    
+    init();
+
+};
+
 /**
  * Chat client.
  *
