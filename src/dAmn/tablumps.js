@@ -402,8 +402,6 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
         
     }
     
-    // Replace the simpler tablumps which do not have arguments.
-    //data = data.replace(this.repl[0], this.repl[1]);
     return rendered + this.renderOne( flag, 'EOF', '' );
 };
 

@@ -6945,7 +6945,7 @@ Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} ch
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.4';
+wsc.dAmn.VERSION = '0.2.5';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -7439,8 +7439,6 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
         
     }
     
-    // Replace the simpler tablumps which do not have arguments.
-    //data = data.replace(this.repl[0], this.repl[1]);
     return rendered + this.renderOne( flag, 'EOF', '' );
 };
 
