@@ -7115,8 +7115,6 @@ wsc.dAmn.TablumpString.prototype.ansi = function() {
 wsc.dAmn.TablumpParser = function(  ) {
 
     this.lumps = this.defaultMap();
-    this._list = [];
-    this._dent = 0;
 
 };
 
@@ -7141,34 +7139,6 @@ wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
         this.lumps[index] = map[index];
     }
-};
-
-/**
- * @function _list_start
- * Initiate a list.
- */
-wsc.dAmn.TablumpParser.prototype._list_start = function( ol ) {
-    list = {};
-    list.ol = ol || false;
-    list.count = 0;
-    ret = this._list[0] ? '' : '\n';
-    this._dent++;
-    this._list.unshift(list);
-    return ret;
-};
-
-/**
- * @function _list_end
- * Finish a list.
- */
-wsc.dAmn.TablumpParser.prototype._list_end = function( ) {
-    if( this._list.length == 0 ) {
-        return '';
-    }
-    
-    list = this._list.shift();
-    this._dent--;
-    return ( this._dent == 0 && list.count == 0 ) ? '\n' : '';
 };
 
 /**
