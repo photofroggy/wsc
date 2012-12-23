@@ -360,8 +360,8 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
     
     }
     
-    if( buf.length > 0 ) {
-        result.push([ 'raw', buf ]);
+    if( buf.length > 0 || argbuf.length > 0 ) {
+        result.push([ 'raw', buf + argbuf ]);
     }
     
     return result;
