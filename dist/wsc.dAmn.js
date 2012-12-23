@@ -7479,7 +7479,6 @@ wsc.dAmn.STATE = 'alpha';
 wsc.dAmn.Extension = function( client ) {
 
     var storage = client.storage.folder('dAmn');
-    console.log(storage.get('loaded'));
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
