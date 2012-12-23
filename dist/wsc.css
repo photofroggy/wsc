@@ -1115,6 +1115,13 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox, div
 div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox form, div.wsc div.floater.settings div.bookwrap div.book div.page .item .checkbox form {
   padding: 0px;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed, div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed-ff-indv form .fields .field {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #B1B1B1;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed-ff-indv form .fields .field {
+  padding: 5px;
+}
 div.wsc div.floater.settings footer {
   width: 100%;
   padding: 10px 5px;

@@ -2495,7 +2495,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             'ref': 'msgs',
             'title': 'Messages',
             'text': 'Here you can set the messages displayed when you ignore or\
-                    unignore a user. The text <code>{user}</code> is replaced\
+                    unignore a user.\n\nThe text <code>{user}</code> is replaced\
                     with the name of the user your are ignoring or unignoring.',
             'fields': [
                 ['Textfield', {
@@ -2515,6 +2515,21 @@ wsc.defaults.Extension.Ignore = function( client ) {
                     settings.unignore = event.data.unignore;
                 }
             }
+        });
+        
+        page.item('Form', {
+            'ref': 'ignored',
+            'wclass': 'boxed-ff-indv',
+            'title': 'Users',
+            'text': 'This is the list of users that you have silenced.\n\nUse the\
+                    commands <code>/ignore</code> and <code>/unignore</code>\
+                    to edit the list.',
+            'fields': [
+                ['Text', {
+                    'ref': 'users',
+                    'text': '<ul><li>item one</li><li>item two</li></ul>'
+                }]
+            ]
         });
     
     };
@@ -7216,6 +7231,18 @@ Chatterbox.template.settings.item.form.field.check = {};
 Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+
+Chatterbox.template.settings.item.form.field.text = {};
+Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.form.field.text.post = Chatterbox.template.clean(['title', 'text']);
+Chatterbox.template.settings.item.form.field.text.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
+                                        {text}\
+                                    </p>';
 
 
 

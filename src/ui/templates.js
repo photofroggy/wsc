@@ -515,5 +515,17 @@ Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbo
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
 
+Chatterbox.template.settings.item.form.field.text = {};
+Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.form.field.text.post = Chatterbox.template.clean(['title', 'text']);
+Chatterbox.template.settings.item.form.field.text.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
+                                        {text}\
+                                    </p>';
+
 
 
