@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.10.74';
+wsc.VERSION = '0.10.75';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -643,6 +643,24 @@ wsc.Storage.prototype.set = function( key, value ) {
     try {
         localStorage[key] = value;
     } catch(err) {  }
+
+};
+
+/**
+ * Remove an item.
+ */
+wsc.Storage.prototype.remove = function( key ) {
+
+    if( this.ns != null )
+        key = this.ns + '.' + key;
+    
+    try {
+        if( !localStorage.hasOwnProperty( key ) )
+            return false;
+        return delete localStorage[key];
+    } catch(err) {  }
+    
+    return false;
 
 };
 /* wsc packets - photofroggy
