@@ -3908,8 +3908,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     // The monitor channel is essentially our console for the chat.
-    hide = this.settings.monitor[1];
-    this.monitoro = this.chatbook.create_channel(this.mns, hide, true);
+    this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     //this.control.setInput();
     this.control.focus();
     
