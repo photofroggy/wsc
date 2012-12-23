@@ -64,7 +64,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        page = e.settings.page('Main');
+        var page = e.settings.page('Main');
         var orig = {};
         orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
         orig.clock = client.ui.clock();

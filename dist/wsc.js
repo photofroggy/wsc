@@ -1980,7 +1980,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        page = e.settings.page('Main');
+        var page = e.settings.page('Main');
         var orig = {};
         orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
         orig.clock = client.ui.clock();
@@ -2459,7 +2459,45 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
+        var page = event.settings.page('Ignores');
+        var orig = {};
+        orig.im = settings.ignore;
+        orig.uim = settings.unignore;
         
+        page.item('Text', {
+            'ref': 'intro',
+            'title': 'Ignores',
+            'text': 'Use <code>ignore</code> to ignore people.\n\n\
+                    You can "ignore" other users of the chat server using the\n\
+                    <code>/ignore</code> command. Ignoring a user hides their\
+                    messages from you in the channel log.',
+        });
+        
+        page.item('Form', {
+            'ref': 'msgs',
+            'title': 'Messages',
+            'text': 'Here you can set the messages displayed when you ignore or\
+                    unignore a user. The text <code>{user}</code> is replaced\
+                    the name of the user your are ignoring or unignoring.',
+            'fields': [
+                ['Textfield', {
+                    'ref': 'ignore',
+                    'label': 'Ignore',
+                    'default': orig.im
+                }],
+                ['Textfield', {
+                    'ref': 'unignore',
+                    'label': 'Unignore',
+                    'default': orig.uim
+                }]
+            ],
+            'event': {
+                'save': function( event ) {
+                    settings.ignore = event.data.ignore;
+                    settings.unignore = event.data.unignore;
+                }
+            }
+        });
     
     };
     
@@ -2545,6 +2583,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 if( tu === null )
                     continue;
                 settings.ignored.push(tu);
+                client.ui.mute_user( tu );
             }
         }
         
@@ -5399,6 +5438,7 @@ Chatterbox.Popup.prototype.close = function(  ) {
  */
 Chatterbox.Settings = function( ui, config ) {
 
+    console.log(config);
     Chatterbox.Popup.call( this, ui, {
         'ref': 'settings',
         'title': 'Settings',

@@ -9,6 +9,7 @@
  */
 Chatterbox.Settings = function( ui, config ) {
 
+    console.log(config);
     Chatterbox.Popup.call( this, ui, {
         'ref': 'settings',
         'title': 'Settings',
