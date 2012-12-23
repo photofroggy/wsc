@@ -342,6 +342,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
                     
                     if( argbuf == '&' ) {
                         state = wsc.dAmn.PARSE.RAW;
+                        argbuf = '';
                         break;
                     }
                     
