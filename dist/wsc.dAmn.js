@@ -2483,13 +2483,13 @@ wsc.defaults.Extension.Ignore = function( client ) {
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
         
-        if( settings.ignored.length == 0 ) {
+        if( client.umuted.length == 0 ) {
             ul+= '<li><i>No one ignored yet</i></li></ul>';
         } else {
-            for( var i in settings.ignored ) {
-                if( !settings.ignored.hasOwnProperty( i ) )
+            for( var i in client.umuted ) {
+                if( !client.umuted.hasOwnProperty( i ) )
                     continue;
-                ul+= '<li>' + settings.ignored[i] + '</li>';
+                ul+= '<li>' + client.umuted[i] + '</li>';
             }
             ul+= '</ul>';
         }
@@ -2558,21 +2558,18 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 continue;
             
             user = users[i];
-            if( user.length == 0 )
+            tmod = client.mute_user( user );
+            if( !tmod )
                 continue;
             
-            mod = true;
-            msg = replaceAll( settings.ignore, '{user}', user.toLowerCase() );
+            mod = tmod;
+            msg = replaceAll( settings.ignore, '{user}', user );
             if( msg.indexOf('/me ') == 0 ) {
                 msg = msg.substr(4);
                 client.action( cmd.target, msg );
             } else {
                 client.say( cmd.target, msg );
             }
-            
-            user = user.toLowerCase();
-            settings.ignored.push(user);
-            //client.ui.mute_user( user );
         }
         
         if( mod )
@@ -2587,31 +2584,25 @@ wsc.defaults.Extension.Ignore = function( client ) {
         var msg = '';
         var mi = -1;
         var mod = false;
+        var tmod = false;
         
         for( var i in users ) {
             if( !users.hasOwnProperty( i ) )
                 continue;
             
             user = users[i];
-            if( user.length == 0 )
+            tmod = client.unmute_user( user );
+            if( !tmod )
                 continue;
             
-            mi = settings.ignored.indexOf(user);
-            if( mi < 0 )
-                continue;
-            
-            mod = true;
-            msg = replaceAll( settings.unignore, '{user}', user.toLowerCase() );
+            mod = tmod;
+            msg = replaceAll( settings.unignore, '{user}', user );
             if( msg.indexOf('/me ') == 0 ) {
                 msg = msg.substr(4);
                 client.action( cmd.target, msg );
             } else {
                 client.say( cmd.target, msg );
             }
-            
-            user = user.toLowerCase();
-            settings.ignored.splice( mi, 1 );
-            //client.ui.unmute_user( user );
         }
         
         if( mod )
@@ -2624,15 +2615,12 @@ wsc.defaults.Extension.Ignore = function( client ) {
         settings.ignore = storage.get('ignore', '/me is ignoring {user} now');
         settings.unignore = storage.get('unignore', '/me is not ignoring {user} anymore');
         settings.count = parseInt( storage.get( 'count', 0 ) );
-        settings.ignored = [];
+        client.ui.umuted = [];
         
         if( settings.count > 0 ) {
             var tu = null;
             for( var i = 0; i < settings.count; i++ ) {
-                tu = istore.get(i, null);
-                if( tu === null )
-                    continue;
-                settings.ignored.push(tu);
+                client.mute_user.push( istore.get(i, null) );
                 //client.ui.mute_user( tu );
             }
         }
@@ -2648,17 +2636,17 @@ wsc.defaults.Extension.Ignore = function( client ) {
             istore.remove(i)
         }
         
-        if( settings.ignored.length == 0 ) {
+        if( client.ui.umuted.length == 0 ) {
             storage.set('count', 0);
         } else {
             var c = -1;
-            for( var i in settings.ignored ) {
+            for( var i in client.ui.umuted ) {
             
-                if( !settings.ignored.hasOwnProperty(i) )
+                if( !client.ui.umuted.hasOwnProperty(i) )
                     continue;
                 
                 c++;
-                istore.set( c.toString(), settings.ignored[i] );
+                istore.set( c.toString(), client.ui.umuted[i] );
             
             }
             
@@ -3075,6 +3063,30 @@ wsc.Client.prototype.log = function( namespace, data ) {
 wsc.Client.prototype.monitor = function( message ) {
 
     this.ui.monitor(message);
+
+};
+
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+wsc.Client.prototype.mute_user = function( user ) {
+
+    return this.ui.mute_user( user );
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+wsc.Client.prototype.unmute_user = function( user ) {
+
+    return this.ui.unmute_user( user );
 
 };
 
@@ -3748,6 +3760,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
+    this.umuted = [];
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -3756,12 +3769,15 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true
     };
+    
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
+    
     this.swidth = ( function() { 
         if ( $.browser.msie ) {
             var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
@@ -3780,6 +3796,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         }
         return scrollbarWidth;
     } ) ();
+    
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
     this.STATE = Chatterbox.STATE;
@@ -4096,6 +4113,51 @@ Chatterbox.UI.prototype.log_item = function( msg ) {
 Chatterbox.UI.prototype.log = function( msg ) {
 
     this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+
+};
+
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+Chatterbox.UI.prototype.mute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    if( this.umuted.indexOf( user ) != -1 )
+        return false;
+    
+    this.umuted.push( user );
+    // Some other shit here...
+    // Will involve this:
+    //      '<span class="(((?!u-)(?!").)+)u-{user}">'
+    return true;
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+Chatterbox.UI.prototype.unmute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    var usri = this.umuted.indexOf( user );
+    if( usri == -1 )
+        return false;
+    
+    this.umuted.splice( usri, 1 );
+    // Some other shit here...
+    return true;
 
 };
 
@@ -4712,6 +4774,22 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     if( !this.tab.hasClass('active') )
         this.tab.addClass('noise');
     
+    var u = '';
+    var si = 0;
+    var msg = this.window.find('.logmsg').last();
+    var msgh = msg.html();
+    
+    for( var i in this.manager.umuted ) {
+        if( !this.manager.umuted.hasOwnProperty(i) )
+            continue;
+        u = this.manager.umuted[i];
+        
+        if( msgh.search('<span class="(((?!u-)(?!").)+)u-' + u + '">') != -1 ) {
+            msg.css({'display': 'none'});
+            break;
+        }
+    }
+
 };
 
 /**

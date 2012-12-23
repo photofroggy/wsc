@@ -577,6 +577,22 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     if( !this.tab.hasClass('active') )
         this.tab.addClass('noise');
     
+    var u = '';
+    var si = 0;
+    var msg = this.window.find('.logmsg').last();
+    var msgh = msg.html();
+    
+    for( var i in this.manager.umuted ) {
+        if( !this.manager.umuted.hasOwnProperty(i) )
+            continue;
+        u = this.manager.umuted[i];
+        
+        if( msgh.search('<span class="(((?!u-)(?!").)+)u-' + u + '">') != -1 ) {
+            msg.css({'display': 'none'});
+            break;
+        }
+    }
+
 };
 
 /**
