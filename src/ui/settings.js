@@ -87,10 +87,10 @@ Chatterbox.Settings.prototype.build = function(  ) {
  */
 Chatterbox.Settings.prototype.resize = function(  ) {
 
-    inner = this.window.find('.inner');
-    head = inner.find('h2');
-    wrap = inner.find('.bookwrap');
-    foot = inner.find('footer');
+    var inner = this.window.find('.inner');
+    var head = inner.find('h2');
+    var wrap = inner.find('.bookwrap');
+    var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
     this.config.resize();
@@ -106,8 +106,8 @@ Chatterbox.Settings.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.prototype.switch_page = function( page ) {
 
-    active = this.tabs.find('li.active').first();
-    activeref = active.prop('id').split('-', 1)[0];
+    var active = this.tabs.find('li.active').first();
+    var activeref = active.prop('id').split('-', 1)[0];
     active = this.config.page(activeref.split('_').join(' '));
     active.hide();
     page.show();
@@ -219,7 +219,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
-    page = this.find_page(name);
+    var page = this.find_page(name);
     push = push || false;
     
     if( page == null ) {
@@ -293,9 +293,9 @@ Chatterbox.Settings.Page = function( name ) {
  */
 Chatterbox.Settings.Page.prototype.build = function( window ) {
 
-    tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
+    var tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
-    page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
+    var page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
     page = replaceAll(page, '{page-name}', this.name);
     window.tabs.append(tab);
     window.book.append(page);
@@ -359,6 +359,8 @@ Chatterbox.Settings.Page.prototype.show = function(  ) {
     
     if( !this.view.hasClass('active') )
         this.view.addClass('active');
+    
+    this.resize();
 
 };
 
@@ -389,7 +391,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    item = Chatterbox.Settings.Item.get( type, options );
+    var item = Chatterbox.Settings.Item.get( type, options );
     
     if( shift ) {
         this.items.unshift(item);

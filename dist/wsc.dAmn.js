@@ -2042,7 +2042,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         var msg = '';
         var mi = -1;
         var mod = false;
-        console.log(settings.ignored);
+        
         for( var i in users ) {
             if( !users.hasOwnProperty( i ) )
                 continue;
@@ -2052,8 +2052,6 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 continue;
             
             mi = settings.ignored.indexOf(user);
-            console.log(mi);
-            
             if( mi < 0 )
                 continue;
             
@@ -2101,6 +2099,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
         storage.set('ignore', settings.ignore);
         storage.set('unignore', settings.unignore);
         
+        for( var i = 0; i < settings.count; i++ ) {
+            istore.remove(i)
+        }
+        
         if( settings.ignored.length == 0 ) {
             storage.set('count', 0);
         } else {
@@ -2115,9 +2117,8 @@ wsc.defaults.Extension.Ignore = function( client ) {
             
             }
             
-            if( c < 0 )
-                c = 0;
-            
+            c++;
+            settings.count = c;
             storage.set('count', c);
         }
     
@@ -3706,7 +3707,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.39';
+Chatterbox.VERSION = '0.5.40';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5544,10 +5545,10 @@ Chatterbox.Settings.prototype.build = function(  ) {
  */
 Chatterbox.Settings.prototype.resize = function(  ) {
 
-    inner = this.window.find('.inner');
-    head = inner.find('h2');
-    wrap = inner.find('.bookwrap');
-    foot = inner.find('footer');
+    var inner = this.window.find('.inner');
+    var head = inner.find('h2');
+    var wrap = inner.find('.bookwrap');
+    var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
     this.config.resize();
@@ -5563,8 +5564,8 @@ Chatterbox.Settings.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.prototype.switch_page = function( page ) {
 
-    active = this.tabs.find('li.active').first();
-    activeref = active.prop('id').split('-', 1)[0];
+    var active = this.tabs.find('li.active').first();
+    var activeref = active.prop('id').split('-', 1)[0];
     active = this.config.page(activeref.split('_').join(' '));
     active.hide();
     page.show();
@@ -5676,7 +5677,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
-    page = this.find_page(name);
+    var page = this.find_page(name);
     push = push || false;
     
     if( page == null ) {
@@ -5750,9 +5751,9 @@ Chatterbox.Settings.Page = function( name ) {
  */
 Chatterbox.Settings.Page.prototype.build = function( window ) {
 
-    tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
+    var tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
-    page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
+    var page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
     page = replaceAll(page, '{page-name}', this.name);
     window.tabs.append(tab);
     window.book.append(page);
@@ -5816,6 +5817,8 @@ Chatterbox.Settings.Page.prototype.show = function(  ) {
     
     if( !this.view.hasClass('active') )
         this.view.addClass('active');
+    
+    this.resize();
 
 };
 
@@ -5846,7 +5849,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    item = Chatterbox.Settings.Item.get( type, options );
+    var item = Chatterbox.Settings.Item.get( type, options );
     
     if( shift ) {
         this.items.unshift(item);
