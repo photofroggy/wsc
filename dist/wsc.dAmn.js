@@ -2540,6 +2540,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         var users = cmd.args.split(' ');
         var user = '';
         var msg = '';
+        var mi = -1;
         var mod = false;
         
         for( var i in users ) {
@@ -2548,6 +2549,11 @@ wsc.defaults.Extension.Ignore = function( client ) {
             
             user = users[i];
             if( user.length == 0 )
+                continue;
+            
+            mi = settings.ignored.indexOf(user);
+            
+            if( mi < 0 )
                 continue;
             
             mod = true;
@@ -2560,7 +2566,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
             
             user = user.toLowerCase();
-            settings.ignored.splice( settings.ignored.indexOf(user), 1 );
+            settings.ignored.splice( mi, 1 );
             //client.ui.unmute_user( user );
         }
         
