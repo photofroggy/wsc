@@ -2560,7 +2560,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         var msg = '';
         var mi = -1;
         var mod = false;
-        console.log(settings.ignored);
+        
         for( var i in users ) {
             if( !users.hasOwnProperty( i ) )
                 continue;
@@ -2570,8 +2570,6 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 continue;
             
             mi = settings.ignored.indexOf(user);
-            console.log(mi);
-            
             if( mi < 0 )
                 continue;
             
@@ -2619,6 +2617,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
         storage.set('ignore', settings.ignore);
         storage.set('unignore', settings.unignore);
         
+        for( var i = 0; i < settings.count; i++ ) {
+            istore.remove(i)
+        }
+        
         if( settings.ignored.length == 0 ) {
             storage.set('count', 0);
         } else {
@@ -2633,9 +2635,8 @@ wsc.defaults.Extension.Ignore = function( client ) {
             
             }
             
-            if( c < 0 )
-                c = 0;
-            
+            c++;
+            settings.count = c;
             storage.set('count', c);
         }
     
