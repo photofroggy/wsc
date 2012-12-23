@@ -62,7 +62,7 @@ wsc.Client = function( view, options, mozilla ) {
         'username': this.settings.username,
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
-        'tabclose': this.settings.tabclose
+        'tabclose': this.settings.ui.tabclose
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
@@ -90,8 +90,8 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.config_load = function(  ) {
 
     this.settings.ui.theme = this.uistore.get('theme', wsc.defaults.theme);
-    this.settings.ui.clock = this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true';
-    this.settings.ui.tabclose = this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true';
+    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
 
 };
 

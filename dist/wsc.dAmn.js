@@ -2009,6 +2009,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     var settings_save = function( e, ui ) {
+        console.log(e);
         client.settings.ui.theme = e.theme;
         client.settings.ui.clock = e.clock;
         client.settings.ui.tabclose = e.tabclose;
@@ -2711,7 +2712,7 @@ wsc.Client = function( view, options, mozilla ) {
         'username': this.settings.username,
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
-        'tabclose': this.settings.tabclose
+        'tabclose': this.settings.ui.tabclose
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
@@ -2739,8 +2740,8 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.config_load = function(  ) {
 
     this.settings.ui.theme = this.uistore.get('theme', wsc.defaults.theme);
-    this.settings.ui.clock = this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true';
-    this.settings.ui.tabclose = this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true';
+    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
 
 };
 
@@ -3761,7 +3762,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.43';
+Chatterbox.VERSION = '0.6.47';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4206,14 +4207,15 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
  */
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
-        return;
+        return this.settings.theme;
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
-            return;
+            return this.settings.theme;
     }
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    return this.settings.theme;
 };
 
 /**
@@ -5480,6 +5482,7 @@ Chatterbox.Control.prototype.set_text = function( text ) {
 Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
+    this.showclose = this.manager.settings.tabclose;
     this.nav = this.manager.view.find('nav.tabs');
     this.tabs = this.nav.find('#chattabs');
     this.buttons = this.nav.find('#tabnav');
@@ -5488,7 +5491,11 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
-    this.showclose = this.manager.settings.tabclose;
+    
+    if( !this.showclose ) {
+        if( !this.tabs.hasClass('hc') )
+            this.tabs.addClass('hc');
+    }
     
     var nav = this;
     this.settingsb.click(
@@ -5591,9 +5598,9 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                 ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
             },
             'save': function( event ) {
-                orig.clock = event.data.clock == '24';
-                orig.theme = event.data.theme;
-                orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                orig.clock = ui.clock();
+                orig.theme = replaceAll(ui.theme(), 'wsct_', '');
+                orig.tc = ui.nav.closer();
                 
                 ui.trigger('settings.save', {
                     'clock': orig.clock,

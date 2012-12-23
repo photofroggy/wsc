@@ -8,6 +8,7 @@
 Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
+    this.showclose = this.manager.settings.tabclose;
     this.nav = this.manager.view.find('nav.tabs');
     this.tabs = this.nav.find('#chattabs');
     this.buttons = this.nav.find('#tabnav');
@@ -16,7 +17,11 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
-    this.showclose = this.manager.settings.tabclose;
+    
+    if( !this.showclose ) {
+        if( !this.tabs.hasClass('hc') )
+            this.tabs.addClass('hc');
+    }
     
     var nav = this;
     this.settingsb.click(
@@ -119,9 +124,9 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                 ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
             },
             'save': function( event ) {
-                orig.clock = event.data.clock == '24';
-                orig.theme = event.data.theme;
-                orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                orig.clock = ui.clock();
+                orig.theme = replaceAll(ui.theme(), 'wsct_', '');
+                orig.tc = ui.nav.closer();
                 
                 ui.trigger('settings.save', {
                     'clock': orig.clock,

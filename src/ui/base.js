@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.43';
+Chatterbox.VERSION = '0.6.47';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -451,14 +451,15 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
  */
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
-        return;
+        return this.settings.theme;
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
-            return;
+            return this.settings.theme;
     }
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    return this.settings.theme;
 };
 
 /**
