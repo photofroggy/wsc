@@ -2529,7 +2529,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
         });
         
-        page.item('Form', {
+        var uf = page.item('Form', {
             'ref': 'ignored',
             'wclass': 'boxed-ff-indv',
             'title': 'Users',
@@ -2668,11 +2668,6 @@ wsc.defaults.Extension.Ignore = function( client ) {
         }
     
     };
-    
-    /**
-     * TODO:
-     *  Make handlers
-     */
     
     init();
 
