@@ -694,6 +694,8 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
  */
 Chatterbox.Channel.prototype.mute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
     this.scroll();
 
@@ -707,7 +709,24 @@ Chatterbox.Channel.prototype.mute_user = function( user ) {
  */
 Chatterbox.Channel.prototype.unmute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
+
+};
+
+/**
+ * Remove a user's messages completely.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.Channel.prototype.clear_user = function( user ) {
+
+    if( !user )
+        return;
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
 
 };

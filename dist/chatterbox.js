@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.41';
+Chatterbox.VERSION = '0.6.42';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -425,6 +425,20 @@ Chatterbox.UI.prototype.unmute_user = function( user ) {
     } );
     
     return true;
+
+};
+
+/**
+ * Clear a user's messages from all channels.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.UI.prototype.clear_user = function( user ) {
+
+    this.chatbook.each( function( ns, chan ) {
+        chan.clear_user( user );
+    } );
 
 };
 
@@ -1158,6 +1172,8 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
  */
 Chatterbox.Channel.prototype.mute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
     this.scroll();
 
@@ -1171,7 +1187,24 @@ Chatterbox.Channel.prototype.mute_user = function( user ) {
  */
 Chatterbox.Channel.prototype.unmute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
+
+};
+
+/**
+ * Remove a user's messages completely.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.Channel.prototype.clear_user = function( user ) {
+
+    if( !user )
+        return;
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
 
 };

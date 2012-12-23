@@ -372,14 +372,38 @@ wsc.defaults.Extension = function( client ) {
     
     // Clear the channel's log.
     var cmd_clear = function( e, client ) {
-        client.cchannel.clear();
+        if( e.args.length > 0 ) {
+            var users = e.args.split(' ');
+            for( var i in users ) {
+                if( !users.hasOwnProperty(i) )
+                    continue;
+                client.channel(e.target).clear(users[i]);
+            }
+        } else {
+            client.channel(e.target).clear();
+        }
     };
     
     // Clear all channel logs.
     var cmd_clearall = function( e, client ) {
-        for( c in client.channelo ) {
-            client.channelo[c].clear();
+        var method = null;
+        
+        if( e.args.length > 0 ) {
+            var users = e.args.split(' ');
+            method = function( ns, channel ) {
+                for( var i in users ) {
+                    if( !users.hasOwnProperty(i) )
+                        continue;
+                    channel.clear( users[i] );
+                }
+            };
+        } else {
+            method = function( ns, channel ) {
+                channel.clear();
+            };
         }
+        
+        client.each_channel( method, true );
     };
     
     // Send a whois thingy.

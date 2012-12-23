@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.11.77';
+wsc.VERSION = '0.12.78';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -901,10 +901,14 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
  * 
  * @method clear
  */
-wsc.Channel.prototype.clear = function(  ) {
+wsc.Channel.prototype.clear = function( user ) {
     if( this.ui == null )
         return;
-    this.ui.clear();
+    if( !user ) {
+        this.ui.clear();
+    } else {
+        this.ui.clear_user( user );
+    }
 };
 
 /**
@@ -2306,14 +2310,38 @@ wsc.defaults.Extension = function( client ) {
     
     // Clear the channel's log.
     var cmd_clear = function( e, client ) {
-        client.cchannel.clear();
+        if( e.args.length > 0 ) {
+            var users = e.args.split(' ');
+            for( var i in users ) {
+                if( !users.hasOwnProperty(i) )
+                    continue;
+                client.channel(e.target).clear(users[i]);
+            }
+        } else {
+            client.channel(e.target).clear();
+        }
     };
     
     // Clear all channel logs.
     var cmd_clearall = function( e, client ) {
-        for( c in client.channelo ) {
-            client.channelo[c].clear();
+        var method = null;
+        
+        if( e.args.length > 0 ) {
+            var users = e.args.split(' ');
+            method = function( ns, channel ) {
+                for( var i in users ) {
+                    if( !users.hasOwnProperty(i) )
+                        continue;
+                    channel.clear( users[i] );
+                }
+            };
+        } else {
+            method = function( ns, channel ) {
+                channel.clear();
+            };
         }
+        
+        client.each_channel( method, true );
     };
     
     // Send a whois thingy.
@@ -3742,7 +3770,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.41';
+Chatterbox.VERSION = '0.6.42';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4161,6 +4189,20 @@ Chatterbox.UI.prototype.unmute_user = function( user ) {
     } );
     
     return true;
+
+};
+
+/**
+ * Clear a user's messages from all channels.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.UI.prototype.clear_user = function( user ) {
+
+    this.chatbook.each( function( ns, chan ) {
+        chan.clear_user( user );
+    } );
 
 };
 
@@ -4894,6 +4936,8 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
  */
 Chatterbox.Channel.prototype.mute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
     this.scroll();
 
@@ -4907,7 +4951,24 @@ Chatterbox.Channel.prototype.mute_user = function( user ) {
  */
 Chatterbox.Channel.prototype.unmute_user = function( user ) {
 
+    if( !user )
+        return;
     this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
+
+};
+
+/**
+ * Remove a user's messages completely.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.Channel.prototype.clear_user = function( user ) {
+
+    if( !user )
+        return;
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
 
 };

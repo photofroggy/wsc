@@ -123,10 +123,14 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
  * 
  * @method clear
  */
-wsc.Channel.prototype.clear = function(  ) {
+wsc.Channel.prototype.clear = function( user ) {
     if( this.ui == null )
         return;
-    this.ui.clear();
+    if( !user ) {
+        this.ui.clear();
+    } else {
+        this.ui.clear_user( user );
+    }
 };
 
 /**

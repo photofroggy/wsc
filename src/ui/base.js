@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.5.41';
+Chatterbox.VERSION = '0.6.42';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -425,6 +425,20 @@ Chatterbox.UI.prototype.unmute_user = function( user ) {
     } );
     
     return true;
+
+};
+
+/**
+ * Clear a user's messages from all channels.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ */
+Chatterbox.UI.prototype.clear_user = function( user ) {
+
+    this.chatbook.each( function( ns, chan ) {
+        chan.clear_user( user );
+    } );
 
 };
 
