@@ -4448,7 +4448,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
         'ts': ts,
         'ms': date.getTime(),
         'message': item.html,
-        'user': item.user.toLowerCase() || 'system'
+        'user': (item.user || 'system' ).toLowerCase()
     };
     
     this.manager.trigger( 'log_item.before', data );
