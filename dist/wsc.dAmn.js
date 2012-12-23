@@ -2479,8 +2479,20 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
         var page = event.settings.page('Ignores');
         var orig = {};
+        var ul = '<ul>';
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
+        
+        if( settings.ignored.length == 0 ) {
+            ul+= '<li><i>No one ignored yet</i></li></ul>';
+        } else {
+            for( var i in settings.ignored ) {
+                if( !settings.ignored.hasOwnProperty( i ) )
+                    continue;
+                ul+= '<li>' + settings.ignored[i] + '</li>';
+            }
+            ul+= '</ul>';
+        }
         
         page.item('Text', {
             'ref': 'intro',
@@ -2527,7 +2539,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             'fields': [
                 ['Text', {
                     'ref': 'users',
-                    'text': '<ul><li>item one</li><li>item two</li></ul>'
+                    'text': ul
                 }]
             ]
         });
