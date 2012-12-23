@@ -2542,7 +2542,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         var msg = '';
         var mi = -1;
         var mod = false;
-        
+        console.log(settings.ignored);
         for( var i in users ) {
             if( !users.hasOwnProperty( i ) )
                 continue;
@@ -2552,6 +2552,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 continue;
             
             mi = settings.ignored.indexOf(user);
+            console.log(mi);
             
             if( mi < 0 )
                 continue;
@@ -2589,7 +2590,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 if( tu === null )
                     continue;
                 settings.ignored.push(tu);
-                client.ui.mute_user( tu );
+                //client.ui.mute_user( tu );
             }
         }
         
@@ -2600,19 +2601,23 @@ wsc.defaults.Extension.Ignore = function( client ) {
         storage.set('ignore', settings.ignore);
         storage.set('unignore', settings.unignore);
         
-        if( settings.count == 0 ) {
+        if( settings.ignored.length == 0 ) {
             storage.set('count', 0);
         } else {
             var c = -1;
-            for( var i in settings.ignored.length ) {
+            for( var i in settings.ignored ) {
             
                 if( !settings.ignored.hasOwnProperty(i) )
                     continue;
                 
                 c++;
-                istore.set( c, settings.ignored[i] );
+                istore.set( c.toString(), settings.ignored[i] );
             
             }
+            
+            if( c < 0 )
+                c = 0;
+            
             storage.set('count', c);
         }
     
