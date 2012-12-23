@@ -2483,13 +2483,13 @@ wsc.defaults.Extension.Ignore = function( client ) {
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
         
-        if( client.umuted.length == 0 ) {
+        if( client.ui.umuted.length == 0 ) {
             ul+= '<li><i>No one ignored yet</i></li></ul>';
         } else {
-            for( var i in client.umuted ) {
-                if( !client.umuted.hasOwnProperty( i ) )
+            for( var i in client.ui.umuted ) {
+                if( !client.ui.umuted.hasOwnProperty( i ) )
                     continue;
-                ul+= '<li>' + client.umuted[i] + '</li>';
+                ul+= '<li>' + client.ui.umuted[i] + '</li>';
             }
             ul+= '</ul>';
         }
