@@ -2453,7 +2453,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         client.bind('cmd.unignore', cmd_unignore);
         
         // Settings window
-        client.bind('settings.open', settings.page);
+        client.ui.on('settings.open', settings.page);
     
     };
     
@@ -2478,7 +2478,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             'title': 'Messages',
             'text': 'Here you can set the messages displayed when you ignore or\
                     unignore a user. The text <code>{user}</code> is replaced\
-                    the name of the user your are ignoring or unignoring.',
+                    with the name of the user your are ignoring or unignoring.',
             'fields': [
                 ['Textfield', {
                     'ref': 'ignore',
@@ -5256,7 +5256,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            about = evt.settings.page('About', true);
+            var about = evt.settings.page('About', true);
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -5438,7 +5438,6 @@ Chatterbox.Popup.prototype.close = function(  ) {
  */
 Chatterbox.Settings = function( ui, config ) {
 
-    console.log(config);
     Chatterbox.Popup.call( this, ui, {
         'ref': 'settings',
         'title': 'Settings',

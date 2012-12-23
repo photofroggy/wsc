@@ -1584,7 +1584,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            about = evt.settings.page('About', true);
+            var about = evt.settings.page('About', true);
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -1766,7 +1766,6 @@ Chatterbox.Popup.prototype.close = function(  ) {
  */
 Chatterbox.Settings = function( ui, config ) {
 
-    console.log(config);
     Chatterbox.Popup.call( this, ui, {
         'ref': 'settings',
         'title': 'Settings',
