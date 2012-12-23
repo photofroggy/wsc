@@ -244,6 +244,28 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
 };
 
 /**
+ * Iterate through the different channels.
+ * 
+ * @method each
+ * @param method {Function} Function to call for each channel.
+ */
+Chatterbox.Chatbook.prototype.each = function( method ) {
+    
+    var chan = null;
+    
+    for( var ns in this.chan ) {
+        if( !this.chan.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.chan[ns];
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
+};
+
+/**
  * Display a server message across all open channels.
  * 
  * @method server_message
@@ -268,6 +290,20 @@ Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log_item(msg);
+    }
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+Chatterbox.Chatbook.prototype.log = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log(msg);
     }
 
 };

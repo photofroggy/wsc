@@ -307,21 +307,21 @@ wsc.Protocol.prototype.log = function( client, event ) {
         return;
     }
     
-    msg = this.render(event, 'html');
+    event.html = this.render(event, 'html');
     
     try {
         if( !msgm[2] ) {
             if( !msgm[1] ) {
-                client.ui.channel(event.ns).log_item(msg);
+                client.ui.channel(event.ns).log_item(event);
             } else {
-                client.ui.channel(client.mns).log_item(msg);
+                client.ui.channel(client.mns).log_item(event);
             }
         } else {
-            client.ui.log_item(msg);
+            client.ui.log_item(event);
         }
     } catch(err) {
         console.log('>> Failed to log message for ' + event.sns + '::');
-        console.log('>> ' + msg);
+        console.log('>> ' + event.html);
     }
 
 };

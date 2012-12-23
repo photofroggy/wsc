@@ -225,16 +225,16 @@ Chatterbox.Channel.prototype.log = function( msg ) {
         'ns': this.namespace,
         'message': msg};
     this.manager.trigger( 'log.before', data );
-    this.log_item(Chatterbox.render('logmsg', {'message': data.message}));
+    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
 };
 
 /**
  * Send a message to the log window.
  * 
  * @method log_item
- * @param msg {String} Message to send.
+ * @param item {Object} Message to send.
  */
-Chatterbox.Channel.prototype.log_item = function( msg ) {
+Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
     ts = '';
     
@@ -247,7 +247,8 @@ Chatterbox.Channel.prototype.log_item = function( msg ) {
     data = {
         'ts': ts,
         'ms': date.getTime(),
-        'message': msg
+        'message': item.html,
+        'user': item.user.toLowerCase() || 'system'
     };
     
     this.manager.trigger( 'log_item.before', data );
@@ -300,7 +301,7 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'message': msg,
         'info': info};
     this.manager.trigger( 'server_message.before', data );
-    this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
 };
 
 /**
@@ -580,15 +581,14 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
-    var msgh = msg.html();
     
     for( var i in this.manager.umuted ) {
         if( !this.manager.umuted.hasOwnProperty(i) )
             continue;
-        u = this.manager.umuted[i];
         
-        if( msgh.search('<span class="(((?!u-)(?!").)+)u-' + u + '">') != -1 ) {
+        if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
+            this.scroll();
             break;
         }
     }
@@ -683,6 +683,32 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         return;
     
     box.remove();
+
+};
+
+/**
+ * Hide messages from a given user.
+ * 
+ * @method mute_user
+ * @param user {String} User to hide messages for.
+ */
+Chatterbox.Channel.prototype.mute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
+    this.scroll();
+
+};
+
+/**
+ * Reveal messages received from a given user.
+ *
+ * @method unmute_user
+ * @param user {String} Use to reveal messages for.
+ */
+Chatterbox.Channel.prototype.unmute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
 
 };
 

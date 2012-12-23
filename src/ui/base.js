@@ -360,11 +360,11 @@ Chatterbox.UI.prototype.server_message = function( msg, info ) {
  * Display a log item across all open channels.
  * 
  * @method log_item
- * @param msg {String} Message to display.
+ * @param item {Object} Item to display.
  */
-Chatterbox.UI.prototype.log_item = function( msg ) {
+Chatterbox.UI.prototype.log_item = function( item ) {
 
-    this.chatbook.log_item(msg);
+    this.chatbook.log_item(item);
 
 };
 
@@ -376,7 +376,7 @@ Chatterbox.UI.prototype.log_item = function( msg ) {
  */
 Chatterbox.UI.prototype.log = function( msg ) {
 
-    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    this.chatbook.log(msg);
 
 };
 
@@ -396,9 +396,10 @@ Chatterbox.UI.prototype.mute_user = function( user ) {
         return false;
     
     this.umuted.push( user );
-    // Some other shit here...
-    // Will involve this:
-    //      '<span class="(((?!u-)(?!").)+)u-{user}">'
+    this.chatbook.each( function( ns, chan ) {
+        chan.mute_user( user );
+    } );
+    
     return true;
 
 };
@@ -420,7 +421,10 @@ Chatterbox.UI.prototype.unmute_user = function( user ) {
         return false;
     
     this.umuted.splice( usri, 1 );
-    // Some other shit here...
+    this.chatbook.each( function( ns, chan ) {
+        chan.unmute_user( user );
+    } );
+    
     return true;
 
 };

@@ -360,11 +360,11 @@ Chatterbox.UI.prototype.server_message = function( msg, info ) {
  * Display a log item across all open channels.
  * 
  * @method log_item
- * @param msg {String} Message to display.
+ * @param item {Object} Item to display.
  */
-Chatterbox.UI.prototype.log_item = function( msg ) {
+Chatterbox.UI.prototype.log_item = function( item ) {
 
-    this.chatbook.log_item(msg);
+    this.chatbook.log_item(item);
 
 };
 
@@ -376,7 +376,7 @@ Chatterbox.UI.prototype.log_item = function( msg ) {
  */
 Chatterbox.UI.prototype.log = function( msg ) {
 
-    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    this.chatbook.log(msg);
 
 };
 
@@ -396,9 +396,10 @@ Chatterbox.UI.prototype.mute_user = function( user ) {
         return false;
     
     this.umuted.push( user );
-    // Some other shit here...
-    // Will involve this:
-    //      '<span class="(((?!u-)(?!").)+)u-{user}">'
+    this.chatbook.each( function( ns, chan ) {
+        chan.mute_user( user );
+    } );
+    
     return true;
 
 };
@@ -420,7 +421,10 @@ Chatterbox.UI.prototype.unmute_user = function( user ) {
         return false;
     
     this.umuted.splice( usri, 1 );
-    // Some other shit here...
+    this.chatbook.each( function( ns, chan ) {
+        chan.unmute_user( user );
+    } );
+    
     return true;
 
 };
@@ -686,16 +690,16 @@ Chatterbox.Channel.prototype.log = function( msg ) {
         'ns': this.namespace,
         'message': msg};
     this.manager.trigger( 'log.before', data );
-    this.log_item(Chatterbox.render('logmsg', {'message': data.message}));
+    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
 };
 
 /**
  * Send a message to the log window.
  * 
  * @method log_item
- * @param msg {String} Message to send.
+ * @param item {Object} Message to send.
  */
-Chatterbox.Channel.prototype.log_item = function( msg ) {
+Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
     ts = '';
     
@@ -708,7 +712,8 @@ Chatterbox.Channel.prototype.log_item = function( msg ) {
     data = {
         'ts': ts,
         'ms': date.getTime(),
-        'message': msg
+        'message': item.html,
+        'user': item.user || 'system'
     };
     
     this.manager.trigger( 'log_item.before', data );
@@ -761,7 +766,7 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'message': msg,
         'info': info};
     this.manager.trigger( 'server_message.before', data );
-    this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
 };
 
 /**
@@ -1041,15 +1046,14 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
-    var msgh = msg.html();
     
     for( var i in this.manager.umuted ) {
         if( !this.manager.umuted.hasOwnProperty(i) )
             continue;
-        u = this.manager.umuted[i];
         
-        if( msgh.search('<span class="(((?!u-)(?!").)+)u-' + u + '">') != -1 ) {
+        if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
+            this.scroll();
             break;
         }
     }
@@ -1144,6 +1148,32 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         return;
     
     box.remove();
+
+};
+
+/**
+ * Hide messages from a given user.
+ * 
+ * @method mute_user
+ * @param user {String} User to hide messages for.
+ */
+Chatterbox.Channel.prototype.mute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
+    this.scroll();
+
+};
+
+/**
+ * Reveal messages received from a given user.
+ *
+ * @method unmute_user
+ * @param user {String} Use to reveal messages for.
+ */
+Chatterbox.Channel.prototype.unmute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
 
 };
 
@@ -1394,6 +1424,28 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
 };
 
 /**
+ * Iterate through the different channels.
+ * 
+ * @method each
+ * @param method {Function} Function to call for each channel.
+ */
+Chatterbox.Chatbook.prototype.each = function( method ) {
+    
+    var chan = null;
+    
+    for( var ns in this.chan ) {
+        if( !this.chan.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.chan[ns];
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
+};
+
+/**
  * Display a server message across all open channels.
  * 
  * @method server_message
@@ -1418,6 +1470,20 @@ Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log_item(msg);
+    }
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+Chatterbox.Chatbook.prototype.log = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log(msg);
     }
 
 };
@@ -3221,7 +3287,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg u-{user}"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.

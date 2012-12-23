@@ -155,7 +155,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg u-{user}"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.
