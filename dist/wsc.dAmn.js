@@ -1590,21 +1590,21 @@ wsc.Protocol.prototype.log = function( client, event ) {
         return;
     }
     
-    msg = this.render(event, 'html');
+    event.html = this.render(event, 'html');
     
     try {
         if( !msgm[2] ) {
             if( !msgm[1] ) {
-                client.ui.channel(event.ns).log_item(msg);
+                client.ui.channel(event.ns).log_item(event);
             } else {
-                client.ui.channel(client.mns).log_item(msg);
+                client.ui.channel(client.mns).log_item(event);
             }
         } else {
-            client.ui.log_item(msg);
+            client.ui.log_item(event);
         }
     } catch(err) {
         console.log('>> Failed to log message for ' + event.sns + '::');
-        console.log('>> ' + msg);
+        console.log('>> ' + event.html);
     }
 
 };
@@ -1998,7 +1998,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        page = e.settings.page('Main');
+        var page = e.settings.page('Main');
         var orig = {};
         orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
         orig.clock = client.ui.clock();
@@ -2447,6 +2447,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Ignore(client);
 
 };
 /**
@@ -3062,6 +3063,30 @@ wsc.Client.prototype.log = function( namespace, data ) {
 wsc.Client.prototype.monitor = function( message ) {
 
     this.ui.monitor(message);
+
+};
+
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+wsc.Client.prototype.mute_user = function( user ) {
+
+    return this.ui.mute_user( user );
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+wsc.Client.prototype.unmute_user = function( user ) {
+
+    return this.ui.unmute_user( user );
 
 };
 
@@ -3735,6 +3760,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
+    this.umuted = [];
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -3743,12 +3769,15 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true
     };
+    
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
+    
     this.swidth = ( function() { 
         if ( $.browser.msie ) {
             var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
@@ -3767,6 +3796,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         }
         return scrollbarWidth;
     } ) ();
+    
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
     this.STATE = Chatterbox.STATE;
@@ -4065,11 +4095,11 @@ Chatterbox.UI.prototype.server_message = function( msg, info ) {
  * Display a log item across all open channels.
  * 
  * @method log_item
- * @param msg {String} Message to display.
+ * @param item {Object} Item to display.
  */
-Chatterbox.UI.prototype.log_item = function( msg ) {
+Chatterbox.UI.prototype.log_item = function( item ) {
 
-    this.chatbook.log_item(msg);
+    this.chatbook.log_item(item);
 
 };
 
@@ -4081,7 +4111,56 @@ Chatterbox.UI.prototype.log_item = function( msg ) {
  */
 Chatterbox.UI.prototype.log = function( msg ) {
 
-    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    this.chatbook.log(msg);
+
+};
+
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+Chatterbox.UI.prototype.mute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    if( this.umuted.indexOf( user ) != -1 )
+        return false;
+    
+    this.umuted.push( user );
+    this.chatbook.each( function( ns, chan ) {
+        chan.mute_user( user );
+    } );
+    
+    return true;
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+Chatterbox.UI.prototype.unmute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    var usri = this.umuted.indexOf( user );
+    if( usri == -1 )
+        return false;
+    
+    this.umuted.splice( usri, 1 );
+    this.chatbook.each( function( ns, chan ) {
+        chan.unmute_user( user );
+    } );
+    
+    return true;
 
 };
 
@@ -4346,16 +4425,16 @@ Chatterbox.Channel.prototype.log = function( msg ) {
         'ns': this.namespace,
         'message': msg};
     this.manager.trigger( 'log.before', data );
-    this.log_item(Chatterbox.render('logmsg', {'message': data.message}));
+    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
 };
 
 /**
  * Send a message to the log window.
  * 
  * @method log_item
- * @param msg {String} Message to send.
+ * @param item {Object} Message to send.
  */
-Chatterbox.Channel.prototype.log_item = function( msg ) {
+Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
     ts = '';
     
@@ -4368,7 +4447,8 @@ Chatterbox.Channel.prototype.log_item = function( msg ) {
     data = {
         'ts': ts,
         'ms': date.getTime(),
-        'message': msg
+        'message': item.html,
+        'user': item.user.toLowerCase() || 'system'
     };
     
     this.manager.trigger( 'log_item.before', data );
@@ -4421,7 +4501,7 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
         'message': msg,
         'info': info};
     this.manager.trigger( 'server_message.before', data );
-    this.log_item(Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}));
+    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
 };
 
 /**
@@ -4698,6 +4778,21 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     if( !this.tab.hasClass('active') )
         this.tab.addClass('noise');
     
+    var u = '';
+    var si = 0;
+    var msg = this.window.find('.logmsg').last();
+    
+    for( var i in this.manager.umuted ) {
+        if( !this.manager.umuted.hasOwnProperty(i) )
+            continue;
+        
+        if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
+            msg.css({'display': 'none'});
+            this.scroll();
+            break;
+        }
+    }
+
 };
 
 /**
@@ -4788,6 +4883,32 @@ Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
         return;
     
     box.remove();
+
+};
+
+/**
+ * Hide messages from a given user.
+ * 
+ * @method mute_user
+ * @param user {String} User to hide messages for.
+ */
+Chatterbox.Channel.prototype.mute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
+    this.scroll();
+
+};
+
+/**
+ * Reveal messages received from a given user.
+ *
+ * @method unmute_user
+ * @param user {String} Use to reveal messages for.
+ */
+Chatterbox.Channel.prototype.unmute_user = function( user ) {
+
+    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.scroll();
 
 };
 
@@ -5038,6 +5159,28 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
 };
 
 /**
+ * Iterate through the different channels.
+ * 
+ * @method each
+ * @param method {Function} Function to call for each channel.
+ */
+Chatterbox.Chatbook.prototype.each = function( method ) {
+    
+    var chan = null;
+    
+    for( var ns in this.chan ) {
+        if( !this.chan.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.chan[ns];
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
+};
+
+/**
  * Display a server message across all open channels.
  * 
  * @method server_message
@@ -5062,6 +5205,20 @@ Chatterbox.Chatbook.prototype.log_item = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log_item(msg);
+    }
+
+};
+
+/**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ */
+Chatterbox.Chatbook.prototype.log = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log(msg);
     }
 
 };
@@ -5294,7 +5451,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            about = evt.settings.page('About', true);
+            var about = evt.settings.page('About', true);
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -6867,7 +7024,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg u-{user}"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.
@@ -7226,6 +7383,18 @@ Chatterbox.template.settings.item.form.field.check = {};
 Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+
+Chatterbox.template.settings.item.form.field.text = {};
+Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.form.field.text.post = Chatterbox.template.clean(['title', 'text']);
+Chatterbox.template.settings.item.form.field.text.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
+                                        {text}\
+                                    </p>';
 
 
 

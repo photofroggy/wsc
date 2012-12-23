@@ -403,6 +403,30 @@ wsc.Client.prototype.monitor = function( message ) {
 
 };
 
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+wsc.Client.prototype.mute_user = function( user ) {
+
+    return this.ui.mute_user( user );
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+wsc.Client.prototype.unmute_user = function( user ) {
+
+    return this.ui.unmute_user( user );
+
+};
+
 // Client packets
 
 /**

@@ -24,6 +24,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
+    this.umuted = [];
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -32,12 +33,15 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true
     };
+    
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.monitoro = null;
+    
     this.swidth = ( function() { 
         if ( $.browser.msie ) {
             var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
@@ -56,6 +60,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         }
         return scrollbarWidth;
     } ) ();
+    
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
     this.STATE = Chatterbox.STATE;
@@ -354,11 +359,11 @@ Chatterbox.UI.prototype.server_message = function( msg, info ) {
  * Display a log item across all open channels.
  * 
  * @method log_item
- * @param msg {String} Message to display.
+ * @param item {Object} Item to display.
  */
-Chatterbox.UI.prototype.log_item = function( msg ) {
+Chatterbox.UI.prototype.log_item = function( item ) {
 
-    this.chatbook.log_item(msg);
+    this.chatbook.log_item(item);
 
 };
 
@@ -370,7 +375,56 @@ Chatterbox.UI.prototype.log_item = function( msg ) {
  */
 Chatterbox.UI.prototype.log = function( msg ) {
 
-    this.chatbook.log_item(wsc_html_logmsg.replacePArg('{message}', msg));
+    this.chatbook.log(msg);
+
+};
+
+/**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ */
+Chatterbox.UI.prototype.mute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    if( this.umuted.indexOf( user ) != -1 )
+        return false;
+    
+    this.umuted.push( user );
+    this.chatbook.each( function( ns, chan ) {
+        chan.mute_user( user );
+    } );
+    
+    return true;
+
+};
+
+/**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ */
+Chatterbox.UI.prototype.unmute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    var usri = this.umuted.indexOf( user );
+    if( usri == -1 )
+        return false;
+    
+    this.umuted.splice( usri, 1 );
+    this.chatbook.each( function( ns, chan ) {
+        chan.unmute_user( user );
+    } );
+    
+    return true;
 
 };
 

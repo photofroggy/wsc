@@ -129,6 +129,14 @@
                                 padding: 0px;
                             }
                         }
+                        &.boxed,
+                        &.boxed-ff-indv form .fields .field {
+                            background-color: rgba(255, 255, 255, 0.85);
+                            border: 1px solid #B1B1B1;
+                        }
+                        &.boxed-ff-indv form .fields .field {
+                            padding: 5px;
+                        }
                     }
                 }
             }

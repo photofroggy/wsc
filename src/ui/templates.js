@@ -155,7 +155,7 @@ Chatterbox.template.logmsg = '<span class="message">{message}</span>';
  * @property logitem
  * @type String
  */
-Chatterbox.template.logitem = '<li class="logmsg"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
+Chatterbox.template.logitem = '<li class="logmsg u-{user}"><span class="ts" id="{ms}">{ts}</span> {message}</li>';
 
 /**
  * Server message template.
@@ -514,6 +514,18 @@ Chatterbox.template.settings.item.form.field.check = {};
 Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
 Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+
+Chatterbox.template.settings.item.form.field.text = {};
+Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.form.field.text.post = Chatterbox.template.clean(['title', 'text']);
+Chatterbox.template.settings.item.form.field.text.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
+                                        {text}\
+                                    </p>';
 
 
 
