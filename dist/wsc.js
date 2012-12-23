@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.12.78';
+wsc.VERSION = '0.13.79';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -517,12 +517,19 @@ Object.size = function(obj) {
 };
 
 Object.steal = function( a, b ) {
-    for( index in b )
-        a[index] = b[index];
+    for( var index in b ) {
+        if( !a.hasOwnProperty(index) && !b.hasOwnProperty(index) )
+            continue;
+        if( typeof a[index] == 'object' ) {
+            a[index] = Object.extend(a[index], b[index]);
+        } else {
+            a[index] = b[index];
+        }
+    }
 };
 
 Object.extend = function( a, b ) {
-    obj = {};
+    var obj = {};
     Object.steal(obj, a);
     Object.steal(obj, b);
     return obj;
@@ -1998,30 +2005,22 @@ wsc.defaults.Extension = function( client ) {
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
+        client.ui.on('settings.save', settings_save);
+    };
+    
+    var settings_save = function( e, ui ) {
+        client.settings.ui.theme = e.theme;
+        client.settings.ui.clock = e.clock;
+        client.settings.ui.tabclose = e.tabclose;
+        client.config_save();
     };
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main');
+        var page = e.settings.page('Main', true);
         var orig = {};
-        orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
-        orig.clock = client.ui.clock();
-        orig.tc = client.ui.nav.closer();
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
-        
-        var themes = [];
-        for( i in client.ui.settings.themes ) {
-            name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
-            themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
-        }
-        
-        page.item('Text', {
-            'ref': 'intro',
-            'title': 'Main',
-            'text': 'Use this window to view and change your settings.\n\nCheck\
-                    the different pages to see what settings can be changed.',
-        });
         
         page.item('Form', {
             'ref': 'login',
@@ -2046,55 +2045,14 @@ wsc.defaults.Extension = function( client ) {
                     client.settings.pk = event.data.token;
                 }
             }
-        });
+        }, true);
         
-        page.item('Form', {
-            'ref': 'ui',
-            'title': 'UI',
-            'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
-                    a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
-                    client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
-            'fields': [
-                ['Dropdown', {
-                    'ref': 'theme',
-                    'label': 'Theme',
-                    'items': themes
-                }],
-                ['Dropdown', {
-                    'ref': 'clock',
-                    'label': 'Timestamp Format',
-                    'items': [
-                        { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
-                        { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
-                    ]
-                }],
-                ['Check', {
-                    'ref': 'tabclose',
-                    'label': 'Close Buttons',
-                    'items': [
-                        { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
-                    ]
-                }],
-            ],
-            'event': {
-                'change': function( event ) {
-                    client.ui.clock(event.data.clock == '24');
-                    client.ui.theme(event.data.theme);
-                    client.ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
-                },
-                'save': function( event ) {
-                    orig.clock = event.data.clock == '24';
-                    orig.theme = event.data.theme;
-                    orig.tc = event.data.tabclose.indexOf('yes') > -1;
-                    client.storage.set('theme', 'wsct_' + orig.theme);
-                },
-                'close': function( event ) {
-                    client.ui.clock(orig.clock);
-                    client.ui.theme(orig.theme);
-                    client.ui.nav.closer(orig.tc);
-                }
-            }
-        });
+        page.item('Text', {
+            'ref': 'intro',
+            'title': 'Main',
+            'text': 'Use this window to view and change your settings.\n\nCheck\
+                    the different pages to see what settings can be changed.',
+        }, true);
         
         /* * /
         page.item('Radio', {
@@ -2505,7 +2463,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores');
+        var page = event.settings.page('Ignores', true);
         var orig = {};
         var ul = '<ul>';
         orig.im = settings.ignore;
@@ -2702,6 +2660,7 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
+    this.uistore = this.storage.folder('ui');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -2729,24 +2688,30 @@ wsc.Client = function( view, options, mozilla ) {
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
-        "ui": Chatterbox.UI,
+        "ui_object": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
-        "theme": wsc.defaults.theme,
-        "themes": wsc.defaults.themes,
+        "ui": {
+            "theme": wsc.defaults.theme,
+            "themes": wsc.defaults.themes,
+            "tabclose": true,
+            "clock": true
+        }
     };
     
-    view.extend( this.settings, options );
-    this.settings.theme = this.storage.get('theme', wsc.defaults.theme);
-    this.storage.set('theme', this.settings.theme);
+    this.settings = Object.extend( this.settings, options );
+    this.config_load();
+    this.config_save();
     
-    this.ui = new this.settings.ui( view, {
-        'themes': this.settings.themes,
-        'theme': this.settings.theme,
+    this.ui = new this.settings.ui_object( view, {
+        'themes': this.settings.ui.themes,
+        'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
         'username': this.settings.username,
-        'domain': this.settings.domain
+        'domain': this.settings.domain,
+        'clock': this.settings.ui.clock,
+        'tabclose': this.settings.tabclose
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
@@ -2763,6 +2728,32 @@ wsc.Client = function( view, options, mozilla ) {
     
     // Welcome!
     this.monitor(this.settings["welcome"]);
+
+};
+
+/**
+ * Load configuration from localStorage.
+ *
+ * @method config_load
+ */
+wsc.Client.prototype.config_load = function(  ) {
+
+    this.settings.ui.theme = this.uistore.get('theme', wsc.defaults.theme);
+    this.settings.ui.clock = this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true';
+    this.settings.ui.tabclose = this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true';
+
+};
+
+/**
+ * Save configuration save localStorage.
+ *
+ * @method config_save
+ */
+wsc.Client.prototype.config_save = function(  ) {
+
+    this.uistore.set('theme', this.settings.ui.theme);
+    this.uistore.set('clock', this.settings.ui.clock.toString());
+    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
 
 };
 
@@ -3770,7 +3761,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.42';
+Chatterbox.VERSION = '0.6.43';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -3795,7 +3786,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
-        'clock': true
+        'clock': true,
+        'tabclose': true
     };
     
     view.extend( this.settings, options );
@@ -5496,7 +5488,7 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
-    this.showclose = true;
+    this.showclose = this.manager.settings.tabclose;
     
     var nav = this;
     this.settingsb.click(
@@ -5509,6 +5501,7 @@ Chatterbox.Navigation = function( ui ) {
                 'settings': new Chatterbox.Settings.Config()
             };
             
+            nav.configure_page( evt );
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
@@ -5539,6 +5532,82 @@ Chatterbox.Navigation = function( ui ) {
             return false;
         }
     );
+
+};
+
+/**
+ * Configure the main settings page of the settings popup.
+ *
+ * @method configure_page
+ * @param event {Object} Event object.
+ */
+Chatterbox.Navigation.prototype.configure_page = function( event ) {
+
+    var ui = this.manager;
+    var page = event.settings.page('Main', true);
+    var orig = {};
+    orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
+    orig.clock = ui.clock();
+    orig.tc = ui.nav.closer();
+    
+    var themes = [];
+    for( i in ui.settings.themes ) {
+        name = replaceAll(ui.settings.themes[i], 'wsct_', '');
+        themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+    }
+    
+    page.item('Form', {
+        'ref': 'ui',
+        'title': 'UI',
+        'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
+                a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
+                client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
+        'fields': [
+            ['Dropdown', {
+                'ref': 'theme',
+                'label': 'Theme',
+                'items': themes
+            }],
+            ['Dropdown', {
+                'ref': 'clock',
+                'label': 'Timestamp Format',
+                'items': [
+                    { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
+                    { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                ]
+            }],
+            ['Check', {
+                'ref': 'tabclose',
+                'label': 'Close Buttons',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                ]
+            }],
+        ],
+        'event': {
+            'change': function( event ) {
+                ui.clock(event.data.clock == '24');
+                ui.theme(event.data.theme);
+                ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
+            },
+            'save': function( event ) {
+                orig.clock = event.data.clock == '24';
+                orig.theme = event.data.theme;
+                orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                
+                ui.trigger('settings.save', {
+                    'clock': orig.clock,
+                    'tabclose': orig.tc,
+                    'theme': 'wsct_' + orig.theme
+                } );
+            },
+            'close': function( event ) {
+                ui.clock(orig.clock);
+                ui.theme(orig.theme);
+                ui.nav.closer(orig.tc);
+            }
+        }
+    });
 
 };
 

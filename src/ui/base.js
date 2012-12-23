@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.42';
+Chatterbox.VERSION = '0.6.43';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -31,7 +31,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
-        'clock': true
+        'clock': true,
+        'tabclose': true
     };
     
     view.extend( this.settings, options );

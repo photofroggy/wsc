@@ -11,6 +11,7 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
+    this.uistore = this.storage.folder('ui');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -38,24 +39,30 @@ wsc.Client = function( view, options, mozilla ) {
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
-        "ui": Chatterbox.UI,
+        "ui_object": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
-        "theme": wsc.defaults.theme,
-        "themes": wsc.defaults.themes,
+        "ui": {
+            "theme": wsc.defaults.theme,
+            "themes": wsc.defaults.themes,
+            "tabclose": true,
+            "clock": true
+        }
     };
     
-    view.extend( this.settings, options );
-    this.settings.theme = this.storage.get('theme', wsc.defaults.theme);
-    this.storage.set('theme', this.settings.theme);
+    this.settings = Object.extend( this.settings, options );
+    this.config_load();
+    this.config_save();
     
-    this.ui = new this.settings.ui( view, {
-        'themes': this.settings.themes,
-        'theme': this.settings.theme,
+    this.ui = new this.settings.ui_object( view, {
+        'themes': this.settings.ui.themes,
+        'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
         'username': this.settings.username,
-        'domain': this.settings.domain
+        'domain': this.settings.domain,
+        'clock': this.settings.ui.clock,
+        'tabclose': this.settings.tabclose
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
@@ -72,6 +79,32 @@ wsc.Client = function( view, options, mozilla ) {
     
     // Welcome!
     this.monitor(this.settings["welcome"]);
+
+};
+
+/**
+ * Load configuration from localStorage.
+ *
+ * @method config_load
+ */
+wsc.Client.prototype.config_load = function(  ) {
+
+    this.settings.ui.theme = this.uistore.get('theme', wsc.defaults.theme);
+    this.settings.ui.clock = this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true';
+    this.settings.ui.tabclose = this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true';
+
+};
+
+/**
+ * Save configuration save localStorage.
+ *
+ * @method config_save
+ */
+wsc.Client.prototype.config_save = function(  ) {
+
+    this.uistore.set('theme', this.settings.ui.theme);
+    this.uistore.set('clock', this.settings.ui.clock.toString());
+    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
 
 };
 

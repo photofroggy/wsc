@@ -60,30 +60,22 @@ wsc.defaults.Extension = function( client ) {
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
+        client.ui.on('settings.save', settings_save);
+    };
+    
+    var settings_save = function( e, ui ) {
+        client.settings.ui.theme = e.theme;
+        client.settings.ui.clock = e.clock;
+        client.settings.ui.tabclose = e.tabclose;
+        client.config_save();
     };
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main');
+        var page = e.settings.page('Main', true);
         var orig = {};
-        orig.theme = replaceAll(client.ui.settings.theme, 'wsct_', '');
-        orig.clock = client.ui.clock();
-        orig.tc = client.ui.nav.closer();
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
-        
-        var themes = [];
-        for( i in client.ui.settings.themes ) {
-            name = replaceAll(client.ui.settings.themes[i], 'wsct_', '');
-            themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
-        }
-        
-        page.item('Text', {
-            'ref': 'intro',
-            'title': 'Main',
-            'text': 'Use this window to view and change your settings.\n\nCheck\
-                    the different pages to see what settings can be changed.',
-        });
         
         page.item('Form', {
             'ref': 'login',
@@ -108,55 +100,14 @@ wsc.defaults.Extension = function( client ) {
                     client.settings.pk = event.data.token;
                 }
             }
-        });
+        }, true);
         
-        page.item('Form', {
-            'ref': 'ui',
-            'title': 'UI',
-            'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
-                    a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
-                    client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
-            'fields': [
-                ['Dropdown', {
-                    'ref': 'theme',
-                    'label': 'Theme',
-                    'items': themes
-                }],
-                ['Dropdown', {
-                    'ref': 'clock',
-                    'label': 'Timestamp Format',
-                    'items': [
-                        { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
-                        { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
-                    ]
-                }],
-                ['Check', {
-                    'ref': 'tabclose',
-                    'label': 'Close Buttons',
-                    'items': [
-                        { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
-                    ]
-                }],
-            ],
-            'event': {
-                'change': function( event ) {
-                    client.ui.clock(event.data.clock == '24');
-                    client.ui.theme(event.data.theme);
-                    client.ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
-                },
-                'save': function( event ) {
-                    orig.clock = event.data.clock == '24';
-                    orig.theme = event.data.theme;
-                    orig.tc = event.data.tabclose.indexOf('yes') > -1;
-                    client.storage.set('theme', 'wsct_' + orig.theme);
-                },
-                'close': function( event ) {
-                    client.ui.clock(orig.clock);
-                    client.ui.theme(orig.theme);
-                    client.ui.nav.closer(orig.tc);
-                }
-            }
-        });
+        page.item('Text', {
+            'ref': 'intro',
+            'title': 'Main',
+            'text': 'Use this window to view and change your settings.\n\nCheck\
+                    the different pages to see what settings can be changed.',
+        }, true);
         
         /* * /
         page.item('Radio', {

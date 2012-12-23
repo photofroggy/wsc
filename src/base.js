@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.12.78';
+wsc.VERSION = '0.13.79';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';

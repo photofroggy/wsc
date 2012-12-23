@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.42';
+Chatterbox.VERSION = '0.6.43';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -31,7 +31,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
-        'clock': true
+        'clock': true,
+        'tabclose': true
     };
     
     view.extend( this.settings, options );
@@ -1732,7 +1733,7 @@ Chatterbox.Navigation = function( ui ) {
     this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
-    this.showclose = true;
+    this.showclose = this.manager.settings.tabclose;
     
     var nav = this;
     this.settingsb.click(
@@ -1745,6 +1746,7 @@ Chatterbox.Navigation = function( ui ) {
                 'settings': new Chatterbox.Settings.Config()
             };
             
+            nav.configure_page( evt );
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
@@ -1775,6 +1777,82 @@ Chatterbox.Navigation = function( ui ) {
             return false;
         }
     );
+
+};
+
+/**
+ * Configure the main settings page of the settings popup.
+ *
+ * @method configure_page
+ * @param event {Object} Event object.
+ */
+Chatterbox.Navigation.prototype.configure_page = function( event ) {
+
+    var ui = this.manager;
+    var page = event.settings.page('Main', true);
+    var orig = {};
+    orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
+    orig.clock = ui.clock();
+    orig.tc = ui.nav.closer();
+    
+    var themes = [];
+    for( i in ui.settings.themes ) {
+        name = replaceAll(ui.settings.themes[i], 'wsct_', '');
+        themes.push({ 'value': name, 'title': name, 'selected': orig.theme == name })
+    }
+    
+    page.item('Form', {
+        'ref': 'ui',
+        'title': 'UI',
+        'hint': '<b>Timestamp</b><br/>Choose between a 24 hour clock and\
+                a 12 hour clock.\n\n<b>Theme</b><br/>Change the look of the\
+                client.\n\n<b>Close Buttons</b><br/>Turn tab close buttons on/off.',
+        'fields': [
+            ['Dropdown', {
+                'ref': 'theme',
+                'label': 'Theme',
+                'items': themes
+            }],
+            ['Dropdown', {
+                'ref': 'clock',
+                'label': 'Timestamp Format',
+                'items': [
+                    { 'value': '24', 'title': '24 hour', 'selected': orig.clock },
+                    { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
+                ]
+            }],
+            ['Check', {
+                'ref': 'tabclose',
+                'label': 'Close Buttons',
+                'items': [
+                    { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
+                ]
+            }],
+        ],
+        'event': {
+            'change': function( event ) {
+                ui.clock(event.data.clock == '24');
+                ui.theme(event.data.theme);
+                ui.nav.closer(event.data.tabclose.indexOf('yes') > -1);
+            },
+            'save': function( event ) {
+                orig.clock = event.data.clock == '24';
+                orig.theme = event.data.theme;
+                orig.tc = event.data.tabclose.indexOf('yes') > -1;
+                
+                ui.trigger('settings.save', {
+                    'clock': orig.clock,
+                    'tabclose': orig.tc,
+                    'theme': 'wsct_' + orig.theme
+                } );
+            },
+            'close': function( event ) {
+                ui.clock(orig.clock);
+                ui.theme(orig.theme);
+                ui.nav.closer(orig.tc);
+            }
+        }
+    });
 
 };
 

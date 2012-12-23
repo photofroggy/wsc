@@ -88,12 +88,19 @@ Object.size = function(obj) {
 };
 
 Object.steal = function( a, b ) {
-    for( index in b )
-        a[index] = b[index];
+    for( var index in b ) {
+        if( !a.hasOwnProperty(index) && !b.hasOwnProperty(index) )
+            continue;
+        if( typeof a[index] == 'object' ) {
+            a[index] = Object.extend(a[index], b[index]);
+        } else {
+            a[index] = b[index];
+        }
+    }
 };
 
 Object.extend = function( a, b ) {
-    obj = {};
+    var obj = {};
     Object.steal(obj, a);
     Object.steal(obj, b);
     return obj;
