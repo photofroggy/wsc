@@ -130,6 +130,7 @@ wsc.Client.prototype.build = function(  ) {
         if( event.chan.monitor )
             return false;
         client.part(event.ns);
+        client.remove_ns(event.ns);
         return false;
     } );
 
@@ -402,7 +403,15 @@ wsc.Client.prototype.create_ns = function( namespace, hidden ) {
  */
 wsc.Client.prototype.remove_ns = function( namespace ) {
 
-    this.ui.remove_channel(namespace);
+    if( !namespace )
+        return;
+    
+    var chan = this.channel(namespace);
+    if( !chan )
+        return;
+    
+    chan.remove();
+    delete this.channelo[chan.selector];
 
 };
 

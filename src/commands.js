@@ -64,7 +64,6 @@ wsc.defaults.Extension = function( client ) {
     };
     
     var settings_save = function( e, ui ) {
-        console.log(e);
         client.settings.ui.theme = e.theme;
         client.settings.ui.clock = e.clock;
         client.settings.ui.tabclose = e.tabclose;
