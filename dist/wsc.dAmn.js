@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.13.80';
+wsc.VERSION = '0.13.81';
 wsc.STATE = 'beta';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
@@ -841,7 +841,7 @@ wsc.Channel.prototype.build = function( ) {
 wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
-    this.ui.remove();
+    this.ui.manager.remove_channel(this.namespace);
 };
 
 /**
@@ -1986,6 +1986,7 @@ wsc.defaults.Extension = function( client ) {
         
         client.bind('cmd.clear', cmd_clear );
         client.bind('cmd.clearall', cmd_clearall );
+        client.bind('cmd.close', cmd_close );
         
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.recv_admin_show', pkt_admin_show );
@@ -2300,6 +2301,11 @@ wsc.defaults.Extension = function( client ) {
         }
         
         client.each_channel( method, true );
+    };
+    
+    var cmd_close = function( cmd ) {
+        client.part(cmd.target);
+        client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.

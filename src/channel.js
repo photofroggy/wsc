@@ -56,7 +56,7 @@ wsc.Channel.prototype.build = function( ) {
 wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
-    this.ui.remove();
+    this.ui.manager.remove_channel(this.namespace);
 };
 
 /**
