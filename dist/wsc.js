@@ -1955,7 +1955,13 @@ wsc.defaults.Extension = function( client ) {
         'on': false,
         'reason': '',
         'last': {},
-        'since': 0
+        'since': 0,
+        'store': client.storage.folder('away'),
+        'format': {
+            'setaway': '/me is away: {reason}',
+            'setback': '/me is back',
+            'away': '{from}: I am away, reason: {reason}'
+        }
     };
     
     var init = function(  ) {

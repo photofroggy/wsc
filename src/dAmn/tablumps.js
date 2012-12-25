@@ -311,6 +311,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
                 if( c == ' ' || c == '\t' || c == '&' ) {
                     if( c == ' ' || c == '&' || !this.lumps.hasOwnProperty(argbuf) ) {
                         buf+= argbuf;
+                        argbuf = '';
                         if( c == '&' ) {
                             i--;
                             buf = buf.substr(0, buf.length-1);

@@ -5,6 +5,6 @@
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.8';
+wsc.dAmn.VERSION = '0.2.9';
 wsc.dAmn.STATE = 'alpha';
 

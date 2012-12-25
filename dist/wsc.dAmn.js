@@ -1955,7 +1955,13 @@ wsc.defaults.Extension = function( client ) {
         'on': false,
         'reason': '',
         'last': {},
-        'since': 0
+        'since': 0,
+        'store': client.storage.folder('away'),
+        'format': {
+            'setaway': '/me is away: {reason}',
+            'setback': '/me is back',
+            'away': '{from}: I am away, reason: {reason}'
+        }
     };
     
     var init = function(  ) {
@@ -7574,7 +7580,7 @@ Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.8';
+wsc.dAmn.VERSION = '0.2.9';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -7978,6 +7984,7 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
                 if( c == ' ' || c == '\t' || c == '&' ) {
                     if( c == ' ' || c == '&' || !this.lumps.hasOwnProperty(argbuf) ) {
                         buf+= argbuf;
+                        argbuf = '';
                         if( c == '&' ) {
                             i--;
                             buf = buf.substr(0, buf.length-1);
