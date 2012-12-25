@@ -554,8 +554,8 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { name: 'send.msg.before', 'msg': message, 'ns': namespace };
-    this.trigger( e );
+    e = { 'msg': message, 'ns': namespace };
+    this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('msg', 'main', {}, e.msg)
     ));
@@ -571,8 +571,8 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { name: 'send.npmsg.before', 'msg': message, 'ns': namespace };
-    this.trigger( e );
+    e = { 'msg': message, 'ns': namespace };
+    this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('npmsg', 'main', {}, e.msg)
     ));
