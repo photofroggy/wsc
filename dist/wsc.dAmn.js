@@ -2003,9 +2003,6 @@ wsc.defaults.Extension = function( client ) {
         // Non-standard commands.
         client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
-        client.bind('cmd.setaway', cmd_setaway);
-        client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         
         // lol themes
         client.bind('cmd.theme', cmd_theme);
@@ -2335,55 +2332,6 @@ wsc.defaults.Extension = function( client ) {
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
-    // Away message stuff.
-    var cmd_setaway = function( event, client ) {
-    
-        ext.away.on = true;
-        ext.away.last = {};
-        ext.away.since = new Date();
-        ext.away.reason = event.args;
-        var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, announce );
-        } );
-    
-    };
-    
-    var cmd_setback = function( event, client ) {
-        ext.away.on = false;
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, 'is back' );
-        } );
-    };
-    
-    var pkt_highlighted = function( event, client ) {
-    
-        if( !ext.away.on )
-            return;
-        
-        if( ext.away.reason.length == 0 )
-            return;
-        
-        if( event.user == client.settings.username )
-            return;
-        
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
-            return;
-        
-        var t = new Date();
-        var ns = event.sns.toLowerCase();
-        
-        if( ns in ext.away.last )
-            if( (t - ext.away.last[ns]) <= 60000 )
-                return;
-        
-        client.say(event.ns, event.user + ': I am currently away; reason: ' + ext.away.reason);
-        ext.away.last[ns] = t;
-    
-    };
-    
     // Process a property packet, hopefully retreive whois info.
     var pkt_property = function( event, client ) {
         if(event.p != 'info')
@@ -2460,7 +2408,7 @@ wsc.defaults.Extension.Away = function( client ) {
         'reason': '',
         'last': {},
         'since': 0,
-        'store': client.storage.folder('away'),
+        'interval': 60000,
         'format': {
             'setaway': '/me is away: {reason}',
             'setback': '/me is back',
@@ -2472,10 +2420,63 @@ wsc.defaults.Extension.Away = function( client ) {
     
         load();
         save();
+        
+        client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.setback', cmd_setback);
+        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
     
     };
     
     
+    
+    // Away message stuff.
+    var cmd_setaway = function( event, client ) {
+    
+        settings.on = true;
+        settings.last = {};
+        settings.since = new Date();
+        settings.reason = event.args;
+        var announce = 'is away' + ( settings.reason.length > 0 ? ': ' + settings.reason : '');
+        
+        client.each_channel( function( ns ) {
+            client.action( ns, announce );
+        } );
+    
+    };
+    
+    var cmd_setback = function( event, client ) {
+        settings.on = false;
+        
+        client.each_channel( function( ns ) {
+            client.action( ns, 'is back' );
+        } );
+    };
+    
+    var pkt_highlighted = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
+        if( settings.reason.length == 0 )
+            return;
+        
+        if( event.user == client.settings.username )
+            return;
+        
+        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
+            return;
+        
+        var t = new Date();
+        var ns = event.sns.toLowerCase();
+        
+        if( ns in settings.last )
+            if( (t - settings.last[ns]) <= settings.interval )
+                return;
+        
+        client.say(event.ns, event.user + ': I am currently away; reason: ' + settings.reason);
+        settings.last[ns] = t;
+    
+    };
     
     
     var load = function(  ) {
@@ -2483,11 +2484,13 @@ wsc.defaults.Extension.Away = function( client ) {
         settings.format.setaway = storage.get('setaway', '/me is away: {reason}');
         settings.format.setback = storage.get('setback', '/me is back');
         settings.format.away = storage.get('away', '{from}: I am away, reason: {reason}');
+        settings.interval = parseInt(storage.get('interval', 60000));
     
     };
     
     var save = function(  ) {
     
+        storage.set('interval', settings.interval);
         storage.set('setaway', settings.format.setaway);
         storage.set('setback', settings.format.setback);
         storage.set('away', settings.format.away);
