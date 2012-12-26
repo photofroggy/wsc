@@ -500,6 +500,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
 };

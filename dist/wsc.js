@@ -2445,9 +2445,59 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
 };
+/**
+ * Away extension.
+ */
+wsc.defaults.Extension.Away = function( client ) {
+
+    var storage = client.storage.folder('away');
+    var settings = {
+        'on': false,
+        'reason': '',
+        'last': {},
+        'since': 0,
+        'store': client.storage.folder('away'),
+        'format': {
+            'setaway': '/me is away: {reason}',
+            'setback': '/me is back',
+            'away': '{from}: I am away, reason: {reason}'
+        }
+    };
+    
+    var init = function(  ) {
+    
+        load();
+        save();
+    
+    };
+    
+    
+    
+    
+    var load = function(  ) {
+    
+        settings.format.setaway = storage.get('setaway', '/me is away: {reason}');
+        settings.format.setback = storage.get('setback', '/me is back');
+        settings.format.away = storage.get('away', '{from}: I am away, reason: {reason}');
+    
+    };
+    
+    var save = function(  ) {
+    
+        storage.set('setaway', settings.format.setaway);
+        storage.set('setback', settings.format.setback);
+        storage.set('away', settings.format.away);
+    
+    };
+    
+    init();
+
+};
+
 /**
  * Ignore extension.
  * 
