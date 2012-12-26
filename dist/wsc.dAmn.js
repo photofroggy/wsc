@@ -2436,7 +2436,11 @@ wsc.defaults.Extension.Away = function( client ) {
         settings.last = {};
         settings.since = new Date();
         settings.reason = event.args;
-        var announce = 'is away' + ( settings.reason.length > 0 ? ': ' + settings.reason : '');
+        var announce = replaceAll(
+            settings.format.setaway,
+            '{reason}',
+            settings.reason || '[silent away]'
+        );
         
         client.each_channel( function( ns ) {
             client.action( ns, announce );
@@ -2448,7 +2452,7 @@ wsc.defaults.Extension.Away = function( client ) {
         settings.on = false;
         
         client.each_channel( function( ns ) {
-            client.action( ns, 'is back' );
+            client.action( ns, settings.format.setback );
         } );
     };
     
@@ -2473,7 +2477,8 @@ wsc.defaults.Extension.Away = function( client ) {
             if( (t - settings.last[ns]) <= settings.interval )
                 return;
         
-        client.say(event.ns, event.user + ': I am currently away; reason: ' + settings.reason);
+        var msg = replaceAll( settings.format.away, '{from}', event.user );
+        client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
         settings.last[ns] = t;
     
     };
