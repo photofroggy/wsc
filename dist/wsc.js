@@ -2412,7 +2412,7 @@ wsc.defaults.Extension.Away = function( client ) {
         'format': {
             'setaway': '/me is away: {reason}',
             'setback': '/me is back',
-            'away': '{from}: I am away, reason: {reason}'
+            'away': '{user}: I\'ve been away for {timesince}. Reason: {reason}'
         }
     };
     
@@ -2568,7 +2568,9 @@ wsc.defaults.Extension.Away = function( client ) {
             if( (t - settings.last[ns]) <= settings.interval )
                 return;
         
-        var msg = replaceAll( settings.format.away, '{from}', event.user );
+        var tl = timeLengthString( (t - settings.since) / 1000 );
+        var msg = replaceAll( settings.format.away, '{user}', event.user );
+        msg = replaceAll( msg, '{timesince}', tl );
         client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
         settings.last[ns] = t;
     
@@ -2579,7 +2581,7 @@ wsc.defaults.Extension.Away = function( client ) {
     
         settings.format.setaway = storage.get('setaway', '/me is away: {reason}');
         settings.format.setback = storage.get('setback', '/me is back');
-        settings.format.away = storage.get('away', '{from}: I am away, reason: {reason}');
+        settings.format.away = storage.get('away', '{user}: I\'ve been away for {timesince}. Reason: {reason}');
         settings.interval = parseInt(storage.get('interval', 60000));
     
     };
