@@ -4,7 +4,7 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.2';
+wsc.VERSION = '1.0.3';
 wsc.STATE = 'release candidate';
 wsc.REVISION = '0.14.88';
 wsc.defaults = {};
