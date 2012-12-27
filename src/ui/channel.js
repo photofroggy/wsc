@@ -18,6 +18,8 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     this.selector = selector;
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
+    this.visible = false;
+    this.st = 0;
 
 };
 
@@ -93,6 +95,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
+    this.visible = false;
 };
 
 /**
@@ -102,6 +105,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
  */
 Chatterbox.Channel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
+    this.visible = true;
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise tabbed fill');
@@ -142,7 +146,6 @@ Chatterbox.Channel.prototype.scroll = function( ) {
  */
 Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
-    var pscr = this.wrap.scrollTop();
     this.wrap.css({'padding-top': 0, 'height': 'auto'});
     wh = this.wrap.innerHeight();
     lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
@@ -154,7 +157,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
         this.wrap.css({
             'padding-top': 0,
             'height': lh});
-    this.wrap.scrollTop(pscr);
+    this.wrap.scrollTop(this.st);
 };
 
 /**
@@ -258,13 +261,16 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     };
     
     this.manager.trigger( 'log_item.before', data );
-    var pscr = this.wrap.scrollTop();
+    if( this.visible ) {
+        this.st = this.wrap.scrollTop();
+    }
     
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    this.st+= 13;
     
-    this.wrap.scrollTop( pscr + 13 );
+    this.wrap.scrollTop( this.st );
     
     // Scrollio
     this.scroll();
