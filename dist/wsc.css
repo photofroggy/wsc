@@ -490,7 +490,7 @@ div.wsc nav.tabs ul {
   padding: 14px 8px 0;
 }
 div.wsc nav.tabs ul#tabnav {
-  padding: 10px 20px;
+  padding: 7px 20px;
 }
 div.wsc nav.tabs ul#tabnav li {
   margin-top: -2px;
@@ -506,7 +506,7 @@ div.wsc nav.tabs ul li {
 }
 div.wsc nav.tabs ul.tabs {
   overflow: hidden;
-  height: 30px;
+  height: 25px;
 }
 div.wsc nav.tabs ul.tabs li {
   margin-right: 2px;
@@ -517,13 +517,13 @@ div.wsc nav.tabs ul.tabs li a.tab {
   border: 1px solid black;
   border-bottom: none;
   display: block;
-  margin-top: -1px;
+  margin-top: -6px;
 }
 div.wsc nav.tabs ul.tabs li a.tab:hover {
   text-decoration: none;
   border: 1px solid black;
   border-bottom: none;
-  padding: 9px 5px;
+  padding: 7px 5px;
   margin-top: -11px;
 }
 div.wsc nav.tabs ul.tabs li.active {
@@ -533,11 +533,11 @@ div.wsc nav.tabs ul.tabs li.active a.tab {
   padding: 7px;
   border: 1px solid black;
   border-bottom: none;
-  margin-top: -4px;
+  margin-top: -9px;
 }
 div.wsc nav.tabs ul.tabs li.active a.tab:hover {
   padding: 7px;
-  margin-top: -4px;
+  margin-top: -9px;
 }
 div.wsc nav.tabs ul.tabs#chattabs li.hidden {
   display: none;
@@ -727,7 +727,7 @@ div.wsc div.chatwindow header {
 }
 div.wsc div.chatwindow header div {
   margin: 0px;
-  padding: 5px;
+  padding: 0px 2px;
   display: none;
 }
 div.wsc div.chatwindow header div p {
