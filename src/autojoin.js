@@ -32,39 +32,51 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             ul+= '</ul>';
         }
         
-        page.item('Text', {
-            'ref': 'intro',
+        page.item('Checkbox', {
+            'ref': 'eaj',
             'title': 'Autojoin',
-            'text': 'Add any channels you want to join automatically when you\
-                    connect to the chat server.'
+            'text': 'Turn on autojoin to automatically join selected channels\
+                    when you connect to the chat server.',
+            'items': [
+                { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
+            ],
+            'event': {
+                'change': function( event ) {
+                    console.log(event, settings);
+                    if( event.target.value == 'yes' )
+                        client.autojoin.on = event.target.checked;
+                },
+                'save': function( event ) {
+                    console.log(client.autojoin);
+                    orig.ajon = client.autojoin.on;
+                    client.config_save();
+                },
+                'close': function( event ) {
+                    client.autojoin.on = orig.ajon;
+                }
+            }
         });
-        
-        /**
-         * FORM STUFF HERE!
-         */
         
         var uf = page.item('Form', {
             'ref': 'autojoin',
             'wclass': 'boxed-ff-indv',
-            'title': 'Channels',
-            'text': 'This is the list of channels on your autojoin.\n\nUse the\
-                    command <code>/autojoin</code> to edit the list.',
+            'title': 'Autojoin',
+            'text': 'Add any channels you want to join automatically when you\
+                    connect to the chat server.',
             'fields': [
-                ['Checkbox', {
-                    'ref': 'enabled',
-                    'label': 'Autojoin',
-                    'items': [
-                        { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
-                    ]
-                }],
                 ['Text', {
                     'ref': 'channels',
                     'text': ul
                 }]
             ],
             'event': {
-                'change': function( event ) {},
-                'save': function( event ) {}
+                'change': function( event ) {
+                },
+                'save': function( event ) {
+                },
+                'close': function( event ) {
+                    client.config_save();
+                }
             }
         });
     

@@ -418,21 +418,21 @@ Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['ref',
 Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
 Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
 
-Chatterbox.template.settings.item.check = {};
-Chatterbox.template.settings.item.check.pre = [
+Chatterbox.template.settings.item.checkbox = {};
+Chatterbox.template.settings.item.checkbox.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
     Chatterbox.template.settings.item.hint.prep
 ];
 
-Chatterbox.template.settings.item.check.render = {
+Chatterbox.template.settings.item.checkbox.render = {
     'title': Chatterbox.template.settings.krender.title,
     'text': Chatterbox.template.settings.krender.text,
     'items': Chatterbox.template.settings.krender.checkitems
 };
 
-Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['ref', 'title', 'items']);
-Chatterbox.template.settings.item.check.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
-Chatterbox.template.settings.item.check.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
+Chatterbox.template.settings.item.checkbox.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.checkbox.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
+Chatterbox.template.settings.item.checkbox.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
 
 Chatterbox.template.settings.item.textfield = {};
 Chatterbox.template.settings.item.textfield.pre = [
@@ -510,10 +510,10 @@ Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbo
 Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
 
-Chatterbox.template.settings.item.form.field.check = {};
-Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
-Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
-Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+Chatterbox.template.settings.item.form.field.checkbox = {};
+Chatterbox.template.settings.item.form.field.checkbox.render = { 'items': Chatterbox.template.settings.krender.checkitems };
+Chatterbox.template.settings.item.form.field.checkbox.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.checkbox.frame = '<div class="{ref} checkbox">{items}</div>';
 
 Chatterbox.template.settings.item.form.field.text = {};
 Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
