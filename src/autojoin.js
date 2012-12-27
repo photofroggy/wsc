@@ -56,9 +56,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         });
         
         var uf = page.item('Form', {
-            'ref': 'autojoin',
+            'ref': 'channels',
             'wclass': 'boxed-ff-indv',
-            'title': 'Autojoin',
+            'title': 'Channels',
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
             'fields': [

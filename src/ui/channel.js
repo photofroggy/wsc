@@ -109,6 +109,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
 };
 
@@ -566,6 +567,9 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     if( tab.hasClass('tabbed') )
         return;
     
+    if( tab.hasClass('chatting') )
+        tab.removeClass('chatting');
+    
     var runs = 0;
     tab.addClass('tabbed');
     
@@ -607,8 +611,11 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     
     if( !this.tab.hasClass('active') ) {
         this.tab.addClass('noise');
-        if( msg.find('.cevent').length == 0 )
-            this.tab.addClass('chatting');
+        if( !this.tab.hasClass('tabbed') ) {
+            if( msg.find('.cevent').length == 0 ) {
+                this.tab.addClass('chatting');
+            }
+        }
     }
     
 

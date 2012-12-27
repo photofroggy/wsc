@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.5';
+wsc.VERSION = '1.0.6';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.14.90';
+wsc.REVISION = '0.14.91';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2376,9 +2376,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         });
         
         var uf = page.item('Form', {
-            'ref': 'autojoin',
+            'ref': 'channels',
             'wclass': 'boxed-ff-indv',
-            'title': 'Autojoin',
+            'title': 'Channels',
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
             'fields': [
@@ -4058,7 +4058,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.49';
+Chatterbox.VERSION = '0.6.50';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4641,6 +4641,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
 };
 
@@ -5098,6 +5099,9 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     if( tab.hasClass('tabbed') )
         return;
     
+    if( tab.hasClass('chatting') )
+        tab.removeClass('chatting');
+    
     var runs = 0;
     tab.addClass('tabbed');
     
@@ -5139,8 +5143,11 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     
     if( !this.tab.hasClass('active') ) {
         this.tab.addClass('noise');
-        if( msg.find('.cevent').length == 0 )
-            this.tab.addClass('chatting');
+        if( !this.tab.hasClass('tabbed') ) {
+            if( msg.find('.cevent').length == 0 ) {
+                this.tab.addClass('chatting');
+            }
+        }
     }
     
 
