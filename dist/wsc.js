@@ -2341,7 +2341,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         var orig = {};
         orig.ajon = client.autojoin.on;
         
-        if( client.autojoin.count == 0 ) {
+        if( client.autojoin.channel.length == 0 ) {
             ul+= '<li><i>No autojoin channels set</i></li></ul>';
         } else {
             for( var i in client.autojoin.channel ) {
@@ -2390,76 +2390,60 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     
     };
     
-    var cmd_autojoin = function( cmd ) {};
+    var cmd_autojoin = function( cmd ) {
     
-    // Away message stuff.
-    var cmd_setaway = function( event, client ) {
-    
-        settings.on = true;
-        settings.last = {};
-        settings.since = new Date();
-        settings.reason = event.args;
+        var args = cmd.args.split(' ');
         
-        var method = client.say;
-        var announce = replaceAll(
-            settings.format.setaway,
-            '{reason}',
-            settings.reason || '[silent away]'
-        );
+        if( !args )
+            return;
         
-        if( announce.indexOf('/me ') == 0 ) {
-            announce = announce.substr(4);
-            method = client.action;
+        var subcmd = args.shift().toLowerCase();
+        var meth = function( item ) {};
+        var mod = false;
+        var chan = client.channel(cmd.ns);
+        
+        switch( subcmd ) {
+        
+            case 'add':
+                meth = function( item ) {
+                    if( client.autojoin.channel.indexOf( item ) == -1 ) {
+                        mod = true;
+                        client.autojoin.channel.push( item );
+                        chan.server_message('Added ' + item + ' to your autojoin.');
+                    } else {
+                        chan.server_message('Already have ' + item + ' on your autojoin.');
+                    }
+                };
+                break;
+            case 'rem':
+            case 'remove':
+                meth = function( item ) {
+                    var ci = client.autojoin.channel.indexOf( item );
+                    if( ci != -1 ) {
+                        mod = true;
+                        client.autojoin.channel.splice( ci, 1 );
+                        chan.server_message('Removed ' + item + ' from your autojoin.');
+                    } else {
+                        chan.server_message(item + ' is not on your autojoin list.');
+                    }
+                };
+                break;
+        
         }
         
+        var item = '';
         
-        client.each_channel( function( ns ) {
-            method.call( client, ns, announce );
-        } );
-    
-    };
-    
-    var cmd_setback = function( event, client ) {
-        settings.on = false;
-        var method = client.say;
-        var announce = settings.format.setback;
+        for( var i in args ) {
         
-        if( announce.indexOf('/me ') == 0 ) {
-            announce = announce.substr(4);
-            method = client.action;
+            if( !args.hasOwnProperty(i) )
+                continue;
+            item = client.deform_ns(args[i]).toLowerCase();
+            meth( item );
+        
         }
         
-        client.each_channel( function( ns ) {
-            method.call( client, ns, announce );
-        } );
-    };
-    
-    var pkt_highlighted = function( event, client ) {
-    
-        if( !settings.on )
-            return;
-        
-        if( settings.reason.length == 0 )
-            return;
-        
-        if( event.user == client.settings.username )
-            return;
-        
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
-            return;
-        
-        var t = new Date();
-        var ns = event.sns.toLowerCase();
-        
-        if( ns in settings.last )
-            if( (t - settings.last[ns]) <= settings.interval )
-                return;
-        
-        var tl = timeLengthString( (t - settings.since) / 1000 );
-        var msg = replaceAll( settings.format.away, '{user}', event.user );
-        msg = replaceAll( msg, '{timesince}', tl );
-        client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
-        settings.last[ns] = t;
+        if( mod )
+            client.config_save();
     
     };
     
