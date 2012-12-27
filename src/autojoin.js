@@ -8,8 +8,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     var init = function(  ) {
     
         client.bind('cmd.autojoin', cmd_autojoin);
-        //client.bind('cmd.setback', cmd_setback);
-        //client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };

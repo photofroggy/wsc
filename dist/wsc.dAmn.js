@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.4';
+wsc.VERSION = '1.0.5';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.14.89';
+wsc.REVISION = '0.14.90';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2328,8 +2328,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     var init = function(  ) {
     
         client.bind('cmd.autojoin', cmd_autojoin);
-        //client.bind('cmd.setback', cmd_setback);
-        //client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
