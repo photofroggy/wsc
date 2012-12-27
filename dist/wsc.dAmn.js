@@ -2523,6 +2523,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 'save': function( event ) {
                     settings.ignore = event.data.ignore;
                     settings.unignore = event.data.unignore;
+                    save();
                 }
             }
         });
@@ -2750,7 +2751,7 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
-    this.settings.ui.theme = this.uistore.get('theme', wsc.defaults.theme);
+    this.settings.ui.theme = this.uistore.get('theme', this.settings.ui.theme);
     this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
     this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
 
