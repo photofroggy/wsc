@@ -23,6 +23,7 @@
     $log-ahd: none,
     $tab-a: white,
     $tab-ah: white,
+    $tab-ac: #FFB024,
     $button: #D4F4FC,
     $buttonh: #D4F4FC,
     $buttona: #D4F4FC,
@@ -174,6 +175,7 @@
                 }
             }
             &.noise a.tab { font-weight: bold; }
+            &.noise.chatting a.tab { color: $tab-ac; }
             &.tabbed {
                 a.tab {
                     color: $tabbed;

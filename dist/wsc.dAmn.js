@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.3';
+wsc.VERSION = '1.0.4';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.14.88';
+wsc.REVISION = '0.14.89';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -4050,7 +4050,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.48';
+Chatterbox.VERSION = '0.6.49';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4632,7 +4632,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.visible = true;
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
-    this.tab.removeClass('noise tabbed fill');
+    this.tab.removeClass('noise chatting tabbed fill');
     this.resize();
 };
 
@@ -5114,9 +5114,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
  */
 Chatterbox.Channel.prototype.noise = function(  ) {
     
-    if( !this.tab.hasClass('active') )
-        this.tab.addClass('noise');
-    
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
@@ -5128,9 +5125,16 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
             this.scroll();
-            break;
+            return;
         }
     }
+    
+    if( !this.tab.hasClass('active') ) {
+        this.tab.addClass('noise');
+        if( msg.find('.cevent').length == 0 )
+            this.tab.addClass('chatting');
+    }
+    
 
 };
 
