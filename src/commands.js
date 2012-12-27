@@ -58,9 +58,6 @@ wsc.defaults.Extension = function( client ) {
         // Non-standard commands.
         client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
-        client.bind('cmd.setaway', cmd_setaway);
-        client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         
         // lol themes
         client.bind('cmd.theme', cmd_theme);
@@ -390,55 +387,6 @@ wsc.defaults.Extension = function( client ) {
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
-    // Away message stuff.
-    var cmd_setaway = function( event, client ) {
-    
-        ext.away.on = true;
-        ext.away.last = {};
-        ext.away.since = new Date();
-        ext.away.reason = event.args;
-        var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, announce );
-        } );
-    
-    };
-    
-    var cmd_setback = function( event, client ) {
-        ext.away.on = false;
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, 'is back' );
-        } );
-    };
-    
-    var pkt_highlighted = function( event, client ) {
-    
-        if( !ext.away.on )
-            return;
-        
-        if( ext.away.reason.length == 0 )
-            return;
-        
-        if( event.user == client.settings.username )
-            return;
-        
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
-            return;
-        
-        var t = new Date();
-        var ns = event.sns.toLowerCase();
-        
-        if( ns in ext.away.last )
-            if( (t - ext.away.last[ns]) <= 60000 )
-                return;
-        
-        client.say(event.ns, event.user + ': I am currently away; reason: ' + ext.away.reason);
-        ext.away.last[ns] = t;
-    
-    };
-    
     // Process a property packet, hopefully retreive whois info.
     var pkt_property = function( event, client ) {
         if(event.p != 'info')
@@ -500,6 +448,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
 };

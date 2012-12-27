@@ -2003,9 +2003,6 @@ wsc.defaults.Extension = function( client ) {
         // Non-standard commands.
         client.bind('cmd.gettitle', cmd_gett);
         client.bind('cmd.gettopic', cmd_gett);
-        client.bind('cmd.setaway', cmd_setaway);
-        client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         
         // lol themes
         client.bind('cmd.theme', cmd_theme);
@@ -2335,55 +2332,6 @@ wsc.defaults.Extension = function( client ) {
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
-    // Away message stuff.
-    var cmd_setaway = function( event, client ) {
-    
-        ext.away.on = true;
-        ext.away.last = {};
-        ext.away.since = new Date();
-        ext.away.reason = event.args;
-        var announce = 'is away' + ( ext.away.reason.length > 0 ? ': ' + ext.away.reason : '');
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, announce );
-        } );
-    
-    };
-    
-    var cmd_setback = function( event, client ) {
-        ext.away.on = false;
-        
-        client.each_channel( function( ns ) {
-            client.action( ns, 'is back' );
-        } );
-    };
-    
-    var pkt_highlighted = function( event, client ) {
-    
-        if( !ext.away.on )
-            return;
-        
-        if( ext.away.reason.length == 0 )
-            return;
-        
-        if( event.user == client.settings.username )
-            return;
-        
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
-            return;
-        
-        var t = new Date();
-        var ns = event.sns.toLowerCase();
-        
-        if( ns in ext.away.last )
-            if( (t - ext.away.last[ns]) <= 60000 )
-                return;
-        
-        client.say(event.ns, event.user + ': I am currently away; reason: ' + ext.away.reason);
-        ext.away.last[ns] = t;
-    
-    };
-    
     // Process a property packet, hopefully retreive whois info.
     var pkt_property = function( event, client ) {
         if(event.p != 'info')
@@ -2445,9 +2393,215 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
 };
+/**
+ * Away extension.
+ */
+wsc.defaults.Extension.Away = function( client ) {
+
+    var storage = client.storage.folder('away');
+    var settings = {
+        'on': false,
+        'reason': '',
+        'last': {},
+        'since': 0,
+        'interval': 60000,
+        'format': {
+            'setaway': '/me is away: {reason}',
+            'setback': '/me is back',
+            'away': '{user}: I\'ve been away for {timesince}. Reason: {reason}'
+        }
+    };
+    
+    var init = function(  ) {
+    
+        load();
+        save();
+        
+        client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.setback', cmd_setback);
+        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('settings.open', settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page('Away', true);
+        var orig = {};
+        orig.away = settings.format.away;
+        orig.sa = settings.format.setaway;
+        orig.sb = settings.format.setback;
+        orig.intr = settings.interval;
+        
+        page.item('Text', {
+            'ref': 'intro',
+            'title': 'Away Messages',
+            'text': 'Use away messages when you are away from the chats.\n\n\
+                    You can set yourself away using the \
+                    <code>/setaway [reason]</code> command. When you get back,\
+                    use <code>/setback</code>. While you are away, the client\
+                    will automatically respond when people try to talk to you,\
+                    telling them you\'re away.',
+        });
+        
+        page.item('Form', {
+            'ref': 'msgs',
+            'title': 'Messages',
+            'text': 'Here you can set the messages displayed when you set\
+                    yourself away or back. You can also change the away message\
+                    format.',
+            'hint': '<b>{user}</b><br/>This is replaced with the username of the person trying to talk to you\n\n<b>{reason}</b>\
+                    <br/>This is replaced by your reason for being away.\n\n<b>{timesince}</b>\
+                    <br/>Use this to show how long you have been away for.',
+            'fields': [
+                ['Textfield', {
+                    'ref': 'away',
+                    'label': 'Away',
+                    'default': orig.away
+                }],
+                ['Textfield', {
+                    'ref': 'setaway',
+                    'label': 'Setaway',
+                    'default': orig.sa
+                }],
+                ['Textfield', {
+                    'ref': 'setback',
+                    'label': 'Setback',
+                    'default': orig.sb
+                }]
+            ],
+            'event': {
+                'save': function( event ) {
+                    settings.format.away = event.data.away;
+                    settings.format.setaway = event.data.setaway;
+                    settings.format.setback = event.data.setback;
+                    save();
+                }
+            }
+        });
+        
+        page.item('Form', {
+            'ref': 'interval',
+            'title': 'Message Interval',
+            'text': 'Here you can set the amount of time to wait before \
+                    displaying another away message. The interval is in seconds.',
+            'fields': [
+                ['Textfield', {
+                    'ref': 'interval',
+                    'label': 'Interval',
+                    'default': (orig.intr / 1000).toString()
+                }]
+            ],
+            'event': {
+                'save': function( event ) {
+                    settings.interval = parseInt(event.data.interval) * 1000;
+                    save();
+                }
+            }
+        });
+    
+    };
+    
+    
+    
+    // Away message stuff.
+    var cmd_setaway = function( event, client ) {
+    
+        settings.on = true;
+        settings.last = {};
+        settings.since = new Date();
+        settings.reason = event.args;
+        
+        var method = client.say;
+        var announce = replaceAll(
+            settings.format.setaway,
+            '{reason}',
+            settings.reason || '[silent away]'
+        );
+        
+        if( announce.indexOf('/me ') == 0 ) {
+            announce = announce.substr(4);
+            method = client.action;
+        }
+        
+        
+        client.each_channel( function( ns ) {
+            method.call( client, ns, announce );
+        } );
+    
+    };
+    
+    var cmd_setback = function( event, client ) {
+        settings.on = false;
+        var method = client.say;
+        var announce = settings.format.setback;
+        
+        if( announce.indexOf('/me ') == 0 ) {
+            announce = announce.substr(4);
+            method = client.action;
+        }
+        
+        client.each_channel( function( ns ) {
+            method.call( client, ns, announce );
+        } );
+    };
+    
+    var pkt_highlighted = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
+        if( settings.reason.length == 0 )
+            return;
+        
+        if( event.user == client.settings.username )
+            return;
+        
+        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
+            return;
+        
+        var t = new Date();
+        var ns = event.sns.toLowerCase();
+        
+        if( ns in settings.last )
+            if( (t - settings.last[ns]) <= settings.interval )
+                return;
+        
+        var tl = timeLengthString( (t - settings.since) / 1000 );
+        var msg = replaceAll( settings.format.away, '{user}', event.user );
+        msg = replaceAll( msg, '{timesince}', tl );
+        client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
+        settings.last[ns] = t;
+    
+    };
+    
+    
+    var load = function(  ) {
+    
+        settings.format.setaway = storage.get('setaway', '/me is away: {reason}');
+        settings.format.setback = storage.get('setback', '/me is back');
+        settings.format.away = storage.get('away', '{user}: I\'ve been away for {timesince}. Reason: {reason}');
+        settings.interval = parseInt(storage.get('interval', 60000));
+    
+    };
+    
+    var save = function(  ) {
+    
+        storage.set('interval', settings.interval);
+        storage.set('setaway', settings.format.setaway);
+        storage.set('setback', settings.format.setback);
+        storage.set('away', settings.format.away);
+    
+    };
+    
+    init();
+
+};
+
 /**
  * Ignore extension.
  * 
