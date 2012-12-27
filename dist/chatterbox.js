@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.48';
+Chatterbox.VERSION = '0.6.49';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -588,7 +588,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.visible = true;
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
-    this.tab.removeClass('noise tabbed fill');
+    this.tab.removeClass('noise chatting tabbed fill');
     this.resize();
 };
 
@@ -1070,9 +1070,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
  */
 Chatterbox.Channel.prototype.noise = function(  ) {
     
-    if( !this.tab.hasClass('active') )
-        this.tab.addClass('noise');
-    
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
@@ -1084,9 +1081,16 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
             this.scroll();
-            break;
+            return;
         }
     }
+    
+    if( !this.tab.hasClass('active') ) {
+        this.tab.addClass('noise');
+        if( msg.find('.cevent').length == 0 )
+            this.tab.addClass('chatting');
+    }
+    
 
 };
 

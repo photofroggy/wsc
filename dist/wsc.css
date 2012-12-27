@@ -1246,6 +1246,9 @@ div.wsc.wsct_default nav.tabs ul#chattabs li a.tab:hover {
 div.wsc.wsct_default nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
+div.wsc.wsct_default nav.tabs ul#chattabs li.noise.chatting a.tab {
+  color: #ffb024;
+}
 div.wsc.wsct_default nav.tabs ul#chattabs li.tabbed a.tab {
   color: #ff5959;
   border-color: #ff5959;
@@ -1519,6 +1522,9 @@ div.wsc.wsct_dAmn nav.tabs ul#chattabs li a.tab:hover {
 }
 div.wsc.wsct_dAmn nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
+}
+div.wsc.wsct_dAmn nav.tabs ul#chattabs li.noise.chatting a.tab {
+  color: #265499;
 }
 div.wsc.wsct_dAmn nav.tabs ul#chattabs li.tabbed a.tab {
   color: #e02d2d;
