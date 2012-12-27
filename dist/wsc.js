@@ -2436,23 +2436,38 @@ wsc.defaults.Extension.Away = function( client ) {
         settings.last = {};
         settings.since = new Date();
         settings.reason = event.args;
+        
+        var method = client.say;
         var announce = replaceAll(
             settings.format.setaway,
             '{reason}',
             settings.reason || '[silent away]'
         );
         
+        if( announce.indexOf('/me ') == 0 ) {
+            announce = announce.substr(4);
+            method = client.action;
+        }
+        
+        
         client.each_channel( function( ns ) {
-            client.action( ns, announce );
+            method.call( client, ns, announce );
         } );
     
     };
     
     var cmd_setback = function( event, client ) {
         settings.on = false;
+        var method = client.say;
+        var announce = settings.format.setback;
+        
+        if( announce.indexOf('/me ') == 0 ) {
+            announce = announce.substr(4);
+            method = client.action;
+        }
         
         client.each_channel( function( ns ) {
-            client.action( ns, settings.format.setback );
+            method.call( client, ns, announce );
         } );
     };
     
