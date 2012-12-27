@@ -2424,6 +2424,82 @@ wsc.defaults.Extension.Away = function( client ) {
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
         client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('settings.open', settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page('Away', true);
+        var orig = {};
+        orig.away = settings.format.away;
+        orig.sa = settings.format.setaway;
+        orig.sb = settings.format.setback;
+        orig.intr = settings.interval;
+        
+        page.item('Text', {
+            'ref': 'intro',
+            'title': 'Away Messages',
+            'text': 'Use away messages when you are away from the chats.\n\n\
+                    You can set yourself away using the \
+                    <code>/setaway [reason]</code> command. When you get back,\
+                    use <code>/setback</code>. While you are away, the client\
+                    will automatically respond when people try to talk to you,\
+                    telling them you\'re away.',
+        });
+        
+        page.item('Form', {
+            'ref': 'msgs',
+            'title': 'Messages',
+            'text': 'Here you can set the messages displayed when you set\
+                    yourself away or back. You can also change the away message\
+                    format.',
+            'fields': [
+                ['Textfield', {
+                    'ref': 'away',
+                    'label': 'Away',
+                    'default': orig.away
+                }],
+                ['Textfield', {
+                    'ref': 'setaway',
+                    'label': 'Setaway',
+                    'default': orig.sa
+                }],
+                ['Textfield', {
+                    'ref': 'setback',
+                    'label': 'Setback',
+                    'default': orig.sb
+                }]
+            ],
+            'event': {
+                'save': function( event ) {
+                    settings.format.away = event.data.away;
+                    settings.format.setaway = event.data.setaway;
+                    settings.format.setback = event.data.setback;
+                    save();
+                }
+            }
+        });
+        
+        page.item('Form', {
+            'ref': 'interval',
+            'title': 'Message Interval',
+            'text': 'Here you can set the amount of time to wait before \
+                    displaying another away message. The interval is in seconds.',
+            'fields': [
+                ['Textfield', {
+                    'ref': 'interval',
+                    'label': 'Interval',
+                    'default': (orig.intr / 1000).toString()
+                }]
+            ],
+            'event': {
+                'save': function( event ) {
+                    settings.interval = parseInt(event.data.interval) * 1000;
+                    save();
+                }
+            }
+        });
     
     };
     
@@ -2596,6 +2672,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 'save': function( event ) {
                     settings.ignore = event.data.ignore;
                     settings.unignore = event.data.unignore;
+                    save();
                 }
             }
         });
