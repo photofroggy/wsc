@@ -1723,9 +1723,16 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['userinfo'] = info.arg;
         // Autojoin!
         // TODO: multi-channel?
-        if ( client.fresh )
+        if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
-        else {
+            if( client.autojoin.on ) {
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+            }
+        } else {
             for( key in client.channelo ) {
                 if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);
@@ -2312,20 +2319,11 @@ wsc.defaults.Extension = function( client ) {
  */
 wsc.defaults.Extension.Autojoin = function( client ) {
 
-    var storage = client.storage.folder('away');
-    storage.channel = storage.folder('channel');
-    var settings = {
-        'on': false,
-        'channel': [],
-        'count': 0
-    };
+    var settings = client.autojoin
     
     var init = function(  ) {
     
-        load();
-        save();
-        
-        //client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.autojoin', cmd_autojoin);
         //client.bind('cmd.setback', cmd_setback);
         //client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
@@ -2335,17 +2333,60 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     settings.page = function( event, ui ) {
     
         var page = event.settings.page('Autojoin', true);
+        var ul = '<ul>';
+        var orig = {};
+        orig.ajon = client.autojoin.on;
+        
+        if( client.autojoin.count == 0 ) {
+            ul+= '<li><i>No autojoin channels set</i></li></ul>';
+        } else {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty( i ) )
+                    continue;
+                ul+= '<li>' + client.autojoin.channel[i] + '</li>';
+            }
+            ul+= '</ul>';
+        }
         
         page.item('Text', {
             'ref': 'intro',
             'title': 'Autojoin',
             'text': 'Add any channels you want to join automatically when you\
-                    connect to the chat server.',
+                    connect to the chat server.'
+        });
+        
+        /**
+         * FORM STUFF HERE!
+         */
+        
+        var uf = page.item('Form', {
+            'ref': 'autojoin',
+            'wclass': 'boxed-ff-indv',
+            'title': 'Channels',
+            'text': 'This is the list of channels on your autojoin.\n\nUse the\
+                    command <code>/autojoin</code> to edit the list.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'label': 'Autojoin',
+                    'items': [
+                        { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
+                    ]
+                }],
+                ['Text', {
+                    'ref': 'channels',
+                    'text': ul
+                }]
+            ],
+            'event': {
+                'change': function( event ) {},
+                'save': function( event ) {}
+            }
         });
     
     };
     
-    
+    var cmd_autojoin = function( cmd ) {};
     
     // Away message stuff.
     var cmd_setaway = function( event, client ) {
@@ -2415,51 +2456,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         msg = replaceAll( msg, '{timesince}', tl );
         client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
         settings.last[ns] = t;
-    
-    };
-    
-    
-    var load = function(  ) {
-    
-        settings.on = (storage.get('on', 'true') == 'true');
-        settings.count = (parseInt(storage.get('count', '0')));
-        
-        var tc = null;
-        var c = 0;
-        for( var i = 0; i < settings.count; i++ ) {
-            tc = storage.channel.get( i, null );
-            if( tc == null )
-                continue;
-            c++;
-            settings.channel.push(tc);
-        }
-        
-        settings.count = c;
-    
-    };
-    
-    var save = function(  ) {
-    
-        storage.set('on', settings.on.toString());
-        storage.set('count', settings.count);
-        
-        for( var i = 0; i < settings.count; i++ ) {
-            storage.channel.remove(i)
-        }
-        
-        if( settings.channel.length == 0 ) {
-            storage.set('count', 0);
-        } else {
-            var c = -1;
-            for( var i in settings.channel ) {
-                if( !settings.channel.hasOwnProperty(i) )
-                    continue;
-                c++;
-                storage.channel.set( c.toString(), settings.channel[i] );
-            }
-            c++;
-            storage.set('count', c);
-        }
     
     };
     
@@ -2897,7 +2893,9 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
-    this.uistore = this.storage.folder('ui');
+    this.storage.ui = this.storage.folder('ui');
+    this.storage.aj = this.storage.folder('autojoin');
+    this.storage.aj.channel = this.storage.aj.folder('channel');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -2935,6 +2933,11 @@ wsc.Client = function( view, options, mozilla ) {
             "tabclose": true,
             "clock": true
         }
+    };
+    this.autojoin = {
+        'on': true,
+        'count': 0,
+        'channel': []
     };
     
     this.settings = Object.extend( this.settings, options );
@@ -2975,9 +2978,24 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
-    this.settings.ui.theme = this.uistore.get('theme', this.settings.ui.theme);
-    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
-    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
+    this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    
+    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
+    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    
+    var tc = null;
+    var c = 0;
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        tc = this.storage.aj.channel.get( i, null );
+        if( tc == null )
+            continue;
+        c++;
+        this.autojoin.channel.push(tc);
+    }
+    
+    this.autojoin.count = c;
 
 };
 
@@ -2988,9 +3006,30 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
-    this.uistore.set('theme', this.settings.ui.theme);
-    this.uistore.set('clock', this.settings.ui.clock.toString());
-    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
+    this.storage.ui.set('theme', this.settings.ui.theme);
+    this.storage.ui.set('clock', this.settings.ui.clock.toString());
+    this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
+    
+    this.storage.aj.set('on', this.autojoin.on.toString());
+    this.storage.aj.set('count', this.autojoin.count);
+    
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        this.storage.aj.channel.remove(i)
+    }
+    
+    if( this.autojoin.channel.length == 0 ) {
+        this.storage.aj.set('count', 0);
+    } else {
+        var c = -1;
+        for( var i in this.autojoin.channel ) {
+            if( !this.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            c++;
+            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
+        }
+        c++;
+        this.storage.aj.set('count', c);
+    }
 
 };
 

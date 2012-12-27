@@ -3,20 +3,11 @@
  */
 wsc.defaults.Extension.Autojoin = function( client ) {
 
-    var storage = client.storage.folder('away');
-    storage.channel = storage.folder('channel');
-    var settings = {
-        'on': false,
-        'channel': [],
-        'count': 0
-    };
+    var settings = client.autojoin
     
     var init = function(  ) {
     
-        load();
-        save();
-        
-        //client.bind('cmd.setaway', cmd_setaway);
+        client.bind('cmd.autojoin', cmd_autojoin);
         //client.bind('cmd.setback', cmd_setback);
         //client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
@@ -26,17 +17,60 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     settings.page = function( event, ui ) {
     
         var page = event.settings.page('Autojoin', true);
+        var ul = '<ul>';
+        var orig = {};
+        orig.ajon = client.autojoin.on;
+        
+        if( client.autojoin.count == 0 ) {
+            ul+= '<li><i>No autojoin channels set</i></li></ul>';
+        } else {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty( i ) )
+                    continue;
+                ul+= '<li>' + client.autojoin.channel[i] + '</li>';
+            }
+            ul+= '</ul>';
+        }
         
         page.item('Text', {
             'ref': 'intro',
             'title': 'Autojoin',
             'text': 'Add any channels you want to join automatically when you\
-                    connect to the chat server.',
+                    connect to the chat server.'
+        });
+        
+        /**
+         * FORM STUFF HERE!
+         */
+        
+        var uf = page.item('Form', {
+            'ref': 'autojoin',
+            'wclass': 'boxed-ff-indv',
+            'title': 'Channels',
+            'text': 'This is the list of channels on your autojoin.\n\nUse the\
+                    command <code>/autojoin</code> to edit the list.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'label': 'Autojoin',
+                    'items': [
+                        { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
+                    ]
+                }],
+                ['Text', {
+                    'ref': 'channels',
+                    'text': ul
+                }]
+            ],
+            'event': {
+                'change': function( event ) {},
+                'save': function( event ) {}
+            }
         });
     
     };
     
-    
+    var cmd_autojoin = function( cmd ) {};
     
     // Away message stuff.
     var cmd_setaway = function( event, client ) {
@@ -106,51 +140,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         msg = replaceAll( msg, '{timesince}', tl );
         client.say(event.ns, replaceAll( msg, '{reason}', settings.reason ));
         settings.last[ns] = t;
-    
-    };
-    
-    
-    var load = function(  ) {
-    
-        settings.on = (storage.get('on', 'true') == 'true');
-        settings.count = (parseInt(storage.get('count', '0')));
-        
-        var tc = null;
-        var c = 0;
-        for( var i = 0; i < settings.count; i++ ) {
-            tc = storage.channel.get( i, null );
-            if( tc == null )
-                continue;
-            c++;
-            settings.channel.push(tc);
-        }
-        
-        settings.count = c;
-    
-    };
-    
-    var save = function(  ) {
-    
-        storage.set('on', settings.on.toString());
-        storage.set('count', settings.count);
-        
-        for( var i = 0; i < settings.count; i++ ) {
-            storage.channel.remove(i)
-        }
-        
-        if( settings.channel.length == 0 ) {
-            storage.set('count', 0);
-        } else {
-            var c = -1;
-            for( var i in settings.channel ) {
-                if( !settings.channel.hasOwnProperty(i) )
-                    continue;
-                c++;
-                storage.channel.set( c.toString(), settings.channel[i] );
-            }
-            c++;
-            storage.set('count', c);
-        }
     
     };
     
