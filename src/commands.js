@@ -382,6 +382,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Autojoin(client);
     wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
