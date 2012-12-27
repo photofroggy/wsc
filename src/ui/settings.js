@@ -457,6 +457,7 @@ Chatterbox.Settings.Item = function( type, options ) {
     this.items = [];
     this.itemo = {};
     this.view = null;
+    this.val = null;
 
 };
 
@@ -1080,15 +1081,15 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Form.Check = function( type, options ) {
+Chatterbox.Settings.Item.Form.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Form.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Form.Check.prototype = new Chatterbox.Settings.Item.Form.Radio();
-Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.Item.Form.Check;
+Chatterbox.Settings.Item.Form.Checkbox.prototype = new Chatterbox.Settings.Item.Form.Radio();
+Chatterbox.Settings.Item.Form.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Form.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -1096,7 +1097,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.
  * @method build
  * @param form {Object} Settings page form.
  */
-Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.build = function( form ) {
 
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
@@ -1119,7 +1120,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
     form.fsection.append(
         Chatterbox.render('settings.item.form.field.wrap', {
             'ref': this.ref,
-            'field': Chatterbox.render('settings.item.form.field.check', this.options)
+            'field': Chatterbox.render('settings.item.form.field.checkbox', this.options)
         })
     );
     
@@ -1145,7 +1146,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
  * 
  * @method resize
  */
-Chatterbox.Settings.Item.Form.Check.prototype.resize = function(  ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 
     this.lwrap.height( this.fwrap.find('.checkbox').height() );
 
@@ -1205,15 +1206,15 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Check = function( type, options ) {
+Chatterbox.Settings.Item.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Check.prototype = new Chatterbox.Settings.Item.Radio();
-Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.Check;
+Chatterbox.Settings.Item.Checkbox.prototype = new Chatterbox.Settings.Item.Radio();
+Chatterbox.Settings.Item.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -1221,7 +1222,7 @@ Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.
  * @method build
  * @param page {Object} Settings page object.
  */
-Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
+Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
     if( this.options.hasOwnProperty('items') ) {
         for( i in this.options.items ) {

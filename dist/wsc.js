@@ -1727,9 +1727,16 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['userinfo'] = info.arg;
         // Autojoin!
         // TODO: multi-channel?
-        if ( client.fresh )
+        if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
-        else {
+            if( client.autojoin.on ) {
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+            }
+        } else {
             for( key in client.channelo ) {
                 if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);
@@ -2306,10 +2313,170 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    wsc.defaults.Extension.Autojoin(client);
     wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
 
 };
+/**
+ * Autojoin extension.
+ */
+wsc.defaults.Extension.Autojoin = function( client ) {
+
+    var settings = client.autojoin
+    
+    var init = function(  ) {
+    
+        client.bind('cmd.autojoin', cmd_autojoin);
+        //client.bind('cmd.setback', cmd_setback);
+        //client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('settings.open', settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page('Autojoin', true);
+        var ul = '<ul>';
+        var orig = {};
+        orig.ajon = client.autojoin.on;
+        
+        if( client.autojoin.channel.length == 0 ) {
+            ul+= '<li><i>No autojoin channels set</i></li></ul>';
+        } else {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty( i ) )
+                    continue;
+                ul+= '<li>' + client.autojoin.channel[i] + '</li>';
+            }
+            ul+= '</ul>';
+        }
+        
+        page.item('Checkbox', {
+            'ref': 'eaj',
+            'title': 'Autojoin',
+            'text': 'Turn on autojoin to automatically join selected channels\
+                    when you connect to the chat server.',
+            'items': [
+                { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
+            ],
+            'event': {
+                'change': function( event ) {
+                    console.log(event, settings);
+                    if( event.target.value == 'yes' )
+                        client.autojoin.on = event.target.checked;
+                },
+                'save': function( event ) {
+                    console.log(client.autojoin);
+                    orig.ajon = client.autojoin.on;
+                    client.config_save();
+                },
+                'close': function( event ) {
+                    client.autojoin.on = orig.ajon;
+                }
+            }
+        });
+        
+        var uf = page.item('Form', {
+            'ref': 'autojoin',
+            'wclass': 'boxed-ff-indv',
+            'title': 'Autojoin',
+            'text': 'Add any channels you want to join automatically when you\
+                    connect to the chat server.',
+            'fields': [
+                ['Text', {
+                    'ref': 'channels',
+                    'text': ul
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                },
+                'save': function( event ) {
+                },
+                'close': function( event ) {
+                    client.config_save();
+                }
+            }
+        });
+    
+    };
+    
+    var cmd_autojoin = function( cmd ) {
+    
+        var args = cmd.args.split(' ');
+        
+        if( !args )
+            return;
+        
+        var subcmd = args.shift().toLowerCase();
+        var meth = function( item ) {};
+        var mod = false;
+        var chan = client.channel(cmd.ns);
+        
+        switch( subcmd ) {
+        
+            case 'add':
+                meth = function( item ) {
+                    if( client.autojoin.channel.indexOf( item ) == -1 ) {
+                        mod = true;
+                        client.autojoin.channel.push( item );
+                        chan.server_message('Added ' + item + ' to your autojoin.');
+                    } else {
+                        chan.server_message('Already have ' + item + ' on your autojoin.');
+                    }
+                };
+                break;
+            case 'rem':
+            case 'remove':
+                meth = function( item ) {
+                    var ci = client.autojoin.channel.indexOf( item );
+                    if( ci != -1 ) {
+                        mod = true;
+                        client.autojoin.channel.splice( ci, 1 );
+                        chan.server_message('Removed ' + item + ' from your autojoin.');
+                    } else {
+                        chan.server_message(item + ' is not on your autojoin list.');
+                    }
+                };
+                break;
+            case 'on':
+                chan.server_message('Autojoin on.');
+                if( !client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = true;
+                }
+                break;
+            case 'off':
+                chan.server_message('Autojoin off.');
+                if( client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = false;
+                }
+                break;
+        
+        }
+        
+        var item = '';
+        
+        for( var i in args ) {
+        
+            if( !args.hasOwnProperty(i) )
+                continue;
+            item = client.deform_ns(args[i]).toLowerCase();
+            meth( item );
+        
+        }
+        
+        if( mod )
+            client.config_save();
+    
+    };
+    
+    init();
+
+};
+
 /**
  * Away extension.
  */
@@ -2740,7 +2907,9 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
-    this.uistore = this.storage.folder('ui');
+    this.storage.ui = this.storage.folder('ui');
+    this.storage.aj = this.storage.folder('autojoin');
+    this.storage.aj.channel = this.storage.aj.folder('channel');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -2778,6 +2947,11 @@ wsc.Client = function( view, options, mozilla ) {
             "tabclose": true,
             "clock": true
         }
+    };
+    this.autojoin = {
+        'on': true,
+        'count': 0,
+        'channel': []
     };
     
     this.settings = Object.extend( this.settings, options );
@@ -2818,9 +2992,24 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
-    this.settings.ui.theme = this.uistore.get('theme', this.settings.ui.theme);
-    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
-    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
+    this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    
+    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
+    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    
+    var tc = null;
+    var c = 0;
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        tc = this.storage.aj.channel.get( i, null );
+        if( tc == null )
+            continue;
+        c++;
+        this.autojoin.channel.push(tc);
+    }
+    
+    this.autojoin.count = c;
 
 };
 
@@ -2831,9 +3020,30 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
-    this.uistore.set('theme', this.settings.ui.theme);
-    this.uistore.set('clock', this.settings.ui.clock.toString());
-    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
+    this.storage.ui.set('theme', this.settings.ui.theme);
+    this.storage.ui.set('clock', this.settings.ui.clock.toString());
+    this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
+    
+    this.storage.aj.set('on', this.autojoin.on.toString());
+    this.storage.aj.set('count', this.autojoin.count);
+    
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        this.storage.aj.channel.remove(i)
+    }
+    
+    if( this.autojoin.channel.length == 0 ) {
+        this.storage.aj.set('count', 0);
+    } else {
+        var c = -1;
+        for( var i in this.autojoin.channel ) {
+            if( !this.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            c++;
+            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
+        }
+        c++;
+        this.storage.aj.set('count', c);
+    }
 
 };
 
@@ -5690,7 +5900,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                     { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                 ]
             }],
-            ['Check', {
+            ['Checkbox', {
                 'ref': 'tabclose',
                 'label': 'Close Buttons',
                 'items': [
@@ -6325,6 +6535,7 @@ Chatterbox.Settings.Item = function( type, options ) {
     this.items = [];
     this.itemo = {};
     this.view = null;
+    this.val = null;
 
 };
 
@@ -6948,15 +7159,15 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Form.Check = function( type, options ) {
+Chatterbox.Settings.Item.Form.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Form.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Form.Check.prototype = new Chatterbox.Settings.Item.Form.Radio();
-Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.Item.Form.Check;
+Chatterbox.Settings.Item.Form.Checkbox.prototype = new Chatterbox.Settings.Item.Form.Radio();
+Chatterbox.Settings.Item.Form.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Form.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -6964,7 +7175,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.
  * @method build
  * @param form {Object} Settings page form.
  */
-Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.build = function( form ) {
 
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
@@ -6987,7 +7198,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
     form.fsection.append(
         Chatterbox.render('settings.item.form.field.wrap', {
             'ref': this.ref,
-            'field': Chatterbox.render('settings.item.form.field.check', this.options)
+            'field': Chatterbox.render('settings.item.form.field.checkbox', this.options)
         })
     );
     
@@ -7013,7 +7224,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
  * 
  * @method resize
  */
-Chatterbox.Settings.Item.Form.Check.prototype.resize = function(  ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 
     this.lwrap.height( this.fwrap.find('.checkbox').height() );
 
@@ -7073,15 +7284,15 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Check = function( type, options ) {
+Chatterbox.Settings.Item.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Check.prototype = new Chatterbox.Settings.Item.Radio();
-Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.Check;
+Chatterbox.Settings.Item.Checkbox.prototype = new Chatterbox.Settings.Item.Radio();
+Chatterbox.Settings.Item.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -7089,7 +7300,7 @@ Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.
  * @method build
  * @param page {Object} Settings page object.
  */
-Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
+Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
     if( this.options.hasOwnProperty('items') ) {
         for( i in this.options.items ) {
@@ -7549,21 +7760,21 @@ Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['ref',
 Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
 Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
 
-Chatterbox.template.settings.item.check = {};
-Chatterbox.template.settings.item.check.pre = [
+Chatterbox.template.settings.item.checkbox = {};
+Chatterbox.template.settings.item.checkbox.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
     Chatterbox.template.settings.item.hint.prep
 ];
 
-Chatterbox.template.settings.item.check.render = {
+Chatterbox.template.settings.item.checkbox.render = {
     'title': Chatterbox.template.settings.krender.title,
     'text': Chatterbox.template.settings.krender.text,
     'items': Chatterbox.template.settings.krender.checkitems
 };
 
-Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['ref', 'title', 'items']);
-Chatterbox.template.settings.item.check.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
-Chatterbox.template.settings.item.check.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
+Chatterbox.template.settings.item.checkbox.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.checkbox.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
+Chatterbox.template.settings.item.checkbox.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
 
 Chatterbox.template.settings.item.textfield = {};
 Chatterbox.template.settings.item.textfield.pre = [
@@ -7641,10 +7852,10 @@ Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbo
 Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
 
-Chatterbox.template.settings.item.form.field.check = {};
-Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
-Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
-Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+Chatterbox.template.settings.item.form.field.checkbox = {};
+Chatterbox.template.settings.item.form.field.checkbox.render = { 'items': Chatterbox.template.settings.krender.checkitems };
+Chatterbox.template.settings.item.form.field.checkbox.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.checkbox.frame = '<div class="{ref} checkbox">{items}</div>';
 
 Chatterbox.template.settings.item.form.field.text = {};
 Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;

@@ -109,7 +109,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                     { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                 ]
             }],
-            ['Check', {
+            ['Checkbox', {
                 'ref': 'tabclose',
                 'label': 'Close Buttons',
                 'items': [
