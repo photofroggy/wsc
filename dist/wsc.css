@@ -736,6 +736,7 @@ div.wsc div.chatwindow header div p {
 }
 div.wsc div.chatwindow header div.title {
   padding-top: 0px;
+  padding-bottom: 2px;
 }
 div.wsc div.chatwindow header div.topic {
   border-bottom: 1px solid black;
