@@ -166,6 +166,7 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  */
 wsc.Channel.prototype.property = function( e ) {
     var prop = e.pkt["arg"]["p"];
+    
     switch(prop) {
         case "title":
         case "topic":
@@ -211,10 +212,13 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc"] = {};
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
+    var bits = [];
     for(var i in lines) {
         if( !lines.hasOwnProperty(i) )
             continue;
         bits = lines[i].split(":");
+        if( bits.length == 1 )
+            continue;
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
