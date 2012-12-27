@@ -4,8 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '0.14.83';
+wsc.VERSION = '0.14.84';
 wsc.STATE = 'beta';
+wsc.REVISION = '0.14.84';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2058,72 +2059,6 @@ wsc.defaults.Extension = function( client ) {
                     the different pages to see what settings can be changed.',
         }, true);
         
-        /* * /
-        page.item('Radio', {
-            'ref': 'rfoo',
-            'title': 'Close Buttons',
-            'items': [
-                { 'value': 'yes', 'title': 'On', 'selected': orig.tc },
-                { 'value': 'no', 'title': 'Off', 'selected': !orig.tc }
-            ],
-            'event': {
-                'change': function( event ) {
-                    console.log(client.ui.view.find(this).val(),event);
-                },
-                'save': function( event ) {
-                    console.log(event);
-                }
-            }
-        });
-        /* * /
-        page.item('Check', {
-            'ref': 'foo',
-            'title': 'Close Buttons',
-            'text': 'Testing out whether this works properly dawg.',
-            'items': [
-                { 'value': 'yes', 'title': 'On', 'selected': orig.tc }
-            ],
-            'event': {
-                'change': function( event ) {
-                    console.log(client.ui.view.find(this).prop('checked'),event);
-                },
-                'save': function( event ) {
-                    console.log(event);
-                }
-            }
-        });
-        /* * /
-        page.item('Textfield', {
-            'ref': 'username',
-            'title': 'Username',
-            'text': 'The username you want to log in with.',
-            'default': orig.username,
-            'event': {
-                'blur': function( event ) {
-                    console.log(client.ui.view.find(this).val(),event);
-                },
-                'save': function( event ) {
-                    console.log(event);
-                }
-            }
-        });
-        /* * /
-        page.item('Textarea', {
-            'ref': 'rabble',
-            'title': 'Rabble',
-            'text': 'Tell us a bit about yourself, or something gay.',
-            'default': orig.username,
-            'event': {
-                'blur': function( event ) {
-                    console.log(client.ui.view.find(this).val(),event);
-                },
-                'save': function( event ) {
-                    console.log(event);
-                }
-            }
-        });
-        /* */
-        
         page.item('Text', {
             'ref': 'debug',
             'wclass': 'faint',
@@ -2881,7 +2816,7 @@ wsc.Client = function( view, options, mozilla ) {
         'tabclose': this.settings.ui.tabclose
     }, mozilla );
     
-    this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION;
+    this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.protocol = new this.settings.protocol( new this.settings.mparser() );
