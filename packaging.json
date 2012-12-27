@@ -1,0 +1,79 @@
+{
+    "clean": "./dist",
+    "yuic": [
+        "-jar",
+        "/usr/local/bin/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar",
+        "--line-break",
+        "1000"
+    ],
+    "packs": [
+        {
+            "dest": "dist/chatterbox.js",
+            "mini": "dist/chatterbox.min.js",
+            "files": "src/ui"
+        },
+        {
+            "dest": "dist/dAmn.js",
+            "mini": "dist/dAmn.min.js",
+            "files": "src/dAmn"
+        },
+        {
+            "dest": "dist/wsc.js",
+            "mini": "dist/wsc.min.js",
+            "files": [
+                "src/base.js",
+                "src/events.js",
+                "src/transport.js",
+                "src/lib.js",
+                "src/storage.js",
+                "src/packet.js",
+                "src/channel.js",
+                "src/messages.js",
+                "src/protocol.js",
+                "src/flow.js",
+                "src/commands.js",
+                "src/away.js",
+                "src/ignore.js",
+                "src/client.js",
+                "src/control.js",
+                "dist/chatterbox.js",
+                "src/wsc.js"
+            ]
+        },
+        {
+            "dest": "dist/wsc.dAmn.js",
+            "mini": "dist/wsc.dAmn.min.js",
+            "files": [
+                "src/base.js",
+                "src/events.js",
+                "src/transport.js",
+                "src/lib.js",
+                "src/storage.js",
+                "src/packet.js",
+                "src/channel.js",
+                "src/messages.js",
+                "src/protocol.js",
+                "src/flow.js",
+                "src/commands.js",
+                "src/away.js",
+                "src/ignore.js",
+                "src/client.js",
+                "src/control.js",
+                "dist/chatterbox.js",
+                "dist/dAmn.js",
+                "src/wsc.js"
+            ]
+        },
+        {
+            "sass": true,
+            "options": [
+                "--style",
+                "expanded"
+            ],
+            "dest": "dist/wsc.css",
+            "mini": "dist/wsc.min.css",
+            "files": "css/wsc.scss"
+        }
+    ],
+    "post": ["./mvlh"]
+}

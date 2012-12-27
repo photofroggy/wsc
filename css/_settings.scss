@@ -1,0 +1,161 @@
+
+@mixin settings {
+    div.floater.settings {
+        width: 60%;
+        height: 80%;
+        div.bookwrap {
+            nav.tabs {
+                padding: 0px 5px;
+            }
+            div.book {
+                padding: 10px;
+                border: 1px solid black;
+                overflow: auto;
+                div.page {
+                    display: none;
+                    overflow: auto;
+                    &.active {
+                        display: block;
+                    }
+                    .item {
+                        border-bottom: 1px solid black;
+                        padding: 5px 5px 15px 5px;
+                        margin-bottom: 10px;
+                        overflow: hidden;
+                        &:last-child {
+                            border: none;
+                            padding-bottom: 5px;
+                            margin-bottom: 10px;
+                        }
+                        &.stack {
+                            border: none;
+                            padding: 5px 0px 0px 0px;
+                            margin-bottom: 0px;
+                        }
+                        &.centered {
+                            text-align: center;
+                        }
+                        &.text, .text {
+                            p {
+                                padding: 0px 10px;
+                            }
+                            p + p {
+                                padding: 5px 10px 0px 10px;
+                            }
+                        }
+                        aside.hint {
+                            opacity: 0;
+                            position: absolute;
+                            top: 93px;
+                            right: -179px;
+                            padding: 10px 20px;
+                            width: 150px;
+                            @include round-corner(top, right, 5px);
+                            @include round-corner(bottom, right, 5px);
+                            @include shadow(10px 0px 20px rgba(0, 0, 0, 0.13));
+                            border: 1px solid black;
+                            border-left: 1px dashed black;
+                            background-color: white;
+                            color: black;
+                            text-align: left;
+                            white-space: pre-wrap;
+                            @include transition(opacity 0.5s ease-in);
+                        }
+                        &:hover {
+                            aside.hint {
+                                opacity: 1;
+                                @include transition(opacity 0.5s ease-in);
+                            }
+                        }
+                        h3 {
+                            padding-bottom: 5px;
+                        }
+                        form {
+                            padding: 0px 10px;
+                        }
+                        .twopane {
+                            overflow: hidden;
+                            .left {
+                                max-width: 250px;
+                                margin-right: 10px;
+                                float: left;
+                            }
+                            .right {
+                                float: left;
+                            }
+                        }
+                        section:not(.item) {
+                            float: left;
+                            &.labels {
+                                max-width: 150px;
+                                margin: 0px 20px 0px 10px;
+                                .label {
+                                    padding: 6px 0px;
+                                }
+                            }
+                            &.fields {
+                                padding-right: 10px;
+                            }
+                            .field {
+                                overflow: hidden;
+                                padding: 5px 0px;
+                                div {
+                                    padding: 0px 10px;
+                                    .labels {
+                                        margin: 0px;
+                                        margin-right: 15px;
+                                    }
+                                    .fields {
+                                        padding-right: 0px;
+                                    }
+                                }
+                                &.radio, &.check {
+                                    padding: 7px 0px 5px 0px;
+                                }
+                            }
+                        }
+                        form {
+                            .field.radio {
+                                padding: 10px 0px 7px 0px;
+                            }
+                            overflow: hidden;
+                        }
+                        .radiobox, .checkbox {
+                            overflow: hidden;
+                            background-color: rgba(255, 255, 255, 0.85);
+                            border: 1px solid #B1B1B1;
+                            float: left;
+                            form {
+                                padding: 0px;
+                            }
+                        }
+                        &.boxed,
+                        &.boxed-ff-indv form .fields .field {
+                            background-color: rgba(255, 255, 255, 0.85);
+                            border: 1px solid #B1B1B1;
+                        }
+                        &.boxed-ff-indv form .fields .field {
+                            padding: 5px;
+                        }
+                    }
+                }
+            }
+        }
+        
+        footer {
+            width: 100%;
+            padding: 10px 5px;
+            overflow: hidden;
+            a.button {
+                margin-left: 5px;
+            }
+            a.close {
+                margin-left: 4px;
+                position: relative;
+                top: 3px;
+            }
+        }
+    }
+}
+
+

@@ -4,13 +4,13 @@
 
 var chains = [["recv", "admin"]];
 
-function WscPacket( data, separator ) {
+wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
         return null;
     }
     
-    var pkt = { cmd: null, param: null, arg: [], body: null, sub: [], raw: data };
+    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
     separator = separator || '=';
     
     try {
@@ -43,9 +43,10 @@ function WscPacket( data, separator ) {
         if( pkt.body != null ) {
             subs = pkt.body.split('\n\n');
             for(i in subs) {
-                sub = WscPacket( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;
+                sub.body = subs.slice(i + 1).join('\n\n');
                 pkt.sub.push( sub );
             }
         }
@@ -59,7 +60,7 @@ function WscPacket( data, separator ) {
     
     return pkt;
 
-}
+};
 
 // Make a packet string from some given data.
 function wsc_packetstr( cmd, param, args, body ) {

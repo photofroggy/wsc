@@ -1,0 +1,30 @@
+
+@mixin popup {
+    div.floater {
+        position: absolute;
+        top: 5em;
+        right: 20%;
+        
+        div.inner {
+            height: 100%;
+            background-color: white;
+            border: 1px solid black;
+            @include round-box(10px);
+            @include shadow(0px 0px 10px rgba(0, 0, 0, 0.43));
+            h2 {
+                padding: 10px;
+                @include round-top(10px);
+                a.close {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                }
+            }
+            div.content {
+                margin: 10px;
+            }
+        }
+        
+    }
+}
+

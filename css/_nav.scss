@@ -9,57 +9,106 @@
             list-style: none;
             margin: 0px;
             float: left;
-            
-            &#chattabs {
-                float: left;
-                list-style: none;
-                padding: 14px 8px 0;
-                width: 80%;
-            }
+            padding: 14px 8px 0;
     
             &#tabnav {
-                float: right;
-                padding: 7px 20px;
-                li a {
-                    padding: 4px 7px;
-                    margin: 0px 5px 0px 0px;
+                padding: 10px 20px;
+                li {
+                    margin-top: -2px;
+                    a {
+                        padding: 2px 7px;
+                        margin: 0px 5px 0px 0px;
+                        font-size: 16px;
+                    }
                 }
             }
             
             li {
                 float: left;
                 margin-top: 2px;
-                &.hidden { display: none; }
+            }
+            
+            &.tabs {
+                overflow: hidden;
+                height: 30px;
+            
+                li {
+                    margin-right: 2px;
                 
-                a {
-                    text-decoration: none;
-                    padding: 4px 5px;
-                    -webkit-border-top-left-radius: 5px;
-                    -webkit-border-top-right-radius: 5px;
-                    -moz-border-radius-topleft: 5px;
-                    -moz-border-radius-topright: 5px;
-                    border-top-left-radius: 5px;
-                    border-top-right-radius: 5px;
-                    border: 1px solid black;
-                    border-bottom: none;
-                    display: block;
-                    &:hover {
+                    a.tab {
                         text-decoration: none;
-                        border: 1px solid black;
-                        border-bottom: none;
                         padding: 4px 5px;
-                    }
-                }
-                
-                &.active {
-                    margin-top: 0px;
-                    a {
-                        padding: 5px 7px;
                         border: 1px solid black;
                         border-bottom: none;
+                        display: block;
+                        margin-top: -1px;
+                        &:hover {
+                            text-decoration: none;
+                            border: 1px solid black;
+                            border-bottom: none;
+                            padding: 9px 5px;
+                            margin-top: -11px;
+                        }
+                    }
+                
+                    &.active {
+                        margin-top: 0px;
+                        a.tab {
+                            padding: 7px;
+                            border: 1px solid black;
+                            border-bottom: none;
+                            margin-top: -4px;
+                            &:hover {
+                                padding: 7px;
+                                margin-top: -4px;
+                            }
+                        }
                     }
                 }
             
+                &#chattabs {
+                    li {
+                        &.hidden { display: none; }
+                        
+                        a.tab {
+                            @include round-top(5px);
+                            &:hover {
+                            }
+                        }
+                        
+                        a.close {
+                            display: none;
+                        }
+                        
+                        &.active {
+                            a.tab {
+                                padding-right: 24px;
+                                &:hover {
+                                    padding-right: 24px;
+                                }
+                            }
+                            a.close {
+                                display: block;
+                                position: relative;
+                                top: -25px;
+                                right: 5px;
+                                float: right;
+                            }
+                        }
+                    
+                    }
+                    &.hc li.active {
+                        a.tab {
+                            padding-right: 7px;
+                            &:hover {
+                                padding-right: 7px;
+                            }
+                        }
+                        a.close {
+                            display: none;
+                        }
+                    }
+                }
             }
         
         }

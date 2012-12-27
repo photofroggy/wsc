@@ -2,27 +2,44 @@
     div.chatcontrol {
         clear: both;
         margin: 0px;
-        padding: 5px;
+        padding: 0px;
         width: 100%;
         border-bottom: 1px solid black;
         font-size: 12px;
         
         p {
             margin: 0px;
-            padding: 0px;
-            padding-left: 5px;
+            padding: 2px;
+            padding-left: 7px;
+            a.button {
+                font-size: 16px;
+                line-height: .9em;
+                padding: 4px;
+            }
         }
         
         form.msg {
             clear: both;
-            padding: 0px;
+            padding: 7px;
+            padding-top: 2px;
             margin: 0px;
             margin-bottom: 5px;
             width: 100%;
-        }
-        
-        form.msg input.msg {
-            line-height: 1.6em;
+            overflow: hidden;
+            input.msg {
+                line-height: 1.6em;
+                display: inline-block;
+                float: left;
+            }
+            textarea.msg {
+                display: none;
+                line-height: 1.6em;
+                float: left;
+            }
+            input[type="submit"] {
+                float: left;
+                margin-left: 10px;
+            }
         }
     
     }
@@ -33,22 +50,55 @@
         padding: 5px 10px;
         background: none;
         border: 1px solid black;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
+        @include round-box(5px);
         font-size: 13px;
-        -webkit-box-shadow: 0px 1px 1px black;
-        -moz-box-shadow: 0px 1px 1px black;
-        box-shadow: 0px 1px 1px black;
-        
+        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
+        &:active {
+            background: none;
+            border: 1px solid black;
+            cursor: pointer;
+            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    
+    }
+    
+    a.iconic.close {
+        background: none;
+        height: 13px;
+        width: 13px;
+        background-color: black;
+        color: white;
+        border: 1px solid black;
+        text-align: center;
+        line-height: 1em;
+        @include round-box(20px);
+        font-size: 13px;
+        padding: 1px;
+        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:hover {
             background: none;
             border: 1px solid black;
             cursor: pointer;
-            -webkit-box-shadow: inset 0px 1px 2px black;
-            -moz-box-shadow: inset 0px 1px 2px black;
-            box-shadow: inset 0px 1px 2px black;
         }
-    
+        &:active {
+            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+        }
+        &.big {
+            height: 25px;
+            width: 25px;
+            font-size: 25px;
+        }
+        &.medium {
+            height: 20px;
+            width: 20px;
+            font-size: 20px;
+        }
+        &.square {
+            @include round-box(5px);
+        }
     }
 
 }

@@ -1,72 +1,167 @@
-@mixin button-gradient($start, $init, $slope, $bg) {
-    background: -webkit-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -moz-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -ms-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: -o-linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-    background: linear-gradient($start, $init 0%, $slope 5%, $bg 97%);
-}
 
-@mixin wsc-theme($base: #0F6175,
+@mixin wsc-theme($base: #075C70,
     $chrome: #406D8B,
     $chrome-shadow: #0D4D69,
     $chrome-color: #AFD7F5,
-    $log-bg: #EAF8FF,
-    $light: #7C9AB4,
-    $a: #149E5C,
-    $ah: #990000,
+    $chrome-a: #FFB024,
+    $chrome-ah: white,
+    $chrome-ad: none,
+    $chrome-ahd: none,
+    $log-bg: #CEDBE2,
+    $light: #7290AA,
+    $a: #960101,
+    $ah: white,
+    $ad: none,
+    $ahd: none,
+    $usrl-ad: none,
+    $usrl-ahd: none,
+    $usri-ad: none,
+    $usri-ahd: none,
+    $log-a: #9B3D08,
+    $log-ah: #23AFAF,
+    $log-ad: none,
+    $log-ahd: none,
     $tab-a: white,
-    $tab-ah: #FF5959,
-    $button: #AAE1EE,
+    $tab-ah: white,
+    $button: #D4F4FC,
+    $buttonh: #D4F4FC,
+    $buttona: #D4F4FC,
+    $buttond: none,
+    $buttonhd: none,
+    $buttonb: #406D8B,
+    $buttonhb: #611A14,
+    $buttonab: #406D8B,
     $button-shadow: #0A384E, 
-    $buttonh: #87C1CE,
     $buttonh-shadow: #1773A0, 
+    $buttona-shadow: #1773A0, 
     $bgs: top,
-    $bgi: #D3EDFF,
-    $bgsl: #53B1F0,
-    $bgbg: #406D8B,
-    $hbgs: top,
-    $hbgi: #D3EDFF,
-    $hbgsl: #90D2FF,
-    $hbgbg: #406D8B,
+    $bgi: #D7FCFF,
+    $bgsl: #42BEC9,
+    $bgbg: #0C8A8F,
     $abgs: top,
-    $abgi: #D3EDFF,
-    $abgsl: #6CC4FF,
-    $abgbg: #406D8B,
+    $abgi: #D7FCFF,
+    $abgsl: #0C8A8F,
+    $abgbg: #42BEC9,
+    $hbgs: top,
+    $hbgi: #FFD3D3,
+    $hbgsl: #B61C1C,
+    $hbgbg: #681B1B,
+    $close: #FFF6E4,
+    $closeh: #FFF6E4,
+    $closea: #FFF6E4,
+    $closeb: #6B0101,
+    $closeab: #6B0101,
+    $closehb: #035261,
+    $closed: none,
+    $closehd: none,
+    $closead: none,
+    $close-shadow: #311604,
+    $close-bgs: top,
+    $close-bgi: #FFA69E,
+    $close-bgsl: #FC6053,
+    $close-bgbg: #B1362C,
+    $close-hbgs: top,
+    $close-hbgi: #A1DAFF,
+    $close-hbgsl: #5ABDF5,
+    $close-hbgbg: #147AAA,
+    $close-abgs: top,
+    $close-abgi: #FFA69E,
+    $close-abgsl: #B1362C,
+    $close-abgbg: #FC6053,
+    $tab-bgs: top,
+    $tab-bgi: #D3EDFF,
+    $tab-bgsl: #2893DA,
+    $tab-bgbg: #306080,
+    $tab-hbgs: top,
+    $tab-hbgi: #D3EDFF,
+    $tab-hbgsl: #2E9BE4,
+    $tab-hbgbg: #306080,
+    $tab-abgs: top,
+    $tab-abgi: #D3EDFF,
+    $tab-abgsl: #55A5DB,
+    $tab-abgbg: #406D8B,
     $outer-border: #0D4D69,
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
-    $highlight: white,
-    $topic-color: #125383,
+    $heading-color: #063B63,
+    $highlight: #FDC8A5,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
     $tabbed-fill-bg: #C93838,
-    $noise: #223740) {
+    $noise: #223740,
+    $pu-h-bg: #406D8B,
+    $pu-h-color: white,
+    $pu-h-bgs: top,
+    $pu-h-bgi: #D3EDFF,
+    $pu-h-bgsl: #55A5DB,
+    $pu-h-bgbg: #406D8B,
+    $settings-color: #3E7A88,
+    $settings-outer-border: #0D4D69,
+    $settings-inner-border: #0D4D69,
+    $settings-item-border: #8CB3C4,
+    $settings-item-faint-color: #5FA4B4) {
     
     color: $base;
     a {
-        color: $tab-a;
-        &:hover { color: $tab-ah; }
+        color: $a;
+        text-decoration: $ad;
+        &:hover {
+            color: $ah;
+            text-decoration: $ahd;
+        }
     }
     a.button,
     form.msg input[type="submit"] {
         @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
-        background-color: $chrome;
-        border-color: $base;
+        background-color: $bgbg;
+        border-color: $buttonb;
         color: $button;
         text-shadow: 0px -1px $button-shadow;
+        text-decoration: $buttond;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
-            background-color: $chrome-shadow;
-            border-color: $base;
+            background-color: $hbgbg;
+            border-color: $buttonhb;
             color: $buttonh;
             text-shadow: 0px -1px $buttonh-shadow;
+            text-decoration: $buttonhd;
+        }
+        &:active {
+            @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
+            background-color: $abgbg;
+            border-color: $buttonab;
+            color: $buttona;
+            text-shadow: 0px -1px $buttona-shadow;
+        }
+    }
+    
+    a.iconic.close {
+        @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
+        color: $close !important;
+        text-shadow: 0px -1px $close-shadow;
+        font-weight: bold;
+        border-color: $closeb;
+        text-decoration: $closed !important;
+        &:hover {
+            @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
+            color: $closeh !important;
+            text-shadow: 0px -1px $close-shadow;
+            text-decoration: $closehd !important;
+            border-color: $closehb;
+        }
+        &:active {
+            @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
+            color: $closea !important;
+            text-shadow: 0px -1px $close-shadow;
+            text-decoration: $closead !important;
+            border-color: $closeab;
         }
     }
     
     nav.tabs {
         ul#chattabs li {
-            a {
-                @include button-gradient($bgs, $bgi, $bgsl, $bgbg);
+            a.tab {
+                @include button-gradient($tab-bgs, $tab-bgi, $tab-bgsl, $tab-bgbg);
                 background-color: $chrome;
                 border-color: $outer-border;
                 color: $tab-a;
@@ -74,24 +169,25 @@
                     border-color: $base;
                 }
                 &:hover {
-                    @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
+                    @include button-gradient($tab-hbgs, $tab-hbgi, $tab-hbgsl, $tab-hbgbg);
+                    color: $tab-ah;
                 }
             }
-            &.noise a { font-weight: bold; }
+            &.noise a.tab { font-weight: bold; }
             &.tabbed {
-                a {
+                a.tab {
                     color: $tabbed;
                     border-color: $tabbed;
-                    border-width: 1px;
+                    border-width: 2px;
                     font-weight: bold;
                 }
-                &.fill a {
-                    @include button-gradient($bgs, $bgi, $tabbed-fill-bg, $bgbg);
+                &.fill a.tab {
+                    @include button-gradient($tab-bgs, $tab-bgi, $tabbed-fill-bg, $tab-bgbg);
                     color: $tabbed-fill;
                 }
             }
-            &.active a {
-                @include button-gradient($abgs, $abgi, $abgsl, $abgbg);
+            &.active a.tab {
+                @include button-gradient($tab-abgs, $tab-abgi, $tab-abgsl, $tab-abgbg);
             }
         }
     }
@@ -103,25 +199,39 @@
     div.chatwindow {
 
         header {
-            color: $chrome-color;
+            div.title {
+                color: $chrome-color;
+                a {
+                    color: $chrome-a;
+                    text-decoration: $chrome-ad;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $chrome-ahd;
+                    }
+                }
+            }
             div.topic {
                 background-color: $heading-bg;
                 border-color: $inner-border;
-                color: $topic-color;
+                color: $heading-color;
             }
         }
         
         div.chatlog {
             background-color: $log-bg;
+            border-color: $inner-border;
             
             ul.logwrap {
                 
                 a {
-                    color: $a;
-                    &:hover { color: $ah; }
+                    color: $log-a;
+                    text-decoration: $log-ad;
+                    &:hover {
+                        color: $log-ah;
+                        text-decoration: $log-ahd;
+                    }
                 }
                 
-                border-color: $inner-border;
                 .logmsg {
                     color: $base;
                     &.highlight,
@@ -131,6 +241,26 @@
                     span {
                         &.ts,
                         &.bg { color: $light; }
+                    }
+                }
+                
+                .loginfo {
+                    background-color: $chrome;
+                    border-color: $outer-border;
+                    color: $chrome-color;
+                    a:not(.button) {
+                        color: $chrome-a;
+                        &:hover {
+                            color: $chrome-ah;
+                        }
+                    }
+                    .whoiswrap {
+                        .avatar {
+                            background-color: $heading-bg;
+                        }
+                        .info {
+                            border-color: $outer-border;
+                        }
                     }
                 }
             }
@@ -147,10 +277,19 @@
         div.pc {
             h3, h4 {
                 background-color: $heading-bg;
+                color: $heading-color;
             }
             ul {
                 color: $chrome-color;
-                a em { color: $chrome-color; }
+                a {
+                    color: $chrome-a;
+                    text-decoration: $usrl-ad;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $usrl-ahd;
+                    }
+                    em { color: $chrome-color; }
+                }
             }
         }
         border: 1px solid $inner-border;
@@ -164,6 +303,67 @@
             background-color: $chrome;
             border-color: $inner-border;
             color: $chrome-color;
+            a {
+                color: $chrome-a;
+                text-decoration: $usri-ad;
+                &:hover {
+                    color: $chrome-ah;
+                    text-decoration: $usri-ahd;
+                }
+            }
+        }
+    }
+    
+    div.floater {
+        div.inner {
+            background-color: $chrome;
+            border-color: $settings-outer-border;
+        }
+        
+        h2 {
+            @include button-gradient($pu-h-bgs, $pu-h-bgi, $pu-h-bgsl, $pu-h-bgbg);
+            background-color: $pu-h-bg;
+            color: $pu-h-color;
+        }
+        
+        &.settings {
+            color: $settings-color;
+            div.bookwrap {
+                nav.tabs {
+                    a.tab {
+                        border-color: $settings-inner-border;
+                        border-radius: 0;
+                        background-color: $heading-bg;
+                    }
+                    .active .tab {
+                        background-color: $log-bg;
+                    }
+                }
+                div.book {
+                    background-color: $log-bg;
+                    border-color: $settings-inner-border;
+                    div.page {
+                        .item {
+                            border-color: $settings-item-border;
+                            aside.hint {
+                                border-color: $settings-inner-border;
+                                border-left-color: $settings-item-border;
+                                background-color: $log-bg;
+                                color: $settings-item-faint-color;
+                                font-style: normal;
+                            }
+                            &.faint {
+                                p {
+                                    color: $settings-item-faint-color;
+                                }
+                            }
+                            h3 {
+                                color: $heading-color;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     

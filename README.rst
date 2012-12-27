@@ -7,6 +7,15 @@ the client only uses WebSockets as a transport, so to connect to dAmn's server u
 this client, a WebSocket proxy needs to be used.
 
 
+--------
+Setup
+--------
+* Serve the CSS and javascript files in ``./dist`` however you want.
+* * File names containing ``.min.`` are minified versions of other sources.
+* * Use the minified versions when deploying.
+* Serve the files in ``./font`` on ``/font/`` from the server, on port 80.
+* * The CSS assumes the fonts are served here.
+
 ---------
 How To
 ---------
@@ -46,3 +55,9 @@ of how to use the client::
     </html>
 
 There are more configuration options, which will be documented later.
+
+----------
+Socket.IO
+----------
+Wsc can be used with **socket.io**. The only thing you need to do to use
+socket.io with wsc is load socket.io into your web page.

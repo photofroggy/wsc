@@ -1,18 +1,17 @@
-/* wsc channel - photofroggy
- * Provides a JavaScript representation of a chat channel and handles the UI
- * for the channel.
+/**
+ * Chat channel object.
+ * Manages channel events and data, and acts as a thin wrapper for the
+ * channel's UI object.
+ * 
+ * @class Channel
+ * @constructor
+ * @param client {Object} Wsc chat client object.
+ * @param ns {String} Channel namespace.
+ * @param hidden {Boolean} Should the channel tab be hidden?
  */
+wsc.Channel = function( client, ns, hidden ) {
 
-function WscChannel( client, ns, hidden ) {
-
-    var selector = client.deform_ns(ns).slice(1).toLowerCase();
-    this.client = client;
-    this.hidden = hidden;
-    
     this.info = {
-        'raw': null,
-        'selector': null,
-        'namespace': null,
         'members': {},
         'pc': {},
         'pc_order': [],
@@ -27,704 +26,429 @@ function WscChannel( client, ns, hidden ) {
             'ts': ''
         },
     };
-
-    this.info.raw = client.format_ns(ns);
-    this.info.selector = selector;
-    this.info['namespace'] = this.info.ns = client.deform_ns(ns);
     
-    //this.property = this.property.bind( this );
-    scope_methods( this, WscChannel.prototype );
+    this.client = client;
+    this.hidden = hidden;
+    this.ui = null;
+    this.raw = client.format_ns(ns);
+    this.selector = client.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = client.deform_ns(ns);
+    this.monitor = Object.size(this.client.channelo) == 0;
 
-}
+};
 
-WscChannel.prototype.property = function( e ) {
+/**
+ * Create a UI view for this channel.
+ * 
+ * @method build
+ */
+wsc.Channel.prototype.build = function( ) {
+    this.info.members = {};
+    this.client.ui.create_channel(this.namespace, this.hidden);
+    this.ui = this.client.ui.channel(ns);
+};
+
+/**
+ * Remove this channel from the screen entirely.
+ * 
+ * @method remove
+ */
+wsc.Channel.prototype.remove = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.manager.remove_channel(this.namespace);
+};
+
+/**
+ * Hide the channel view in the UI.
+ * 
+ * @method hide
+ */
+wsc.Channel.prototype.hide = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.hide();
+};
+
+/**
+ * Show the channel view in the UI.
+ * 
+ * @method show
+ */
+wsc.Channel.prototype.show = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.show();
+};
+
+/**
+ * Display a log message.
+ * 
+ * @method log
+ * @param msg {String} Log message to display.
+ */
+wsc.Channel.prototype.log = function( msg ) {
+    if( this.ui == null )
+        return;
+    this.ui.log(msg);
+};
+
+/**
+ * Send a message to the log window.
+ * 
+ * @method log_item
+ * @param msg {String} Message to send.
+ */
+wsc.Channel.prototype.logItem = function( msg ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_item(msg);
+};
+
+/**
+ * Send a server message to the log window.
+ * 
+ * @method server_message
+ * @param msg {String} Server message.
+ * @param [info] {String} Extra information for the message.
+ */
+wsc.Channel.prototype.server_message = function( msg, info ) {
+    if( this.ui == null )
+        return;
+    this.ui.server_message(msg, info);
+};
+
+/**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ */
+wsc.Channel.prototype.clear = function( user ) {
+    if( this.ui == null )
+        return;
+    if( !user ) {
+        this.ui.clear();
+    } else {
+        this.ui.clear_user( user );
+    }
+};
+
+/**
+ * Display a user's whois info.
+ * 
+ * @method log_whois
+ * @param data {Object} Object containing a user's information.
+ */
+wsc.Channel.prototype.log_whois = function( data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_whois(data);
+};
+
+/**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ */
+wsc.Channel.prototype.log_pc = function( privileges, data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_pc(privileges, data);
+};
+
+/**
+ * Process a channel property packet.
+ * 
+ * @method property
+ * @param e {Object} Event data for the property packet.
+ */
+wsc.Channel.prototype.property = function( e ) {
     var prop = e.pkt["arg"]["p"];
     switch(prop) {
         case "title":
         case "topic":
-            this.setHeader(prop, e);
+            this.set_header(prop, e);
             break;
         case "privclasses":
-            this.setPrivclasses(e);
+            this.set_privclasses(e);
             break;
         case "members":
-            this.setMembers(e);
+            this.set_members(e);
             break;
         default:
-            this.client.monitor("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
             break;
     }
 };
 
-// Set the channel header.
-// This can be the title or topic, determined by `head`.
-WscChannel.prototype.setHeader = function( head, e ) {
-    this.info[head]["content"] = e.value || '';
+/**
+ * Set the channel header.
+ * This can be the title or topic, determined by `head`.
+ * 
+ * @method set_header
+ * @param e {Object} Event data for the property packet.
+ */
+wsc.Channel.prototype.set_header = function( head, e ) {
+    this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    //console.log("set " + head);
-    if(!this.info[head]["content"]) {
-        /*
-        this.setHeader('title', { pkt: {
-                    "arg": { "by": "", "ts": "" },
-                    "body": '<p>sample title</p>'
-                }
-            }
-        );
-        /**/
-        /*
-        this.setHeader('topic', { pkt: {
-                    'arg': { 'by': '', 'ts': '' },
-                    'body': '<p>sample topic</p>'
-                }
-            }
-        );
-        /**/
-        /*
-        return;/**/
-    }
-    //this.ui.setHeader();
+    
+    if( this.ui == null )
+        return;
+    
+    this.ui.set_header(head, e.value.html() || '');
 };
 
-// Set the channel's privclasses.
-// TODO: Draw UI componentories!
-WscChannel.prototype.setPrivclasses = function( e ) {
+/**
+ * Set the channel's privclasses.
+ * 
+ * @method set_privclasses
+ * @param e {Object} Event data for the property packet.
+ */
+wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc"] = {};
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
-    //console.log(lines);
     for(var i in lines) {
-        if( !lines[i] )
+        if( !lines.hasOwnProperty(i) )
             continue;
         bits = lines[i].split(":");
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
-    this.info["pc_order"].sort(function(a,b){return b-a});
-    /* 
-    console.log("got privclasses");
-    console.log(this.info["pc"]);
-    console.log(this.info["pc_order"]);
-    /* */
+    this.info["pc_order"].sort(function(a, b){ return b - a });
 };
 
-// Store each member of the this.
-// TODO: GUI stuffs!
-WscChannel.prototype.setMembers = function( e ) {
-    pack = new WscPacket(e.pkt["body"]);
-    this.info['members'] = {};
-    
-    while(pack["cmd"] == "member") {
-        this.registerUser(pack);
-        pack = new WscPacket(pack.body);
-        if(pack == null)
-            break;
+/**
+ * Get the order of a given privilege class.
+ * 
+ * @method get_privclass_order
+ * @param name {String} Name of the privilege class to get the order of.
+ */
+wsc.Channel.prototype.get_privclass_order = function( name ) {
+    name = name.toLowerCase();
+    for( var i in this.info.pc ) {
+        if( !this.info.pc.hasOwnProperty(i) )
+            continue;
+        if( this.info.pc[i].toLowerCase() == name )
+            return i;
     }
-    //console.log("registered users");
-    this.setUserList();
 };
 
-// Register a user with the this.
-WscChannel.prototype.registerUser = function( pkt ) {
-    //delete pkt['arg']['s'];
-    un = pkt["param"];
+/**
+ * Store each member of the this.
+ *
+ * @method set_members
+ * @param e {Object} Event data for the property packet.
+ */
+wsc.Channel.prototype.set_members = function( e ) {
+    this.info.members = {};
     
-    if(this.info["members"][un] == undefined) {
-        this.info["members"][un] = pkt["arg"];
-        this.info["members"][un]["username"] = un;
-        this.info["members"][un]["conn"] = 1;
+    for( var i in e.pkt.sub ) {
+        if( !e.pkt.sub.hasOwnProperty(i) )
+            continue;
+        this.register_user(e.pkt.sub[i]);
+    }
+    
+    this.set_user_list();
+};
+
+/**
+ * Set the channel user list.
+ * 
+ * @method set_user_list
+ */
+wsc.Channel.prototype.set_user_list = function( ) {
+    if( Object.size(this.info.members) == 0 )
+        return;
+    
+    var names = this.get_usernames();
+    var pcs = {};
+    
+    for( var i in names ) {
+        if( !names.hasOwnProperty(i) )
+            continue;
+        var un = names[i];
+        var member = this.info.members[un];
+        
+        if( !( member['pc'] in pcs ) )
+            pcs[member['pc']] = {'name': member['pc'], 'users': []};
+        
+        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+        var s = member.symbol;
+        uinfo = {
+            'name': un,
+            'symbol': s,
+            'conn': member.conn,
+            'hover': {
+                'member': member,
+                'name': un,
+                'avatar': '<img class="avatar" src="" height="50" width="50" />',
+                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
+                'info': []
+            }
+        };
+        
+        pcs[member['pc']].users.push(uinfo);
+    }
+    
+    var ulist = [];
+    
+    for(var index in this.info["pc_order"]) {
+        var pc = this.info['pc'][this.info["pc_order"][index]];
+        
+        if( !( pc in pcs ) )
+            continue;
+        
+        ulist.push(pcs[pc]);
+    }
+    
+    if( this.ui != null ) {
+        this.ui.set_user_list(ulist);
+    }
+    
+    this.client.trigger('set.userlist', {
+        'name': 'set.userlist',
+        'ns': this.info['namespace']
+    });
+};
+
+/**
+ * Register a user with the channel.
+ * 
+ * @method register_user
+ * @param pkt {Object} User data.
+ */
+wsc.Channel.prototype.register_user = function( pkt ) {
+    var un = pkt["param"];
+    
+    if(this.info.members[un] == undefined) {
+        this.info.members[un] = pkt["arg"];
+        this.info.members[un]["username"] = un;
+        this.info.members[un]["conn"] = 1;
     } else {
-        this.info["members"][un]["conn"]++;
+        for( i in pkt.arg ) {
+            this.info.members[un][i] = pkt.arg[i];
+        }
+        this.info.members[un]["conn"]++;
     }
 };
 
-// Unregister a user.
-WscChannel.prototype.removeUser = function( user ) {
-    member = this.info['members'][user];
+/**
+ * Return a list of usernames, sorted alphabetically.
+ * 
+ * @method get_usernames
+ */
+wsc.Channel.prototype.get_usernames = function(  ) {
+
+    var names = [];
+    for( var name in this.info.members ) {
+        names.push(name);
+    }
+    names.sort( caseInsensitiveSort );
+    return names;
+
+};
+
+/**
+ * Remove a user from the channel.
+ * 
+ * @method remove_user
+ * @param user {String} Name of the user to remove.
+ */
+wsc.Channel.prototype.remove_user = function( user, force ) {
+    force = force || false;
+    var member = this.info.members[user];
     
     if( member == undefined )
         return;
     
     member['conn']--;
     
-    if( member['conn'] == 0 )
-        delete this.info['members'][user];
-};
-
-// Joins
-WscChannel.prototype.recv_join = function( e ) {
-    info = new WscPacket('user ' + e.user + '\n' + e['*info']);
-    this.registerUser( info );
-    this.setUserList();
-};
-
-// Process someone leaving or whatever.
-WscChannel.prototype.recv_part = function( e ) {
-    
-    this.removeUser(e.user);
-    this.setUserList();
-    
-};
-/*
-// Display a message sent by a user.
-WscChannel.prototype.recv_msg = function( e ) {
-
-    tabl = this.tab.find('a');
-    
-    if( !this.tab.hasClass('active') )
-        tabl.css({'font-weight': 'bold'});
-    
-    u = channel.client.settings['username'].toLowerCase();
-    msg = e['message'].toLowerCase();
-    p = channel.window.find('p.logmsg').last();
-    
-    if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
+    if( member['conn'] > 0 && !force)
         return;
     
-    p.addClass('highlight');
+    delete this.info.members[user];
+};
+
+/**
+ * Process a recv_join event.
+ * 
+ * @method recv_join
+ * @param e {Object} Event data for recv_join packet.
+ */
+wsc.Channel.prototype.recv_join = function( e ) {
+    var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
+    this.register_user( info );
+    this.set_user_list();
+};
+
+/**
+ * Process a recv_part event.
+ * 
+ * @method recv_part
+ * @param e {Object} Event data for recv_part packet.
+ */
+wsc.Channel.prototype.recv_part = function( e ) {
     
-    if( this.tab.hasClass('active') )
+    this.remove_user(e.user);
+    this.set_user_list();
+    
+};
+
+/**
+ * Process a recv_msg event.
+ * 
+ * @method recv_msg
+ * @param e {Object} Event data for recv_msg packet.
+ */
+wsc.Channel.prototype.recv_msg = function( e ) {
+    
+    var u = this.client.settings['username'].toLowerCase();
+    
+    if( u == e.user.toLowerCase() )
         return;
     
-    console.log(tabl);
-    tabl
-        .animate( { 'backgroundColor': '#990000' }, 500)
-        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-        .animate( { 'backgroundColor': '#990000' }, 250)
-        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-        .animate( { 'backgroundColor': '#990000' }, 250)
-        .animate( { 'backgroundColor': '#EDF8FF' }, 250)
-        .animate( { 'backgroundColor': '#990000' }, 250);
+    var msg = e['message'].toLowerCase();
+    
+    if( msg.indexOf(u) < 0 )
+        return;
+    
+    if( this.ui != null)
+        this.ui.highlight();
+    
+    this.client.trigger( 'pkt.recv_msg.highlighted', e );
 
 };
-*/
-// Changed privclass buddy?
-WscChannel.prototype.recv_privchg = function( e ) {
-    member = this.info['members'][e.user];
+
+/**
+ * Process a recv_privchg event.
+ * 
+ * @method recv_privchg
+ * @param e {Object} Event data for recv_privhcg packet.
+ */
+wsc.Channel.prototype.recv_privchg = function( e ) {
+    var member = this.info.members[e.user];
     
     if( !member )
         return;
     
-    member['pc'] = event.pc;
-    this.setUserList();
+    member['pc'] = e.pc;
+    this.set_user_list();
 };
 
-// Process a kick event thingy.
-WscChannel.prototype.recv_kicked = function( e ) {
-    if( !this.info['members'][e.user] )
-        return;
+/**
+ * Process a recv_kicked event.
+ * 
+ * @method recv_kicked
+ * @param e {Object} Event data for recv_kicked packet.
+ */
+wsc.Channel.prototype.recv_kicked = function( e ) {
     
-    delete this.info['members'][e.user];
-    this.setUserList();
+    this.remove_user(e.user, true);
+    this.set_user_list();
+    
 };
 
-// Create a screen for channel `ns` in the UI, and initialise data
-// structures or some shit idk. The `selector` parameter defines the
-// channel without the `chat:` or `#` style prefixes. The `ns`
-// parameter is the string to use for the tab.
-function wsc_channel( client, ns, hidden ) {
-    
-    var channel = {
-        
-        client: null,
-        info: {
-            "raw": "",
-            "selector": "",
-            "namespace": "",
-            "members": {},
-            "users": [],
-            "pc": {},
-            "pc_order": [],
-            "title": {
-                "content": "",
-                "by": "",
-                "ts": ""
-            },
-            "topic": {
-                "content": "",
-                "by": "",
-                "ts": ""
-            }
-        },
-        
-        window: null,
-        logpanel: null,
-        wrap: null,
-        userpanel: null,
-        tab: null,
-        built: false,
-        hidden: false,
-        monitor: false,
-        thresh: null,
-        
-        // Initialise! Create a new channel mofo!
-        init: function( client, ns, hidden ) {
-            var selector = client.deform_ns(ns).slice(1).toLowerCase();
-            this.client = client;
-            this.hidden = hidden;
-        
-            this.info["raw"] = client.format_ns(ns);
-            this.info["selector"] = selector;
-            this.info["namespace"] = client.deform_ns(ns);
-            
-            this.monitor = Object.size(this.client.channelo) == 0;
-            this.thresh = 10;
-            
-            /*
-            console.log(this.window);
-            console.log(this.logpanel);
-            console.log(this.wrap);
-            console.log(this.tab);
-            /**/
-    
-        },
-        
-        // Draw channel on screen and store the different elements in attributes.
-        build: function( ) {
-            this.info['members'] = {};
-            
-            if( this.built )
-                return;
-            
-            var selector = this.info['selector']
-            ns = this.info['namespace']
-            
-            // Draw.
-            this.client.tabul.append(wsc_html_chattab.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
-            this.client.chatbook.append(wsc_html_channel.replacePArg('{selector}', selector).replacePArg('{ns}', ns));
-            // Store
-            this.tab = this.client.tabul.find('#' + selector + '-tab')
-            this.window = this.client.chatbook.find('#' + selector + '-window')
-            this.logpanel = this.client.view.find('#' + selector + "-log");
-            this.wrap = this.logpanel.find('ul.logwrap');
-            this.userpanel = this.client.view.find('#' + selector + "-users");
-            
-            this.client.view.find('a[href="#' + selector + '"]').click(function () {
-                channel.client.toggleChannel(selector);
-                return false;
-            });
-            
-            var focus = true;
-            
-            this.window.click(
-                function( e ) {
-                    if( focus )
-                        channel.client.control.focus();
-                    else
-                        focus = true;
-                }
-            );
-            
-            this.logpanel.select(
-                function( ) {
-                    focus = false;
-                }
-            );
-            
-            if( this.hidden ) {
-                this.tab.toggleClass('hidden');
-            }
-            
-            this.built = true;
-        },
-        
-        invisible: function( ) {
-            channel.hidden = true;
-            channel.tab.addClass('hidden');
-        },
-        
-        // Remove a channel from the screen entirely.
-        remove: function( ) {
-            selector = this.info['selector'];
-            this.tab.remove();
-            this.window.remove();
-        },
-        
-        // Toggle the visibility of the channel.
-        hideChannel: function( ) {
-            //console.log("hide " + this.info.selector);
-            this.window.css({'display': 'none'});
-            this.tab.removeClass('active');
-        },
-        
-        showChannel: function( ) {
-            //console.log("show  " + this.info.selector);
-            this.window.css({'display': 'block'});
-            this.tab.addClass('active');
-            this.tab.removeClass('noise tabbed fill');
-            this.resize();
-        },
-        
-        // Toggle a class on the chat tab.
-        toggleTabClass: function( cls ) {
-            this.tab.toggleClass(cls);
-        },
-        
-        // Scroll the log panel downwards.
-        scroll: function( ) {
-            this.pad();
-            this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-        },
-        
-        pad: function ( ) {
-            // Add padding.
-            this.wrap.css({'padding-top': 0});
-            wh = this.wrap.innerHeight();
-            lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
-            pad = lh - wh;
-            /*
-            console.log(ns + ' log');
-            console.log('> log wrap height ' + wh);
-            console.log('> window height ' + this.logpanel.innerHeight());
-            console.log('> add padding ' + pad);
-            /* */
-            /* */
-            if( pad > 0 )
-                this.wrap.css({'padding-top': pad});
-            else
-                this.wrap.css({
-                    'padding-top': 0,
-                    'height': lh});
-            /* */
-        },
-        
-        // Fix the dimensions of the log window.
-        resize: function( ) {
-            this.wrap.css({'padding-top': 0});
-            // Height.
-            //console.log('head height: ' + this.window.find("header").height() + '; outer: ' + this.window.find("header").outerHeight());
-            wh = this.client.chatbook.height();
-            //console.log(h);
-            this.window.height(wh);
-            // Width.
-            cw = this.window.width();
-            cu = this.window.find('div.chatusers');
-            // Header height
-            title = this.window.find('header div.title');
-            topic = this.window.find('header div.topic');
-            
-            // Log width.
-            if( cu.css('display') != 'none')
-                cw = cw - cu.outerWidth();
-            
-            //console.log('> lheight',wh);
-            
-            if( title.css('display') == 'block' )
-                wh = wh - title.outerHeight(true);
-            //console.log('> wh - th',wh);
-                
-            // Log panel dimensions
-            this.logpanel.css({
-                height: wh + 1,
-                width: cw});
-            
-            // Scroll again just to make sure.
-            this.scroll();
-            
-            // User list dimensions
-            cu.css({height: this.logpanel.innerHeight() - 3});
-        },
-        
-        // Display a log message.
-        log: function( msg ) {
-            this.logItem(wsc_html_logmsg.replacePArg('{message}', msg));
-        },
-        
-        // Send a message to the log window.
-        logItem: function( msg ) {
-            if( this.hidden ) {
-                if( this.thresh <= 0 )
-                    return;
-                this.thresh--;
-            }
-            //console.log('logging in channel ' + this.info["namespace"]);
-            var ts = new Date().toTimeString().slice(0, 8);
-            // Add content.
-            this.wrap.append(wsc_html_logitem.replacePArg('{ts}', ts).replacePArg('{message}', msg));
-            // Scrollio
-            this.scroll();
-        },
-        
-        // Send a server message to the log window.
-        serverMessage: function( msg, info ) {
-            this.logItem(wsc_html_servermsg.replacePArg('{message}', msg).replacePArg('{info}', info));
-        },
-        
-        // Set a channel property.
-        property: function( e ) {
-            var prop = e.pkt["arg"]["p"];
-            switch(prop) {
-                case "title":
-                case "topic":
-                    this.setHeader(prop, e);
-                    break;
-                case "privclasses":
-                    this.setPrivclasses(e);
-                    break;
-                case "members":
-                    this.setMembers(e);
-                    break;
-                default:
-                    client.monitor("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
-                    break;
-            }
-        },
-        
-        // Set the channel header.
-        // This can be the title or topic, determined by `head`.
-        setHeader: function( head, e ) {
-            this.info[head]["content"] = e.value || '';
-            this.info[head]["by"] = e.by;
-            this.info[head]["ts"] = e.ts;
-            //console.log("set " + head);
-            if(!this.info[head]["content"]) {
-                /*
-                this.setHeader('title', { pkt: {
-                            "arg": { "by": "", "ts": "" },
-                            "body": '<p>sample title</p>'
-                        }
-                    }
-                );
-                /**/
-                /*
-                this.setHeader('topic', { pkt: {
-                            'arg': { 'by': '', 'ts': '' },
-                            'body': '<p>sample topic</p>'
-                        }
-                    }
-                );
-                /**/
-                /*
-                return;/**/
-            }
-            headd = this.window.find("header div." + head);
-            headd.replaceWith(
-                wsc_html_cheader.replacePArg('{head}', head).replacePArg('{content}', this.info[head]['content'])
-            );
-            headd = this.window.find('header div.' + head);
-            
-            if( this.info[head]['content'] ) {
-                headd.css({display: 'block'});
-                /*
-                console.log(this.logpanel.width() + ', ' + this.window.width());
-                console.log((this.window.width() - this.logpanel.width()) - 10);
-                
-                headd.css({'margin-right': (this.window.width() - this.logpanel.width()) - 2});
-                */
-            } else
-                this.window.find('header div.' + head).css({display: 'none'});
-                
-            this.resize();
-        },
-        
-        // Set the channel user list.
-        setUserList: function( ) {
-            if( Object.size(this.info['members']) == 0 )
-                return;
-            
-            ulist = '<div class="chatusers" id="' + this.info["selector"] + '-users">';
-            pcs = {};
-            
-            for( i in this.info['users'] ) {
-                un = this.info['users'][i];
-                member = this.info['members'][un];
-                
-                if( !( member['pc'] in pcs ) )
-                    pcs[member['pc']] = '';
-                
-                conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-                s = member.symbol;
-                pcs[member['pc']]+= '<li><a target="_blank" href="http://' + un + '.'+this.client.settings['domain']+'"><em>'+s+'</em>' + un + '</a>'+ conn + '</li>';
-            }
-            
-            //this.info['members'].sort( caseInsensitiveSort );
-            //console.log(this.info["pc_order"])
-            for(var index in this.info["pc_order"]) {
-                pc = this.info['pc'][this.info["pc_order"][index]];
-                
-                if( !( pc in pcs ) )
-                    continue;
-                
-                ulist = ulist + '<div class="pc"><h3>' + pc + '</h3><ul>' + pcs[pc] + '</ul></div>';
-            }
-            ulist = ulist + '</div>'
-            
-            //console.log(ulist);
-            
-            this.window.find('div.chatusers').replaceWith(ulist);
-            this.userpanel = this.window.find('div.chatusers');
-            this.userpanel.css({display: 'block'});
-            
-            pcs = this.userpanel.find('h3');
-            if(typeof(pcs) == 'object') {
-                pcs.addClass('first');
-            } else {
-                for( index in pcs ) {
-                    if( index == 0 ) {
-                        pcs[0].addClass('first');
-                        continue;
-                    }
-                    pcs[index].removeClass('first');
-                }
-            }
-            /* */
-            //console.log(this.window.find("div.chatusers").height());
-            //var h = this.window.innerWidth() - this.window.find('div.chatusers').outerWidth();
-            //console.log(h);
-            //this.window.find("div.chatlog").width(h - 50);
-            this.resize();
-            this.client.trigger('set.userlist', {
-                name: 'set.userlist',
-                ns: this.info['namespace']
-            });
-        },
-        
-        // Set the channel's privclasses.
-        // TODO: Draw UI componentories!
-        setPrivclasses: function( e ) {
-            this.info["pc"] = {};
-            this.info["pc_order"] = [];
-            var lines = e.pkt["body"].split('\n');
-            //console.log(lines);
-            for(var i in lines) {
-                if( !lines[i] )
-                    continue;
-                bits = lines[i].split(":");
-                this.info["pc_order"].push(parseInt(bits[0]));
-                this.info["pc"][parseInt(bits[0])] = bits[1];
-            }
-            this.info["pc_order"].sort(function(a,b){return b-a});
-            /* 
-            console.log("got privclasses");
-            console.log(this.info["pc"]);
-            console.log(this.info["pc_order"]);
-            /* */
-        },
-        
-        // Store each member of the this.
-        // TODO: GUI stuffs!
-        setMembers: function( e ) {
-            pack = new WscPacket(e.pkt["body"]);
-            
-            while(pack["cmd"] == "member") {
-                this.registerUser(pack);
-                pack = new WscPacket(pack.body);
-                if(pack == null)
-                    break;
-            }
-            //console.log("registered users");
-            
-            this.info['users'] = [];
-            
-            for( i in this.info['members'] )
-                this.info['users'].push(i);
-            
-            this.info['users'].sort( caseInsensitiveSort );
-            this.setUserList();
-        },
-        
-        // Register a user with the this.
-        registerUser: function( pkt ) {
-            //delete pkt['arg']['s'];
-            un = pkt["param"];
-            
-            if(this.info["members"][un] == undefined) {
-                this.info["members"][un] = pkt["arg"];
-                this.info["members"][un]["username"] = un;
-                this.info["members"][un]["conn"] = 1;
-            } else {
-                this.info["members"][un]["conn"]++;
-            }
-        },
-        
-        // Unregister a user.
-        removeUser: function( user ) {
-            member = this.info['members'][user];
-            
-            if( member == undefined )
-                return;
-            
-            member['conn']--;
-            
-            if( member['conn'] == 0 )
-                delete this.info['members'][user];
-        },
-        
-        // Joins
-        recv_join: function( e ) {
-            info = new WscPacket('user ' + e.user + '\n' + e['*info']);
-            channel.registerUser( info );
-            channel.setUserList();
-        },
-        
-        // Process someone leaving or whatever.
-        recv_part: function( e ) {
-            
-            channel.removeUser(e.user);
-            channel.setUserList();
-            
-        },
-        
-        // Display a message sent by a user.
-        recv_msg: function( e ) {
-        
-            var tabl = this.tab;
-            
-            if( !this.tab.hasClass('active') )
-                tabl.addClass('noise');
-            
-            u = channel.client.settings['username'].toLowerCase();
-            msg = e['message'].toLowerCase();
-            p = channel.window.find('.logmsg').last();
-            
-            if( msg.indexOf(u) < 0 || p.html().toLowerCase().indexOf(u) < 0 )
-                return;
-            
-            p.addClass('highlight');
-            
-            if( tabl.hasClass('active') )
-                return;
-            
-            if( tabl.hasClass('tabbed') )
-                return;
-            
-            var runs = 0;
-            tabl.addClass('tabbed');
-            
-            function toggles() {
-                runs++;
-                tabl.toggleClass('fill');
-                if( runs == 6 )
-                    return;
-                setTimeout( toggles, 1000 );
-            }
-            
-            toggles();
-        
-        },
-        
-        // Changed privclass buddy?
-        recv_privchg: function( e ) {
-            member = channel.info['members'][e.user];
-            
-            if( !member )
-                return;
-            
-            member['pc'] = event.pc;
-            channel.setUserList();
-        },
-        
-        // Process a kick event thingy.
-        recv_kicked: function( e ) {
-            if( !channel.info['members'][e.user] )
-                return;
-            
-            delete channel.info['members'][e.user];
-            channel.setUserList();
-        }
-        
-    };
-    
-    channel.init(client, ns, hidden);
-    return channel;
-}
