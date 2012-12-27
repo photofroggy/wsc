@@ -2454,6 +2454,9 @@ wsc.defaults.Extension.Away = function( client ) {
             'text': 'Here you can set the messages displayed when you set\
                     yourself away or back. You can also change the away message\
                     format.',
+            'hint': '<b>{user}</b><br/>This is replaced with the username of the person trying to talk to you\n\n<b>{reason}</b>\
+                    <br/>This is replaced by your reason for being away.\n\n<b>{timesince}</b>\
+                    <br/>Use this to show how long you have been away for.',
             'fields': [
                 ['Textfield', {
                     'ref': 'away',
