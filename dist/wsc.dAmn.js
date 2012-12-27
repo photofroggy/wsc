@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.0';
+wsc.VERSION = '1.0.1';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.14.85';
+wsc.REVISION = '0.14.86';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -4447,7 +4447,11 @@ Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     var ws = this.wrap.prop('scrollWidth') - this.wrap.innerWidth();
     var hs = this.wrap.prop('scrollHeight') - this.wrap.innerHeight();
-    this.wrap.scrollTop(hs + (ws > 0 ? this.manager.swidth : 0));
+    if( ws > 0 )
+        hs += ws;
+    if( hs < 0 || (hs - this.wrap.scrollTop()) > 100 )
+        return;
+    this.wrap.scrollTop(hs);
 };
 
 /**
@@ -4458,6 +4462,7 @@ Chatterbox.Channel.prototype.scroll = function( ) {
  */
 Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
+    var pscr = this.wrap.scrollTop();
     this.wrap.css({'padding-top': 0, 'height': 'auto'});
     wh = this.wrap.innerHeight();
     lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
@@ -4469,6 +4474,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
         this.wrap.css({
             'padding-top': 0,
             'height': lh});
+    this.wrap.scrollTop(pscr);
 };
 
 /**
@@ -4572,10 +4578,13 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     };
     
     this.manager.trigger( 'log_item.before', data );
+    var pscr = this.wrap.scrollTop();
     
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    
+    this.wrap.scrollTop( pscr + 13 );
     
     // Scrollio
     this.scroll();
