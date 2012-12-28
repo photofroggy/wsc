@@ -1368,49 +1368,11 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.up').click( function( event ) {
-        if( mgr.selected === false )
-            return false;
-        
-        var first = mgr.options.items.indexOf( mgr.selected );
-        var second = first - 1;
-        if( first == -1 || first >= mgr.options.items.length )
-            return false;
-        
-        if( second < 0 || second >= mgr.options.items.length )
-            return false;
-        
-        mgr._fevent('up', {
-            'swap': {
-                'this': { 'index': first, 'item': mgr.options.items[first] },
-                'that': { 'index': second, 'item': mgr.options.items[second] }
-            }
-        });
-        
-        mgr.refresh();
-        mgr._onchange({});
+        mgr.shift_item( true );
         return false;
     } );
     this.buttons.find('a.button.down').click( function( event ) {
-        if( mgr.selected === false )
-            return false;
-        
-        var first = mgr.options.items.indexOf( mgr.selected );
-        var second = first + 1;
-        if( first == -1 || first >= mgr.options.items.length )
-            return false;
-        
-        if( second < 0 || second >= mgr.options.items.length )
-            return false;
-        
-        mgr._fevent('down', {
-            'swap': {
-                'this': { 'index': first, 'item': mgr.options.items[first] },
-                'that': { 'index': second, 'item': mgr.options.items[second] }
-            }
-        });
-        
-        mgr.refresh();
-        mgr._onchange({});
+        mgr.shift_item();
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
@@ -1432,14 +1394,6 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     this.buttons.find('a.button.remove').click( function( event ) {
         if( mgr.selected === false )
             return false;
-        
-        var first = mgr.options.items.indexOf( mgr.selected );
-        var second = first - 1;
-        if( first == -1 )
-            return false;
-        
-        if( second < 0 || second >= mgr.options.items.length )
-            return false;
         /*
         mgr._fevent('up', {
             'swap': {
@@ -1451,6 +1405,36 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         mgr.refresh();*/
         return false;
     } );
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.shift_item = function( direction ) {
+
+    if( this.selected === false )
+        return;
+    
+    var first = this.options.items.indexOf( this.selected );
+    var second = first + 1;
+    
+    if( direction )
+        second = first - 1;
+    
+    if( first == -1 || first >= this.options.items.length )
+        return;
+    
+    if( second < 0 || second >= this.options.items.length )
+        return;
+    
+    this._fevent(( direction ? 'up' : 'down' ), {
+        'swap': {
+            'this': { 'index': first, 'item': this.options.items[first] },
+            'that': { 'index': second, 'item': this.options.items[second] }
+        }
+    });
+    
+    this.refresh();
+    this._onchange({});
+    return;
 
 };
 

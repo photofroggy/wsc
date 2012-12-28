@@ -323,7 +323,10 @@ Chatterbox.template.settings.krender.manageditems = function( items ) {
             continue;
         
         item = items[i];
-        render+= '<li title="' + item.toLowerCase() + '">' + item + '</li>';
+        render+= '<li title="' + item.toLowerCase() + '">\
+                  <span class="item">' + item + '</span>\
+                  <span class="remove"><a href="#remove" title="Remove item" class="close iconic x"></a></span>\
+                  </li>';
     
     }
     
