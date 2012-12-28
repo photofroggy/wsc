@@ -167,6 +167,24 @@
                                         &.selected {
                                             background-color: rgba(11, 168, 61, 0.44);
                                         }
+                                        span {
+                                            border: none;
+                                        }
+                                        span.remove {
+                                            float: right;
+                                            display: none;
+                                        }
+                                        span.item {
+                                            margin-right: 30px;
+                                        }
+                                        &:hover, &.selected {
+                                            span.item {
+                                                margin-right: 13px;
+                                            }
+                                            span.remove {
+                                                display: block;
+                                            }
+                                        }
                                     }
                                 }
                             }

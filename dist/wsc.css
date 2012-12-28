@@ -1156,6 +1156,22 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems 
 div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li.selected {
   background-color: rgba(11, 168, 61, 0.44);
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li span {
+  border: none;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li span.remove {
+  float: right;
+  display: none;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li span.item {
+  margin-right: 30px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li:hover span.item, div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li.selected span.item {
+  margin-right: 13px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li:hover span.remove, div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li.selected span.remove {
+  display: block;
+}
 div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed, div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed-ff-indv form .fields .field {
   background-color: rgba(255, 255, 255, 0.85);
   border: 1px solid #B1B1B1;
