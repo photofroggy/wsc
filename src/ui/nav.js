@@ -31,7 +31,7 @@ Chatterbox.Navigation = function( ui ) {
             
             var evt = {
                 'e': event,
-                'settings': new Chatterbox.Settings.Config()
+                'settings': new Chatterbox.Settings.Config(nav.manager)
             };
             
             nav.configure_page( evt );

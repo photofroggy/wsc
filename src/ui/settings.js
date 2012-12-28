@@ -156,8 +156,9 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * @class Settings.Config
  * @constructor
  */
-Chatterbox.Settings.Config = function(  ) {
+Chatterbox.Settings.Config = function( ui ) {
 
+    this.manager = ui || null;
     this.pages = [];
 
 };
@@ -195,6 +196,8 @@ Chatterbox.Settings.Config.prototype.find_page = function( name ) {
  */
 Chatterbox.Settings.Config.prototype.build = function( ui, window ) {
 
+    ui = ui || this.manager;
+    
     for( var i in this.pages ) {
     
         this.pages[i].build(ui, window);
@@ -233,7 +236,7 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
     push = push || false;
     
     if( page == null ) {
-        page = new Chatterbox.Settings.Page(name);
+        page = new Chatterbox.Settings.Page(name, this.manager);
         if( push ) {
             this.pages.push(page);
         } else {
@@ -274,7 +277,7 @@ Chatterbox.Settings.Config.prototype.each_page = function( method ) {
  */
 Chatterbox.Settings.Config.prototype.save = function( window ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].save(window);
     
@@ -306,7 +309,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
  * @constructor
  * @param name {String} Name of the page.
  */
-Chatterbox.Settings.Page = function( name ) {
+Chatterbox.Settings.Page = function( name, ui) {
 
     this.name = name;
     this.lname = name.toLowerCase();
@@ -314,7 +317,7 @@ Chatterbox.Settings.Page = function( name ) {
     //this.content = '';
     this.items = [];
     this.itemo = {};
-    this.manager = null;
+    this.manager = ui;
 
 };
 
@@ -326,7 +329,6 @@ Chatterbox.Settings.Page = function( name ) {
  */
 Chatterbox.Settings.Page.prototype.build = function( ui, window ) {
 
-    this.manager = ui;
     var tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
     var page = replaceAll(Chatterbox.template.settings.page, '{ref}', this.ref);
@@ -787,7 +789,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
         }
         item = item[cls];
     }
-    console.log(type, item, defaultc);
+    
     return new item( type, options, ui );
 
 };
@@ -854,17 +856,12 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
     
     for( var i in this.options.fields ) {
         f = this.options.fields[i];
-        console.log(f);
-        //try {
-            field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
-            this.fields.push( field );
-            field.build( this );
-            if( f[1].hasOwnProperty('ref') ) {
-                this.fieldo[f[1].ref] = field;
-            }
-        /*} catch( err ) {
-            console.log(err,f);
-        }*/
+        field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
+        this.fields.push( field );
+        field.build( this );
+        if( f[1].hasOwnProperty('ref') ) {
+            this.fieldo[f[1].ref] = field;
+        }
     }
     
     this.form = this.view.find('form');
@@ -1011,7 +1008,6 @@ Chatterbox.Settings.Item.Form.Field.prototype.constructor = Chatterbox.Settings.
  */
 Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
 
-    console.log(this);
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
             'ref': this.ref,
@@ -1338,9 +1334,9 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Items = function( type, options ) {
+Chatterbox.Settings.Item.Items = function( type, options, ui ) {
 
-    Chatterbox.Settings.Item.call(this, type, options);
+    Chatterbox.Settings.Item.call(this, type, options, ui);
     this.selected = false;
 
 };
@@ -1418,12 +1414,10 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
-        if( mgr.selected === false )
-            return false;
-        
         var popup = new Chatterbox.Popup( mgr.manager, {
             'close': false
         } );
+        popup.build();
         /*
         mgr._fevent('add', {
             'swap': {
