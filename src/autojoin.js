@@ -74,15 +74,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     imgr.options.items = client.autojoin.channel;
                 },
                 'add': function( event ) {
-                    var swap = event.args.swap;
-                    client.autojoin.channel[swap['this'].index] = swap.that.item;
-                    client.autojoin.channel[swap.that.index] = swap['this'].item;
-                    imgr.options.items = client.autojoin.channel;
                 },
                 'remove': function( event ) {
-                    var swap = event.args.swap;
-                    client.autojoin.channel[swap['this'].index] = swap.that.item;
-                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    client.autojoin.channel.splice( event.args.index, 1 );
                     imgr.options.items = client.autojoin.channel;
                 },
                 'save': function( event ) {

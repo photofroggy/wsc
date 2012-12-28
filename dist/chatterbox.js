@@ -3386,18 +3386,28 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     Chatterbox.Settings.Item.prototype.build.call( this, page );
     var mgr = this;
     this.list = this.view.find('ul');
-    this.buttons = this.view.find('section.buttons');
+    this.buttons = this.view.find('section.buttons p');
     
-    this.list.find('li').click( function( event ) {
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
         var el = mgr.list.find(this);
         mgr.list.find('li.selected').removeClass('selected');
-        mgr.selected = el.html();
+        mgr.selected = el.find('.item').html();
         el.addClass('selected');
     } );
     
-    this.buttons.find('a.button').click( function( event ) {
-        return false;
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
     } );
+    
     this.buttons.find('a.button.up').click( function( event ) {
         mgr.shift_item( true );
         return false;
@@ -3422,18 +3432,8 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         //mgr.refresh();
         return false;
     } );
-    this.buttons.find('a.button.remove').click( function( event ) {
-        if( mgr.selected === false )
-            return false;
-        /*
-        mgr._fevent('up', {
-            'swap': {
-                'this': { 'index': first, 'item': mgr.options.items[first] },
-                'that': { 'index': second, 'item': mgr.options.items[second] }
-            }
-        });
-        
-        mgr.refresh();*/
+    this.buttons.find('a.button.close').click( function( event ) {
+        mgr.remove_item();
         return false;
     } );
 
@@ -3469,6 +3469,24 @@ Chatterbox.Settings.Item.Items.prototype.shift_item = function( direction ) {
 
 };
 
+Chatterbox.Settings.Item.Items.prototype.remove_item = function(  ) {
+
+    if( this.selected === false )
+        return false;
+    
+    var index = this.options.items.indexOf( this.selected );
+    if( index == -1 || index >= this.options.items.length )
+        return false;
+    
+    this._fevent( 'remove', {
+        'index': index,
+        'item': this.selected
+    } );
+    
+    this.refresh();
+    this._onchange({});
+};
+
 Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
 
     this.view.find('section.mitems').html(
@@ -3479,11 +3497,24 @@ Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
         .addClass('selected');
     
     var mgr = this;
-    this.list.find('li').click( function( event ) {
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
         var el = mgr.list.find(this);
         mgr.list.find('li.selected').removeClass('selected');
-        mgr.selected = el.html();
+        mgr.selected = el.find('.item').html();
         el.addClass('selected');
+    } );
+    
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
     } );
 
 };
