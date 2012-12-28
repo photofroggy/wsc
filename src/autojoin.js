@@ -40,12 +40,10 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             ],
             'event': {
                 'change': function( event ) {
-                    console.log(event, settings);
                     if( event.target.value == 'yes' )
                         client.autojoin.on = event.target.checked;
                 },
                 'save': function( event ) {
-                    console.log(client.autojoin);
                     orig.ajon = client.autojoin.on;
                     client.config_save();
                 },

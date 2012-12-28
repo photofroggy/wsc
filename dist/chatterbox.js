@@ -2675,7 +2675,7 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     var pair = this._get_ep('inspect');
-    var inps = pair == false ? null : this.view.find(pair[1]);
+    var inps = pair ? this.view.find(pair[1]) : null;
     var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
@@ -2705,7 +2705,7 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
     pair = this._get_ep('inspect');
-    inps = pair == false ? null : this.view.find(pair[1]);
+    inps = pair ? this.view.find(pair[1]) : null;
     cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
@@ -3279,15 +3279,35 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
 };
 
-/**
- * Get field data.
- * 
- * @method get
- * @return {Object} data.
- */
-Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 
-    return this.value;
+/**
+ * Check box item.
+ * 
+ * @class Items
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Items = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.selected = [];
+
+};
+
+Chatterbox.Settings.Item.Items.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.Items;
+
+/**
+ * Build the Items field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    var items = this;
 
 };
 
@@ -3603,6 +3623,28 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     return render + '<section class="fields">' + fields.join('') + '</section>';
 };
 
+Chatterbox.template.settings.krender.manageditems = function( items ) {
+    if( items.length == 0 )
+        return 'No items';
+    
+    var render = '<ul>';
+    var labels = [];
+    var fields = [];
+    var item;
+    
+    for( var i in items ) {
+    
+        if( !items.hasOwnProperty(i) )
+            continue;
+        
+        item = items[i];
+        render+= '<li>' + item + '</li>';
+    
+    }
+    
+    return render + '</ul>';
+};
+
 Chatterbox.template.settings.item = {};
 Chatterbox.template.settings.item.get = function( type ) {
 
@@ -3758,6 +3800,27 @@ Chatterbox.template.settings.item.textarea.render = {
 Chatterbox.template.settings.item.textarea.post = Chatterbox.template.clean(['ref', 'title', 'default']);
 Chatterbox.template.settings.item.textarea.events = [['blur', 'textarea'],['inspect', 'textarea']];
 Chatterbox.template.settings.item.textarea.frame = '{title}<div class="{ref} textarea"><form><textarea rows="4" cols="20" value="{default}"></textarea></form></div>';
+
+Chatterbox.template.settings.item.items = {};
+Chatterbox.template.settings.item.items.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.items.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.manageditems
+};
+
+Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.items.events = [];
+Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
+    <section class="mitems">{items}</section></div>\
+    <section class="buttons"><p><a href="#up" title="Move item up" class="button iconic arrow_up"></a>\
+    <a href="#down" title="Move item down" class="button iconic arrow_down"></a>\
+    <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
+    </p></section>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [

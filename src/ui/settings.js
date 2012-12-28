@@ -644,7 +644,7 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     var pair = this._get_ep('inspect');
-    var inps = pair == false ? null : this.view.find(pair[1]);
+    var inps = pair ? this.view.find(pair[1]) : null;
     var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
@@ -674,7 +674,7 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
     pair = this._get_ep('inspect');
-    inps = pair == false ? null : this.view.find(pair[1]);
+    inps = pair ? this.view.find(pair[1]) : null;
     cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
@@ -1248,15 +1248,35 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
 };
 
-/**
- * Get field data.
- * 
- * @method get
- * @return {Object} data.
- */
-Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 
-    return this.value;
+/**
+ * Check box item.
+ * 
+ * @class Items
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Items = function( type, options ) {
+
+    Chatterbox.Settings.Item.call(this, type, options);
+    this.selected = [];
+
+};
+
+Chatterbox.Settings.Item.Items.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.Items;
+
+/**
+ * Build the Items field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    var items = this;
 
 };
 

@@ -1116,6 +1116,35 @@ div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox, div
 div.wsc div.floater.settings div.bookwrap div.book div.page .item .radiobox form, div.wsc div.floater.settings div.bookwrap div.book div.page .item .checkbox form {
   padding: 0px;
 }
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items section {
+  float: none;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems {
+  width: 340px;
+  height: 300px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #B1B1B1;
+  padding: 5px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul {
+  list-style: none;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li {
+  background-color: rgba(0, 0, 0, 0.07);
+  border: 1px solid #B1B1B1;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li:last-child {
+  margin-bottom: 0px;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li:hover {
+  background-color: rgba(11, 118, 168, 0.46);
+  cursor: pointer;
+}
+div.wsc div.floater.settings div.bookwrap div.book div.page .item.items .mitems ul li.selected {
+  background-color: rgba(11, 168, 61, 0.44);
+}
 div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed, div.wsc div.floater.settings div.bookwrap div.book div.page .item.boxed-ff-indv form .fields .field {
   background-color: rgba(255, 255, 255, 0.85);
   border: 1px solid #B1B1B1;
