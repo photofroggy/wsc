@@ -18,6 +18,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;
+        orig.chan = client.autojoin.channel;
         
         if( client.autojoin.channel.length == 0 ) {
             ul+= '<li><i>No autojoin channels set</i></li></ul>';
@@ -59,7 +60,40 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
             'items': client.autojoin.channel,
-            'event': {}
+            'event': {
+                'up': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'down': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'add': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'remove': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'save': function( event ) {
+                    orig.chan = client.autojoin.channel;
+                    client.config_save();
+                },
+                'close': function( event ) {
+                    client.autojoin.channel = orig.chan;
+                    client.config_save();
+                }
+            }
         });
         
         var uf = page.item('Form', {
@@ -74,7 +108,10 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     'text': ul
                 }]
             ],
-            'event': {
+            'events': {
+                'up': function( event ) {
+                    console.log(event.item);
+                },
                 'change': function( event ) {
                 },
                 'save': function( event ) {

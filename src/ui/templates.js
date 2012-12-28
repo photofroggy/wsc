@@ -323,7 +323,7 @@ Chatterbox.template.settings.krender.manageditems = function( items ) {
             continue;
         
         item = items[i];
-        render+= '<li>' + item + '</li>';
+        render+= '<li title="' + item.toLowerCase() + '">' + item + '</li>';
     
     }
     
@@ -501,9 +501,9 @@ Chatterbox.template.settings.item.items.render = {
 Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
 Chatterbox.template.settings.item.items.events = [];
 Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
-    <section class="buttons"><p><a href="#up" title="Move item up" class="button iconic arrow_up"></a>\
-    <a href="#down" title="Move item down" class="button iconic arrow_down"></a>\
-    <a href="#add" title="Add an item" class="button iconic plus"></a>\
+    <section class="buttons"><p><a href="#up" title="Move item up" class="button up iconic arrow_up"></a>\
+    <a href="#down" title="Move item down" class="button down iconic arrow_down"></a>\
+    <a href="#add" title="Add an item" class="button add iconic plus"></a>\
     <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
     </p></section>\
     <section class="mitems">{items}</section>\
