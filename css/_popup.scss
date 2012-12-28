@@ -29,6 +29,10 @@
                 padding: 0px 10px;
                 span {
                     display: inline-block;
+                    a.close {
+                        position: relative;
+                        top: 3px;
+                    }
                 }
             }
         }

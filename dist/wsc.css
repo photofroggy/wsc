@@ -981,6 +981,10 @@ div.wsc div.floater.prompt div.content {
 div.wsc div.floater.prompt div.content span {
   display: inline-block;
 }
+div.wsc div.floater.prompt div.content span a.close {
+  position: relative;
+  top: 3px;
+}
 div.wsc div.floater.settings {
   top: 5em;
   width: 60%;
