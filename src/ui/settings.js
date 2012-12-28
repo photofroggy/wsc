@@ -1386,9 +1386,11 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
+        console.log(event);
         var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
             'title': 'Add item',
-            'label': 'Item:'
+            'label': 'Item:',
+            'position': [event.clientX - 100, event.clientY - 50]
         } );
         prompt.build();
         /*

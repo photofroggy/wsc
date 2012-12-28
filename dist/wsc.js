@@ -6133,11 +6133,12 @@ Chatterbox.Popup.Prompt = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
+        'position': [0, 0],
         'ref': 'prompt',
-        'title': 'Prompt',
+        'title': 'Input',
         'close': false,
-        'label': 'Data',
-        'default': '',
+        'label': '',
+        'default': ''
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
@@ -6157,6 +6158,10 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
 
     this.options.content = Chatterbox.template.prompt.main;
     Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'top': this.options.position[1]
+    });
 
 };
 
@@ -7552,9 +7557,11 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
+        console.log(event);
         var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
             'title': 'Add item',
-            'label': 'Item:'
+            'label': 'Item:',
+            'position': [event.clientX - 100, event.clientY - 50]
         } );
         prompt.build();
         /*

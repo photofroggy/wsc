@@ -75,11 +75,12 @@ Chatterbox.Popup.Prompt = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
+        'position': [0, 0],
         'ref': 'prompt',
-        'title': 'Prompt',
+        'title': 'Input',
         'close': false,
-        'label': 'Data',
-        'default': '',
+        'label': '',
+        'default': ''
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
@@ -99,6 +100,10 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
 
     this.options.content = Chatterbox.template.prompt.main;
     Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'top': this.options.position[1]
+    });
 
 };
 
