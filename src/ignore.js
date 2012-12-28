@@ -78,6 +78,15 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
         });
         
+        page.item('Items', {
+            'ref': 'ignoreds',
+            'title': 'Users',
+            'text': 'This is the list of users that you have silenced.\n\nUse the\
+                    commands <code>/ignore</code> and <code>/unignore</code>\
+                    to edit the list.',
+            'items': client.ui.umuted
+        });
+        
         var uf = page.item('Form', {
             'ref': 'ignored',
             'wclass': 'boxed-ff-indv',

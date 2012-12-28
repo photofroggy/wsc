@@ -310,7 +310,7 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
 
 Chatterbox.template.settings.krender.manageditems = function( items ) {
     if( items.length == 0 )
-        return 'No items';
+        return '<i>No items in this list</i>';
     
     var render = '<ul>';
     var labels = [];
@@ -501,11 +501,13 @@ Chatterbox.template.settings.item.items.render = {
 Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
 Chatterbox.template.settings.item.items.events = [];
 Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
-    <section class="mitems">{items}</section></div>\
     <section class="buttons"><p><a href="#up" title="Move item up" class="button iconic arrow_up"></a>\
     <a href="#down" title="Move item down" class="button iconic arrow_down"></a>\
+    <a href="#add" title="Add an item" class="button iconic plus"></a>\
     <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
-    </p></section>';
+    </p></section>\
+    <section class="mitems">{items}</section>\
+    </div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [

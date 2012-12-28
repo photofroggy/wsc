@@ -130,16 +130,21 @@
                             }
                         }
                         &.items {
+                            div.items {
+                                background-color: rgba(255, 255, 255, 0.85);
+                                border: 1px solid #B1B1B1;
+                            }
                             section {
                                 float: none;
                             }
                             .buttons {
+                                padding: 0px 5px;
+                                .close {
+                                    position: relative;
+                                    top: 4px;
+                                }
                             }
                             .mitems {
-                                width: 340px;
-                                height: 300px;
-                                background-color: rgba(255, 255, 255, 0.85);
-                                border: 1px solid #B1B1B1;
                                 padding: 5px;
                                 ul {
                                     list-style: none;
@@ -154,6 +159,9 @@
                                         &:hover {
                                             background-color: rgba(11, 118, 168, 0.46);
                                             cursor: pointer;
+                                        }
+                                        &:active {
+                                            background-color: rgba(11, 118, 168, 0.65);
                                         }
                                         &.selected {
                                             background-color: rgba(11, 168, 61, 0.44);

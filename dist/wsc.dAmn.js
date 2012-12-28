@@ -2767,6 +2767,15 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
         });
         
+        page.item('Items', {
+            'ref': 'ignoreds',
+            'title': 'Users',
+            'text': 'This is the list of users that you have silenced.\n\nUse the\
+                    commands <code>/ignore</code> and <code>/unignore</code>\
+                    to edit the list.',
+            'items': client.ui.umuted
+        });
+        
         var uf = page.item('Form', {
             'ref': 'ignored',
             'wclass': 'boxed-ff-indv',
@@ -7354,7 +7363,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 Chatterbox.Settings.Item.Items = function( type, options ) {
 
     Chatterbox.Settings.Item.call(this, type, options);
-    this.selected = [];
+    this.selected = '';
 
 };
 
@@ -7370,7 +7379,15 @@ Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.
 Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     
     Chatterbox.Settings.Item.prototype.build.call( this, page );
-    var items = this;
+    var mgr = this;
+    this.list = this.view.find('ul');
+    
+    this.list.find('li').click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.html();
+        el.addClass('selected');
+    } );
 
 };
 
@@ -7688,7 +7705,7 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
 
 Chatterbox.template.settings.krender.manageditems = function( items ) {
     if( items.length == 0 )
-        return 'No items';
+        return '<i>No items in this list</i>';
     
     var render = '<ul>';
     var labels = [];
@@ -7879,11 +7896,13 @@ Chatterbox.template.settings.item.items.render = {
 Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
 Chatterbox.template.settings.item.items.events = [];
 Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
-    <section class="mitems">{items}</section></div>\
     <section class="buttons"><p><a href="#up" title="Move item up" class="button iconic arrow_up"></a>\
     <a href="#down" title="Move item down" class="button iconic arrow_down"></a>\
+    <a href="#add" title="Add an item" class="button iconic plus"></a>\
     <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
-    </p></section>';
+    </p></section>\
+    <section class="mitems">{items}</section>\
+    </div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [

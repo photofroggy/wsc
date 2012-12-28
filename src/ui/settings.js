@@ -1260,7 +1260,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 Chatterbox.Settings.Item.Items = function( type, options ) {
 
     Chatterbox.Settings.Item.call(this, type, options);
-    this.selected = [];
+    this.selected = '';
 
 };
 
@@ -1276,7 +1276,15 @@ Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.
 Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     
     Chatterbox.Settings.Item.prototype.build.call( this, page );
-    var items = this;
+    var mgr = this;
+    this.list = this.view.find('ul');
+    
+    this.list.find('li').click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.html();
+        el.addClass('selected');
+    } );
 
 };
 
