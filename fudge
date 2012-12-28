@@ -93,7 +93,7 @@ def fetch_bundle(files):
         return out
     else:
         try:
-            return fetch_bundle([os.path.join(files, f) for f in os.listdir(files)])
+            return fetch_bundle([os.path.join(files, f) for f in sorted(os.listdir(files))])
         except TypeError:
             notice('        failed for {0}...'.format(files))
             return ''

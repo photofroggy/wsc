@@ -290,8 +290,12 @@ wsc.Control.prototype.keypress = function( event ) {
             bubble = true;
             break;
         case 9: // Tab
-            this.tab_item( event );
-            ut = false;
+            if( event.shiftKey ) {
+                this.client.ui.channel_right();
+            } else {
+                this.tab_item( event );
+                ut = false;
+            }
             break;
         case 219: // [
             if( event.ctrlKey ) {
