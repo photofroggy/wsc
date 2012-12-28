@@ -87,6 +87,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
             'items': client.ui.umuted
         });
         
+        /*
         var uf = page.item('Form', {
             'ref': 'ignored',
             'wclass': 'boxed-ff-indv',
@@ -101,6 +102,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
                 }]
             ]
         });
+        */
     
     };
     

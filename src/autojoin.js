@@ -95,7 +95,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                 }
             }
         });
-        
+        /*
         var uf = page.item('Form', {
             'ref': 'channels',
             'wclass': 'boxed-ff-indv',
@@ -120,7 +120,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     client.config_save();
                 }
             }
-        });
+        });*/
     
     };
     

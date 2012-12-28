@@ -2818,7 +2818,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
         }
         item = item[cls];
     }
-    
+    console.log(type, item, defaultc);
     return new item( type, options, ui );
 
 };
@@ -2857,7 +2857,7 @@ Chatterbox.Settings.Item.Form.prototype.constructor = Chatterbox.Settings.Item.F
  */
 Chatterbox.Settings.Item.Form.field = function( type, options ) {
 
-    return Chatterbox.Settings.Item.get( type, options, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
+    return Chatterbox.Settings.Item.get( type, options, this.manager, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
 
 };
 
@@ -2885,16 +2885,17 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
     
     for( var i in this.options.fields ) {
         f = this.options.fields[i];
-        try {
+        console.log(f);
+        //try {
             field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
             this.fields.push( field );
             field.build( this );
             if( f[1].hasOwnProperty('ref') ) {
                 this.fieldo[f[1].ref] = field;
             }
-        } catch( err ) {
+        /*} catch( err ) {
             console.log(err,f);
-        }
+        }*/
     }
     
     this.form = this.view.find('form');
@@ -3041,6 +3042,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.constructor = Chatterbox.Settings.
  */
 Chatterbox.Settings.Item.Form.Field.prototype.build = function( form ) {
 
+    console.log(this);
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
             'ref': this.ref,
@@ -3524,6 +3526,15 @@ Chatterbox.Settings.Item.Items.prototype._fevent = function( evt, args ) {
     }
 
 };
+
+Chatterbox.Settings.Item.Items.prototype.save = function(  ) {
+
+    this._fevent('save', {
+        'items': this.options['items'] || []
+    });
+
+};
+
 
 
 
