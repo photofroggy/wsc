@@ -945,8 +945,7 @@ div.wsc a.iconic.close.square {
 }
 div.wsc div.floater {
   position: absolute;
-  top: 5em;
-  right: 20%;
+  top: 0px;
 }
 div.wsc div.floater div.inner {
   height: 100%;
@@ -976,9 +975,17 @@ div.wsc div.floater div.inner h2 a.close {
 div.wsc div.floater div.inner div.content {
   margin: 10px;
 }
+div.wsc div.floater.prompt div.content {
+  padding: 0px 10px;
+}
+div.wsc div.floater.prompt div.content span {
+  display: inline-block;
+}
 div.wsc div.floater.settings {
+  top: 5em;
   width: 60%;
   height: 80%;
+  right: 20%;
 }
 div.wsc div.floater.settings div.bookwrap nav.tabs {
   padding: 0px 5px;

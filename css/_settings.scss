@@ -1,8 +1,10 @@
 
 @mixin settings {
     div.floater.settings {
+        top: 5em;
         width: 60%;
         height: 80%;
+        right: 20%;
         div.bookwrap {
             nav.tabs {
                 padding: 0px 5px;

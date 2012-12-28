@@ -207,6 +207,14 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
+Chatterbox.template.prompt = {};
+Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
+    <span class="input"><form><input type="text" value="{default}" /></form></span>\
+    <span class="buttons">\
+    <a href="#add" class="button add iconic plus"></a>\
+    <a href="#remove" class="button close big square iconic x"></a>\
+    </span>';
+
 /**
  * Settings stuff.
  *

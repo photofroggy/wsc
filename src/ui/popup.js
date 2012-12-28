@@ -33,11 +33,7 @@ Chatterbox.Popup = function( ui, options ) {
  */
 Chatterbox.Popup.prototype.build = function(  ) {
 
-    var fill = {
-        'ref': this.options.ref,
-        'title': this.options.title,
-        'content': this.options.content
-    };
+    var fill = this.options;
     
     if( this.options.close ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
@@ -69,6 +65,41 @@ Chatterbox.Popup.prototype.close = function(  ) {
     
     this.window.remove();
     
+};
+
+/**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'ref': 'prompt',
+        'title': 'Prompt',
+        'close': false,
+        'label': 'Data',
+        'default': '',
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+/**
+ * Build the prompt.
+ * 
+ * @method build
+ */
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+
 };
 
 

@@ -1386,10 +1386,11 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
-        var popup = new Chatterbox.Popup( mgr.manager, {
-            'close': false
+        var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'title': 'Add item',
+            'label': 'Item:'
         } );
-        popup.build();
+        prompt.build();
         /*
         mgr._fevent('add', {
             'swap': {

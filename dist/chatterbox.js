@@ -1987,11 +1987,7 @@ Chatterbox.Popup = function( ui, options ) {
  */
 Chatterbox.Popup.prototype.build = function(  ) {
 
-    var fill = {
-        'ref': this.options.ref,
-        'title': this.options.title,
-        'content': this.options.content
-    };
+    var fill = this.options;
     
     if( this.options.close ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
@@ -2023,6 +2019,41 @@ Chatterbox.Popup.prototype.close = function(  ) {
     
     this.window.remove();
     
+};
+
+/**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'ref': 'prompt',
+        'title': 'Prompt',
+        'close': false,
+        'label': 'Data',
+        'default': '',
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+/**
+ * Build the prompt.
+ * 
+ * @method build
+ */
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+
 };
 
 
@@ -3417,10 +3448,11 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
-        var popup = new Chatterbox.Popup( mgr.manager, {
-            'close': false
+        var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'title': 'Add item',
+            'label': 'Item:'
         } );
-        popup.build();
+        prompt.build();
         /*
         mgr._fevent('add', {
             'swap': {
@@ -3755,6 +3787,14 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  * @type String
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
+
+Chatterbox.template.prompt = {};
+Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
+    <span class="input"><form><input type="text" value="{default}" /></form></span>\
+    <span class="buttons">\
+    <a href="#add" class="button add iconic plus"></a>\
+    <a href="#remove" class="button close big square iconic x"></a>\
+    </span>';
 
 /**
  * Settings stuff.

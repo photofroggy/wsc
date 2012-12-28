@@ -2,8 +2,7 @@
 @mixin popup {
     div.floater {
         position: absolute;
-        top: 5em;
-        right: 20%;
+        top: 0px;
         
         div.inner {
             height: 100%;
@@ -25,6 +24,14 @@
             }
         }
         
+        &.prompt {
+            div.content {
+                padding: 0px 10px;
+                span {
+                    display: inline-block;
+                }
+            }
+        }
     }
 }
 
