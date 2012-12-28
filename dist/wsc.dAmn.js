@@ -2396,7 +2396,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                 'add': function( event ) {
                 },
                 'remove': function( event ) {
-                    console.log(client.autojoin.channel);
                     client.autojoin.channel.splice( event.args.index, 1 );
                     imgr.options.items = client.autojoin.channel;
                 },
@@ -2405,8 +2404,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     client.config_save();
                 },
                 'close': function( event ) {
-                    client.autojoin.channel = orig.chan;
-                    client.config_save();
+                    client.config_load();
                 }
             }
         });
@@ -7599,7 +7597,7 @@ Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
         Chatterbox.template.settings.krender.manageditems(this.options.items)
     );
     this.list = this.view.find('ul');
-    this.list.find('li[title=' + this.selected.toLowerCase() + ']')
+    this.list.find('li[title=' + (this.selected || '').toLowerCase() + ']')
         .addClass('selected');
     
     var mgr = this;

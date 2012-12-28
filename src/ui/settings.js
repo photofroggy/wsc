@@ -1462,7 +1462,7 @@ Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
         Chatterbox.template.settings.krender.manageditems(this.options.items)
     );
     this.list = this.view.find('ul');
-    this.list.find('li[title=' + this.selected.toLowerCase() + ']')
+    this.list.find('li[title=' + (this.selected || '').toLowerCase() + ']')
         .addClass('selected');
     
     var mgr = this;

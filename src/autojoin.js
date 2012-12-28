@@ -84,8 +84,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     client.config_save();
                 },
                 'close': function( event ) {
-                    client.autojoin.channel = orig.chan;
-                    client.config_save();
+                    client.config_load();
                 }
             }
         });
