@@ -2416,32 +2416,6 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                 }
             }
         });
-        /*
-        var uf = page.item('Form', {
-            'ref': 'channels',
-            'wclass': 'boxed-ff-indv',
-            'title': 'Channels',
-            'text': 'Add any channels you want to join automatically when you\
-                    connect to the chat server.',
-            'fields': [
-                ['Text', {
-                    'ref': 'channels',
-                    'text': ul
-                }]
-            ],
-            'events': {
-                'up': function( event ) {
-                    console.log(event.item);
-                },
-                'change': function( event ) {
-                },
-                'save': function( event ) {
-                },
-                'close': function( event ) {
-                    client.config_save();
-                }
-            }
-        });*/
     
     };
     
@@ -3052,6 +3026,7 @@ wsc.Client.prototype.config_load = function(  ) {
     
     this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
     this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    this.autojoin.channel = [];
     
     var tc = null;
     var c = 0;
@@ -6185,6 +6160,13 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
     } );
     
     this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('form').submit( function(  ) {
         prompt.data = prompt.window.find('input').val();
         prompt.options.event.submit( prompt );
         prompt.close();

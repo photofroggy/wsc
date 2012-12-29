@@ -2078,6 +2078,13 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
         prompt.close();
         return false;
     } );
+    
+    this.window.find('form').submit( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
 
 };
 
