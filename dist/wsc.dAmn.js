@@ -3540,10 +3540,10 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.msg)
+        wsc_packetstr('msg', 'main', {}, e.input)
     ));
 
 };
@@ -3557,10 +3557,10 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.msg)
+        wsc_packetstr('npmsg', 'main', {}, e.input)
     ));
 
 };
@@ -3574,10 +3574,10 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
-    this.trigger( e );
+    e = { 'input': action, 'ns': namespace };
+    this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.msg)
+        wsc_packetstr('action', 'main', {}, e.input)
     ));
 
 };
@@ -3650,7 +3650,9 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+    e = { 'input': reason, 'ns': namespace };
+    this.trigger( 'send.kick.before', e );
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
 };
 
@@ -3707,7 +3709,9 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
+    e = { 'input': value, 'ns': namespace };
+    this.trigger( 'send.set.before', e );
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
 
 };
 
@@ -8354,14 +8358,6 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         settings.emotes.page = page;
         var orig = {};
         orig.on = settings.emotes.on;
-        orig.es = [];
-        
-        /*for( var code in settings.emotes.emote ) {
-            if( !settings.emotes.emote.hasOwnProperty(code) )
-                continue;
-            console.log(settings.emotes.emote[code]);
-            orig.es.push( code );
-        }*/
         
         page.item('Form', {
             'ref': 'switch',
@@ -8390,24 +8386,37 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                 }
             }
         });
-        
-        var imgr = page.item('Items', {
-            'ref': 'emotes',
-            'title': 'Emotes',
-            'text': 'This is the list of emoticons you can use.',
-            'items': orig.es
-        });
     
     };
     
     client.ui.on('settings.open.ran', settings.emotes.configure_page);
     
     settings.emotes.fetch = function(  ) {
-        console.log('requesting...');
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
             settings.emotes.emote = data;
-            console.log(settings.emotes);
         });
+    };
+    
+    settings.emotes.swap = function( e ) {
+    
+        var fec = -1;
+        for( var code in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(code) )
+                continue;
+            fec = e.input.indexOf(code);
+            if( fec == -1 )
+                continue;
+            e.input = replaceAll(
+                e.input, code,
+                ':thumb' + settings.emotes.emote[code]['devid'] + ':'
+            );
+        }
+        
+        if( e.input.indexOf(':B') == -1 )
+            return;
+        
+        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+    
     };
     
     if( !settings.emotes.on ) {
@@ -8415,7 +8424,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     }
     
     settings.emotes.fetch();
-    
+    client.bind('send.msg.before', settings.emotes.swap);
+    client.bind('send.action.before', settings.emotes.swap);
+    client.bind('send.kick.before', settings.emotes.swap);
+    client.bind('send.set.before', settings.emotes.swap);
 
 };
 
