@@ -4698,6 +4698,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
     this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.scroll();
@@ -4859,8 +4860,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
-    this.st+= 13;
-    
+    this.st+= this.wrap.find('li.logmsg').last().height();
     this.wrap.scrollTop( this.st );
     
     // Scrollio
