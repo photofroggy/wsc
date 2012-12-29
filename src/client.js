@@ -102,6 +102,7 @@ wsc.Client.prototype.config_load = function(  ) {
     
     this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
     this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    this.autojoin.channel = [];
     
     var tc = null;
     var c = 0;

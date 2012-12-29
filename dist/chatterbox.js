@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.50';
+Chatterbox.VERSION = '0.7.51';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1775,7 +1775,7 @@ Chatterbox.Navigation = function( ui ) {
             
             var evt = {
                 'e': event,
-                'settings': new Chatterbox.Settings.Config()
+                'settings': new Chatterbox.Settings.Config(nav.manager)
             };
             
             nav.configure_page( evt );
@@ -1987,11 +1987,7 @@ Chatterbox.Popup = function( ui, options ) {
  */
 Chatterbox.Popup.prototype.build = function(  ) {
 
-    var fill = {
-        'ref': this.options.ref,
-        'title': this.options.title,
-        'content': this.options.content
-    };
+    var fill = this.options;
     
     if( this.options.close ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
@@ -2025,6 +2021,73 @@ Chatterbox.Popup.prototype.close = function(  ) {
     
 };
 
+/**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [0, 0],
+        'ref': 'prompt',
+        'title': 'Input',
+        'close': false,
+        'label': '',
+        'default': '',
+        'submit-button': 'Submit',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+/**
+ * Build the prompt.
+ * 
+ * @method build
+ */
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'top': this.options.position[1]
+    });
+    
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('form').submit( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+
+};
+
 
 
 
@@ -2053,6 +2116,7 @@ Chatterbox.Settings = function( ui, config ) {
     this.tabs = null;
     this.book = null;
     this.changed = false;
+    this.manager = ui;
 
 };
 
@@ -2074,13 +2138,21 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.tabs = this.window.find('nav.tabs ul.tabs');
     this.book = this.window.find('div.book');
     
-    this.config.build(this);
+    this.config.build(this.manager, this);
     
     this.window.find('ul.tabs li').first().addClass('active');
     this.window.find('div.book div.page').first().addClass('active');
     
     var settings = this;
     this.window.find('form').bind('change', function(  ) { settings.changed = true; });
+    
+    this.config.each_page( function( index, page ) {
+        page.each_item( function( index, item ) {
+            item._onchange = function( event ) {
+                settings.changed = true;
+            };
+        } );
+    } );
     
     this.saveb.click(
         function( event ) {
@@ -2178,8 +2250,9 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * @class Settings.Config
  * @constructor
  */
-Chatterbox.Settings.Config = function(  ) {
+Chatterbox.Settings.Config = function( ui ) {
 
+    this.manager = ui || null;
     this.pages = [];
 
 };
@@ -2194,9 +2267,10 @@ Chatterbox.Settings.Config = function(  ) {
  */
 Chatterbox.Settings.Config.prototype.find_page = function( name ) {
 
-    n = name.toLowerCase();
+    var n = name.toLowerCase();
+    var page;
     
-    for( index in this.pages ) {
+    for( var index in this.pages ) {
     
         page = this.pages[index];
         if( page.lname == n )
@@ -2214,11 +2288,13 @@ Chatterbox.Settings.Config.prototype.find_page = function( name ) {
  * @method build
  * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Config.prototype.build = function( window ) {
+Chatterbox.Settings.Config.prototype.build = function( ui, window ) {
 
-    for( i in this.pages ) {
+    ui = ui || this.manager;
     
-        this.pages[i].build(window);
+    for( var i in this.pages ) {
+    
+        this.pages[i].build(ui, window);
     
     }
 
@@ -2231,7 +2307,7 @@ Chatterbox.Settings.Config.prototype.build = function( window ) {
  */
 Chatterbox.Settings.Config.prototype.resize = function(  ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].resize();
     
@@ -2254,7 +2330,7 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
     push = push || false;
     
     if( page == null ) {
-        page = new Chatterbox.Settings.Page(name);
+        page = new Chatterbox.Settings.Page(name, this.manager);
         if( push ) {
             this.pages.push(page);
         } else {
@@ -2266,6 +2342,27 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
 };
 
+
+Chatterbox.Settings.Config.prototype.each_page = function( method ) {
+
+    var page = null;
+    var result = null;
+    
+    for( var i in this.pages ) {
+    
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        
+        page = this.pages[i];
+        result = method( i, page );
+        
+        if( result === false )
+            break;
+    
+    }
+
+};
+
 /**
  * Save settings.
  * 
@@ -2274,7 +2371,7 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
  */
 Chatterbox.Settings.Config.prototype.save = function( window ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].save(window);
     
@@ -2290,7 +2387,7 @@ Chatterbox.Settings.Config.prototype.save = function( window ) {
  */
 Chatterbox.Settings.Config.prototype.close = function( window ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].close(window);
     
@@ -2306,7 +2403,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
  * @constructor
  * @param name {String} Name of the page.
  */
-Chatterbox.Settings.Page = function( name ) {
+Chatterbox.Settings.Page = function( name, ui) {
 
     this.name = name;
     this.lname = name.toLowerCase();
@@ -2314,6 +2411,7 @@ Chatterbox.Settings.Page = function( name ) {
     //this.content = '';
     this.items = [];
     this.itemo = {};
+    this.manager = ui;
 
 };
 
@@ -2323,7 +2421,7 @@ Chatterbox.Settings.Page = function( name ) {
  * @method build
  * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Page.prototype.build = function( window ) {
+Chatterbox.Settings.Page.prototype.build = function( ui, window ) {
 
     var tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
@@ -2356,7 +2454,7 @@ Chatterbox.Settings.Page.prototype.build = function( window ) {
  */
 Chatterbox.Settings.Page.prototype.content = function(  ) {
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].build(this.view);
     
@@ -2371,7 +2469,7 @@ Chatterbox.Settings.Page.prototype.content = function(  ) {
  */
 Chatterbox.Settings.Page.prototype.resize = function(  ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].resize();
     
@@ -2423,7 +2521,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    var item = Chatterbox.Settings.Item.get( type, options );
+    var item = Chatterbox.Settings.Item.get( type, options, this.manager );
     
     if( shift ) {
         this.items.unshift(item);
@@ -2439,6 +2537,34 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
 };
 
+Chatterbox.Settings.Page.prototype.get = function( item ) {
+
+    if( this.itemo.hasOwnProperty( item ) )
+        return this.itemo[item];
+    return null;
+
+};
+
+Chatterbox.Settings.Page.prototype.each_item = function( method ) {
+
+    var item = null;
+    var result = null;
+    
+    for( var i in this.items ) {
+    
+        if( !this.items.hasOwnProperty(i) )
+            continue;
+        
+        item = this.items[i];
+        result = method( i, item );
+        
+        if( result === false )
+            break;
+    
+    }
+
+};
+
 /**
  * Save page data.
  * 
@@ -2447,7 +2573,7 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
  */
 Chatterbox.Settings.Page.prototype.save = function( window ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].save(window, this);
     
@@ -2463,7 +2589,7 @@ Chatterbox.Settings.Page.prototype.save = function( window ) {
  */
 Chatterbox.Settings.Page.prototype.close = function( window ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].close(window, this);
     
@@ -2480,8 +2606,9 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
  */
-Chatterbox.Settings.Item = function( type, options ) {
+Chatterbox.Settings.Item = function( type, options, ui ) {
 
+    this.manager = ui || null;
     this.options = options || {};
     this.type = type || 'base';
     this.selector = this.type.toLowerCase();
@@ -2489,6 +2616,7 @@ Chatterbox.Settings.Item = function( type, options ) {
     this.itemo = {};
     this.view = null;
     this.val = null;
+    this._onchange = this._event_stub;
 
 };
 
@@ -2529,6 +2657,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     var iopt;
     var type;
     var options;
+    var cls;
     
     for( i in this.options.subitems ) {
     
@@ -2573,7 +2702,7 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
  */
 Chatterbox.Settings.Item.prototype.resize = function(  ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].resize();
     
@@ -2601,7 +2730,9 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
     if( !titem.hasOwnProperty('events') )
         return;
     
-    for( i in titem.events ) {
+    var pair = [];
+    
+    for( var i in titem.events ) {
     
         pair = titem.events[i];
         
@@ -2654,7 +2785,9 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
     if( !titem.hasOwnProperty('events') )
         return false;
     
-    for( i in titem.events ) {
+    var pair = [];
+    
+    for( var i in titem.events ) {
     
         pair = titem.events[i];
         
@@ -2675,19 +2808,19 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     var pair = this._get_ep('inspect');
-    var inps = pair == false ? null : this.view.find(pair[1]);
+    var inps = pair ? this.view.find(pair[1]) : null;
     var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
             cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
         }
     }
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].save( window, page );
     
@@ -2704,21 +2837,21 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
  */
 Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
-    pair = this._get_ep('inspect');
-    inps = pair == false ? null : this.view.find(pair[1]);
-    cb = this._get_cb('close');
+    var pair = this._get_ep('inspect');
+    var inps = pair ? this.view.find(pair[1]) : null;
+    var cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
         return;
     }
     
-    for( i in cb ) {
-        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+    for( var i in cb ) {
+        var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].close( window, page );
     
@@ -2736,12 +2869,13 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
  * @param [defaultc] {Class} Default class to use for the item.
  * @return {Object} Settings item object.
  */
-Chatterbox.Settings.Item.get = function( type, options, base, defaultc ) {
+Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
 
-    types = type.split('.');
-    item = base || Chatterbox.Settings.Item;
+    var types = type.split('.');
+    var item = base || Chatterbox.Settings.Item;
+    var cls;
     
-    for( i in types ) {
+    for( var i in types ) {
         cls = types[i];
         if( !item.hasOwnProperty( cls ) ) {
             item = defaultc || Chatterbox.Settings.Item;
@@ -2750,7 +2884,7 @@ Chatterbox.Settings.Item.get = function( type, options, base, defaultc ) {
         item = item[cls];
     }
     
-    return new item( type, options );
+    return new item( type, options, ui );
 
 };
 
@@ -2788,7 +2922,7 @@ Chatterbox.Settings.Item.Form.prototype.constructor = Chatterbox.Settings.Item.F
  */
 Chatterbox.Settings.Item.Form.field = function( type, options ) {
 
-    return Chatterbox.Settings.Item.get( type, options, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
+    return Chatterbox.Settings.Item.get( type, options, this.manager, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
 
 };
 
@@ -2811,7 +2945,10 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
     if( !this.options.hasOwnProperty('fields') )
         return;
     
-    for( i in this.options.fields ) {
+    var f;
+    var field;
+    
+    for( var i in this.options.fields ) {
         f = this.options.fields[i];
         field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
         this.fields.push( field );
@@ -2834,7 +2971,7 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.Form.prototype.resize = function(  ) {
 
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         this.fields[i].resize();
     
@@ -2851,21 +2988,22 @@ Chatterbox.Settings.Item.Form.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
 
-    data = {};
+    var data = {};
+    var field;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('change');
+    var cb = this._get_cb('change');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this } );
         }
     }
@@ -2882,20 +3020,21 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
 Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
 
     var data = {};
+    var fields;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('save');
+    var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
         }
     }
@@ -2911,21 +3050,22 @@ Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
  */
 Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 
-    data = {};
+    var data = {};
+    var field;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('close');
+    var cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
         }
     }
@@ -3279,17 +3419,217 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
 };
 
-/**
- * Get field data.
- * 
- * @method get
- * @return {Object} data.
- */
-Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 
-    return this.value;
+/**
+ * Check box item.
+ * 
+ * @class Items
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Items = function( type, options, ui ) {
+
+    Chatterbox.Settings.Item.call(this, type, options, ui);
+    this.selected = false;
 
 };
+
+Chatterbox.Settings.Item.Items.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.Items;
+
+/**
+ * Build the Items field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    var mgr = this;
+    this.list = this.view.find('ul');
+    this.buttons = this.view.find('section.buttons p');
+    
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.find('.item').html();
+        el.addClass('selected');
+    } );
+    
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
+    } );
+    
+    this.buttons.find('a.button.up').click( function( event ) {
+        mgr.shift_item( true );
+        return false;
+    } );
+    this.buttons.find('a.button.down').click( function( event ) {
+        mgr.shift_item();
+        return false;
+    } );
+    this.buttons.find('a.button.add').click( function( event ) {
+        var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'position': [event.clientX - 100, event.clientY - 50],
+            'title': 'Add item',
+            'label': 'Item:',
+            'submit-button': 'Add',
+            'event': {
+                'submit': function( prompt ) {
+                    var data = prompt.data;
+                    if( !data ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    data = data.toLowerCase();
+                    var index = mgr.options.items.indexOf(data);
+                    if( index != -1 ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    mgr._fevent( 'add', {
+                        'item': data
+                    } );
+                    
+                    mgr.refresh();
+                    mgr._onchange({});
+                },
+                'cancel': function( prompt ) {
+                    mgr._fevent('cancel', {});
+                    mgr.refresh();
+                    mgr._onchange({});
+                }
+            }
+        } );
+        iprompt.build();
+        return false;
+    } );
+    this.buttons.find('a.button.close').click( function( event ) {
+        mgr.remove_item();
+        return false;
+    } );
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.shift_item = function( direction ) {
+
+    if( this.selected === false )
+        return;
+    
+    var first = this.options.items.indexOf( this.selected );
+    var second = first + 1;
+    
+    if( direction )
+        second = first - 1;
+    
+    if( first == -1 || first >= this.options.items.length )
+        return;
+    
+    if( second < 0 || second >= this.options.items.length )
+        return;
+    
+    this._fevent(( direction ? 'up' : 'down' ), {
+        'swap': {
+            'this': { 'index': first, 'item': this.options.items[first] },
+            'that': { 'index': second, 'item': this.options.items[second] }
+        }
+    });
+    
+    this.refresh();
+    this._onchange({});
+    return;
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.remove_item = function(  ) {
+
+    if( this.selected === false )
+        return false;
+    
+    var index = this.options.items.indexOf( this.selected );
+    if( index == -1 || index >= this.options.items.length )
+        return;
+    
+    this._fevent( 'remove', {
+        'index': index,
+        'item': this.selected
+    } );
+    
+    this.selected = false;
+    this.refresh();
+    this._onchange({});
+};
+
+Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
+
+    this.view.find('section.mitems').html(
+        Chatterbox.template.settings.krender.manageditems(this.options.items)
+    );
+    this.list = this.view.find('ul');
+    this.list.find('li[title=' + (this.selected || '').toLowerCase() + ']')
+        .addClass('selected');
+    
+    var mgr = this;
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.find('.item').html();
+        el.addClass('selected');
+    } );
+    
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
+    } );
+
+};
+
+Chatterbox.Settings.Item.Items.prototype._fevent = function( evt, args ) {
+
+    var pair = this._get_ep('inspect');
+    var inps = pair ? this.view.find(pair[1]) : null;
+    var cb = this._get_cb(evt);
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'input': inps, 'item': this, 'args': args } );
+    } else {
+        for( var i in cb ) {
+            var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+            cb[i]( { 'input': sinps, 'item': this, 'args': args } );
+        }
+    }
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.save = function(  ) {
+
+    this._fevent('save', {
+        'items': this.options['items'] || []
+    });
+
+};
+
 
 
 
@@ -3502,6 +3842,14 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
+Chatterbox.template.prompt = {};
+Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
+    <span class="input"><form><input type="text" value="{default}" /></form></span>\
+    <span class="buttons">\
+    <a href="#submit" class="button submit">{submit-button}</a>\
+    <a href="#remove" class="button close big square iconic x"></a>\
+    </span>';
+
 /**
  * Settings stuff.
  *
@@ -3601,6 +3949,31 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     }
     
     return render + '<section class="fields">' + fields.join('') + '</section>';
+};
+
+Chatterbox.template.settings.krender.manageditems = function( items ) {
+    if( items.length == 0 )
+        return '<i>No items in this list</i>';
+    
+    var render = '<ul>';
+    var labels = [];
+    var fields = [];
+    var item;
+    
+    for( var i in items ) {
+    
+        if( !items.hasOwnProperty(i) )
+            continue;
+        
+        item = items[i];
+        render+= '<li title="' + item.toLowerCase() + '">\
+                  <span class="remove"><a href="#remove" title="Remove item" class="close iconic x"></a></span>\
+                  <span class="item">' + item + '</span>\
+                  </li>';
+    
+    }
+    
+    return render + '</ul>';
 };
 
 Chatterbox.template.settings.item = {};
@@ -3758,6 +4131,29 @@ Chatterbox.template.settings.item.textarea.render = {
 Chatterbox.template.settings.item.textarea.post = Chatterbox.template.clean(['ref', 'title', 'default']);
 Chatterbox.template.settings.item.textarea.events = [['blur', 'textarea'],['inspect', 'textarea']];
 Chatterbox.template.settings.item.textarea.frame = '{title}<div class="{ref} textarea"><form><textarea rows="4" cols="20" value="{default}"></textarea></form></div>';
+
+Chatterbox.template.settings.item.items = {};
+Chatterbox.template.settings.item.items.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.items.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.manageditems
+};
+
+Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.items.events = [];
+Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
+    <section class="buttons"><p><a href="#up" title="Move item up" class="button up iconic arrow_up"></a>\
+    <a href="#down" title="Move item down" class="button down iconic arrow_down"></a>\
+    <a href="#add" title="Add an item" class="button add iconic plus"></a>\
+    <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
+    </p></section>\
+    <section class="mitems">{items}</section>\
+    </div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
