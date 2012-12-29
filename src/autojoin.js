@@ -18,6 +18,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;
+        orig.chan = client.autojoin.channel;
         
         if( client.autojoin.channel.length == 0 ) {
             ul+= '<li><i>No autojoin channels set</i></li></ul>';
@@ -40,12 +41,10 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             ],
             'event': {
                 'change': function( event ) {
-                    console.log(event, settings);
                     if( event.target.value == 'yes' )
                         client.autojoin.on = event.target.checked;
                 },
                 'save': function( event ) {
-                    console.log(client.autojoin);
                     orig.ajon = client.autojoin.on;
                     client.config_save();
                 },
@@ -55,25 +54,45 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             }
         });
         
-        var uf = page.item('Form', {
-            'ref': 'channels',
-            'wclass': 'boxed-ff-indv',
+        var imgr = page.item('Items', {
+            'ref': 'channelss',
             'title': 'Channels',
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
-            'fields': [
-                ['Text', {
-                    'ref': 'channels',
-                    'text': ul
-                }]
-            ],
+            'items': client.autojoin.channel,
             'event': {
-                'change': function( event ) {
+                'up': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'down': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'add': function( event ) {
+                    var item = client.deform_ns(event.args.item).toLowerCase();
+                    var index = client.autojoin.channel.indexOf(item);
+                    
+                    if( index != -1 )
+                        return;
+                    
+                    client.autojoin.channel.push( item );
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'remove': function( event ) {
+                    client.autojoin.channel.splice( event.args.index, 1 );
+                    imgr.options.items = client.autojoin.channel;
                 },
                 'save': function( event ) {
+                    orig.chan = client.autojoin.channel;
+                    client.config_save();
                 },
                 'close': function( event ) {
-                    client.config_save();
+                    client.config_load();
                 }
             }
         });

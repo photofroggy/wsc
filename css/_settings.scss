@@ -1,8 +1,10 @@
 
 @mixin settings {
     div.floater.settings {
+        top: 5em;
         width: 60%;
         height: 80%;
+        right: 20%;
         div.bookwrap {
             nav.tabs {
                 padding: 0px 5px;
@@ -127,6 +129,66 @@
                             float: left;
                             form {
                                 padding: 0px;
+                            }
+                        }
+                        &.items {
+                            div.items {
+                                background-color: rgba(255, 255, 255, 0.33);
+                                border: 1px solid #B1B1B1;
+                                padding: 2px 0px;
+                            }
+                            section {
+                                float: none;
+                            }
+                            .buttons {
+                                padding: 0px 5px;
+                                .close {
+                                    position: relative;
+                                    top: 4px;
+                                }
+                            }
+                            .mitems {
+                                padding: 5px;
+                                ul {
+                                    list-style: none;
+                                    li {
+                                        background-color: rgba(0, 0, 0, 0.07);
+                                        border: 1px solid #B1B1B1;
+                                        padding: 5px;
+                                        margin-bottom: 5px;
+                                        &:last-child {
+                                            margin-bottom: 0px;
+                                        }
+                                        &:hover {
+                                            background-color: rgba(11, 118, 168, 0.46);
+                                            cursor: pointer;
+                                        }
+                                        &:active {
+                                            background-color: rgba(11, 118, 168, 0.65);
+                                        }
+                                        &.selected {
+                                            background-color: rgba(11, 168, 61, 0.44);
+                                        }
+                                        span {
+                                            border: none;
+                                        }
+                                        span.remove {
+                                            float: right;
+                                            display: none;
+                                        }
+                                        span.item {
+                                            margin-right: 30px;
+                                        }
+                                        &:hover, &.selected {
+                                            span.item {
+                                                margin-right: 13px;
+                                            }
+                                            span.remove {
+                                                display: block;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                         &.boxed,

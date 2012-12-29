@@ -33,11 +33,7 @@ Chatterbox.Popup = function( ui, options ) {
  */
 Chatterbox.Popup.prototype.build = function(  ) {
 
-    var fill = {
-        'ref': this.options.ref,
-        'title': this.options.title,
-        'content': this.options.content
-    };
+    var fill = this.options;
     
     if( this.options.close ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
@@ -69,6 +65,73 @@ Chatterbox.Popup.prototype.close = function(  ) {
     
     this.window.remove();
     
+};
+
+/**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [0, 0],
+        'ref': 'prompt',
+        'title': 'Input',
+        'close': false,
+        'label': '',
+        'default': '',
+        'submit-button': 'Submit',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+/**
+ * Build the prompt.
+ * 
+ * @method build
+ */
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'top': this.options.position[1]
+    });
+    
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('form').submit( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+
 };
 
 
