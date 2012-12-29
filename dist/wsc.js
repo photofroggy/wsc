@@ -2380,6 +2380,10 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
             'items': client.autojoin.channel,
+            'prompt': {
+                'title': 'Add Channel',
+                'label': 'Channel:',
+            },
             'event': {
                 'up': function( event ) {
                     var swap = event.args.swap;
@@ -2775,6 +2779,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
                     commands <code>/ignore</code> and <code>/unignore</code>\
                     to edit the list.',
             'items': orig.usr,
+            'prompt': {
+                'title': 'Add User',
+                'label': 'User:',
+            },
             'event': {
                 'up': function( event ) {
                     var swap = event.args.swap;
@@ -4686,8 +4694,9 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    this.scroll();
 };
 
 /**
@@ -7527,6 +7536,13 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.Items = function( type, options, ui ) {
 
+    options = Object.extend( {
+        'prompt': {
+            'title': 'Add Item',
+            'label': 'Item:',
+            'submit-button': 'Add'
+        }
+    }, ( options || {} ) );
     Chatterbox.Settings.Item.call(this, type, options, ui);
     this.selected = false;
 
@@ -7579,9 +7595,9 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     this.buttons.find('a.button.add').click( function( event ) {
         var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
             'position': [event.clientX - 100, event.clientY - 50],
-            'title': 'Add item',
-            'label': 'Item:',
-            'submit-button': 'Add',
+            'title': mgr.options.prompt.title,
+            'label': mgr.options.prompt.label,
+            'submit-button': mgr.options.prompt['submit-button'],
             'event': {
                 'submit': function( prompt ) {
                     var data = prompt.data;
