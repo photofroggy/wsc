@@ -2313,9 +2313,9 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
-    wsc.defaults.Extension.Autojoin(client);
-    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Autojoin(client);
 
 };
 /**
@@ -8346,12 +8346,22 @@ wsc.dAmn.STATE = 'alpha';
 
 wsc.dAmn.Emotes = function( client, storage, settings ) {
 
-    settings.emotes.page = function( event, ui ) {
+    settings.emotes.page = null;
+    
+    settings.emotes.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Emotes');
+        settings.emotes.page = page;
         var orig = {};
         orig.on = settings.emotes.on;
-        orig.es = settings.emotes.emote
+        orig.es = [];
+        
+        /*for( var code in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(code) )
+                continue;
+            console.log(settings.emotes.emote[code]);
+            orig.es.push( code );
+        }*/
         
         page.item('Form', {
             'ref': 'switch',
@@ -8360,16 +8370,23 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             'fields': [
                 ['Checkbox', {
                     'ref': 'enabled',
-                    'label': 'On',
                     'items': [ { 'value': 'yes', 'title': 'On', 'selected': orig.on } ]
                 }]
             ],
             'event': {
                 'change': function( event ) {
-                    console.log(event);
+                    settings.emotes.on = (event.data.enabled.indexOf('yes') != -1);
+                    if( settings.emotes.on )
+                        settings.emotes.fetch();
                 },
                 'save': function( event ) {
+                    orig.on = settings.emotes.on;
                     settings.save();
+                },
+                'close': function( event ) {
+                    settings.emotes.on = orig.on;
+                    settings.load();
+                    settings.emotes.page = null;
                 }
             }
         });
@@ -8383,11 +8400,22 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     
     };
     
-    client.ui.on('settings.open.ran', settings.emotes.page);
+    client.ui.on('settings.open.ran', settings.emotes.configure_page);
     
-    if( !settings.on ) {
+    settings.emotes.fetch = function(  ) {
+        console.log('requesting...');
+        jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            settings.emotes.emote = data;
+            console.log(settings.emotes);
+        });
+    };
+    
+    if( !settings.emotes.on ) {
         return;
     }
+    
+    settings.emotes.fetch();
+    
 
 };
 
@@ -8425,8 +8453,8 @@ wsc.dAmn.Extension = function( client ) {
     
     };
     
-    settings.save();
     settings.load();
+    settings.save();
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']

@@ -33,8 +33,8 @@ wsc.dAmn.Extension = function( client ) {
     
     };
     
-    settings.save();
     settings.load();
+    settings.save();
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
