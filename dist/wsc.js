@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.8';
+wsc.VERSION = '1.1.9';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.93';
+wsc.REVISION = '0.15.94';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2007,7 +2007,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main', true);
+        var page = e.settings.page('Main');
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
@@ -2313,9 +2313,9 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
-    wsc.defaults.Extension.Autojoin(client);
-    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Autojoin(client);
 
 };
 /**
@@ -2334,7 +2334,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Autojoin', true);
+        var page = event.settings.page('Autojoin');
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;
@@ -2531,7 +2531,7 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Away', true);
+        var page = event.settings.page('Away');
         var orig = {};
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
@@ -2730,7 +2730,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
@@ -3540,10 +3540,10 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.msg)
+        wsc_packetstr('msg', 'main', {}, e.input)
     ));
 
 };
@@ -3557,10 +3557,10 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.msg)
+        wsc_packetstr('npmsg', 'main', {}, e.input)
     ));
 
 };
@@ -3574,10 +3574,10 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
-    this.trigger( e );
+    e = { 'input': action, 'ns': namespace };
+    this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.msg)
+        wsc_packetstr('action', 'main', {}, e.input)
     ));
 
 };
@@ -3650,7 +3650,9 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+    e = { 'input': reason, 'ns': namespace };
+    this.trigger( 'send.kick.before', e );
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
 };
 
@@ -3707,7 +3709,9 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
+    e = { 'input': value, 'ns': namespace };
+    this.trigger( 'send.set.before', e );
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
 
 };
 
@@ -4694,6 +4698,7 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
     this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.scroll();
@@ -4855,8 +4860,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
-    this.st+= 13;
-    
+    this.st+= this.wrap.find('li.logmsg').last().height();
     this.wrap.scrollTop( this.st );
     
     // Scrollio
@@ -5888,7 +5892,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -5927,7 +5931,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -6433,7 +6437,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name, this.manager);

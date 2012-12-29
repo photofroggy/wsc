@@ -25,7 +25,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
         orig.im = settings.ignore;
         orig.uim = settings.unignore;

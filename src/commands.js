@@ -76,7 +76,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main', true);
+        var page = e.settings.page('Main');
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
@@ -382,8 +382,8 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
-    wsc.defaults.Extension.Autojoin(client);
-    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Autojoin(client);
 
 };
