@@ -74,6 +74,14 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     imgr.options.items = client.autojoin.channel;
                 },
                 'add': function( event ) {
+                    var item = client.deform_ns(event.args.item).toLowerCase();
+                    var index = client.autojoin.channel.indexOf(item);
+                    
+                    if( index != -1 )
+                        return;
+                    
+                    client.autojoin.channel.push( item );
+                    imgr.options.items = client.autojoin.channel;
                 },
                 'remove': function( event ) {
                     client.autojoin.channel.splice( event.args.index, 1 );

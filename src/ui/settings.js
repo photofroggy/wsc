@@ -1386,22 +1386,41 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
-        console.log(event);
-        var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+        var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'position': [event.clientX - 100, event.clientY - 50],
             'title': 'Add item',
             'label': 'Item:',
-            'position': [event.clientX - 100, event.clientY - 50]
-        } );
-        prompt.build();
-        /*
-        mgr._fevent('add', {
-            'swap': {
-                'this': { 'index': first, 'item': mgr.options.items[first] },
-                'that': { 'index': second, 'item': mgr.options.items[second] }
+            'submit-button': 'Add',
+            'event': {
+                'submit': function( prompt ) {
+                    var data = prompt.data;
+                    if( !data ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    data = data.toLowerCase();
+                    var index = mgr.options.items.indexOf(data);
+                    if( index != -1 ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    mgr._fevent( 'add', {
+                        'item': data
+                    } );
+                    
+                    mgr.refresh();
+                    mgr._onchange({});
+                },
+                'cancel': function( prompt ) {
+                    mgr._fevent('cancel', {});
+                    mgr.refresh();
+                    mgr._onchange({});
+                }
             }
-        });*/
-        
-        //mgr.refresh();
+        } );
+        iprompt.build();
         return false;
     } );
     this.buttons.find('a.button.close').click( function( event ) {

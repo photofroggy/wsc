@@ -80,7 +80,12 @@ Chatterbox.Popup.Prompt = function( ui, options ) {
         'title': 'Input',
         'close': false,
         'label': '',
-        'default': ''
+        'default': '',
+        'submit-button': 'Submit',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
@@ -104,6 +109,21 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
         'left': this.options.position[0],
         'top': this.options.position[1]
     });
+    
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
 
 };
 

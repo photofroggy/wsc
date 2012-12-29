@@ -2034,7 +2034,12 @@ Chatterbox.Popup.Prompt = function( ui, options ) {
         'title': 'Input',
         'close': false,
         'label': '',
-        'default': ''
+        'default': '',
+        'submit-button': 'Submit',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
@@ -2058,6 +2063,21 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
         'left': this.options.position[0],
         'top': this.options.position[1]
     });
+    
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
 
 };
 
@@ -3453,22 +3473,41 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
         return false;
     } );
     this.buttons.find('a.button.add').click( function( event ) {
-        console.log(event);
-        var prompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+        var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'position': [event.clientX - 100, event.clientY - 50],
             'title': 'Add item',
             'label': 'Item:',
-            'position': [event.clientX - 100, event.clientY - 50]
-        } );
-        prompt.build();
-        /*
-        mgr._fevent('add', {
-            'swap': {
-                'this': { 'index': first, 'item': mgr.options.items[first] },
-                'that': { 'index': second, 'item': mgr.options.items[second] }
+            'submit-button': 'Add',
+            'event': {
+                'submit': function( prompt ) {
+                    var data = prompt.data;
+                    if( !data ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    data = data.toLowerCase();
+                    var index = mgr.options.items.indexOf(data);
+                    if( index != -1 ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    mgr._fevent( 'add', {
+                        'item': data
+                    } );
+                    
+                    mgr.refresh();
+                    mgr._onchange({});
+                },
+                'cancel': function( prompt ) {
+                    mgr._fevent('cancel', {});
+                    mgr.refresh();
+                    mgr._onchange({});
+                }
             }
-        });*/
-        
-        //mgr.refresh();
+        } );
+        iprompt.build();
         return false;
     } );
     this.buttons.find('a.button.close').click( function( event ) {
@@ -3799,7 +3838,7 @@ Chatterbox.template.prompt = {};
 Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <span class="input"><form><input type="text" value="{default}" /></form></span>\
     <span class="buttons">\
-    <a href="#add" class="button add iconic plus"></a>\
+    <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
 
