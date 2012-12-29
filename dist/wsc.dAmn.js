@@ -2534,13 +2534,13 @@ wsc.defaults.Extension.Away = function( client ) {
         var strips = function( data ) {
             data = replaceAll(data, '<', '&lt;');
             data = replaceAll(data, '>', '&gt;');
-            data = replaceAll(data, '"', '\\"');
+            data = replaceAll(data, '"', '&quot;');
             return data;
         };
         var unstrips = function( data ) {
             data = replaceAll(data, '&lt;', '<');
             data = replaceAll(data, '&gt;', '>');
-            data = replaceAll(data, '\\"', '"');
+            data = replaceAll(data, '&quot;', '"');
             return data;
         };
         var page = event.settings.page('Away');
