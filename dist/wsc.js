@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.9';
+wsc.VERSION = '1.1.11';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.94';
+wsc.REVISION = '0.15.96';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2513,7 +2513,7 @@ wsc.defaults.Extension.Away = function( client ) {
         'format': {
             'setaway': '/me is away: {reason}',
             'setback': '/me is back',
-            'away': '{user}: I\'ve been away for {timesince}. Reason: {reason}'
+            'away': "{user}: I've been away for {timesince}. Reason: {reason}"
         }
     };
     
@@ -2531,8 +2531,20 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
+        var strips = function( data ) {
+            data = replaceAll(data, '<', '&lt;');
+            data = replaceAll(data, '>', '&gt;');
+            data = replaceAll(data, '"', '&quot;');
+            return data;
+        };
+        var unstrips = function( data ) {
+            data = replaceAll(data, '&lt;', '<');
+            data = replaceAll(data, '&gt;', '>');
+            data = replaceAll(data, '&quot;', '"');
+            return data;
+        };
         var page = event.settings.page('Away');
-        var orig = {};
+        var orig = {};        
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
         orig.sb = settings.format.setback;
@@ -2562,24 +2574,24 @@ wsc.defaults.Extension.Away = function( client ) {
                 ['Textfield', {
                     'ref': 'away',
                     'label': 'Away',
-                    'default': orig.away
+                    'default': strips(orig.away)
                 }],
                 ['Textfield', {
                     'ref': 'setaway',
                     'label': 'Setaway',
-                    'default': orig.sa
+                    'default': strips(orig.sa)
                 }],
                 ['Textfield', {
                     'ref': 'setback',
                     'label': 'Setback',
-                    'default': orig.sb
+                    'default': strips(orig.sb)
                 }]
             ],
             'event': {
                 'save': function( event ) {
-                    settings.format.away = event.data.away;
-                    settings.format.setaway = event.data.setaway;
-                    settings.format.setback = event.data.setback;
+                    settings.format.away = unstrips(event.data.away);
+                    settings.format.setaway = unstrips(event.data.setaway);
+                    settings.format.setback = unstrips(event.data.setback);
                     save();
                 }
             }
