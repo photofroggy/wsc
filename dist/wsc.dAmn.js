@@ -2007,7 +2007,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main', true);
+        var page = e.settings.page('Main');
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
@@ -2313,9 +2313,9 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
-    wsc.defaults.Extension.Ignore(client);
-    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Autojoin(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Ignore(client);
 
 };
 /**
@@ -2334,7 +2334,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Autojoin', true);
+        var page = event.settings.page('Autojoin');
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;
@@ -2531,7 +2531,7 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Away', true);
+        var page = event.settings.page('Away');
         var orig = {};
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
@@ -2730,7 +2730,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
@@ -5888,7 +5888,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -5927,7 +5927,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -6433,7 +6433,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name, this.manager);
@@ -8344,6 +8344,53 @@ wsc.dAmn.VERSION = '0.2.9';
 wsc.dAmn.STATE = 'alpha';
 
 
+wsc.dAmn.Emotes = function( client, storage, settings ) {
+
+    settings.emotes.page = function( event, ui ) {
+    
+        var page = event.settings.page('Emotes');
+        var orig = {};
+        orig.on = settings.emotes.on;
+        orig.es = settings.emotes.emote
+        
+        page.item('Form', {
+            'ref': 'switch',
+            'title': 'Enable Emotes',
+            'text': 'Here you can turn custom emotes on and off.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'label': 'On',
+                    'items': [ { 'value': 'yes', 'title': 'On', 'selected': orig.on } ]
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                    console.log(event);
+                },
+                'save': function( event ) {
+                    settings.save();
+                }
+            }
+        });
+        
+        var imgr = page.item('Items', {
+            'ref': 'emotes',
+            'title': 'Emotes',
+            'text': 'This is the list of emoticons you can use.',
+            'items': orig.es
+        });
+    
+    };
+    
+    client.ui.on('settings.open.ran', settings.emotes.page);
+    
+    if( !settings.on ) {
+        return;
+    }
+
+};
+
 /**
  * dAmn extension makes the client work with dAmn.
  * 
@@ -8352,11 +8399,34 @@ wsc.dAmn.STATE = 'alpha';
  */
 wsc.dAmn.Extension = function( client ) {
 
-    var storage = client.storage.folder('dAmn');
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
     client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+    
+    var storage = client.storage.folder('dAmn');
+    storage.emotes = storage.folder('emotes');
+    var settings = {
+        'emotes': {
+            'on': false,
+            'emote': []
+        }
+    };
+    
+    settings.save = function(  ) {
+        
+        storage.emotes.set('on', settings.emotes.on);
+        
+    };
+    
+    settings.load = function(  ) {
+    
+        settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
+    
+    };
+    
+    settings.save();
+    settings.load();
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
@@ -8392,6 +8462,8 @@ wsc.dAmn.Extension = function( client ) {
         if( event.raw.typename )
             event.info.push(event.raw.typename);
     } );
+    
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
 
 };
 

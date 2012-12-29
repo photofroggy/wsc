@@ -31,7 +31,7 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Away', true);
+        var page = event.settings.page('Away');
         var orig = {};
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
