@@ -1783,7 +1783,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -1822,7 +1822,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -2328,7 +2328,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name, this.manager);

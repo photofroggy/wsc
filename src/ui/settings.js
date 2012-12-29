@@ -233,7 +233,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name, this.manager);

@@ -7,11 +7,34 @@
  */
 wsc.dAmn.Extension = function( client ) {
 
-    var storage = client.storage.folder('dAmn');
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
     client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+    
+    var storage = client.storage.folder('dAmn');
+    storage.emotes = storage.folder('emotes');
+    var settings = {
+        'emotes': {
+            'on': false,
+            'emote': []
+        }
+    };
+    
+    settings.save = function(  ) {
+        
+        storage.emotes.set('on', settings.emotes.on);
+        
+    };
+    
+    settings.load = function(  ) {
+    
+        settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
+    
+    };
+    
+    settings.load();
+    settings.save();
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
@@ -47,5 +70,7 @@ wsc.dAmn.Extension = function( client ) {
         if( event.raw.typename )
             event.info.push(event.raw.typename);
     } );
+    
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
 
 };

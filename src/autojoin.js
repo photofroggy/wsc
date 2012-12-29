@@ -14,7 +14,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Autojoin', true);
+        var page = event.settings.page('Autojoin');
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;

@@ -2007,7 +2007,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main', true);
+        var page = e.settings.page('Main');
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
@@ -2334,7 +2334,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Autojoin', true);
+        var page = event.settings.page('Autojoin');
         var ul = '<ul>';
         var orig = {};
         orig.ajon = client.autojoin.on;
@@ -2531,7 +2531,7 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Away', true);
+        var page = event.settings.page('Away');
         var orig = {};
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
@@ -2730,7 +2730,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
@@ -3540,10 +3540,10 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.msg)
+        wsc_packetstr('msg', 'main', {}, e.input)
     ));
 
 };
@@ -3557,10 +3557,10 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.msg)
+        wsc_packetstr('npmsg', 'main', {}, e.input)
     ));
 
 };
@@ -3574,10 +3574,10 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
-    this.trigger( e );
+    e = { 'input': action, 'ns': namespace };
+    this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.msg)
+        wsc_packetstr('action', 'main', {}, e.input)
     ));
 
 };
@@ -3650,7 +3650,9 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+    e = { 'input': reason, 'ns': namespace };
+    this.trigger( 'send.kick.before', e );
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
 };
 
@@ -3707,7 +3709,9 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
+    e = { 'input': value, 'ns': namespace };
+    this.trigger( 'send.set.before', e );
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
 
 };
 
@@ -5888,7 +5892,7 @@ Chatterbox.Navigation = function( ui ) {
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -5927,7 +5931,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -6433,7 +6437,7 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
         page = new Chatterbox.Settings.Page(name, this.manager);
@@ -8340,9 +8344,103 @@ Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.2.9';
+wsc.dAmn.VERSION = '0.3.10';
 wsc.dAmn.STATE = 'alpha';
 
+
+wsc.dAmn.Emotes = function( client, storage, settings ) {
+
+    settings.emotes.page = null;
+    settings.emotes.fint = null;
+    
+    settings.emotes.configure_page = function( event, ui ) {
+    
+        var page = event.settings.page('Emotes');
+        settings.emotes.page = page;
+        var orig = {};
+        orig.on = settings.emotes.on;
+        
+        page.item('Form', {
+            'ref': 'switch',
+            'title': 'Enable Emotes',
+            'text': 'Here you can turn custom emotes on and off.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'items': [ { 'value': 'yes', 'title': 'On', 'selected': orig.on } ]
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                    settings.emotes.on = (event.data.enabled.indexOf('yes') != -1);
+                    if( settings.emotes.on ) {
+                        settings.emotes.fetch();
+                        return;
+                    }
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
+                },
+                'save': function( event ) {
+                    orig.on = settings.emotes.on;
+                    settings.save();
+                },
+                'close': function( event ) {
+                    settings.emotes.on = orig.on;
+                    settings.load();
+                    settings.emotes.page = null;
+                }
+            }
+        });
+    
+    };
+    
+    client.ui.on('settings.open.ran', settings.emotes.configure_page);
+    
+    settings.emotes.fetch = function(  ) {
+        jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            settings.emotes.emote = data;
+        });
+        settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+    };
+    
+    settings.emotes.swap = function( e ) {
+    
+        if( !settings.emotes.on )
+            return;
+        
+        var fec = -1;
+        for( var code in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(code) )
+                continue;
+            fec = e.input.indexOf(code);
+            if( fec == -1 )
+                continue;
+            e.input = replaceAll(
+                e.input, code,
+                ':thumb' + settings.emotes.emote[code]['devid'] + ':'
+            );
+        }
+        
+        if( e.input.indexOf(':B') == -1 )
+            return;
+        
+        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+    
+    };
+    
+    client.bind('send.msg.before', settings.emotes.swap);
+    client.bind('send.action.before', settings.emotes.swap);
+    client.bind('send.kick.before', settings.emotes.swap);
+    client.bind('send.set.before', settings.emotes.swap);
+    
+    if( !settings.emotes.on )
+        return;
+    
+    settings.emotes.fetch();
+
+};
 
 /**
  * dAmn extension makes the client work with dAmn.
@@ -8352,11 +8450,34 @@ wsc.dAmn.STATE = 'alpha';
  */
 wsc.dAmn.Extension = function( client ) {
 
-    var storage = client.storage.folder('dAmn');
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
     client.settings.domain = 'deviantart.com';
     client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+    
+    var storage = client.storage.folder('dAmn');
+    storage.emotes = storage.folder('emotes');
+    var settings = {
+        'emotes': {
+            'on': false,
+            'emote': []
+        }
+    };
+    
+    settings.save = function(  ) {
+        
+        storage.emotes.set('on', settings.emotes.on);
+        
+    };
+    
+    settings.load = function(  ) {
+    
+        settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
+    
+    };
+    
+    settings.load();
+    settings.save();
     
     client.protocol.extend_maps({
         'dAmnServer': ['version']
@@ -8392,6 +8513,8 @@ wsc.dAmn.Extension = function( client ) {
         if( event.raw.typename )
             event.info.push(event.raw.typename);
     } );
+    
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
 
 };
 
