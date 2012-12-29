@@ -7658,13 +7658,14 @@ Chatterbox.Settings.Item.Items.prototype.remove_item = function(  ) {
     
     var index = this.options.items.indexOf( this.selected );
     if( index == -1 || index >= this.options.items.length )
-        return false;
+        return;
     
     this._fevent( 'remove', {
         'index': index,
         'item': this.selected
     } );
     
+    this.selected = false;
     this.refresh();
     this._onchange({});
 };
