@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.7.51';
+Chatterbox.VERSION = '0.7.52';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -589,8 +589,9 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    this.scroll();
 };
 
 /**
@@ -3430,6 +3431,13 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.Items = function( type, options, ui ) {
 
+    options = Object.extend( {
+        'prompt': {
+            'title': 'Add Item',
+            'label': 'Item:',
+            'submit-button': 'Add'
+        }
+    }, ( options || {} ) );
     Chatterbox.Settings.Item.call(this, type, options, ui);
     this.selected = false;
 
@@ -3482,9 +3490,9 @@ Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
     this.buttons.find('a.button.add').click( function( event ) {
         var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
             'position': [event.clientX - 100, event.clientY - 50],
-            'title': 'Add item',
-            'label': 'Item:',
-            'submit-button': 'Add',
+            'title': mgr.options.prompt.title,
+            'label': mgr.options.prompt.label,
+            'submit-button': mgr.options.prompt['submit-button'],
             'event': {
                 'submit': function( prompt ) {
                     var data = prompt.data;

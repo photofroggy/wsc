@@ -60,6 +60,10 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             'text': 'Add any channels you want to join automatically when you\
                     connect to the chat server.',
             'items': client.autojoin.channel,
+            'prompt': {
+                'title': 'Add Channel',
+                'label': 'Channel:',
+            },
             'event': {
                 'up': function( event ) {
                     var swap = event.args.swap;

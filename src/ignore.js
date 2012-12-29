@@ -74,6 +74,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
                     commands <code>/ignore</code> and <code>/unignore</code>\
                     to edit the list.',
             'items': orig.usr,
+            'prompt': {
+                'title': 'Add User',
+                'label': 'User:',
+            },
             'event': {
                 'up': function( event ) {
                     var swap = event.args.swap;
