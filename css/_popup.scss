@@ -2,7 +2,6 @@
 @mixin popup {
     div.floater {
         position: absolute;
-        top: 0px;
         
         div.inner {
             height: 100%;

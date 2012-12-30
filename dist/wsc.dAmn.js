@@ -8352,13 +8352,14 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
 
     settings.emotes.page = null;
     settings.emotes.fint = null;
+    settings.emotes.notice = null;
+    settings.emotes.fetching = false;
+    settings.emotes.loaded = false;
     
     settings.emotes.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Emotes');
         settings.emotes.page = page;
-        settings.emotes.fetching = false;
-        settings.emotes.loaded = false;
         
         var orig = {};
         orig.on = settings.emotes.on;
@@ -8413,7 +8414,26 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
-                    client.cchannel.server_message('Emotes loaded');
+                    settings.emotes.notice = new Chatterbox.Popup( client.ui, {
+                        'title': 'Emotes',
+                        'content': 'Custom emoticons loaded!'
+                    } );
+                    settings.emotes.notice.build();
+                    settings.emotes.notice.window.css({
+                        'bottom': 60,
+                        'right': 50
+                    });
+                    setTimeout( function(  ) {
+                        if( settings.emotes.notice == null )
+                            return;
+                        settings.emotes.notice.window.fadeOut(
+                            'slow',
+                            function(  ) {
+                                settings.emotes.notice.window.remove();
+                                settings.emotes.notice = null;
+                            }
+                        );
+                    }, 5000 );
                 }
             }
             settings.emotes.fetching = false;
