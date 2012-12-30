@@ -8357,13 +8357,23 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     
         var page = event.settings.page('Emotes');
         settings.emotes.page = page;
+        settings.emotes.fetching = false;
+        settings.emotes.loaded = false;
+        
         var orig = {};
         orig.on = settings.emotes.on;
+        var stat = '';
+        if( orig.on ) {
+            if( !settings.emotes.loaded || settings.emotes.fetching )
+                stat = '<em>Fetching emotes...</em>';
+            else
+                stat = '<em>Emotes loaded.</em>';
+        }
         
         page.item('Form', {
             'ref': 'switch',
             'title': 'Enable Emotes',
-            'text': 'Here you can turn custom emotes on and off.',
+            'text': 'Here you can turn custom emotes on and off.\n\n<span class="emotestatus">'+stat+'</span>',
             'fields': [
                 ['Checkbox', {
                     'ref': 'enabled',
@@ -8399,10 +8409,27 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     client.ui.on('settings.open.ran', settings.emotes.configure_page);
     
     settings.emotes.fetch = function(  ) {
+        settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            if( !settings.emotes.loaded ) {
+                if( settings.emotes.on ) {
+                    client.cchannel.server_message('Emotes loaded');
+                }
+            }
+            settings.emotes.fetching = false;
+            settings.emotes.loaded = true;
             settings.emotes.emote = data;
+            if( settings.emotes.page !== null ) {
+                settings.emotes.page.view.find('.emotestatus')
+                    .html('<em>Emotes loaded.</em>');
+            }
+            settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         });
-        settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        
+        if( settings.emotes.page !== null ) {
+            settings.emotes.page.view.find('.emotestatus')
+                .html('<em>Fetching emotes...</em>');
+        }
     };
     
     settings.emotes.swap = function( e ) {
@@ -8422,9 +8449,6 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
             );
         }
-        
-        if( e.input.indexOf(':B') == -1 )
-            return;
         
         e.input = replaceAll( e.input, ':B', ':bucktooth:' );
     
