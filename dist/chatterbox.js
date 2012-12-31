@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.7.52';
+Chatterbox.VERSION = '0.8.53';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1580,7 +1580,7 @@ Chatterbox.Control = function( ui ) {
     this.mli = this.form.find('textarea.msg');
     this.ci = this.input;
     this.ml = false;
-    this.mlb = this.brow.find('a[href=#multiline].button');
+    this.mlb = this.brow.find('a[href~=#multiline].button');
     
     var ctrl = this;
     this.mlb.click(function( event ) {
@@ -1675,14 +1675,14 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     return this.mli;
 
 };
-
-Chatterbox.Control.prototype.add_button = function( handler, options ) {
+Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
         'label': 'New',
         'icon': false,
         'href': '#button',
-        'title': 'Button.'
+        'title': 'Button.',
+        'handler': function(  ) {}
     }, ( options || {} ) );
     
     if( options.icon !== false ) {
@@ -1695,7 +1695,7 @@ Chatterbox.Control.prototype.add_button = function( handler, options ) {
     var button = this.brow.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
-        handler();
+        options['handler']();
         return false;
     } );
 

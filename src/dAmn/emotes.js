@@ -9,13 +9,14 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     //settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
     //settings.emotes.picker.build();
     
-    client.ui.control.add_button( function() {
-        //settings.emotes.picker.show();
-    }, {
+    client.ui.control.add_button( {
         'label': '',
         'icon': 'user',
         'href': '#emotes',
         'title': 'Emote picker.',
+        'handler': function() {
+            //settings.emotes.picker.show();
+        }
     });
     
     settings.emotes.configure_page = function( event, ui ) {
