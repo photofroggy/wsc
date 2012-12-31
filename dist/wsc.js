@@ -5685,10 +5685,11 @@ Chatterbox.Control = function( ui ) {
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
+    this.brow = this.view.find('p');
     this.mli = this.form.find('textarea.msg');
     this.ci = this.input;
     this.ml = false;
-    this.mlb = this.view.find('a[href~=#multiline].button');
+    this.mlb = this.brow.find('a[href=#multiline].button');
     
     var ctrl = this;
     this.mlb.click(function( event ) {
@@ -5781,6 +5782,31 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     this.ci = this.input;
     this.manager.resize();
     return this.mli;
+
+};
+
+Chatterbox.Control.prototype.add_button = function( handler, options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.'
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = '';
+    }
+    
+    this.brow.append(Chatterbox.render('control_button', options));
+    var button = this.brow.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        handler();
+        return false;
+    } );
 
 };
 
@@ -7771,8 +7797,9 @@ Chatterbox.render = function( template, fill ) {
     var tparts = template.split('.');
     var renderer = {};
     var tmpl = null;
+    var part = null;
     
-    for( ind in tparts ) {
+    for( var ind in tparts ) {
         part = tparts[ind];
         if( !html.hasOwnProperty( part ) )
             return '';
@@ -7856,6 +7883,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
+
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
 
 /**
  * HTML for a channel tab.

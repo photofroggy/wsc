@@ -19,8 +19,9 @@ Chatterbox.render = function( template, fill ) {
     var tparts = template.split('.');
     var renderer = {};
     var tmpl = null;
+    var part = null;
     
-    for( ind in tparts ) {
+    for( var ind in tparts ) {
         part = tparts[ind];
         if( !html.hasOwnProperty( part ) )
             return '';
@@ -104,6 +105,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
+
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
 
 /**
  * HTML for a channel tab.

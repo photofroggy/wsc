@@ -5685,10 +5685,11 @@ Chatterbox.Control = function( ui ) {
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
+    this.brow = this.view.find('p');
     this.mli = this.form.find('textarea.msg');
     this.ci = this.input;
     this.ml = false;
-    this.mlb = this.view.find('a[href~=#multiline].button');
+    this.mlb = this.brow.find('a[href=#multiline].button');
     
     var ctrl = this;
     this.mlb.click(function( event ) {
@@ -5781,6 +5782,31 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     this.ci = this.input;
     this.manager.resize();
     return this.mli;
+
+};
+
+Chatterbox.Control.prototype.add_button = function( handler, options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.'
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = '';
+    }
+    
+    this.brow.append(Chatterbox.render('control_button', options));
+    var button = this.brow.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        handler();
+        return false;
+    } );
 
 };
 
@@ -7771,8 +7797,9 @@ Chatterbox.render = function( template, fill ) {
     var tparts = template.split('.');
     var renderer = {};
     var tmpl = null;
+    var part = null;
     
-    for( ind in tparts ) {
+    for( var ind in tparts ) {
         part = tparts[ind];
         if( !html.hasOwnProperty( part ) )
             return '';
@@ -7856,6 +7883,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
+
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
 
 /**
  * HTML for a channel tab.
@@ -8355,6 +8384,17 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
+    settings.emotes.picker.build();
+    
+    client.ui.control.add_button( function() {
+        settings.emotes.picker.show();
+    }, {
+        'label': '',
+        'icon': 'user',
+        'href': '#emotes',
+        'title': 'Emote picker.',
+    });
     
     settings.emotes.configure_page = function( event, ui ) {
     
@@ -8483,6 +8523,89 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         return;
     
     settings.emotes.fetch();
+
+};
+
+/**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ */
+wsc.dAmn.Emotes.Picker = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [10, 60],
+        'ref': 'emote-picker',
+        'title': 'Emotes',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+wsc.dAmn.Emotes.Picker.template = '<section class="tabs"></section><section class="pages"></section>';
+
+wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup();
+wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
+
+wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
+
+    this.window.css({'display': 'none'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
+
+    this.window.css({'display': 'block'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.close = function(  ) { this.hide(); };
+
+wsc.dAmn.Emotes.Picker.prototype.build = function(  ) {
+
+    this.options.content = wsc.dAmn.Emotes.Picker.template;
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'bottom': this.options.position[1]
+    });
+    this.window.find('.inner').css({
+        'box-shadow': 'none',
+        'border-radius': '0 0 0px #00',
+        'height': 300,
+        'width': 450
+    });
+    this.closeb.removeClass('medium');
+    this.hide();
+    /*
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('form').submit( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    */
 
 };
 
