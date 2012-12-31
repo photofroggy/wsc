@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.11';
+wsc.VERSION = '1.1.12';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.96';
+wsc.REVISION = '0.15.97';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2323,7 +2323,19 @@ wsc.defaults.Extension = function( client ) {
  */
 wsc.defaults.Extension.Autojoin = function( client ) {
 
-    var settings = client.autojoin
+    var settings = client.autojoin;
+    client.ui.control.add_button( {
+        'label': 'Autojoin',
+        'title': 'Join your autojoin channels',
+        'href': '#autojoin-do',
+        'handler': function(  ) {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty(i) )
+                    continue;
+                client.join(client.autojoin.channel[i]);
+            }
+        }
+    });
     
     var init = function(  ) {
     
@@ -4127,7 +4139,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.7.52';
+Chatterbox.VERSION = '0.8.53';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5697,10 +5709,11 @@ Chatterbox.Control = function( ui ) {
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
+    this.brow = this.view.find('p');
     this.mli = this.form.find('textarea.msg');
     this.ci = this.input;
     this.ml = false;
-    this.mlb = this.view.find('a[href~=#multiline].button');
+    this.mlb = this.brow.find('a[href~=#multiline].button');
     
     var ctrl = this;
     this.mlb.click(function( event ) {
@@ -5793,6 +5806,32 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     this.ci = this.input;
     this.manager.resize();
     return this.mli;
+
+};
+
+Chatterbox.Control.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = ' text';
+    }
+    
+    this.brow.append(Chatterbox.render('control_button', options));
+    var button = this.brow.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        options['handler']();
+        return false;
+    } );
 
 };
 
@@ -7868,6 +7907,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                 <input type="submit" value="Send" class="sendmsg" />\
             </form>\
         </div>';
+
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
 
 /**
  * HTML for a channel tab.
