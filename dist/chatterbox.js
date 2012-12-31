@@ -3775,6 +3775,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+
 /**
  * HTML for a channel tab.
  * 
