@@ -2323,7 +2323,18 @@ wsc.defaults.Extension = function( client ) {
  */
 wsc.defaults.Extension.Autojoin = function( client ) {
 
-    var settings = client.autojoin
+    var settings = client.autojoin;
+    client.ui.control.add_button( function(  ) {
+        for( var i in client.autojoin.channel ) {
+            if( !client.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            client.join(client.autojoin.channel[i]);
+        }
+    }, {
+        'label': 'Autojoin',
+        'title': 'Join your autojoin channels',
+        'href': '#autojoin-do'
+    });
     
     var init = function(  ) {
     
@@ -5797,7 +5808,7 @@ Chatterbox.Control.prototype.add_button = function( handler, options ) {
     if( options.icon !== false ) {
         options.icon = ' iconic ' + options.icon;
     } else {
-        options.icon = '';
+        options.icon = ' text';
     }
     
     this.brow.append(Chatterbox.render('control_button', options));
@@ -7790,20 +7801,25 @@ Chatterbox.template = {};
  * @method render
  * @param template {String} Name of the template to render.
  * @param fill {Object} Variables to render the template with.
+ * @param use {Boolean} Use `template` as the actual template rather than the name.
  */
-Chatterbox.render = function( template, fill ) {
+Chatterbox.render = function( template, fill, use, base ) {
 
-    var html = Chatterbox.template;
-    var tparts = template.split('.');
+    var html = base || Chatterbox.template;
     var renderer = {};
     var tmpl = null;
     var part = null;
     
-    for( var ind in tparts ) {
-        part = tparts[ind];
-        if( !html.hasOwnProperty( part ) )
-            return '';
-        html = html[part];
+    if( use !== undefined && use === true ) {
+        html = template;
+    } else {
+        var tparts = template.split('.');
+        for( var ind in tparts ) {
+            part = tparts[ind];
+            if( !html.hasOwnProperty( part ) )
+                return '';
+            html = html[part];
+        }
     }
     
     if( html.hasOwnProperty('frame') ) {

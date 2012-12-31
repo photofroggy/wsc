@@ -12,20 +12,25 @@ Chatterbox.template = {};
  * @method render
  * @param template {String} Name of the template to render.
  * @param fill {Object} Variables to render the template with.
+ * @param use {Boolean} Use `template` as the actual template rather than the name.
  */
-Chatterbox.render = function( template, fill ) {
+Chatterbox.render = function( template, fill, use, base ) {
 
-    var html = Chatterbox.template;
-    var tparts = template.split('.');
+    var html = base || Chatterbox.template;
     var renderer = {};
     var tmpl = null;
     var part = null;
     
-    for( var ind in tparts ) {
-        part = tparts[ind];
-        if( !html.hasOwnProperty( part ) )
-            return '';
-        html = html[part];
+    if( use !== undefined && use === true ) {
+        html = template;
+    } else {
+        var tparts = template.split('.');
+        for( var ind in tparts ) {
+            part = tparts[ind];
+            if( !html.hasOwnProperty( part ) )
+                return '';
+            html = html[part];
+        }
     }
     
     if( html.hasOwnProperty('frame') ) {

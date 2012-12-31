@@ -851,6 +851,11 @@ div.wsc div.chatcontrol p a.button {
   padding: 4px;
   margin-right: 5px;
 }
+div.wsc div.chatcontrol p a.button.text {
+  font-size: 12px;
+  position: relative;
+  top: -1px;
+}
 div.wsc div.chatcontrol form.msg {
   clear: both;
   padding: 7px;

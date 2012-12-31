@@ -3,7 +3,18 @@
  */
 wsc.defaults.Extension.Autojoin = function( client ) {
 
-    var settings = client.autojoin
+    var settings = client.autojoin;
+    client.ui.control.add_button( function(  ) {
+        for( var i in client.autojoin.channel ) {
+            if( !client.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            client.join(client.autojoin.channel[i]);
+        }
+    }, {
+        'label': 'Autojoin',
+        'title': 'Join your autojoin channels',
+        'href': '#autojoin-do'
+    });
     
     var init = function(  ) {
     

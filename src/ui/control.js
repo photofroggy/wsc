@@ -124,7 +124,7 @@ Chatterbox.Control.prototype.add_button = function( handler, options ) {
     if( options.icon !== false ) {
         options.icon = ' iconic ' + options.icon;
     } else {
-        options.icon = '';
+        options.icon = ' text';
     }
     
     this.brow.append(Chatterbox.render('control_button', options));
