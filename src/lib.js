@@ -149,6 +149,9 @@ function pluralise( measure, num ) {
 }
 
 function timeLengthString( length ) {
+    if ( length <= 0 )
+        return '0 seconds.';
+    
     var elapsed = length;
     var elarr = [];
     elarr.unshift([ 'second', Math.round(elapsed % 60) ]);
