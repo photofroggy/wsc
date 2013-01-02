@@ -589,10 +589,13 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.resize();
-    this.scroll();
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    var c = this;
+    setTimeout( function(  ) {
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+        c.resize();
+        c.scroll();
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+    }, 500);
 };
 
 /**
@@ -2126,7 +2129,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     options = options || {};
     options = Object.extend( {
         'position': [10, 60],
-        'ref': 'emote-picker',
+        'ref': 'item-picker',
         'title': 'Emotes',
         'event': {
             'submit': function(  ) {},
@@ -2139,7 +2142,9 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
 
 };
 
-Chatterbox.Popup.ItemPicker.template = '<section class="tabs"></section><section class="pages"></section>';
+Chatterbox.Popup.ItemPicker.template = '<section class="tabs"><ul><li><a href="#f">F</a></li></ul></section>\
+        <section class="pages"><ul class="f"><li>foo</li></ul></section>\
+        <section class="buttons"><a href="#reload" title="Reload" class="button text">Reload</a></section>';
 
 Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
 Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;

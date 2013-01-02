@@ -4722,10 +4722,13 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.resize();
-    this.scroll();
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    var c = this;
+    setTimeout( function(  ) {
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+        c.resize();
+        c.scroll();
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+    }, 500);
 };
 
 /**
@@ -6259,7 +6262,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     options = options || {};
     options = Object.extend( {
         'position': [10, 60],
-        'ref': 'emote-picker',
+        'ref': 'item-picker',
         'title': 'Emotes',
         'event': {
             'submit': function(  ) {},
@@ -6272,7 +6275,9 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
 
 };
 
-Chatterbox.Popup.ItemPicker.template = '<section class="tabs"></section><section class="pages"></section>';
+Chatterbox.Popup.ItemPicker.template = '<section class="tabs"><ul><li><a href="#f">F</a></li></ul></section>\
+        <section class="pages"><ul class="f"><li>foo</li></ul></section>\
+        <section class="buttons"><a href="#reload" title="Reload" class="button text">Reload</a></section>';
 
 Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
 Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;
@@ -8477,8 +8482,9 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
-    //settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
-    //settings.emotes.picker.build();
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
+    settings.emotes.picker.build();
+    settings.emotes.picker.hide();
     
     client.ui.control.add_button( {
         'label': '',
@@ -8486,7 +8492,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         'href': '#emotes',
         'title': 'Emote picker.',
         'handler': function() {
-            //settings.emotes.picker.show();
+            if( settings.emotes.picker.window.css('display') == 'none' ) {
+                settings.emotes.picker.show();
+            } else {
+                settings.emotes.picker.close();
+            }
         }
     });
     
@@ -8617,6 +8627,48 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         return;
     
     settings.emotes.fetch();
+
+};
+
+/**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ */
+wsc.dAmn.Emotes.Picker = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [10, 60],
+        'title': 'Emotes',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.ItemPicker.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
+wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
+
+wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
+
+    this.window.css({'display': 'none'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
+
+    this.window.css({'display': 'block'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.close = function(  ) {
+
+    this.hide();
 
 };
 

@@ -35,6 +35,38 @@
                 }
             }
         }
+        
+        &.item-picker {
+            div.inner {
+                @include round-box(0px);
+                @include shadow(none);
+                height: 300px;
+                width: 350px;
+                border-bottom: none;
+                h2 {
+                    @include round-top(0px);
+                }
+                .content {
+                    overflow: auto;
+                    height: 80%;
+                    section.pages {
+                        background-color: rgba(255, 255, 255, 0.75);
+                        height: 75%;
+                        border: 1px solid black;
+                    }
+                    section.buttons {
+                        position: absolute;
+                        top: auto;
+                        bottom: 10px;
+                        right: 10px;
+                        .button.text {
+                            border: 1px solid black;
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

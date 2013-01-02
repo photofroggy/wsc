@@ -317,6 +317,32 @@
     }
     
     div.floater {
+        &.item-picker {
+            div.inner {
+                border-color: $inner-border;
+                section.pages {
+                    border-color: $inner-border;
+                }
+                section.buttons {
+                    .button.text {
+                        background: none;
+                        @include round-box(0px);
+                        @include shadow(none);
+                        color: $chrome-a;
+                        text-decoration: $chrome-ad;
+                        background-color: rgba(255, 255, 255, 0.75);
+                        text-shadow: none;
+                        border-color: $inner-border;
+                        &:hover {
+                            color: $chrome-ah;
+                            text-decoration: $chrome-ahd;
+                            background-color: rgba(145, 163, 173, 0.75);
+                        }
+                    }
+                }
+            }
+        }
+        
         div.inner {
             background-color: $chrome;
             border-color: $settings-outer-border;

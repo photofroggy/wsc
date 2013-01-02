@@ -906,6 +906,13 @@ div.wsc a.button:hover,
 div.wsc form.msg input[type="submit"]:hover {
   cursor: pointer;
 }
+div.wsc a.button.text,
+div.wsc form.msg input[type="submit"].text {
+  font-size: 12px;
+  position: relative;
+  top: -1px;
+  padding: 4px;
+}
 div.wsc a.iconic.close {
   background: none;
   height: 13px;
@@ -989,6 +996,43 @@ div.wsc div.floater.prompt div.content span {
 div.wsc div.floater.prompt div.content span a.close {
   position: relative;
   top: 3px;
+}
+div.wsc div.floater.item-picker div.inner {
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  height: 300px;
+  width: 350px;
+  border-bottom: none;
+}
+div.wsc div.floater.item-picker div.inner h2 {
+  border-top-left-radius: 0px;
+  -moz-border-radius-topleft: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  -moz-border-radius-topright: 0px;
+  -webkit-border-top-right-radius: 0px;
+}
+div.wsc div.floater.item-picker div.inner .content {
+  overflow: auto;
+  height: 80%;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages {
+  background-color: rgba(255, 255, 255, 0.75);
+  height: 75%;
+  border: 1px solid black;
+}
+div.wsc div.floater.item-picker div.inner .content section.buttons {
+  position: absolute;
+  top: auto;
+  bottom: 10px;
+  right: 10px;
+}
+div.wsc div.floater.item-picker div.inner .content section.buttons .button.text {
+  border: 1px solid black;
 }
 div.wsc div.floater.settings {
   top: 5em;
@@ -1442,6 +1486,31 @@ div.wsc.wsct_default div.chatwindow div.userinfo div.info a:hover {
   color: white;
   text-decoration: none;
 }
+div.wsc.wsct_default div.floater.item-picker div.inner {
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.pages {
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text {
+  background: none;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  color: #ffb024;
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.75);
+  text-shadow: none;
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text:hover {
+  color: white;
+  text-decoration: none;
+  background-color: rgba(145, 163, 173, 0.75);
+}
 div.wsc.wsct_default div.floater div.inner {
   background-color: #406d8b;
   border-color: #0d4d69;
@@ -1718,6 +1787,31 @@ div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a {
 div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a:hover {
   color: #2c3635;
   text-decoration: underline;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner {
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages {
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text {
+  background: none;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  color: #2c3635;
+  text-decoration: underline;
+  background-color: rgba(255, 255, 255, 0.75);
+  text-shadow: none;
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text:hover {
+  color: #2c3635;
+  text-decoration: underline;
+  background-color: rgba(145, 163, 173, 0.75);
 }
 div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;
