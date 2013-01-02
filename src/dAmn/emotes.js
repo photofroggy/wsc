@@ -162,7 +162,6 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
-        'position': [10, 60],
         'title': 'Emotes',
         'event': {
             'submit': function(  ) {},
@@ -172,6 +171,22 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
     this.data = this.options['default'];
+    this.add_page({
+        'ref': 'a',
+        'href': '#a',
+        'label': 'A',
+        'items': [
+            { 'value': 'a', 'title': 'a' },
+            { 'value': 'aa', 'title': 'lol' },
+            { 'value': 'aaa', 'title': 'fuck this' }
+        ]
+    });
+    this.add_page({
+        'ref': 'b',
+        'href': '#b',
+        'label': 'B',
+        'items': []
+    });
 
 };
 

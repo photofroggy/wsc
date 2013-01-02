@@ -215,6 +215,16 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
+Chatterbox.template.ip = {};
+Chatterbox.template.ip.main = {};
+Chatterbox.template.ip.main.frame = '<section class="tabs"><ul></ul></section>\
+        <section class="pages"></section>\
+        <section class="buttons"></section>';
+
+Chatterbox.template.ip.page = { 'frame': '<div class="page" id="{ref}">{content}</div>' };
+Chatterbox.template.ip.button = { 'frame': '<a href="{href}" title="{title}" class="button text">{label}</a>' };
+Chatterbox.template.ip.tab = {'frame': '<li class="tab" id="{ref}"><a href="{href}" title="{title}">{label}</a></li>' };
+
 Chatterbox.template.prompt = {};
 Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <span class="input"><form><input type="text" value="{default}" /></form></span>\

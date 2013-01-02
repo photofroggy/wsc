@@ -6266,7 +6266,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     options = Object.extend( {
         'position': [10, 60],
         'ref': 'item-picker',
-        'title': 'Emotes',
+        'title': 'Items',
         'event': {
             'submit': function(  ) {},
             'cancel': function(  ) {}
@@ -6275,50 +6275,109 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     
     Chatterbox.Popup.call( this, ui, options );
     this.data = this.options['default'];
+    this.pages = [];
 
 };
-
-Chatterbox.Popup.ItemPicker.template = '<section class="tabs"><ul><li><a href="#f">F</a></li></ul></section>\
-        <section class="pages"><ul class="f"><li>foo</li></ul></section>\
-        <section class="buttons"><a href="#reload" title="Reload" class="button text">Reload</a></section>';
 
 Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
 Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;
 
 Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
 
-    this.options.content = Chatterbox.Popup.ItemPicker.template;
+    this.options.content = Chatterbox.render('ip.main', {});
     Chatterbox.Popup.prototype.build.call(this);
     this.window.css({
         'left': this.options.position[0],
         'bottom': this.options.position[1]
     });
     this.closeb.removeClass('medium');
-    /*
-    var prompt = this;
+    this.pbook = this.window.find('section.pages');
+    this.tabs = this.window.find('section.tabs ul');
     
-    this.window.find('.button.close').click( function(  ) {
-        prompt.options.event.cancel( prompt );
-        prompt.close();
-        return false;
-    } );
+    var ip = this;
+    var page = null;
     
-    this.window.find('.button.submit').click( function(  ) {
-        prompt.data = prompt.window.find('input').val();
-        prompt.options.event.submit( prompt );
-        prompt.close();
-        return false;
-    } );
-    
-    this.window.find('form').submit( function(  ) {
-        prompt.data = prompt.window.find('input').val();
-        prompt.options.event.submit( prompt );
-        prompt.close();
-        return false;
-    } );
-    */
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        page = this.pages[i];
+        page.build();
+    }
 
 };
+
+Chatterbox.Popup.ItemPicker.prototype.page = function( name ) {
+
+    name = name.toLowerCase();
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        if( this.pages[i].name.toLowerCase() == name )
+            return this.pages[i];
+    }
+    
+    return null;
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
+
+    this.pages.push( new Chatterbox.Popup.ItemPicker.Page( this, options ) );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
+
+    this.picker = picker;
+    this.options = Object.extend( {
+        'ref': 'page',
+        'href': '#page',
+        'label': 'Page',
+        'items': [],
+        'content': '',
+    }, ( options || {} ));
+    this.name = this.options.label;
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
+
+    var list = this.build_list();
+    if( list.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + list + '</ul>';
+    }
+    
+    this.picker.pbook.append( Chatterbox.render('ip.page', this.options) );
+    this.picker.tabs.append(Chatterbox.render('ip.tab', this.options));
+    this.view = this.picker.pbook.find('div.page#'+this.options.ref);
+    this.items = this.view.find('ul');
+    this.tab = this.picker.tabs.find('#'+this.options.ref);
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
+
+    var ul = [];
+    var item = null;
+    
+    for( var i in this.options.items ) {
+        if( !this.options.items.hasOwnProperty(i) )
+            continue;
+        item = this.options.items[i];
+        ul.push(
+            '<li class="item" title="'+item.title+'"><span class="value">'+item.value+'</span>\
+            <span class="hicon iconic tick"></span></li>'
+        );
+    }
+    
+    return ul.join('');
+
+};
+
+
 
 
 
@@ -8089,6 +8148,16 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
+Chatterbox.template.ip = {};
+Chatterbox.template.ip.main = {};
+Chatterbox.template.ip.main.frame = '<section class="tabs"><ul></ul></section>\
+        <section class="pages"></section>\
+        <section class="buttons"></section>';
+
+Chatterbox.template.ip.page = { 'frame': '<div class="page" id="{ref}">{content}</div>' };
+Chatterbox.template.ip.button = { 'frame': '<a href="{href}" title="{title}" class="button text">{label}</a>' };
+Chatterbox.template.ip.tab = {'frame': '<li class="tab" id="{ref}"><a href="{href}" title="{title}">{label}</a></li>' };
+
 Chatterbox.template.prompt = {};
 Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <span class="input"><form><input type="text" value="{default}" /></form></span>\
@@ -8641,7 +8710,6 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
-        'position': [10, 60],
         'title': 'Emotes',
         'event': {
             'submit': function(  ) {},
@@ -8651,6 +8719,22 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
     this.data = this.options['default'];
+    this.add_page({
+        'ref': 'a',
+        'href': '#a',
+        'label': 'A',
+        'items': [
+            { 'value': 'a', 'title': 'a' },
+            { 'value': 'aa', 'title': 'lol' },
+            { 'value': 'aaa', 'title': 'fuck this' }
+        ]
+    });
+    this.add_page({
+        'ref': 'b',
+        'href': '#b',
+        'label': 'B',
+        'items': []
+    });
 
 };
 
