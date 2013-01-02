@@ -6302,6 +6302,8 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
             continue;
         page = this.pages[i];
         page.build();
+        if( i == 0 )
+            page.view.css('display', 'block');
     }
 
 };
@@ -6334,6 +6336,7 @@ Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
         'ref': 'page',
         'href': '#page',
         'label': 'Page',
+        'title': 'page',
         'items': [],
         'content': '',
     }, ( options || {} ));
@@ -6362,13 +6365,15 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
 
     var ul = [];
     var item = null;
-    
+    var title, val;
     for( var i in this.options.items ) {
         if( !this.options.items.hasOwnProperty(i) )
             continue;
         item = this.options.items[i];
+        val = item.value || item;
+        title = item.title || val;
         ul.push(
-            '<li class="item" title="'+item.title+'"><span class="value">'+item.value+'</span>\
+            '<li class="item" title="'+title+'"><span class="value">'+val+'</span>\
             <span class="hicon iconic tick"></span></li>'
         );
     }
@@ -8723,6 +8728,7 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
         'ref': 'a',
         'href': '#a',
         'label': 'A',
+        'title': 'Emotes beginning with A',
         'items': [
             { 'value': 'a', 'title': 'a' },
             { 'value': 'aa', 'title': 'lol' },
@@ -8733,7 +8739,8 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
         'ref': 'b',
         'href': '#b',
         'label': 'B',
-        'items': []
+        'title': 'Emotes beginning with B',
+        'items': ['bitch']
     });
 
 };

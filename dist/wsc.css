@@ -1020,10 +1020,29 @@ div.wsc div.floater.item-picker div.inner .content {
   overflow: auto;
   height: 80%;
 }
+div.wsc div.floater.item-picker div.inner .content section.tabs {
+  height: 25px;
+}
+div.wsc div.floater.item-picker div.inner .content section.tabs ul {
+  list-style: none;
+  padding: 2px 0px;
+}
+div.wsc div.floater.item-picker div.inner .content section.tabs ul li {
+  float: left;
+}
+div.wsc div.floater.item-picker div.inner .content section.tabs ul li a {
+  padding: 3px;
+  margin: 2px;
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid black;
+}
 div.wsc div.floater.item-picker div.inner .content section.pages {
   background-color: rgba(255, 255, 255, 0.75);
   height: 75%;
   border: 1px solid black;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page {
+  display: none;
 }
 div.wsc div.floater.item-picker div.inner .content section.buttons {
   position: absolute;
@@ -1492,6 +1511,7 @@ div.wsc.wsct_default div.floater.item-picker div.inner {
 div.wsc.wsct_default div.floater.item-picker div.inner section.pages {
   border-color: #0d4d69;
 }
+div.wsc.wsct_default div.floater.item-picker div.inner section.tabs ul li a,
 div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text {
   background: none;
   border-radius: 0px;
@@ -1506,6 +1526,7 @@ div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.t
   text-shadow: none;
   border-color: #0d4d69;
 }
+div.wsc.wsct_default div.floater.item-picker div.inner section.tabs ul li a:hover,
 div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text:hover {
   color: white;
   text-decoration: none;
@@ -1794,6 +1815,7 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner {
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages {
   border-color: #9eaea0;
 }
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text {
   background: none;
   border-radius: 0px;
@@ -1808,6 +1830,7 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text
   text-shadow: none;
   border-color: #9eaea0;
 }
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a:hover,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text:hover {
   color: #2c3635;
   text-decoration: underline;

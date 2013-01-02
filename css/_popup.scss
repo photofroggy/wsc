@@ -49,10 +49,29 @@
                 .content {
                     overflow: auto;
                     height: 80%;
+                    section.tabs {
+                        height: 25px;
+                        ul {
+                            list-style: none;
+                            padding: 2px 0px;
+                            li {
+                                float: left;
+                                a {
+                                    padding: 3px;
+                                    margin: 2px;
+                                    background-color: rgba(255, 255, 255, 0.75);
+                                    border: 1px solid black;
+                                }
+                            }
+                        }
+                    }
                     section.pages {
                         background-color: rgba(255, 255, 255, 0.75);
                         height: 75%;
                         border: 1px solid black;
+                        .page {
+                            display: none;
+                        }
                     }
                     section.buttons {
                         position: absolute;

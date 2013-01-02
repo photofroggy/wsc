@@ -175,6 +175,7 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
         'ref': 'a',
         'href': '#a',
         'label': 'A',
+        'title': 'Emotes beginning with A',
         'items': [
             { 'value': 'a', 'title': 'a' },
             { 'value': 'aa', 'title': 'lol' },
@@ -185,7 +186,8 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
         'ref': 'b',
         'href': '#b',
         'label': 'B',
-        'items': []
+        'title': 'Emotes beginning with B',
+        'items': ['bitch']
     });
 
 };
