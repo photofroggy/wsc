@@ -2237,8 +2237,10 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
         val = item.value || item;
         title = item.title || val;
         ul.push(
-            '<li class="item" title="'+title+'"><span class="value">'+val+'</span>\
-            <span class="hicon iconic tick"></span></li>'
+            '<li class="item" title="'+title+'">\
+            <span class="hicon"><i class="iconic check"></i></span>\
+            <span class="value">'+val+'</span>\
+            </li>'
         );
     }
     

@@ -324,6 +324,17 @@
                 }
                 section.pages {
                     border-color: $inner-border;
+                    ul {
+                        li {
+                            border-color: $inner-border;
+                            span.value {
+                                color: $chrome-a;
+                                &:hover {
+                                    color: $chrome-ah;
+                                }
+                            }
+                        }
+                    }
                 }
                 section.tabs ul li a,
                 section.buttons .button.text {

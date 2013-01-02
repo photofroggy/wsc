@@ -49,10 +49,14 @@
                 .content {
                     overflow: auto;
                     height: 80%;
+                    ul {
+                        list-style: none;
+                        padding: 0px;
+                        margin: 0px;
+                    }
                     section.tabs {
                         height: 25px;
                         ul {
-                            list-style: none;
                             padding: 2px 0px;
                             li {
                                 float: left;
@@ -70,6 +74,36 @@
                         border: 1px solid black;
                         .page {
                             display: none;
+                            ul {
+                                li {
+                                    border-bottom-width: 1px;
+                                    border-bottom-style: dotted;
+                                    margin: 0px;
+                                    padding: 4px 10px;
+                                    &:hover {
+                                        cursor: pointer;                                        
+                                        background-color: rgba(0, 0, 0, 0.15);
+                                        span.hicon {
+                                            display: block;
+                                        }
+                                    }
+                                    span.value {
+                                        display: block;
+                                    }
+                                    span.hicon {
+                                        display: none;
+                                        float: right;
+                                        color: #0AAF2B;
+                                        font-size: 19px;
+                                        i {
+                                            font-style: normal;
+                                        }
+                                    }
+                                    &:last-child {
+                                        border-bottom: none;
+                                    }
+                                }
+                            }
                         }
                     }
                     section.buttons {

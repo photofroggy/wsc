@@ -1020,11 +1020,15 @@ div.wsc div.floater.item-picker div.inner .content {
   overflow: auto;
   height: 80%;
 }
+div.wsc div.floater.item-picker div.inner .content ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
 div.wsc div.floater.item-picker div.inner .content section.tabs {
   height: 25px;
 }
 div.wsc div.floater.item-picker div.inner .content section.tabs ul {
-  list-style: none;
   padding: 2px 0px;
 }
 div.wsc div.floater.item-picker div.inner .content section.tabs ul li {
@@ -1042,6 +1046,34 @@ div.wsc div.floater.item-picker div.inner .content section.pages {
 }
 div.wsc div.floater.item-picker div.inner .content section.pages .page {
   display: none;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li {
+  border-bottom-width: 1px;
+  border-bottom-style: dotted;
+  margin: 0px;
+  padding: 4px 10px;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li:hover span.hicon {
+  display: block;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li span.value {
+  display: block;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li span.hicon {
+  display: none;
+  float: right;
+  color: #0AAF2B;
+  font-size: 19px;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li span.hicon i {
+  font-style: normal;
+}
+div.wsc div.floater.item-picker div.inner .content section.pages .page ul li:last-child {
+  border-bottom: none;
 }
 div.wsc div.floater.item-picker div.inner .content section.buttons {
   position: absolute;
@@ -1510,6 +1542,15 @@ div.wsc.wsct_default div.floater.item-picker div.inner {
 div.wsc.wsct_default div.floater.item-picker div.inner section.pages {
   border-color: #0d4d69;
 }
+div.wsc.wsct_default div.floater.item-picker div.inner section.pages ul li {
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.pages ul li span.value {
+  color: #ffb024;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.pages ul li span.value:hover {
+  color: white;
+}
 div.wsc.wsct_default div.floater.item-picker div.inner section.tabs ul li a,
 div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text {
   background: none;
@@ -1813,6 +1854,15 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner {
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages {
   border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages ul li {
+  border-color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages ul li span.value {
+  color: #2c3635;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages ul li span.value:hover {
+  color: #2c3635;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text {
