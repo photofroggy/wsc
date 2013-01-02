@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.12';
+wsc.VERSION = '1.1.13';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.97';
+wsc.REVISION = '0.15.98';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -553,6 +553,9 @@ function pluralise( measure, num ) {
 }
 
 function timeLengthString( length ) {
+    if ( length <= 0 )
+        return '0 seconds.';
+    
     var elapsed = length;
     var elarr = [];
     elarr.unshift([ 'second', Math.round(elapsed % 60) ]);
