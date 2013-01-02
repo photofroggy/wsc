@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.0.0';
+wsc.VERSION = '1.1.13';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.14.85';
+wsc.REVISION = '0.15.98';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -929,6 +929,7 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  */
 wsc.Channel.prototype.property = function( e ) {
     var prop = e.pkt["arg"]["p"];
+    
     switch(prop) {
         case "title":
         case "topic":
@@ -974,10 +975,13 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     this.info["pc"] = {};
     this.info["pc_order"] = [];
     var lines = e.pkt["body"].split('\n');
+    var bits = [];
     for(var i in lines) {
         if( !lines.hasOwnProperty(i) )
             continue;
         bits = lines[i].split(":");
+        if( bits.length == 1 )
+            continue;
         this.info["pc_order"].push(parseInt(bits[0]));
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
@@ -1726,9 +1730,16 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['userinfo'] = info.arg;
         // Autojoin!
         // TODO: multi-channel?
-        if ( client.fresh )
+        if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
-        else {
+            if( client.autojoin.on ) {
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+            }
+        } else {
             for( key in client.channelo ) {
                 if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);
@@ -1999,7 +2010,7 @@ wsc.defaults.Extension = function( client ) {
     
     var settings_page = function( e, ui ) {
     
-        var page = e.settings.page('Main', true);
+        var page = e.settings.page('Main');
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
@@ -2305,10 +2316,203 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
-    wsc.defaults.Extension.Away(client);
     wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Autojoin(client);
 
 };
+/**
+ * Autojoin extension.
+ */
+wsc.defaults.Extension.Autojoin = function( client ) {
+
+    var settings = client.autojoin;
+    client.ui.control.add_button( {
+        'label': 'Autojoin',
+        'title': 'Join your autojoin channels',
+        'href': '#autojoin-do',
+        'handler': function(  ) {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty(i) )
+                    continue;
+                client.join(client.autojoin.channel[i]);
+            }
+        }
+    });
+    
+    var init = function(  ) {
+    
+        client.bind('cmd.autojoin', cmd_autojoin);
+        client.ui.on('settings.open', settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page('Autojoin');
+        var ul = '<ul>';
+        var orig = {};
+        orig.ajon = client.autojoin.on;
+        orig.chan = client.autojoin.channel;
+        
+        if( client.autojoin.channel.length == 0 ) {
+            ul+= '<li><i>No autojoin channels set</i></li></ul>';
+        } else {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty( i ) )
+                    continue;
+                ul+= '<li>' + client.autojoin.channel[i] + '</li>';
+            }
+            ul+= '</ul>';
+        }
+        
+        page.item('Checkbox', {
+            'ref': 'eaj',
+            'title': 'Autojoin',
+            'text': 'Turn on autojoin to automatically join selected channels\
+                    when you connect to the chat server.',
+            'items': [
+                { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
+            ],
+            'event': {
+                'change': function( event ) {
+                    if( event.target.value == 'yes' )
+                        client.autojoin.on = event.target.checked;
+                },
+                'save': function( event ) {
+                    orig.ajon = client.autojoin.on;
+                    client.config_save();
+                },
+                'close': function( event ) {
+                    client.autojoin.on = orig.ajon;
+                }
+            }
+        });
+        
+        var imgr = page.item('Items', {
+            'ref': 'channelss',
+            'title': 'Channels',
+            'text': 'Add any channels you want to join automatically when you\
+                    connect to the chat server.',
+            'items': client.autojoin.channel,
+            'prompt': {
+                'title': 'Add Channel',
+                'label': 'Channel:',
+            },
+            'event': {
+                'up': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'down': function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap['this'].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'add': function( event ) {
+                    var item = client.deform_ns(event.args.item).toLowerCase();
+                    var index = client.autojoin.channel.indexOf(item);
+                    
+                    if( index != -1 )
+                        return;
+                    
+                    client.autojoin.channel.push( item );
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'remove': function( event ) {
+                    client.autojoin.channel.splice( event.args.index, 1 );
+                    imgr.options.items = client.autojoin.channel;
+                },
+                'save': function( event ) {
+                    orig.chan = client.autojoin.channel;
+                    client.config_save();
+                },
+                'close': function( event ) {
+                    client.config_load();
+                }
+            }
+        });
+    
+    };
+    
+    var cmd_autojoin = function( cmd ) {
+    
+        var args = cmd.args.split(' ');
+        
+        if( !args )
+            return;
+        
+        var subcmd = args.shift().toLowerCase();
+        var meth = function( item ) {};
+        var mod = false;
+        var chan = client.channel(cmd.ns);
+        
+        switch( subcmd ) {
+        
+            case 'add':
+                meth = function( item ) {
+                    if( client.autojoin.channel.indexOf( item ) == -1 ) {
+                        mod = true;
+                        client.autojoin.channel.push( item );
+                        chan.server_message('Added ' + item + ' to your autojoin.');
+                    } else {
+                        chan.server_message('Already have ' + item + ' on your autojoin.');
+                    }
+                };
+                break;
+            case 'rem':
+            case 'remove':
+                meth = function( item ) {
+                    var ci = client.autojoin.channel.indexOf( item );
+                    if( ci != -1 ) {
+                        mod = true;
+                        client.autojoin.channel.splice( ci, 1 );
+                        chan.server_message('Removed ' + item + ' from your autojoin.');
+                    } else {
+                        chan.server_message(item + ' is not on your autojoin list.');
+                    }
+                };
+                break;
+            case 'on':
+                chan.server_message('Autojoin on.');
+                if( !client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = true;
+                }
+                break;
+            case 'off':
+                chan.server_message('Autojoin off.');
+                if( client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = false;
+                }
+                break;
+        
+        }
+        
+        var item = '';
+        
+        for( var i in args ) {
+        
+            if( !args.hasOwnProperty(i) )
+                continue;
+            item = client.deform_ns(args[i]).toLowerCase();
+            meth( item );
+        
+        }
+        
+        if( mod )
+            client.config_save();
+    
+    };
+    
+    init();
+
+};
+
 /**
  * Away extension.
  */
@@ -2324,7 +2528,7 @@ wsc.defaults.Extension.Away = function( client ) {
         'format': {
             'setaway': '/me is away: {reason}',
             'setback': '/me is back',
-            'away': '{user}: I\'ve been away for {timesince}. Reason: {reason}'
+            'away': "{user}: I've been away for {timesince}. Reason: {reason}"
         }
     };
     
@@ -2342,8 +2546,20 @@ wsc.defaults.Extension.Away = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Away', true);
-        var orig = {};
+        var strips = function( data ) {
+            data = replaceAll(data, '<', '&lt;');
+            data = replaceAll(data, '>', '&gt;');
+            data = replaceAll(data, '"', '&quot;');
+            return data;
+        };
+        var unstrips = function( data ) {
+            data = replaceAll(data, '&lt;', '<');
+            data = replaceAll(data, '&gt;', '>');
+            data = replaceAll(data, '&quot;', '"');
+            return data;
+        };
+        var page = event.settings.page('Away');
+        var orig = {};        
         orig.away = settings.format.away;
         orig.sa = settings.format.setaway;
         orig.sb = settings.format.setback;
@@ -2373,24 +2589,24 @@ wsc.defaults.Extension.Away = function( client ) {
                 ['Textfield', {
                     'ref': 'away',
                     'label': 'Away',
-                    'default': orig.away
+                    'default': strips(orig.away)
                 }],
                 ['Textfield', {
                     'ref': 'setaway',
                     'label': 'Setaway',
-                    'default': orig.sa
+                    'default': strips(orig.sa)
                 }],
                 ['Textfield', {
                     'ref': 'setback',
                     'label': 'Setback',
-                    'default': orig.sb
+                    'default': strips(orig.sb)
                 }]
             ],
             'event': {
                 'save': function( event ) {
-                    settings.format.away = event.data.away;
-                    settings.format.setaway = event.data.setaway;
-                    settings.format.setback = event.data.setback;
+                    settings.format.away = unstrips(event.data.away);
+                    settings.format.setaway = unstrips(event.data.setaway);
+                    settings.format.setback = unstrips(event.data.setback);
                     save();
                 }
             }
@@ -2541,22 +2757,11 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
-        var ul = '<ul>';
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
-        
-        if( client.ui.umuted.length == 0 ) {
-            ul+= '<li><i>No one ignored yet</i></li></ul>';
-        } else {
-            for( var i in client.ui.umuted ) {
-                if( !client.ui.umuted.hasOwnProperty( i ) )
-                    continue;
-                ul+= '<li>' + client.ui.umuted[i] + '</li>';
-            }
-            ul+= '</ul>';
-        }
+        orig.usr = client.ui.umuted;
         
         page.item('Text', {
             'ref': 'intro',
@@ -2594,19 +2799,46 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
         });
         
-        var uf = page.item('Form', {
-            'ref': 'ignored',
-            'wclass': 'boxed-ff-indv',
+        var imgr = page.item('Items', {
+            'ref': 'ignoreds',
             'title': 'Users',
             'text': 'This is the list of users that you have silenced.\n\nUse the\
                     commands <code>/ignore</code> and <code>/unignore</code>\
                     to edit the list.',
-            'fields': [
-                ['Text', {
-                    'ref': 'users',
-                    'text': ul
-                }]
-            ]
+            'items': orig.usr,
+            'prompt': {
+                'title': 'Add User',
+                'label': 'User:',
+            },
+            'event': {
+                'up': function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap['this'].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                'down': function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap['this'].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                'add': function( event ) {
+                    client.mute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                'remove': function( event ) {
+                    client.unmute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                'save': function( event ) {
+                    orig.usr = client.ui.umuted;
+                    save();
+                },
+                'close': function( event ) {
+                    load();
+                }
+            }
         });
     
     };
@@ -2680,12 +2912,21 @@ wsc.defaults.Extension.Ignore = function( client ) {
         settings.ignore = storage.get('ignore', '/me is ignoring {user} now');
         settings.unignore = storage.get('unignore', '/me is not ignoring {user} anymore');
         settings.count = parseInt( storage.get( 'count', 0 ) );
+        
+        var tu = null;
+        for( var i in client.ui.umuted ) {
+            if( !client.ui.umuted.hasOwnProperty(i) ) {
+                continue;
+            }
+            client.unmute_user( client.ui.umuted[i] );
+        }
+        
         client.ui.umuted = [];
         
         if( settings.count > 0 ) {
-            var tu = null;
+            tu = null;
             for( var i = 0; i < settings.count; i++ ) {
-                client.mute_user.push( istore.get(i, null) );
+                client.mute_user( istore.get(i, null) );
                 //client.ui.mute_user( tu );
             }
         }
@@ -2739,7 +2980,9 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
-    this.uistore = this.storage.folder('ui');
+    this.storage.ui = this.storage.folder('ui');
+    this.storage.aj = this.storage.folder('autojoin');
+    this.storage.aj.channel = this.storage.aj.folder('channel');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -2777,6 +3020,11 @@ wsc.Client = function( view, options, mozilla ) {
             "tabclose": true,
             "clock": true
         }
+    };
+    this.autojoin = {
+        'on': true,
+        'count': 0,
+        'channel': []
     };
     
     this.settings = Object.extend( this.settings, options );
@@ -2817,9 +3065,25 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
-    this.settings.ui.theme = this.uistore.get('theme', this.settings.ui.theme);
-    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
-    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
+    this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    
+    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
+    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    this.autojoin.channel = [];
+    
+    var tc = null;
+    var c = 0;
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        tc = this.storage.aj.channel.get( i, null );
+        if( tc == null )
+            continue;
+        c++;
+        this.autojoin.channel.push(tc);
+    }
+    
+    this.autojoin.count = c;
 
 };
 
@@ -2830,9 +3094,30 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
-    this.uistore.set('theme', this.settings.ui.theme);
-    this.uistore.set('clock', this.settings.ui.clock.toString());
-    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
+    this.storage.ui.set('theme', this.settings.ui.theme);
+    this.storage.ui.set('clock', this.settings.ui.clock.toString());
+    this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
+    
+    this.storage.aj.set('on', this.autojoin.on.toString());
+    this.storage.aj.set('count', this.autojoin.count);
+    
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        this.storage.aj.channel.remove(i)
+    }
+    
+    if( this.autojoin.channel.length == 0 ) {
+        this.storage.aj.set('count', 0);
+    } else {
+        var c = -1;
+        for( var i in this.autojoin.channel ) {
+            if( !this.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            c++;
+            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
+        }
+        c++;
+        this.storage.aj.set('count', c);
+    }
 
 };
 
@@ -3282,10 +3567,10 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.msg)
+        wsc_packetstr('msg', 'main', {}, e.input)
     ));
 
 };
@@ -3299,10 +3584,10 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.msg)
+        wsc_packetstr('npmsg', 'main', {}, e.input)
     ));
 
 };
@@ -3316,10 +3601,10 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
-    this.trigger( e );
+    e = { 'input': action, 'ns': namespace };
+    this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.msg)
+        wsc_packetstr('action', 'main', {}, e.input)
     ));
 
 };
@@ -3392,7 +3677,9 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+    e = { 'input': reason, 'ns': namespace };
+    this.trigger( 'send.kick.before', e );
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
 };
 
@@ -3449,7 +3736,9 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
+    e = { 'input': value, 'ns': namespace };
+    this.trigger( 'send.set.before', e );
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
 
 };
 
@@ -3768,8 +4057,12 @@ wsc.Control.prototype.keypress = function( event ) {
             bubble = true;
             break;
         case 9: // Tab
-            this.tab_item( event );
-            ut = false;
+            if( event.shiftKey ) {
+                this.client.ui.channel_right();
+            } else {
+                this.tab_item( event );
+                ut = false;
+            }
             break;
         case 219: // [
             if( event.ctrlKey ) {
@@ -3849,7 +4142,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.6.47';
+Chatterbox.VERSION = '0.8.53';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4341,6 +4634,8 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     this.selector = selector;
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
+    this.visible = false;
+    this.st = 0;
 
 };
 
@@ -4416,6 +4711,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
+    this.visible = false;
 };
 
 /**
@@ -4425,10 +4721,14 @@ Chatterbox.Channel.prototype.hide = function( ) {
  */
 Chatterbox.Channel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
+    this.visible = true;
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
-    this.tab.removeClass('noise tabbed fill');
+    this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    this.scroll();
 };
 
 /**
@@ -4450,7 +4750,11 @@ Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     var ws = this.wrap.prop('scrollWidth') - this.wrap.innerWidth();
     var hs = this.wrap.prop('scrollHeight') - this.wrap.innerHeight();
-    this.wrap.scrollTop(hs + (ws > 0 ? this.manager.swidth : 0));
+    if( ws > 0 )
+        hs += ws;
+    if( hs < 0 || (hs - this.wrap.scrollTop()) > 100 )
+        return;
+    this.wrap.scrollTop(hs);
 };
 
 /**
@@ -4472,6 +4776,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
         this.wrap.css({
             'padding-top': 0,
             'height': lh});
+    this.wrap.scrollTop(this.st);
 };
 
 /**
@@ -4575,10 +4880,15 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     };
     
     this.manager.trigger( 'log_item.before', data );
+    if( this.visible ) {
+        this.st = this.wrap.scrollTop();
+    }
     
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    this.st+= this.wrap.find('li.logmsg').last().height();
+    this.wrap.scrollTop( this.st );
     
     // Scrollio
     this.scroll();
@@ -4874,6 +5184,9 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     if( tab.hasClass('tabbed') )
         return;
     
+    if( tab.hasClass('chatting') )
+        tab.removeClass('chatting');
+    
     var runs = 0;
     tab.addClass('tabbed');
     
@@ -4898,9 +5211,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
  */
 Chatterbox.Channel.prototype.noise = function(  ) {
     
-    if( !this.tab.hasClass('active') )
-        this.tab.addClass('noise');
-    
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
@@ -4912,9 +5222,19 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
             this.scroll();
-            break;
+            return;
         }
     }
+    
+    if( !this.tab.hasClass('active') ) {
+        this.tab.addClass('noise');
+        if( !this.tab.hasClass('tabbed') ) {
+            if( msg.find('.cevent').length == 0 ) {
+                this.tab.addClass('chatting');
+            }
+        }
+    }
+    
 
 };
 
@@ -5392,10 +5712,11 @@ Chatterbox.Control = function( ui ) {
     this.view = this.manager.view.find('div.chatcontrol');
     this.form = this.view.find('form.msg');
     this.input = this.form.find('input.msg');
+    this.brow = this.view.find('p');
     this.mli = this.form.find('textarea.msg');
     this.ci = this.input;
     this.ml = false;
-    this.mlb = this.view.find('a[href~=#multiline].button');
+    this.mlb = this.brow.find('a[href~=#multiline].button');
     
     var ctrl = this;
     this.mlb.click(function( event ) {
@@ -5488,6 +5809,32 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     this.ci = this.input;
     this.manager.resize();
     return this.mli;
+
+};
+
+Chatterbox.Control.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = ' text';
+    }
+    
+    this.brow.append(Chatterbox.render('control_button', options));
+    var button = this.brow.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        options['handler']();
+        return false;
+    } );
 
 };
 
@@ -5592,14 +5939,14 @@ Chatterbox.Navigation = function( ui ) {
             
             var evt = {
                 'e': event,
-                'settings': new Chatterbox.Settings.Config()
+                'settings': new Chatterbox.Settings.Config(nav.manager)
             };
             
             nav.configure_page( evt );
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -5638,7 +5985,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -5670,7 +6017,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                     { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                 ]
             }],
-            ['Check', {
+            ['Checkbox', {
                 'ref': 'tabclose',
                 'label': 'Close Buttons',
                 'items': [
@@ -5804,11 +6151,7 @@ Chatterbox.Popup = function( ui, options ) {
  */
 Chatterbox.Popup.prototype.build = function(  ) {
 
-    var fill = {
-        'ref': this.options.ref,
-        'title': this.options.title,
-        'content': this.options.content
-    };
+    var fill = this.options;
     
     if( this.options.close ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
@@ -5842,6 +6185,73 @@ Chatterbox.Popup.prototype.close = function(  ) {
     
 };
 
+/**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [0, 0],
+        'ref': 'prompt',
+        'title': 'Input',
+        'close': false,
+        'label': '',
+        'default': '',
+        'submit-button': 'Submit',
+        'event': {
+            'submit': function(  ) {},
+            'cancel': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+/**
+ * Build the prompt.
+ * 
+ * @method build
+ */
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'top': this.options.position[1]
+    });
+    
+    var prompt = this;
+    
+    this.window.find('.button.close').click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('.button.submit').click( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find('form').submit( function(  ) {
+        prompt.data = prompt.window.find('input').val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+
+};
+
 
 
 
@@ -5870,6 +6280,7 @@ Chatterbox.Settings = function( ui, config ) {
     this.tabs = null;
     this.book = null;
     this.changed = false;
+    this.manager = ui;
 
 };
 
@@ -5891,13 +6302,21 @@ Chatterbox.Settings.prototype.build = function(  ) {
     this.tabs = this.window.find('nav.tabs ul.tabs');
     this.book = this.window.find('div.book');
     
-    this.config.build(this);
+    this.config.build(this.manager, this);
     
     this.window.find('ul.tabs li').first().addClass('active');
     this.window.find('div.book div.page').first().addClass('active');
     
     var settings = this;
     this.window.find('form').bind('change', function(  ) { settings.changed = true; });
+    
+    this.config.each_page( function( index, page ) {
+        page.each_item( function( index, item ) {
+            item._onchange = function( event ) {
+                settings.changed = true;
+            };
+        } );
+    } );
     
     this.saveb.click(
         function( event ) {
@@ -5995,8 +6414,9 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * @class Settings.Config
  * @constructor
  */
-Chatterbox.Settings.Config = function(  ) {
+Chatterbox.Settings.Config = function( ui ) {
 
+    this.manager = ui || null;
     this.pages = [];
 
 };
@@ -6011,9 +6431,10 @@ Chatterbox.Settings.Config = function(  ) {
  */
 Chatterbox.Settings.Config.prototype.find_page = function( name ) {
 
-    n = name.toLowerCase();
+    var n = name.toLowerCase();
+    var page;
     
-    for( index in this.pages ) {
+    for( var index in this.pages ) {
     
         page = this.pages[index];
         if( page.lname == n )
@@ -6031,11 +6452,13 @@ Chatterbox.Settings.Config.prototype.find_page = function( name ) {
  * @method build
  * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Config.prototype.build = function( window ) {
+Chatterbox.Settings.Config.prototype.build = function( ui, window ) {
 
-    for( i in this.pages ) {
+    ui = ui || this.manager;
     
-        this.pages[i].build(window);
+    for( var i in this.pages ) {
+    
+        this.pages[i].build(ui, window);
     
     }
 
@@ -6048,7 +6471,7 @@ Chatterbox.Settings.Config.prototype.build = function( window ) {
  */
 Chatterbox.Settings.Config.prototype.resize = function(  ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].resize();
     
@@ -6068,10 +6491,10 @@ Chatterbox.Settings.Config.prototype.resize = function(  ) {
 Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
     var page = this.find_page(name);
-    push = push || false;
+    push = push || true;
     
     if( page == null ) {
-        page = new Chatterbox.Settings.Page(name);
+        page = new Chatterbox.Settings.Page(name, this.manager);
         if( push ) {
             this.pages.push(page);
         } else {
@@ -6083,6 +6506,27 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
 
 };
 
+
+Chatterbox.Settings.Config.prototype.each_page = function( method ) {
+
+    var page = null;
+    var result = null;
+    
+    for( var i in this.pages ) {
+    
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        
+        page = this.pages[i];
+        result = method( i, page );
+        
+        if( result === false )
+            break;
+    
+    }
+
+};
+
 /**
  * Save settings.
  * 
@@ -6091,7 +6535,7 @@ Chatterbox.Settings.Config.prototype.page = function( name, push ) {
  */
 Chatterbox.Settings.Config.prototype.save = function( window ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].save(window);
     
@@ -6107,7 +6551,7 @@ Chatterbox.Settings.Config.prototype.save = function( window ) {
  */
 Chatterbox.Settings.Config.prototype.close = function( window ) {
 
-    for( i in this.pages ) {
+    for( var i in this.pages ) {
     
         this.pages[i].close(window);
     
@@ -6123,7 +6567,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
  * @constructor
  * @param name {String} Name of the page.
  */
-Chatterbox.Settings.Page = function( name ) {
+Chatterbox.Settings.Page = function( name, ui) {
 
     this.name = name;
     this.lname = name.toLowerCase();
@@ -6131,6 +6575,7 @@ Chatterbox.Settings.Page = function( name ) {
     //this.content = '';
     this.items = [];
     this.itemo = {};
+    this.manager = ui;
 
 };
 
@@ -6140,7 +6585,7 @@ Chatterbox.Settings.Page = function( name ) {
  * @method build
  * @param window {Object} Settings window object.
  */
-Chatterbox.Settings.Page.prototype.build = function( window ) {
+Chatterbox.Settings.Page.prototype.build = function( ui, window ) {
 
     var tab = replaceAll(Chatterbox.template.settings.tab, '{ref}', this.ref);
     tab = replaceAll(tab, '{name}', this.name);
@@ -6173,7 +6618,7 @@ Chatterbox.Settings.Page.prototype.build = function( window ) {
  */
 Chatterbox.Settings.Page.prototype.content = function(  ) {
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].build(this.view);
     
@@ -6188,7 +6633,7 @@ Chatterbox.Settings.Page.prototype.content = function(  ) {
  */
 Chatterbox.Settings.Page.prototype.resize = function(  ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].resize();
     
@@ -6240,7 +6685,7 @@ Chatterbox.Settings.Page.prototype.hide = function(  ) {
 Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
     shift = shift || false;
-    var item = Chatterbox.Settings.Item.get( type, options );
+    var item = Chatterbox.Settings.Item.get( type, options, this.manager );
     
     if( shift ) {
         this.items.unshift(item);
@@ -6256,6 +6701,34 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
 
 };
 
+Chatterbox.Settings.Page.prototype.get = function( item ) {
+
+    if( this.itemo.hasOwnProperty( item ) )
+        return this.itemo[item];
+    return null;
+
+};
+
+Chatterbox.Settings.Page.prototype.each_item = function( method ) {
+
+    var item = null;
+    var result = null;
+    
+    for( var i in this.items ) {
+    
+        if( !this.items.hasOwnProperty(i) )
+            continue;
+        
+        item = this.items[i];
+        result = method( i, item );
+        
+        if( result === false )
+            break;
+    
+    }
+
+};
+
 /**
  * Save page data.
  * 
@@ -6264,7 +6737,7 @@ Chatterbox.Settings.Page.prototype.item = function( type, options, shift ) {
  */
 Chatterbox.Settings.Page.prototype.save = function( window ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].save(window, this);
     
@@ -6280,7 +6753,7 @@ Chatterbox.Settings.Page.prototype.save = function( window ) {
  */
 Chatterbox.Settings.Page.prototype.close = function( window ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].close(window, this);
     
@@ -6297,14 +6770,17 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
  */
-Chatterbox.Settings.Item = function( type, options ) {
+Chatterbox.Settings.Item = function( type, options, ui ) {
 
+    this.manager = ui || null;
     this.options = options || {};
     this.type = type || 'base';
     this.selector = this.type.toLowerCase();
     this.items = [];
     this.itemo = {};
     this.view = null;
+    this.val = null;
+    this._onchange = this._event_stub;
 
 };
 
@@ -6345,6 +6821,7 @@ Chatterbox.Settings.Item.prototype.build = function( page ) {
     var iopt;
     var type;
     var options;
+    var cls;
     
     for( i in this.options.subitems ) {
     
@@ -6389,7 +6866,7 @@ Chatterbox.Settings.Item.prototype.content = function(  ) {
  */
 Chatterbox.Settings.Item.prototype.resize = function(  ) {
 
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].resize();
     
@@ -6417,7 +6894,9 @@ Chatterbox.Settings.Item.prototype.hooks = function( item ) {
     if( !titem.hasOwnProperty('events') )
         return;
     
-    for( i in titem.events ) {
+    var pair = [];
+    
+    for( var i in titem.events ) {
     
         pair = titem.events[i];
         
@@ -6470,7 +6949,9 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
     if( !titem.hasOwnProperty('events') )
         return false;
     
-    for( i in titem.events ) {
+    var pair = [];
+    
+    for( var i in titem.events ) {
     
         pair = titem.events[i];
         
@@ -6491,19 +6972,19 @@ Chatterbox.Settings.Item.prototype._get_ep = function( event ) {
 Chatterbox.Settings.Item.prototype.save = function( window, page ) {
 
     var pair = this._get_ep('inspect');
-    var inps = pair == false ? null : this.view.find(pair[1]);
+    var inps = pair ? this.view.find(pair[1]) : null;
     var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
             cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
         }
     }
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].save( window, page );
     
@@ -6520,21 +7001,21 @@ Chatterbox.Settings.Item.prototype.save = function( window, page ) {
  */
 Chatterbox.Settings.Item.prototype.close = function( window, page ) {
 
-    pair = this._get_ep('inspect');
-    inps = pair == false ? null : this.view.find(pair[1]);
-    cb = this._get_cb('close');
+    var pair = this._get_ep('inspect');
+    var inps = pair ? this.view.find(pair[1]) : null;
+    var cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
         cb( { 'input': inps, 'item': this, 'page': page, 'window': window } );
         return;
     }
     
-    for( i in cb ) {
-        sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+    for( var i in cb ) {
+        var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
         cb[i]( { 'input': sinps, 'item': this, 'page': page, 'window': window } );
     }
     
-    for( i in this.items ) {
+    for( var i in this.items ) {
     
         this.items[i].close( window, page );
     
@@ -6552,12 +7033,13 @@ Chatterbox.Settings.Item.prototype.close = function( window, page ) {
  * @param [defaultc] {Class} Default class to use for the item.
  * @return {Object} Settings item object.
  */
-Chatterbox.Settings.Item.get = function( type, options, base, defaultc ) {
+Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
 
-    types = type.split('.');
-    item = base || Chatterbox.Settings.Item;
+    var types = type.split('.');
+    var item = base || Chatterbox.Settings.Item;
+    var cls;
     
-    for( i in types ) {
+    for( var i in types ) {
         cls = types[i];
         if( !item.hasOwnProperty( cls ) ) {
             item = defaultc || Chatterbox.Settings.Item;
@@ -6566,7 +7048,7 @@ Chatterbox.Settings.Item.get = function( type, options, base, defaultc ) {
         item = item[cls];
     }
     
-    return new item( type, options );
+    return new item( type, options, ui );
 
 };
 
@@ -6604,7 +7086,7 @@ Chatterbox.Settings.Item.Form.prototype.constructor = Chatterbox.Settings.Item.F
  */
 Chatterbox.Settings.Item.Form.field = function( type, options ) {
 
-    return Chatterbox.Settings.Item.get( type, options, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
+    return Chatterbox.Settings.Item.get( type, options, this.manager, Chatterbox.Settings.Item.Form, Chatterbox.Settings.Item.Form.Field );
 
 };
 
@@ -6627,7 +7109,10 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
     if( !this.options.hasOwnProperty('fields') )
         return;
     
-    for( i in this.options.fields ) {
+    var f;
+    var field;
+    
+    for( var i in this.options.fields ) {
         f = this.options.fields[i];
         field = Chatterbox.Settings.Item.Form.field( f[0], f[1] );
         this.fields.push( field );
@@ -6650,7 +7135,7 @@ Chatterbox.Settings.Item.Form.prototype.build = function( page ) {
  */
 Chatterbox.Settings.Item.Form.prototype.resize = function(  ) {
 
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         this.fields[i].resize();
     
@@ -6667,21 +7152,22 @@ Chatterbox.Settings.Item.Form.prototype.resize = function(  ) {
  */
 Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
 
-    data = {};
+    var data = {};
+    var field;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('change');
+    var cb = this._get_cb('change');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this } );
         }
     }
@@ -6698,20 +7184,21 @@ Chatterbox.Settings.Item.Form.prototype.change = function(  ) {
 Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
 
     var data = {};
+    var fields;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('save');
+    var cb = this._get_cb('save');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
         }
     }
@@ -6727,21 +7214,22 @@ Chatterbox.Settings.Item.Form.prototype.save = function( window, page ) {
  */
 Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 
-    data = {};
+    var data = {};
+    var field;
     
-    for( i in this.fields ) {
+    for( var i in this.fields ) {
     
         field = this.fields[i];
         data[field.ref] = field.get();
     
     }
     
-    cb = this._get_cb('close');
+    var cb = this._get_cb('close');
     
     if( typeof cb == 'function' ) {
         cb( { 'data': data, 'form': this, 'page': page, 'window': window } );
     } else {
-        for( i in cb ) {
+        for( var i in cb ) {
             cb[i]( { 'data': data, 'form': this, 'page': page, 'window': window } );
         }
     }
@@ -6928,15 +7416,15 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Form.Check = function( type, options ) {
+Chatterbox.Settings.Item.Form.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Form.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Form.Check.prototype = new Chatterbox.Settings.Item.Form.Radio();
-Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.Item.Form.Check;
+Chatterbox.Settings.Item.Form.Checkbox.prototype = new Chatterbox.Settings.Item.Form.Radio();
+Chatterbox.Settings.Item.Form.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Form.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -6944,7 +7432,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.constructor = Chatterbox.Settings.
  * @method build
  * @param form {Object} Settings page form.
  */
-Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.build = function( form ) {
 
     form.lsection.append(
         Chatterbox.render('settings.item.form.label', {
@@ -6967,7 +7455,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
     form.fsection.append(
         Chatterbox.render('settings.item.form.field.wrap', {
             'ref': this.ref,
-            'field': Chatterbox.render('settings.item.form.field.check', this.options)
+            'field': Chatterbox.render('settings.item.form.field.checkbox', this.options)
         })
     );
     
@@ -6993,7 +7481,7 @@ Chatterbox.Settings.Item.Form.Check.prototype.build = function( form ) {
  * 
  * @method resize
  */
-Chatterbox.Settings.Item.Form.Check.prototype.resize = function(  ) {
+Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 
     this.lwrap.height( this.fwrap.find('.checkbox').height() );
 
@@ -7053,15 +7541,15 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
  */
-Chatterbox.Settings.Item.Check = function( type, options ) {
+Chatterbox.Settings.Item.Checkbox = function( type, options ) {
 
     Chatterbox.Settings.Item.Radio.call(this, type, options);
     this.value = [];
 
 };
 
-Chatterbox.Settings.Item.Check.prototype = new Chatterbox.Settings.Item.Radio();
-Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.Check;
+Chatterbox.Settings.Item.Checkbox.prototype = new Chatterbox.Settings.Item.Radio();
+Chatterbox.Settings.Item.Checkbox.prototype.constructor = Chatterbox.Settings.Item.Checkbox;
 
 /**
  * Build the checkbox field.
@@ -7069,7 +7557,7 @@ Chatterbox.Settings.Item.Check.prototype.constructor = Chatterbox.Settings.Item.
  * @method build
  * @param page {Object} Settings page object.
  */
-Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
+Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 
     if( this.options.hasOwnProperty('items') ) {
         for( i in this.options.items ) {
@@ -7095,17 +7583,224 @@ Chatterbox.Settings.Item.Check.prototype.build = function( page ) {
 
 };
 
-/**
- * Get field data.
- * 
- * @method get
- * @return {Object} data.
- */
-Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 
-    return this.value;
+/**
+ * Check box item.
+ * 
+ * @class Items
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Items = function( type, options, ui ) {
+
+    options = Object.extend( {
+        'prompt': {
+            'title': 'Add Item',
+            'label': 'Item:',
+            'submit-button': 'Add'
+        }
+    }, ( options || {} ) );
+    Chatterbox.Settings.Item.call(this, type, options, ui);
+    this.selected = false;
 
 };
+
+Chatterbox.Settings.Item.Items.prototype = new Chatterbox.Settings.Item();
+Chatterbox.Settings.Item.Items.prototype.constructor = Chatterbox.Settings.Item.Items;
+
+/**
+ * Build the Items field.
+ * 
+ * @method build
+ * @param page {Object} Settings page object.
+ */
+Chatterbox.Settings.Item.Items.prototype.build = function( page ) {
+    
+    Chatterbox.Settings.Item.prototype.build.call( this, page );
+    var mgr = this;
+    this.list = this.view.find('ul');
+    this.buttons = this.view.find('section.buttons p');
+    
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.find('.item').html();
+        el.addClass('selected');
+    } );
+    
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
+    } );
+    
+    this.buttons.find('a.button.up').click( function( event ) {
+        mgr.shift_item( true );
+        return false;
+    } );
+    this.buttons.find('a.button.down').click( function( event ) {
+        mgr.shift_item();
+        return false;
+    } );
+    this.buttons.find('a.button.add').click( function( event ) {
+        var iprompt = new Chatterbox.Popup.Prompt( mgr.manager, {
+            'position': [event.clientX - 100, event.clientY - 50],
+            'title': mgr.options.prompt.title,
+            'label': mgr.options.prompt.label,
+            'submit-button': mgr.options.prompt['submit-button'],
+            'event': {
+                'submit': function( prompt ) {
+                    var data = prompt.data;
+                    if( !data ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    data = data.toLowerCase();
+                    var index = mgr.options.items.indexOf(data);
+                    if( index != -1 ) {
+                        prompt.options.event.cancel( prompt );
+                        return;
+                    }
+                    
+                    mgr._fevent( 'add', {
+                        'item': data
+                    } );
+                    
+                    mgr.refresh();
+                    mgr._onchange({});
+                },
+                'cancel': function( prompt ) {
+                    mgr._fevent('cancel', {});
+                    mgr.refresh();
+                    mgr._onchange({});
+                }
+            }
+        } );
+        iprompt.build();
+        return false;
+    } );
+    this.buttons.find('a.button.close').click( function( event ) {
+        mgr.remove_item();
+        return false;
+    } );
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.shift_item = function( direction ) {
+
+    if( this.selected === false )
+        return;
+    
+    var first = this.options.items.indexOf( this.selected );
+    var second = first + 1;
+    
+    if( direction )
+        second = first - 1;
+    
+    if( first == -1 || first >= this.options.items.length )
+        return;
+    
+    if( second < 0 || second >= this.options.items.length )
+        return;
+    
+    this._fevent(( direction ? 'up' : 'down' ), {
+        'swap': {
+            'this': { 'index': first, 'item': this.options.items[first] },
+            'that': { 'index': second, 'item': this.options.items[second] }
+        }
+    });
+    
+    this.refresh();
+    this._onchange({});
+    return;
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.remove_item = function(  ) {
+
+    if( this.selected === false )
+        return false;
+    
+    var index = this.options.items.indexOf( this.selected );
+    if( index == -1 || index >= this.options.items.length )
+        return;
+    
+    this._fevent( 'remove', {
+        'index': index,
+        'item': this.selected
+    } );
+    
+    this.selected = false;
+    this.refresh();
+    this._onchange({});
+};
+
+Chatterbox.Settings.Item.Items.prototype.refresh = function(  ) {
+
+    this.view.find('section.mitems').html(
+        Chatterbox.template.settings.krender.manageditems(this.options.items)
+    );
+    this.list = this.view.find('ul');
+    this.list.find('li[title=' + (this.selected || '').toLowerCase() + ']')
+        .addClass('selected');
+    
+    var mgr = this;
+    var listing = this.list.find('li');
+    
+    listing.click( function( event ) {
+        var el = mgr.list.find(this);
+        mgr.list.find('li.selected').removeClass('selected');
+        mgr.selected = el.find('.item').html();
+        el.addClass('selected');
+    } );
+    
+    listing.each( function( index, item ) {
+        var el = mgr.list.find(item);
+        el.find('a.close').click( function( event ) {
+            mgr.list.find('li.selected').removeClass('selected');
+            mgr.selected = el.find('.item').html();
+            el.addClass('selected');
+            mgr.remove_item();
+            return false;
+        } );
+    } );
+
+};
+
+Chatterbox.Settings.Item.Items.prototype._fevent = function( evt, args ) {
+
+    var pair = this._get_ep('inspect');
+    var inps = pair ? this.view.find(pair[1]) : null;
+    var cb = this._get_cb(evt);
+    
+    if( typeof cb == 'function' ) {
+        cb( { 'input': inps, 'item': this, 'args': args } );
+    } else {
+        for( var i in cb ) {
+            var sinps = inps.hasOwnProperty('slice') ? inps.slice(i, 1) : inps;
+            cb[i]( { 'input': sinps, 'item': this, 'args': args } );
+        }
+    }
+
+};
+
+Chatterbox.Settings.Item.Items.prototype.save = function(  ) {
+
+    this._fevent('save', {
+        'items': this.options['items'] || []
+    });
+
+};
+
 
 
 
@@ -7216,6 +7911,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
+Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+
 /**
  * HTML for a channel tab.
  * 
@@ -7318,6 +8015,14 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
 
+Chatterbox.template.prompt = {};
+Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
+    <span class="input"><form><input type="text" value="{default}" /></form></span>\
+    <span class="buttons">\
+    <a href="#submit" class="button submit">{submit-button}</a>\
+    <a href="#remove" class="button close big square iconic x"></a>\
+    </span>';
+
 /**
  * Settings stuff.
  *
@@ -7417,6 +8122,31 @@ Chatterbox.template.settings.krender.checkitems = function( items ) {
     }
     
     return render + '<section class="fields">' + fields.join('') + '</section>';
+};
+
+Chatterbox.template.settings.krender.manageditems = function( items ) {
+    if( items.length == 0 )
+        return '<i>No items in this list</i>';
+    
+    var render = '<ul>';
+    var labels = [];
+    var fields = [];
+    var item;
+    
+    for( var i in items ) {
+    
+        if( !items.hasOwnProperty(i) )
+            continue;
+        
+        item = items[i];
+        render+= '<li title="' + item.toLowerCase() + '">\
+                  <span class="remove"><a href="#remove" title="Remove item" class="close iconic x"></a></span>\
+                  <span class="item">' + item + '</span>\
+                  </li>';
+    
+    }
+    
+    return render + '</ul>';
 };
 
 Chatterbox.template.settings.item = {};
@@ -7529,21 +8259,21 @@ Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean(['ref',
 Chatterbox.template.settings.item.radio.events = [['change', 'input:radio'],['inspect', 'input:radio']];
 Chatterbox.template.settings.item.radio.frame = '{title}<div class="{ref} radiobox"><form>{items}</form></div>';
 
-Chatterbox.template.settings.item.check = {};
-Chatterbox.template.settings.item.check.pre = [
+Chatterbox.template.settings.item.checkbox = {};
+Chatterbox.template.settings.item.checkbox.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
     Chatterbox.template.settings.item.hint.prep
 ];
 
-Chatterbox.template.settings.item.check.render = {
+Chatterbox.template.settings.item.checkbox.render = {
     'title': Chatterbox.template.settings.krender.title,
     'text': Chatterbox.template.settings.krender.text,
     'items': Chatterbox.template.settings.krender.checkitems
 };
 
-Chatterbox.template.settings.item.check.post = Chatterbox.template.clean(['ref', 'title', 'items']);
-Chatterbox.template.settings.item.check.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
-Chatterbox.template.settings.item.check.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
+Chatterbox.template.settings.item.checkbox.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.checkbox.events = [['change', 'input:checkbox'],['inspect', 'input:checkbox']];
+Chatterbox.template.settings.item.checkbox.frame = '{title}<div class="{ref} checkbox"><form>{items}</form></div>';
 
 Chatterbox.template.settings.item.textfield = {};
 Chatterbox.template.settings.item.textfield.pre = [
@@ -7574,6 +8304,29 @@ Chatterbox.template.settings.item.textarea.render = {
 Chatterbox.template.settings.item.textarea.post = Chatterbox.template.clean(['ref', 'title', 'default']);
 Chatterbox.template.settings.item.textarea.events = [['blur', 'textarea'],['inspect', 'textarea']];
 Chatterbox.template.settings.item.textarea.frame = '{title}<div class="{ref} textarea"><form><textarea rows="4" cols="20" value="{default}"></textarea></form></div>';
+
+Chatterbox.template.settings.item.items = {};
+Chatterbox.template.settings.item.items.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.items.render = {
+    'title': Chatterbox.template.settings.krender.title,
+    'text': Chatterbox.template.settings.krender.text,
+    'items': Chatterbox.template.settings.krender.manageditems
+};
+
+Chatterbox.template.settings.item.items.post = Chatterbox.template.clean(['ref', 'title', 'items']);
+Chatterbox.template.settings.item.items.events = [];
+Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items">\
+    <section class="buttons"><p><a href="#up" title="Move item up" class="button up iconic arrow_up"></a>\
+    <a href="#down" title="Move item down" class="button down iconic arrow_down"></a>\
+    <a href="#add" title="Add an item" class="button add iconic plus"></a>\
+    <a href="#remove" title="Remove item from list" class="button close big square iconic x"></a>\
+    </p></section>\
+    <section class="mitems">{items}</section>\
+    </div>';
 
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
@@ -7621,10 +8374,10 @@ Chatterbox.template.settings.item.form.field.radio.render = { 'items': Chatterbo
 Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean(['ref', 'items']);
 Chatterbox.template.settings.item.form.field.radio.frame = '<div class="{ref} radiobox">{items}</div>';
 
-Chatterbox.template.settings.item.form.field.check = {};
-Chatterbox.template.settings.item.form.field.check.render = { 'items': Chatterbox.template.settings.krender.checkitems };
-Chatterbox.template.settings.item.form.field.check.post = Chatterbox.template.clean(['ref', 'items']);
-Chatterbox.template.settings.item.form.field.check.frame = '<div class="{ref} checkbox">{items}</div>';
+Chatterbox.template.settings.item.form.field.checkbox = {};
+Chatterbox.template.settings.item.form.field.checkbox.render = { 'items': Chatterbox.template.settings.krender.checkitems };
+Chatterbox.template.settings.item.form.field.checkbox.post = Chatterbox.template.clean(['ref', 'items']);
+Chatterbox.template.settings.item.form.field.checkbox.frame = '<div class="{ref} checkbox">{items}</div>';
 
 Chatterbox.template.settings.item.form.field.text = {};
 Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;

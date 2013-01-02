@@ -126,9 +126,16 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['userinfo'] = info.arg;
         // Autojoin!
         // TODO: multi-channel?
-        if ( client.fresh )
+        if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
-        else {
+            if( client.autojoin.on ) {
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+            }
+        } else {
             for( key in client.channelo ) {
                 if( client.channelo[key].namespace[0] != '~' )
                     client.join(key);

@@ -11,7 +11,9 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
-    this.uistore = this.storage.folder('ui');
+    this.storage.ui = this.storage.folder('ui');
+    this.storage.aj = this.storage.folder('autojoin');
+    this.storage.aj.channel = this.storage.aj.folder('channel');
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
@@ -49,6 +51,11 @@ wsc.Client = function( view, options, mozilla ) {
             "tabclose": true,
             "clock": true
         }
+    };
+    this.autojoin = {
+        'on': true,
+        'count': 0,
+        'channel': []
     };
     
     this.settings = Object.extend( this.settings, options );
@@ -89,9 +96,25 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
-    this.settings.ui.theme = this.uistore.get('theme', this.settings.ui.theme);
-    this.settings.ui.clock = (this.uistore.get('clock', this.settings.ui.clock.toString()) == 'true');
-    this.settings.ui.tabclose = (this.uistore.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
+    this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
+    this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    
+    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
+    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
+    this.autojoin.channel = [];
+    
+    var tc = null;
+    var c = 0;
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        tc = this.storage.aj.channel.get( i, null );
+        if( tc == null )
+            continue;
+        c++;
+        this.autojoin.channel.push(tc);
+    }
+    
+    this.autojoin.count = c;
 
 };
 
@@ -102,9 +125,30 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
-    this.uistore.set('theme', this.settings.ui.theme);
-    this.uistore.set('clock', this.settings.ui.clock.toString());
-    this.uistore.set('tabclose', this.settings.ui.tabclose.toString());
+    this.storage.ui.set('theme', this.settings.ui.theme);
+    this.storage.ui.set('clock', this.settings.ui.clock.toString());
+    this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
+    
+    this.storage.aj.set('on', this.autojoin.on.toString());
+    this.storage.aj.set('count', this.autojoin.count);
+    
+    for( var i = 0; i < this.autojoin.count; i++ ) {
+        this.storage.aj.channel.remove(i)
+    }
+    
+    if( this.autojoin.channel.length == 0 ) {
+        this.storage.aj.set('count', 0);
+    } else {
+        var c = -1;
+        for( var i in this.autojoin.channel ) {
+            if( !this.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            c++;
+            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
+        }
+        c++;
+        this.storage.aj.set('count', c);
+    }
 
 };
 
@@ -554,10 +598,10 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.msg)
+        wsc_packetstr('msg', 'main', {}, e.input)
     ));
 
 };
@@ -571,10 +615,10 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'msg': message, 'ns': namespace };
+    e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.msg)
+        wsc_packetstr('npmsg', 'main', {}, e.input)
     ));
 
 };
@@ -588,10 +632,10 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { name: 'send.action.before', 'msg': action, 'ns': namespace };
-    this.trigger( e );
+    e = { 'input': action, 'ns': namespace };
+    this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.msg)
+        wsc_packetstr('action', 'main', {}, e.input)
     ));
 
 };
@@ -664,7 +708,9 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, reason || null));
+    e = { 'input': reason, 'ns': namespace };
+    this.trigger( 'send.kick.before', e );
+    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
 };
 
@@ -721,7 +767,9 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, value));
+    e = { 'input': value, 'ns': namespace };
+    this.trigger( 'send.set.before', e );
+    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
 
 };
 

@@ -31,14 +31,14 @@ Chatterbox.Navigation = function( ui ) {
             
             var evt = {
                 'e': event,
-                'settings': new Chatterbox.Settings.Config()
+                'settings': new Chatterbox.Settings.Config(nav.manager)
             };
             
             nav.configure_page( evt );
             nav.manager.trigger('settings.open', evt);
             nav.manager.trigger('settings.open.ran', evt);
             
-            var about = evt.settings.page('About', true);
+            var about = evt.settings.page('About');
             about.item('text', {
                 'ref': 'about-chatterbox',
                 'wclass': 'centered faint',
@@ -77,7 +77,7 @@ Chatterbox.Navigation = function( ui ) {
 Chatterbox.Navigation.prototype.configure_page = function( event ) {
 
     var ui = this.manager;
-    var page = event.settings.page('Main', true);
+    var page = event.settings.page('Main');
     var orig = {};
     orig.theme = replaceAll(ui.settings.theme, 'wsct_', '');
     orig.clock = ui.clock();
@@ -109,7 +109,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                     { 'value': '12', 'title': '12 hour', 'selected': !orig.clock }
                 ]
             }],
-            ['Check', {
+            ['Checkbox', {
                 'ref': 'tabclose',
                 'label': 'Close Buttons',
                 'items': [

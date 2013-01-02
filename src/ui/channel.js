@@ -18,6 +18,8 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     this.selector = selector;
     this.raw = ui.format_ns(ns);
     this.namespace = ui.deform_ns(ns);
+    this.visible = false;
+    this.st = 0;
 
 };
 
@@ -93,6 +95,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
     this.window.css({'display': 'none'});
     this.tab.removeClass('active');
+    this.visible = false;
 };
 
 /**
@@ -102,10 +105,14 @@ Chatterbox.Channel.prototype.hide = function( ) {
  */
 Chatterbox.Channel.prototype.show = function( ) {
     //console.log("show  " + this.info.selector);
+    this.visible = true;
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
-    this.tab.removeClass('noise tabbed fill');
+    this.tab.removeClass('noise chatting tabbed fill');
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
     this.resize();
+    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
+    this.scroll();
 };
 
 /**
@@ -127,7 +134,11 @@ Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
     var ws = this.wrap.prop('scrollWidth') - this.wrap.innerWidth();
     var hs = this.wrap.prop('scrollHeight') - this.wrap.innerHeight();
-    this.wrap.scrollTop(hs + (ws > 0 ? this.manager.swidth : 0));
+    if( ws > 0 )
+        hs += ws;
+    if( hs < 0 || (hs - this.wrap.scrollTop()) > 100 )
+        return;
+    this.wrap.scrollTop(hs);
 };
 
 /**
@@ -149,6 +160,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
         this.wrap.css({
             'padding-top': 0,
             'height': lh});
+    this.wrap.scrollTop(this.st);
 };
 
 /**
@@ -252,10 +264,15 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     };
     
     this.manager.trigger( 'log_item.before', data );
+    if( this.visible ) {
+        this.st = this.wrap.scrollTop();
+    }
     
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    this.st+= this.wrap.find('li.logmsg').last().height();
+    this.wrap.scrollTop( this.st );
     
     // Scrollio
     this.scroll();
@@ -551,6 +568,9 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     if( tab.hasClass('tabbed') )
         return;
     
+    if( tab.hasClass('chatting') )
+        tab.removeClass('chatting');
+    
     var runs = 0;
     tab.addClass('tabbed');
     
@@ -575,9 +595,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
  */
 Chatterbox.Channel.prototype.noise = function(  ) {
     
-    if( !this.tab.hasClass('active') )
-        this.tab.addClass('noise');
-    
     var u = '';
     var si = 0;
     var msg = this.window.find('.logmsg').last();
@@ -589,9 +606,19 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         if( msg.hasClass('u-' + this.manager.umuted[i]) ) {
             msg.css({'display': 'none'});
             this.scroll();
-            break;
+            return;
         }
     }
+    
+    if( !this.tab.hasClass('active') ) {
+        this.tab.addClass('noise');
+        if( !this.tab.hasClass('tabbed') ) {
+            if( msg.find('.cevent').length == 0 ) {
+                this.tab.addClass('chatting');
+            }
+        }
+    }
+    
 
 };
 

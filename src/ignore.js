@@ -25,22 +25,11 @@ wsc.defaults.Extension.Ignore = function( client ) {
     
     settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Ignores', true);
+        var page = event.settings.page('Ignores');
         var orig = {};
-        var ul = '<ul>';
         orig.im = settings.ignore;
         orig.uim = settings.unignore;
-        
-        if( client.ui.umuted.length == 0 ) {
-            ul+= '<li><i>No one ignored yet</i></li></ul>';
-        } else {
-            for( var i in client.ui.umuted ) {
-                if( !client.ui.umuted.hasOwnProperty( i ) )
-                    continue;
-                ul+= '<li>' + client.ui.umuted[i] + '</li>';
-            }
-            ul+= '</ul>';
-        }
+        orig.usr = client.ui.umuted;
         
         page.item('Text', {
             'ref': 'intro',
@@ -78,19 +67,46 @@ wsc.defaults.Extension.Ignore = function( client ) {
             }
         });
         
-        var uf = page.item('Form', {
-            'ref': 'ignored',
-            'wclass': 'boxed-ff-indv',
+        var imgr = page.item('Items', {
+            'ref': 'ignoreds',
             'title': 'Users',
             'text': 'This is the list of users that you have silenced.\n\nUse the\
                     commands <code>/ignore</code> and <code>/unignore</code>\
                     to edit the list.',
-            'fields': [
-                ['Text', {
-                    'ref': 'users',
-                    'text': ul
-                }]
-            ]
+            'items': orig.usr,
+            'prompt': {
+                'title': 'Add User',
+                'label': 'User:',
+            },
+            'event': {
+                'up': function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap['this'].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                'down': function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap['this'].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap['this'].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                'add': function( event ) {
+                    client.mute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                'remove': function( event ) {
+                    client.unmute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                'save': function( event ) {
+                    orig.usr = client.ui.umuted;
+                    save();
+                },
+                'close': function( event ) {
+                    load();
+                }
+            }
         });
     
     };
@@ -164,12 +180,21 @@ wsc.defaults.Extension.Ignore = function( client ) {
         settings.ignore = storage.get('ignore', '/me is ignoring {user} now');
         settings.unignore = storage.get('unignore', '/me is not ignoring {user} anymore');
         settings.count = parseInt( storage.get( 'count', 0 ) );
+        
+        var tu = null;
+        for( var i in client.ui.umuted ) {
+            if( !client.ui.umuted.hasOwnProperty(i) ) {
+                continue;
+            }
+            client.unmute_user( client.ui.umuted[i] );
+        }
+        
         client.ui.umuted = [];
         
         if( settings.count > 0 ) {
-            var tu = null;
+            tu = null;
             for( var i = 0; i < settings.count; i++ ) {
-                client.mute_user.push( istore.get(i, null) );
+                client.mute_user( istore.get(i, null) );
                 //client.ui.mute_user( tu );
             }
         }

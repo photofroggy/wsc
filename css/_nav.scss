@@ -12,7 +12,7 @@
             padding: 14px 8px 0;
     
             &#tabnav {
-                padding: 10px 20px;
+                padding: 7px 20px;
                 li {
                     margin-top: -2px;
                     a {
@@ -30,7 +30,7 @@
             
             &.tabs {
                 overflow: hidden;
-                height: 30px;
+                height: 25px;
             
                 li {
                     margin-right: 2px;
@@ -41,12 +41,12 @@
                         border: 1px solid black;
                         border-bottom: none;
                         display: block;
-                        margin-top: -1px;
+                        margin-top: -6px;
                         &:hover {
                             text-decoration: none;
                             border: 1px solid black;
                             border-bottom: none;
-                            padding: 9px 5px;
+                            padding: 7px 5px;
                             margin-top: -11px;
                         }
                     }
@@ -57,10 +57,10 @@
                             padding: 7px;
                             border: 1px solid black;
                             border-bottom: none;
-                            margin-top: -4px;
+                            margin-top: -9px;
                             &:hover {
                                 padding: 7px;
-                                margin-top: -4px;
+                                margin-top: -9px;
                             }
                         }
                     }
