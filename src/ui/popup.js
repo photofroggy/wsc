@@ -153,6 +153,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     Chatterbox.Popup.call( this, ui, options );
     this.data = this.options['default'];
     this.pages = [];
+    this.cpage = null;
 
 };
 
@@ -170,6 +171,7 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
     this.closeb.removeClass('medium');
     this.pbook = this.window.find('section.pages');
     this.tabs = this.window.find('section.tabs ul');
+    this.buttons = this.window.find('section.buttons');
     
     var ip = this;
     var page = null;
@@ -180,7 +182,7 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
         page = this.pages[i];
         page.build();
         if( i == 0 )
-            page.view.css('display', 'block');
+            this.select_page(page);
     }
 
 };
@@ -216,9 +218,38 @@ Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
 
 };
 
+Chatterbox.Popup.ItemPicker.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'href': '#button',
+        'title': 'Button',
+        'label': 'Button',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    this.buttons.append(Chatterbox.render( 'ip.button', options ));
+    this.buttons.find('a[href='+options.href+']').click( function(  ) {
+        options.handler();
+        return false;
+    } );
+
+};
+
 Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
 
     this.options.event.select(item);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select_page = function( page ) {
+
+    if( this.cpage != null )
+        this.cpage.hide();
+    
+    this.cpage = page || null;
+    
+    if( this.cpage != null )
+        this.cpage.show();
 
 };
 
@@ -252,6 +283,12 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
     this.items = this.view.find('ul');
     this.tab = this.picker.tabs.find('#'+this.options.ref);
     this.hook_events();
+    
+    var page = this;
+    this.tab.find('a').click( function(  ) {
+        page.picker.select_page( page );
+        return false;
+    } );
 
 };
 
@@ -302,6 +339,20 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
     }
     
     return ul.join('');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.show = function(  ) {
+
+    this.tab.addClass('selected');
+    this.view.css('display', 'block');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
+
+    this.tab.removeClass('selected');
+    this.view.css('display', 'none');
 
 };
 

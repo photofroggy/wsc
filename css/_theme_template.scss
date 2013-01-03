@@ -321,6 +321,9 @@
             div.inner {
                 border-color: $inner-border;
                 section.tabs {
+                    ul li.selected a {
+                        background-color: rgba(145, 163, 173, 0.75);
+                    }
                 }
                 section.pages {
                     border-color: $inner-border;

@@ -282,3 +282,22 @@ wsc.dAmn.Emotes.Picker.prototype.close = function(  ) {
     this.hide();
 
 };
+
+wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
+
+    var picker = this;
+    Chatterbox.Popup.ItemPicker.prototype.build.call( this, options );
+    this.add_button( {
+        'href': '#reload',
+        'title': 'Reload emoticons',
+        'label': 'Reload',
+        'handler': function(  ) { picker.reload(); }
+    } );
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.reload = function(  ) {
+
+    console.log('>> Received order to reload!');
+
+};
