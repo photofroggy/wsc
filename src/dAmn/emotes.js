@@ -301,11 +301,11 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     d.anchor = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + d.title + '">';
     
     if( w/h > 1) {
-        th = parseInt((h * 150) / w);
-        tw = 150;
+        th = parseInt((h * 100) / w);
+        tw = 100;
     } else {
-        tw = parseInt((w * 150) / h);
-        th = 150;
+        tw = parseInt((w * 100) / h);
+        th = 100;
     }
     
     if( tw > w || th > h ) {
@@ -314,7 +314,7 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     }
     
     d.dimensions = 'width="' + tw + '" height="' + th + '"';
-    d.flags.push(isgif && ( w > 150 || h > 150 ));
+    d.flags.push(isgif && ( w > 200 || h > 200 ));
     
     return wsc.dAmn.Emotes.Thumb( d.id, user, d );
 
@@ -431,6 +431,7 @@ wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
 wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
 
     this.window.css({'display': 'block'});
+    this.refresh();
 
 };
 
@@ -523,11 +524,11 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
         var th, tw;
         
         if( w/h > 1) {
-            th = parseInt((h * 150) / w);
-            tw = 150;
+            th = parseInt((h * 100) / w);
+            tw = 100;
         } else {
-            tw = parseInt((w * 150) / h);
-            th = 150;
+            tw = parseInt((w * 100) / h);
+            th = 100;
         }
         
         if( tw > w || th > h ) {

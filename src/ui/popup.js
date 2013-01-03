@@ -261,27 +261,22 @@ Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
         'label': 'Page',
         'title': 'page',
         'items': [],
-        'content': '',
+        'content': '<em>No items on this page.</em>',
     }, ( options || {} ));
     this.name = this.options.label;
+    this.nrefresh = true;
 
 };
 
 Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
 
-    var list = this.build_list();
-    if( list.length == 0 ) {
-        this.options.content = '<em>No items on this page.</em>';
-    } else {
-        this.options.content = '<ul>' + list + '</ul>';
-    }
-    
     this.picker.pbook.append( Chatterbox.render('ip.page', this.options) );
     this.picker.tabs.append(Chatterbox.render('ip.tab', this.options));
     this.view = this.picker.pbook.find('div.page#'+this.options.ref);
     this.items = this.view.find('ul');
     this.tab = this.picker.tabs.find('#'+this.options.ref);
-    this.hook_events();
+    
+    this.refresh();
     
     var page = this;
     this.tab.find('a').click( function(  ) {
@@ -302,6 +297,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
     this.view.html(this.options.content);
     this.items = this.view.find('ul');
     this.hook_events();
+    this.nrefresh = false;
 
 };
 
@@ -354,7 +350,6 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
 
     this.tab.removeClass('selected');
     this.view.css('display', 'none');
-    this.view.find('ul').remove();
 
 };
 
