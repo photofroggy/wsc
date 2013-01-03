@@ -8730,23 +8730,28 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
     this.data = this.options['default'];
+    var alpha = 'ABCDEFGHIJKLMNOP';
+    var letter = '';
+    var llow = '';
+    
+    for( var i = 0; i < alpha.length; i++ ) {
+        letter = alpha[i];
+        llow = letter.toLowerCase();
+        this.add_page({
+            'ref': llow,
+            'href': '#' + llow,
+            'label': letter,
+            'title': 'Emotes beginning with ' + letter,
+            'items': []
+        });
+    }
+    
     this.add_page({
-        'ref': 'a',
-        'href': '#a',
-        'label': 'A',
-        'title': 'Emotes beginning with A',
-        'items': [
-            { 'value': 'a', 'title': 'a' },
-            { 'value': 'aa', 'title': 'lol' },
-            { 'value': 'aaa', 'title': 'fuck this' }
-        ]
-    });
-    this.add_page({
-        'ref': 'b',
-        'href': '#b',
-        'label': 'B',
-        'title': 'Emotes beginning with B',
-        'items': ['bitch']
+        'ref': 'misc',
+        'href': '#misc',
+        'label': '#',
+        'title': 'Emotes not beginning with letters',
+        'items': []
     });
 
 };

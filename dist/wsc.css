@@ -1035,9 +1035,10 @@ div.wsc div.floater.item-picker div.inner .content section.tabs ul li {
   float: left;
 }
 div.wsc div.floater.item-picker div.inner .content section.tabs ul li a {
-  padding: 3px;
+  padding: 2px;
   margin: 2px;
   border: 1px solid black;
+  font-size: 10px;
 }
 div.wsc div.floater.item-picker div.inner .content section.pages {
   background-color: rgba(255, 255, 255, 0.75);
