@@ -354,6 +354,13 @@
                         text-decoration: $chrome-ahd;
                         background-color: rgba(145, 163, 173, 0.75);
                     }
+                    &.evented {
+                        color: $inner-border;
+                        &:hover {
+                            background-color: rgba(255, 255, 255, 0.75);
+                            color: $inner-border;
+                        }
+                    }
                 }
             }
         }

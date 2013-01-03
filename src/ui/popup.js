@@ -223,15 +223,11 @@ Chatterbox.Popup.ItemPicker.prototype.add_button = function( options ) {
     options = Object.extend( {
         'href': '#button',
         'title': 'Button',
-        'label': 'Button',
-        'handler': function(  ) {}
+        'label': 'Button'
     }, ( options || {} ) );
     
     this.buttons.append(Chatterbox.render( 'ip.button', options ));
-    this.buttons.find('a[href='+options.href+']').click( function(  ) {
-        options.handler();
-        return false;
-    } );
+    return this.buttons.find('a[href='+options.href+']');
 
 };
 

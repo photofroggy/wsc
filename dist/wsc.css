@@ -1576,6 +1576,15 @@ div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.t
   text-decoration: none;
   background-color: rgba(145, 163, 173, 0.75);
 }
+div.wsc.wsct_default div.floater.item-picker div.inner section.tabs ul li a.evented,
+div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text.evented {
+  color: #0d4d69;
+}
+div.wsc.wsct_default div.floater.item-picker div.inner section.tabs ul li a.evented:hover,
+div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.text.evented:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+  color: #0d4d69;
+}
 div.wsc.wsct_default div.floater div.inner {
   background-color: #406d8b;
   border-color: #0d4d69;
@@ -1891,6 +1900,15 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text
   color: #2c3635;
   text-decoration: underline;
   background-color: rgba(145, 163, 173, 0.75);
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a.evented,
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text.evented {
+  color: #9eaea0;
+}
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a.evented:hover,
+div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text.evented:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+  color: #9eaea0;
 }
 div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;

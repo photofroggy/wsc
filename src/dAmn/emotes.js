@@ -9,9 +9,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.loaded = false;
     settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
         'event': {
-            'select': function( item ) { settings.emotes.select( item ); }
+            'select': function( item ) { settings.emotes.select( item ); },
+            'reload': function(  ) { settings.emotes.fetch(); }
         }
-    } );
+    }, settings );
     settings.emotes.picker.build();
     settings.emotes.picker.hide();
     
@@ -83,6 +84,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     client.ui.on('settings.open.ran', settings.emotes.configure_page);
     
     settings.emotes.fetch = function(  ) {
+        if( settings.emotes.loaded ) {
+            settings.emotes.picker.loading('Reloading...');
+        } else {
+            settings.emotes.picker.loading();
+        }
         settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
             settings.emotes.fetching = false;
@@ -115,6 +121,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             settings.emotes.sort();
             settings.emotes.loaded = true;
+            settings.emotes.picker.loaded();
             
             if( settings.emotes.page !== null ) {
                 settings.emotes.page.view.find('.emotestatus')
@@ -224,18 +231,20 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
  * Emote picker.
  * This should be used for retrieving input from the user.
  */
-wsc.dAmn.Emotes.Picker = function( ui, options ) {
+wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
 
     options = options || {};
     options = Object.extend( {
         'title': 'Emotes',
         'event': {
             'select': function( item ) {  },
+            'reload': function(  ) {}
         }
     }, options );
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
-    this.data = this.options['default'];
+    this.settings = settings;
+    this.rbutton = null;
     var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var letter = '';
     var llow = '';
@@ -287,17 +296,47 @@ wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
 
     var picker = this;
     Chatterbox.Popup.ItemPicker.prototype.build.call( this, options );
-    this.add_button( {
+    var bl = 'Reload';
+    
+    this.rbutton = this.add_button( {
         'href': '#reload',
         'title': 'Reload emoticons',
         'label': 'Reload',
-        'handler': function(  ) { picker.reload(); }
     } );
+    
+    if( this.settings.emotes.fetching ) {
+        this.loading('Loading...');
+    }
+    
+    this.rbutton.click( function(  ) {
+        if( picker.settings.emotes.fetching )
+            return false;
+        if( picker.rbutton.hasClass('evented') )
+            return false;
+        picker.reload();
+        return false;
+    } );
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loaded = function(  ) {
+
+    this.rbutton.html( 'Reload' );
+    this.rbutton.removeClass('evented');
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loading = function( text ) {
+
+    text = text || 'Reloading...';
+    this.rbutton.addClass('evented');
+    this.rbutton.html(text);
 
 };
 
 wsc.dAmn.Emotes.Picker.prototype.reload = function(  ) {
 
-    console.log('>> Received order to reload!');
+    this.loading();
+    this.options.event.reload();
 
 };
