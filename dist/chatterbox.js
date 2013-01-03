@@ -2132,8 +2132,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
         'ref': 'item-picker',
         'title': 'Items',
         'event': {
-            'submit': function(  ) {},
-            'cancel': function(  ) {}
+            'select': function( item ) {}
         }
     }, options );
     

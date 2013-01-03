@@ -2,8 +2,6 @@
 wsc.dAmn.Emotes = function( client, storage, settings ) {
 
     settings.emotes.emote = {};
-    settings.emotes.map = {};
-    settings.emotes.slist = [];
     settings.emotes.page = null;
     settings.emotes.fint = null;
     settings.emotes.notice = null;
@@ -187,16 +185,13 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             return caseInsensitiveSort( a.value, b.value );
         };
         
-        // Now we sort all of or problems out with magic.
+        // Now we sort all of the emotes on each page.
         for( var i = 0; i < alpha.length; i++ ) {
-            if( !alpha.hasOwnProperty(i) )
-                continue;
-            
             map[i].sort( sorter );
-            settings.emotes.picker.page( alpha[i], settings.emotes.picker.page( '#' ) )
-                .options.items = map[i];
+            settings.emotes.picker.page( alpha[i] ).options.items = map[i];
         }
         
+        // Display the newly sorted emotes.
         settings.emotes.picker.refresh();
     
     };
