@@ -114,7 +114,9 @@
                         right: 10px;
                         .button.text {
                             border: 1px solid black;
-                            
+                            &.evented {
+                                cursor: default;
+                            }
                         }
                     }
                 }

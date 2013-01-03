@@ -1085,6 +1085,9 @@ div.wsc div.floater.item-picker div.inner .content section.buttons {
 div.wsc div.floater.item-picker div.inner .content section.buttons .button.text {
   border: 1px solid black;
 }
+div.wsc div.floater.item-picker div.inner .content section.buttons .button.text.evented {
+  cursor: default;
+}
 div.wsc div.floater.settings {
   top: 5em;
   width: 60%;

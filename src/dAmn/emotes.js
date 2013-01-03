@@ -48,7 +48,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         page.item('Form', {
             'ref': 'switch',
             'title': 'Enable Emotes',
-            'text': 'Here you can turn custom emotes on and off.\n\n<span class="emotestatus">'+stat+'</span>',
+            'text': 'Here you can turn custom emotes on and off.',
             'fields': [
                 ['Checkbox', {
                     'ref': 'enabled',
@@ -69,12 +69,23 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                 },
                 'save': function( event ) {
                     orig.on = settings.emotes.on;
+                    if( !settings.emotes.on ) {
+                        settings.emotes.picker.loading('Disabled');
+                    } else {
+                        if( !settings.emotes.fetching ) {
+                            settings.emotes.picker.loaded();
+                        }
+                    }
                     settings.save();
                 },
                 'close': function( event ) {
                     settings.emotes.on = orig.on;
                     settings.load();
                     settings.emotes.page = null;
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
                 }
             }
         });
@@ -122,23 +133,12 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             settings.emotes.sort();
             settings.emotes.loaded = true;
             settings.emotes.picker.loaded();
-            
-            if( settings.emotes.page !== null ) {
-                settings.emotes.page.view.find('.emotestatus')
-                    .html('<em>Emotes loaded.</em>');
-            }
-            
             settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         },
         function(  ) {
             settings.emotes.picker.loaded();
             return false;
         });
-        
-        if( settings.emotes.page !== null ) {
-            settings.emotes.page.view.find('.emotestatus')
-                .html('<em>Fetching emotes...</em>');
-        }
     };
     
     settings.emotes.swap = function( e ) {
@@ -325,14 +325,20 @@ wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
     this.rbutton = this.add_button( {
         'href': '#reload',
         'title': 'Reload emoticons',
-        'label': 'Reload',
+        'label': 'Reload'
     } );
     
     if( this.settings.emotes.fetching ) {
         this.loading('Loading...');
     }
     
+    if( !this.settings.emotes.on ) {
+        this.loading('Disabled');
+    }
+    
     this.rbutton.click( function(  ) {
+        if( !picker.settings.emotes.on )
+            return false;
         if( picker.settings.emotes.fetching )
             return false;
         if( picker.rbutton.hasClass('evented') )

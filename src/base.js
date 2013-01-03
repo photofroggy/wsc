@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.14';
+wsc.VERSION = '1.2.15';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.99';
+wsc.REVISION = '0.16.100';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
