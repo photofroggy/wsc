@@ -1,6 +1,9 @@
 
 wsc.dAmn.Emotes = function( client, storage, settings ) {
 
+    settings.emotes.emote = {};
+    settings.emotes.map = {};
+    settings.emotes.slist = [];
     settings.emotes.page = null;
     settings.emotes.fint = null;
     settings.emotes.notice = null;
@@ -80,6 +83,9 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.fetch = function(  ) {
         settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            settings.emotes.fetching = false;
+            settings.emotes.emote = data;
+            
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
                     settings.emotes.notice = new Chatterbox.Popup( client.ui, {
@@ -104,13 +110,15 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                     }, 5000 );
                 }
             }
-            settings.emotes.fetching = false;
+            
+            settings.emotes.sort();
             settings.emotes.loaded = true;
-            settings.emotes.emote = data;
+            
             if( settings.emotes.page !== null ) {
                 settings.emotes.page.view.find('.emotestatus')
                     .html('<em>Emotes loaded.</em>');
             }
+            
             settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         });
         
@@ -139,6 +147,57 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         }
         
         e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+    
+    };
+    
+    settings.emotes.sort = function(  ) {
+    
+        var map = [
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], 
+        ];
+        var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#';
+        var emote = null;
+        var mitem = null;
+        var prted = false;
+        var idex = -1;
+        
+        // First part we create our maps for our page items.
+        for( var i in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(i) )
+                continue;
+            
+            emote = settings.emotes.emote[i];
+            mitem = {
+                'value': emote.code,
+                'title': 'created by ' + emote.by
+            };
+            
+            idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
+            
+            if( idex == -1 )
+                idex = alpha.indexOf( '#' );
+            
+            map[idex].push(mitem);
+        }
+        
+        var sorter = function( a, b ) {
+            return caseInsensitiveSort( a.value, b.value );
+        };
+        
+        // Now we sort all of or problems out with magic.
+        for( var i = 0; i < alpha.length; i++ ) {
+            if( !alpha.hasOwnProperty(i) )
+                continue;
+            
+            map[i].sort( sorter );
+            settings.emotes.picker.page( alpha[i], settings.emotes.picker.page( '#' ) )
+                .options.items = map[i];
+        }
+        
+        settings.emotes.picker.refresh();
     
     };
     

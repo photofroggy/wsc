@@ -6312,7 +6312,17 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
 
 };
 
-Chatterbox.Popup.ItemPicker.prototype.page = function( name ) {
+Chatterbox.Popup.ItemPicker.prototype.refresh = function(  ) {
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        this.pages[i].refresh();
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.page = function( name, dpage ) {
 
     name = name.toLowerCase();
     
@@ -6323,7 +6333,7 @@ Chatterbox.Popup.ItemPicker.prototype.page = function( name ) {
             return this.pages[i];
     }
     
-    return null;
+    return (dpage || null);
 
 };
 
@@ -6362,6 +6372,19 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
     this.view = this.picker.pbook.find('div.page#'+this.options.ref);
     this.items = this.view.find('ul');
     this.tab = this.picker.tabs.find('#'+this.options.ref);
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
+
+    var content = this.build_list();
+    if( content.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + content + '</ul>';
+    }
+    this.view.html(this.options.content);
+    this.items = this.view.find('ul');
 
 };
 

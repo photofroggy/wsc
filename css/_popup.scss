@@ -47,7 +47,6 @@
                     @include round-top(0px);
                 }
                 .content {
-                    overflow: auto;
                     height: 80%;
                     ul {
                         list-style: none;
@@ -73,6 +72,7 @@
                         background-color: rgba(255, 255, 255, 0.75);
                         height: 75%;
                         border: 1px solid black;
+                        overflow: auto;
                         .page {
                             display: none;
                             ul {

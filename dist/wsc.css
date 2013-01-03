@@ -1017,7 +1017,6 @@ div.wsc div.floater.item-picker div.inner h2 {
   -webkit-border-top-right-radius: 0px;
 }
 div.wsc div.floater.item-picker div.inner .content {
-  overflow: auto;
   height: 80%;
 }
 div.wsc div.floater.item-picker div.inner .content ul {
@@ -1044,6 +1043,7 @@ div.wsc div.floater.item-picker div.inner .content section.pages {
   background-color: rgba(255, 255, 255, 0.75);
   height: 75%;
   border: 1px solid black;
+  overflow: auto;
 }
 div.wsc div.floater.item-picker div.inner .content section.pages .page {
   display: none;
