@@ -41,7 +41,6 @@
                 @include round-box(0px);
                 @include shadow(none);
                 height: 300px;
-                min-width: 350px;
                 border-bottom: none;
                 h2 {
                     @include round-top(0px);

@@ -58,6 +58,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             'event': {
                 'change': function( event ) {
                     settings.emotes.on = (event.data.enabled.indexOf('yes') != -1);
+                    settings.emotes.picker.state( settings.emotes.on );
                     if( settings.emotes.on ) {
                         settings.emotes.fetch();
                         return;
@@ -208,7 +209,8 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                 '__', ' ');
             t = replaceAll(t, '_', ' ');
             
-            var eimg = wsc.dAmn.Emotes.Thumb( emote.devid, emote.by, {
+            var eimg = wsc.dAmn.Emotes.Thumb( emote.devid, {
+                'user': emote.by,
                 'title': t,
                 'otitle': 'created by ' + emote.by,
                 'aclose': '',
@@ -316,11 +318,11 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     d.dimensions = 'width="' + tw + '" height="' + th + '"';
     d.flags.push(isgif && ( w > 200 || h > 200 ));
     
-    return wsc.dAmn.Emotes.Thumb( d.id, user, d );
+    return wsc.dAmn.Emotes.Thumb( d.id, d );
 
 };
 
-wsc.dAmn.Emotes.Thumb = function( id, user, deviation ) {
+wsc.dAmn.Emotes.Thumb = function( id, deviation ) {
 
     deviation = Object.extend( {
         'title': 'deviation by user',
@@ -422,6 +424,24 @@ wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
 wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
 wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
 
+wsc.dAmn.Emotes.Picker.Disabled = '<section class="pages">\
+            <section class="disabled">\
+                <p>The emote cloud is currently disabled.</p><p>To use emoticons from\
+                the cloud, click the button below to enable them.</p><p>\
+                <a href="#enable" class="button text">Enable</a>\
+                </p>\
+            </section>\
+            </section>\
+            <section class="buttons"></section>';
+
+wsc.dAmn.Emotes.Picker.prototype.state = function( on ) {
+
+    this.settings.emotes.on = ( on || false );
+    this.rebuild();
+    this.refresh();
+
+};
+
 wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
 
     this.window.css({'display': 'none'});
@@ -443,10 +463,25 @@ wsc.dAmn.Emotes.Picker.prototype.close = function(  ) {
 
 wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
 
-    var picker = this;
     Chatterbox.Popup.ItemPicker.prototype.build.call( this, options );
-    var bl = 'Reload';
+    this.rebuild();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.rebuild = function( options ) {
+
+    var picker = this;
+    this.window.find('.inner .content').html('');
     
+    if( this.settings.emotes.on ) {
+        this.options.content = Chatterbox.render('ip.main');
+    } else {
+        this.options.content = wsc.dAmn.Emotes.Picker.Disabled;
+    }
+    
+    this.window.find('.inner .content').html(this.options.content);
+    this.pbook = this.window.find('section.pages');
+    this.buttons = this.window.find('section.buttons');
     this.rbutton = this.add_button( {
         'href': '#reload',
         'title': 'Reload emoticons',
@@ -471,6 +506,49 @@ wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
         picker.reload();
         return false;
     } );
+    
+    if( this.settings.emotes.on ) {
+        this.tabs = this.window.find('section.tabs ul');
+        /* */
+        var ip = this;
+        var page = null;
+        
+        for( var i in this.pages ) {
+            if( !this.pages.hasOwnProperty(i) )
+                continue;
+            page = this.pages[i];
+            page.build();
+            if( i == 0 )
+                this.select_page(page);
+        }
+        /* */
+    } else {
+        this.dis = this.pbook.find('.disabled');
+        this.dis.css( {
+            'max-width': 330
+        } );
+        
+        this.dis.find('p').css( {
+            'margin': '5px 10px 5px 10px',
+        } );
+        
+        this.dis.find('p').last().css( {
+            'text-align': 'center',
+            'margin-top': 25,
+            'margin-bottom': 25
+        });
+        
+        this.dis.find('p').first().css( {
+            'margin-top': 25
+        });
+        
+        this.window.find('a[href=#enable].button').click( function(  ) {
+            picker.state(true);
+            picker.settings.emotes.fetch();
+            picker.settings.save();
+            return false;
+        } );
+    }
 
 };
 
@@ -505,6 +583,9 @@ wsc.dAmn.Emotes.Page.prototype.constructor = wsc.dAmn.Emotes.Page;
 
 wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
 
+    if( !this.picker.settings.emotes.on )
+        return;
+    
     Chatterbox.Popup.ItemPicker.Page.prototype.refresh.call(this);
     var page = this;
     
