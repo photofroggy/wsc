@@ -153,6 +153,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             fec = e.input.indexOf(code);
             if( fec == -1 )
                 continue;
+            
             e.input = replaceAll(
                 e.input, code,
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
@@ -194,6 +195,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         var mitem = null;
         var prted = false;
         var idex = -1;
+        var debug = true;
         
         // First part we create our maps for our page items.
         for( var i in settings.emotes.emote ) {
@@ -201,9 +203,25 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                 continue;
             
             emote = settings.emotes.emote[i];
+            var t = replaceAll(emote.img.split('/')
+                .pop().split('.').shift(),
+                '__', ' ');
+            t = replaceAll(t, '_', ' ');
+            
+            var eimg = wsc.dAmn.Emotes.Thumb( emote.devid, emote.by, {
+                'title': t,
+                'otitle': 'created by ' + emote.by,
+                'aclose': '',
+                'anchor': '',
+                'thumb': emote.img
+            } );
+            
             mitem = {
-                'value': settings.emotes.prepare(emote.code),
-                'title': 'created by ' + emote.by
+                'value': '<span class="thumb">' + eimg +
+                    '</span><span class="value">' +
+                    settings.emotes.prepare(emote.code) + '</span>',
+                'title': 'created by ' + emote.by,
+                'html': true
             };
             
             idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
@@ -251,6 +269,112 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
 
 };
 
+wsc.dAmn.Emotes.Tablumps = function( data ) {
+
+    var d = {
+        'id': data[0],
+        'user': data[2],
+        'thumb': data[5],
+        'server': parseInt(data[4]),
+        'flags': data[6].split(':'),
+        'dimensions': '',
+        'title': '',
+        'anchor': '',
+        'otitle': data[1]
+    };
+    
+    d.flags[0] = parseInt(d.flags[0]);
+    d.flags[1] = parseInt(d.flags[1]);
+    d.flags[2] = parseInt(d.flags[2]);
+    
+    var isgif = d.thumb.match( /\.gif$/i );
+    var dim = data[3].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
+    var tw, th;
+    var lu = d.user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
+    // Deviation title.
+    var ut = (d.otitle.replace(/[^A-Za-z0-9]+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '') || '-') + '-' + d.id;
+    
+    // Deviation link tag. First segment only.
+    d.title = d.otitle + ' by ' + d.user + ', ' + w + 'x' + h;
+    d.anchor = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + d.title + '">';
+    
+    if( w/h > 1) {
+        th = parseInt((h * 100) / w);
+        tw = 100;
+    } else {
+        tw = parseInt((w * 100) / h);
+        th = 100;
+    }
+    
+    if( tw > w || th > h ) {
+        tw = w;
+        th = h;
+    }
+    
+    d.dimensions = 'width="' + tw + '" height="' + th + '"';
+    d.flags.push(isgif && ( w > 200 || h > 200 ));
+    
+    return wsc.dAmn.Emotes.Thumb( d.id, user, d );
+
+};
+
+wsc.dAmn.Emotes.Thumb = function( id, user, deviation ) {
+
+    deviation = Object.extend( {
+        'title': 'deviation by user',
+        'anchor': '<a href="http://url.com/devation__by_user.gif" target="_blank" title="deviation by user">',
+        'aclose': '</a>',
+        'thumb': 'fs26/f/2008/160/b/2/deviation_by_username.gif',
+        'otitle': 'deviation',
+        'flags': false,
+        'dimensions': '',
+        'server': '1',
+    }, ( deviation || {} ) );
+    var shadow = false;
+    var isgif = deviation.thumb.match( /\.gif$/i );
+    
+    if( deviation.flags ) {
+        // Time to go through the flags.
+        if( deviation.flags[1] > 0 )
+            return deviation.anchor + '[mature deviation: ' + deviation.otitle + ']' + deviation.aclose;
+        
+        if( deviation.flags[2] > 0 )
+            return deviation.anchor + '[deviation: ' + deviation.otitle + ']' + deviation.aclose;
+    
+        if( deviation.flags[3] )
+            return deviation.anchor + '[deviation: ' + d.otitle + ']' + deviation.aclose;
+        
+        shadow = (deviation.flags[0] == 0);
+    }
+    
+    
+    var path = '';
+    
+    if( isgif ) {
+        var f = deviation.thumb.replace(/:/, '/');
+        path = 'http://fc0' + deviation.server + '.deviantart.net/' + f;
+        var det = f.split('/');
+        if( det.length > 1 ) {
+            det = det['.'];
+            if( det && det.length > 2 )
+                path = 'http://' + deviation.thumb;
+        }
+        return deviation.anchor + '<img class="thumb" title="' + deviation.title +
+            '"' + deviation.dimensions + ' alt=":thumb'+id+':" src="' +
+            path +'" />' + deviation.aclose;
+    }
+    path = 'http://backend.deviantart.com/oembed?url=http://www.deviantart.com/deviation/'+id+'&format=thumb150';
+    
+    if( deviation.thumb.match(/.png$/i) )
+        shadow = false;
+    
+    return deviation.anchor + '<img class="thumb' + ( shadow ? ' shadow' : '' ) + '"' +
+        deviation.dimensions + ' " alt=":thumb'+id+':" src="'+path+
+        '" />' + deviation.aclose;
+};
+
 /**
  * Emote picker.
  * This should be used for retrieving input from the user.
@@ -276,22 +400,22 @@ wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
     for( var i = 0; i < alpha.length; i++ ) {
         letter = alpha[i];
         llow = letter.toLowerCase();
-        this.add_page({
+        this.add_page( {
             'ref': llow,
             'href': '#' + llow,
             'label': letter,
             'title': 'Emotes beginning with ' + letter,
             'items': []
-        });
+        }, wsc.dAmn.Emotes.Page );
     }
     
-    this.add_page({
+    this.add_page( {
         'ref': 'misc',
         'href': '#misc',
         'label': '#',
         'title': 'Emotes not beginning with letters',
         'items': []
-    });
+    }, wsc.dAmn.Emotes.Page);
 
 };
 
@@ -307,6 +431,7 @@ wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
 wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
 
     this.window.css({'display': 'block'});
+    this.refresh();
 
 };
 
@@ -368,5 +493,58 @@ wsc.dAmn.Emotes.Picker.prototype.reload = function(  ) {
 
     this.loading();
     this.options.event.reload();
+
+};
+
+wsc.dAmn.Emotes.Page = function(  ) {
+    Chatterbox.Popup.ItemPicker.Page.apply(this, arguments);
+};
+
+wsc.dAmn.Emotes.Page.prototype = new Chatterbox.Popup.ItemPicker.Page();
+wsc.dAmn.Emotes.Page.prototype.constructor = wsc.dAmn.Emotes.Page;
+
+wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
+
+    Chatterbox.Popup.ItemPicker.Page.prototype.refresh.call(this);
+    var page = this;
+    
+    page.view.find('span.thumb img').error( function(  ) {
+        var el = page.view.find(this);
+        var em = el.parent().parent();
+        var val = page.picker.settings.emotes.repair(em.find('.value').html());
+        delete page.picker.settings.emotes.emote[val];
+        em.remove();
+        return false;
+    } );
+    
+    page.view.find('span.thumb img').load( function(  ) {
+        var el = page.view.find(this);
+        var w = el.width();
+        var h = el.height();
+        var th, tw;
+        
+        if( w/h > 1) {
+            th = parseInt((h * 100) / w);
+            tw = 100;
+        } else {
+            tw = parseInt((w * 100) / h);
+            th = 100;
+        }
+        
+        if( tw > w || th > h ) {
+            tw = w;
+            th = h;
+        }
+        
+        el.css({
+            'height': th,
+            'width': tw
+        });
+        
+        el.parent().css( {
+            'float': 'right',
+            'display': 'block'
+        } );
+    } );
 
 };
