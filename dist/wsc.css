@@ -1005,7 +1005,7 @@ div.wsc div.floater.item-picker div.inner {
   -moz-box-shadow: none;
   box-shadow: none;
   height: 300px;
-  width: 350px;
+  min-width: 350px;
   border-bottom: none;
 }
 div.wsc div.floater.item-picker div.inner h2 {

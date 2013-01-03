@@ -7,7 +7,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
-    settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
+        'event': {
+            'select': function( item ) { settings.emotes.select( item ); }
+        }
+    } );
     settings.emotes.picker.build();
     settings.emotes.picker.hide();
     
@@ -185,15 +189,23 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             return caseInsensitiveSort( a.value, b.value );
         };
         
+        var dp = settings.emotes.picker.page( '#' );
+        var page = null;
+        
         // Now we sort all of the emotes on each page.
         for( var i = 0; i < alpha.length; i++ ) {
             map[i].sort( sorter );
-            settings.emotes.picker.page( alpha[i] ).options.items = map[i];
+            page = settings.emotes.picker.page( alpha[i], dp );
+            page.options.items = map[i];
         }
         
         // Display the newly sorted emotes.
         settings.emotes.picker.refresh();
     
+    };
+    
+    settings.emotes.select = function( item ) {
+        client.ui.control.set_text( client.ui.control.get_text( ) + item );
     };
     
     client.bind('send.msg.before', settings.emotes.swap);
@@ -218,14 +230,13 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
     options = Object.extend( {
         'title': 'Emotes',
         'event': {
-            'submit': function(  ) {},
-            'cancel': function(  ) {}
+            'select': function( item ) {  },
         }
     }, options );
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
     this.data = this.options['default'];
-    var alpha = 'ABCDEFGHIJKLMNOP';
+    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var letter = '';
     var llow = '';
     

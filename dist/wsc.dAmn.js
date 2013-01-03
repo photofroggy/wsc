@@ -6342,6 +6342,12 @@ Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
 
 };
 
+Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
+
+    this.options.event.select(item);
+
+};
+
 Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
 
     this.picker = picker;
@@ -6371,6 +6377,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
     this.view = this.picker.pbook.find('div.page#'+this.options.ref);
     this.items = this.view.find('ul');
     this.tab = this.picker.tabs.find('#'+this.options.ref);
+    this.hook_events();
 
 };
 
@@ -6384,6 +6391,20 @@ Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
     }
     this.view.html(this.options.content);
     this.items = this.view.find('ul');
+    this.hook_events();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hook_events = function(  ) {
+
+    var page = this;
+    this.items.find('li').each( function( index, elem ) {
+        var obj = page.view.find(elem);
+        var item = obj.find('.value').html();
+        obj.click( function(  ) {
+            page.picker.select(item);
+        } );
+    } );
 
 };
 
@@ -8588,7 +8609,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
-    settings.emotes.picker = new wsc.dAmn.Emotes.Picker(client.ui);
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
+        'event': {
+            'select': function( item ) { settings.emotes.select( item ); }
+        }
+    } );
     settings.emotes.picker.build();
     settings.emotes.picker.hide();
     
@@ -8766,15 +8791,23 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             return caseInsensitiveSort( a.value, b.value );
         };
         
+        var dp = settings.emotes.picker.page( '#' );
+        var page = null;
+        
         // Now we sort all of the emotes on each page.
         for( var i = 0; i < alpha.length; i++ ) {
             map[i].sort( sorter );
-            settings.emotes.picker.page( alpha[i] ).options.items = map[i];
+            page = settings.emotes.picker.page( alpha[i], dp );
+            page.options.items = map[i];
         }
         
         // Display the newly sorted emotes.
         settings.emotes.picker.refresh();
     
+    };
+    
+    settings.emotes.select = function( item ) {
+        client.ui.control.set_text( client.ui.control.get_text( ) + item );
     };
     
     client.bind('send.msg.before', settings.emotes.swap);
@@ -8799,14 +8832,13 @@ wsc.dAmn.Emotes.Picker = function( ui, options ) {
     options = Object.extend( {
         'title': 'Emotes',
         'event': {
-            'submit': function(  ) {},
-            'cancel': function(  ) {}
+            'select': function( item ) {  },
         }
     }, options );
     
     Chatterbox.Popup.ItemPicker.call( this, ui, options );
     this.data = this.options['default'];
-    var alpha = 'ABCDEFGHIJKLMNOP';
+    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var letter = '';
     var llow = '';
     

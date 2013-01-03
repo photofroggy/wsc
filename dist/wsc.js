@@ -6342,6 +6342,12 @@ Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
 
 };
 
+Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
+
+    this.options.event.select(item);
+
+};
+
 Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
 
     this.picker = picker;
@@ -6371,6 +6377,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
     this.view = this.picker.pbook.find('div.page#'+this.options.ref);
     this.items = this.view.find('ul');
     this.tab = this.picker.tabs.find('#'+this.options.ref);
+    this.hook_events();
 
 };
 
@@ -6384,6 +6391,20 @@ Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
     }
     this.view.html(this.options.content);
     this.items = this.view.find('ul');
+    this.hook_events();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hook_events = function(  ) {
+
+    var page = this;
+    this.items.find('li').each( function( index, elem ) {
+        var obj = page.view.find(elem);
+        var item = obj.find('.value').html();
+        obj.click( function(  ) {
+            page.picker.select(item);
+        } );
+    } );
 
 };
 
