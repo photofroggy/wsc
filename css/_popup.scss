@@ -81,21 +81,24 @@
                                     border-bottom-style: dotted;
                                     margin: 0px;
                                     padding: 4px 10px;
+                                    overflow: hidden;
                                     &:hover {
                                         cursor: pointer;                                        
                                         background-color: rgba(0, 0, 0, 0.15);
                                         span.hicon {
-                                            display: block;
+                                            opacity: 1;
                                         }
                                     }
                                     span.value {
                                         display: block;
                                     }
                                     span.hicon {
-                                        display: none;
+                                        display: block;
                                         float: right;
                                         color: #0AAF2B;
                                         font-size: 19px;
+                                        margin-left: 10px;
+                                        opacity: 0;
                                         i {
                                             font-style: normal;
                                         }
