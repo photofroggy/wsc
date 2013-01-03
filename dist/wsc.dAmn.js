@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.1.13';
+wsc.VERSION = '1.1.14';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.15.98';
+wsc.REVISION = '0.15.99';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -932,7 +932,11 @@ wsc.Channel.prototype.property = function( e ) {
     
     switch(prop) {
         case "title":
-        case "topic":
+        case "topic":            
+            // If we already had the title/topic for this channel, then it was changed. Output a message.
+            if ( this.info[prop].content.length != 0 )
+                this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+                
             this.set_header(prop, e);
             break;
         case "privclasses":
