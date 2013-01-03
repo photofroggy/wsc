@@ -4729,10 +4729,13 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.resize();
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.scroll();
+    var c = this;
+    setTimeout( function(  ) {
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+        c.resize();
+        c.scroll();
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+    }, 500);
 };
 
 /**
@@ -4891,8 +4894,10 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
-    this.st+= this.wrap.find('li.logmsg').last().height();
-    this.wrap.scrollTop( this.st );
+    if( this.visible ) {
+        this.st+= this.wrap.find('li.logmsg').last().height();
+        this.wrap.scrollTop( this.st );
+    }
     
     // Scrollio
     this.scroll();
@@ -5815,7 +5820,6 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     return this.mli;
 
 };
-
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -6255,6 +6259,226 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
     } );
 
 };
+
+/**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.ItemPicker = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [10, 60],
+        'ref': 'item-picker',
+        'title': 'Items',
+        'event': {
+            'select': function( item ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+    this.pages = [];
+    this.cpage = null;
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;
+
+Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.render('ip.main', {});
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'bottom': this.options.position[1]
+    });
+    this.closeb.removeClass('medium');
+    this.pbook = this.window.find('section.pages');
+    this.tabs = this.window.find('section.tabs ul');
+    this.buttons = this.window.find('section.buttons');
+    
+    var ip = this;
+    var page = null;
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        page = this.pages[i];
+        page.build();
+        if( i == 0 )
+            this.select_page(page);
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.refresh = function(  ) {
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        this.pages[i].refresh();
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.page = function( name, dpage ) {
+
+    name = name.toLowerCase();
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        if( this.pages[i].name.toLowerCase() == name )
+            return this.pages[i];
+    }
+    
+    return (dpage || null);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
+
+    this.pages.push( new Chatterbox.Popup.ItemPicker.Page( this, options ) );
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'href': '#button',
+        'title': 'Button',
+        'label': 'Button'
+    }, ( options || {} ) );
+    
+    this.buttons.append(Chatterbox.render( 'ip.button', options ));
+    return this.buttons.find('a[href='+options.href+']');
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
+
+    this.options.event.select(item);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select_page = function( page ) {
+
+    if( this.cpage != null )
+        this.cpage.hide();
+    
+    this.cpage = page || null;
+    
+    if( this.cpage != null )
+        this.cpage.show();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
+
+    this.picker = picker;
+    this.options = Object.extend( {
+        'ref': 'page',
+        'href': '#page',
+        'label': 'Page',
+        'title': 'page',
+        'items': [],
+        'content': '',
+    }, ( options || {} ));
+    this.name = this.options.label;
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
+
+    var list = this.build_list();
+    if( list.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + list + '</ul>';
+    }
+    
+    this.picker.pbook.append( Chatterbox.render('ip.page', this.options) );
+    this.picker.tabs.append(Chatterbox.render('ip.tab', this.options));
+    this.view = this.picker.pbook.find('div.page#'+this.options.ref);
+    this.items = this.view.find('ul');
+    this.tab = this.picker.tabs.find('#'+this.options.ref);
+    this.hook_events();
+    
+    var page = this;
+    this.tab.find('a').click( function(  ) {
+        page.picker.select_page( page );
+        return false;
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
+
+    var content = this.build_list();
+    if( content.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + content + '</ul>';
+    }
+    this.view.html(this.options.content);
+    this.items = this.view.find('ul');
+    this.hook_events();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hook_events = function(  ) {
+
+    var page = this;
+    this.items.find('li').each( function( index, elem ) {
+        var obj = page.view.find(elem);
+        var item = obj.find('.value').html();
+        obj.click( function(  ) {
+            page.picker.select(item);
+        } );
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
+
+    var ul = [];
+    var item = null;
+    var title, val;
+    for( var i in this.options.items ) {
+        if( !this.options.items.hasOwnProperty(i) )
+            continue;
+        item = this.options.items[i];
+        val = item.value || item;
+        title = item.title || val;
+        ul.push(
+            '<li class="item" title="'+title+'">\
+            <span class="hicon"><i class="iconic check"></i></span>\
+            <span class="value">'+val+'</span>\
+            </li>'
+        );
+    }
+    
+    return ul.join('');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.show = function(  ) {
+
+    this.tab.addClass('selected');
+    this.view.css('display', 'block');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
+
+    this.tab.removeClass('selected');
+    this.view.css('display', 'none');
+
+};
+
+
 
 
 
@@ -7822,19 +8046,25 @@ Chatterbox.template = {};
  * @method render
  * @param template {String} Name of the template to render.
  * @param fill {Object} Variables to render the template with.
+ * @param use {Boolean} Use `template` as the actual template rather than the name.
  */
-Chatterbox.render = function( template, fill ) {
+Chatterbox.render = function( template, fill, use, base ) {
 
-    var html = Chatterbox.template;
-    var tparts = template.split('.');
+    var html = base || Chatterbox.template;
     var renderer = {};
     var tmpl = null;
+    var part = null;
     
-    for( ind in tparts ) {
-        part = tparts[ind];
-        if( !html.hasOwnProperty( part ) )
-            return '';
-        html = html[part];
+    if( use !== undefined && use === true ) {
+        html = template;
+    } else {
+        var tparts = template.split('.');
+        for( var ind in tparts ) {
+            part = tparts[ind];
+            if( !html.hasOwnProperty( part ) )
+                return '';
+            html = html[part];
+        }
     }
     
     if( html.hasOwnProperty('frame') ) {
@@ -8018,6 +8248,16 @@ Chatterbox.template.pcinfo = '<section class="pcinfo"><strong>{title}</strong>{i
  * @type String
  */
 Chatterbox.template.popup = '<div class="floater {ref}"><div class="inner"><h2>{title}</h2><div class="content">{content}</div></div></div>';
+
+Chatterbox.template.ip = {};
+Chatterbox.template.ip.main = {};
+Chatterbox.template.ip.main.frame = '<section class="tabs"><ul></ul></section>\
+        <section class="pages"></section>\
+        <section class="buttons"></section>';
+
+Chatterbox.template.ip.page = { 'frame': '<div class="page" id="{ref}">{content}</div>' };
+Chatterbox.template.ip.button = { 'frame': '<a href="{href}" title="{title}" class="button text">{label}</a>' };
+Chatterbox.template.ip.tab = {'frame': '<li class="tab" id="{ref}"><a href="{href}" title="{title}">{label}</a></li>' };
 
 Chatterbox.template.prompt = {};
 Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
@@ -8410,20 +8650,54 @@ wsc.dAmn.STATE = 'alpha';
 
 wsc.dAmn.Emotes = function( client, storage, settings ) {
 
+    settings.emotes.emote = {};
     settings.emotes.page = null;
     settings.emotes.fint = null;
+    settings.emotes.notice = null;
+    settings.emotes.fetching = false;
+    settings.emotes.loaded = false;
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
+        'event': {
+            'select': function( item ) { settings.emotes.select( item ); },
+            'reload': function(  ) { settings.emotes.fetch(); }
+        }
+    }, settings );
+    settings.emotes.picker.build();
+    settings.emotes.picker.hide();
+    
+    client.ui.control.add_button( {
+        'label': '',
+        'icon': 'user',
+        'href': '#emotes',
+        'title': 'Emote picker.',
+        'handler': function() {
+            if( settings.emotes.picker.window.css('display') == 'none' ) {
+                settings.emotes.picker.show();
+            } else {
+                settings.emotes.picker.close();
+            }
+        }
+    });
     
     settings.emotes.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Emotes');
         settings.emotes.page = page;
+        
         var orig = {};
         orig.on = settings.emotes.on;
+        var stat = '';
+        if( orig.on ) {
+            if( !settings.emotes.loaded || settings.emotes.fetching )
+                stat = '<em>Fetching emotes...</em>';
+            else
+                stat = '<em>Emotes loaded.</em>';
+        }
         
         page.item('Form', {
             'ref': 'switch',
             'title': 'Enable Emotes',
-            'text': 'Here you can turn custom emotes on and off.',
+            'text': 'Here you can turn custom emotes on and off.\n\n<span class="emotestatus">'+stat+'</span>',
             'fields': [
                 ['Checkbox', {
                     'ref': 'enabled',
@@ -8459,10 +8733,61 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     client.ui.on('settings.open.ran', settings.emotes.configure_page);
     
     settings.emotes.fetch = function(  ) {
+        if( settings.emotes.loaded ) {
+            settings.emotes.picker.loading('Reloading...');
+        } else {
+            settings.emotes.picker.loading();
+        }
+        settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            settings.emotes.fetching = false;
             settings.emotes.emote = data;
+            
+            if( !settings.emotes.loaded ) {
+                if( settings.emotes.on ) {
+                    settings.emotes.notice = new Chatterbox.Popup( client.ui, {
+                        'title': 'Emotes',
+                        'content': 'Custom emoticons loaded!'
+                    } );
+                    settings.emotes.notice.build();
+                    settings.emotes.notice.window.css({
+                        'bottom': 60,
+                        'right': 50
+                    });
+                    setTimeout( function(  ) {
+                        if( settings.emotes.notice == null )
+                            return;
+                        settings.emotes.notice.window.fadeOut(
+                            'slow',
+                            function(  ) {
+                                settings.emotes.notice.window.remove();
+                                settings.emotes.notice = null;
+                            }
+                        );
+                    }, 5000 );
+                }
+            }
+            
+            settings.emotes.sort();
+            settings.emotes.loaded = true;
+            settings.emotes.picker.loaded();
+            
+            if( settings.emotes.page !== null ) {
+                settings.emotes.page.view.find('.emotestatus')
+                    .html('<em>Emotes loaded.</em>');
+            }
+            
+            settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        },
+        function(  ) {
+            settings.emotes.picker.loaded();
+            return false;
         });
-        settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        
+        if( settings.emotes.page !== null ) {
+            settings.emotes.page.view.find('.emotestatus')
+                .html('<em>Fetching emotes...</em>');
+        }
     };
     
     settings.emotes.swap = function( e ) {
@@ -8483,11 +8808,84 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             );
         }
         
-        if( e.input.indexOf(':B') == -1 )
-            return;
-        
         e.input = replaceAll( e.input, ':B', ':bucktooth:' );
     
+    };
+    
+    settings.emotes.prepare = function( item ) {
+    
+        item = replaceAll( item, '&', '&amp;' );
+        item = replaceAll( item, '<', '&lt;' );
+        item = replaceAll( item, '>', '&gt;' );
+        return replaceAll( item, '"', '&quot;' );
+    
+    };
+    
+    settings.emotes.repair = function( item ) {
+    
+        item = replaceAll( item, '&quot;', '"' );
+        item = replaceAll( item, '&lt;', '<' );
+        item = replaceAll( item, '&gt;', '>' );
+        return replaceAll( item, '&amp;', '&' );
+    
+    };
+    
+    settings.emotes.sort = function(  ) {
+    
+        var map = [
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], 
+        ];
+        var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#';
+        var emote = null;
+        var mitem = null;
+        var prted = false;
+        var idex = -1;
+        
+        // First part we create our maps for our page items.
+        for( var i in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(i) )
+                continue;
+            
+            emote = settings.emotes.emote[i];
+            mitem = {
+                'value': settings.emotes.prepare(emote.code),
+                'title': 'created by ' + emote.by
+            };
+            
+            idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
+            
+            if( idex == -1 )
+                idex = alpha.indexOf( '#' );
+            
+            map[idex].push(mitem);
+        }
+        
+        var sorter = function( a, b ) {
+            return caseInsensitiveSort( a.value, b.value );
+        };
+        
+        var dp = settings.emotes.picker.page( '#' );
+        var page = null;
+        
+        // Now we sort all of the emotes on each page.
+        for( var i = 0; i < alpha.length; i++ ) {
+            map[i].sort( sorter );
+            page = settings.emotes.picker.page( alpha[i], dp );
+            page.options.items = map[i];
+        }
+        
+        // Display the newly sorted emotes.
+        settings.emotes.picker.refresh();
+    
+    };
+    
+    settings.emotes.select = function( item ) {
+        client.ui.control.set_text(
+            client.ui.control.get_text( ) + settings.emotes.repair(item)
+        );
     };
     
     client.bind('send.msg.before', settings.emotes.swap);
@@ -8499,6 +8897,120 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         return;
     
     settings.emotes.fetch();
+
+};
+
+/**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ */
+wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'title': 'Emotes',
+        'event': {
+            'select': function( item ) {  },
+            'reload': function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.ItemPicker.call( this, ui, options );
+    this.settings = settings;
+    this.rbutton = null;
+    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var letter = '';
+    var llow = '';
+    
+    for( var i = 0; i < alpha.length; i++ ) {
+        letter = alpha[i];
+        llow = letter.toLowerCase();
+        this.add_page({
+            'ref': llow,
+            'href': '#' + llow,
+            'label': letter,
+            'title': 'Emotes beginning with ' + letter,
+            'items': []
+        });
+    }
+    
+    this.add_page({
+        'ref': 'misc',
+        'href': '#misc',
+        'label': '#',
+        'title': 'Emotes not beginning with letters',
+        'items': []
+    });
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
+wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
+
+wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
+
+    this.window.css({'display': 'none'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
+
+    this.window.css({'display': 'block'});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.close = function(  ) {
+
+    this.hide();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
+
+    var picker = this;
+    Chatterbox.Popup.ItemPicker.prototype.build.call( this, options );
+    var bl = 'Reload';
+    
+    this.rbutton = this.add_button( {
+        'href': '#reload',
+        'title': 'Reload emoticons',
+        'label': 'Reload',
+    } );
+    
+    if( this.settings.emotes.fetching ) {
+        this.loading('Loading...');
+    }
+    
+    this.rbutton.click( function(  ) {
+        if( picker.settings.emotes.fetching )
+            return false;
+        if( picker.rbutton.hasClass('evented') )
+            return false;
+        picker.reload();
+        return false;
+    } );
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loaded = function(  ) {
+
+    this.rbutton.html( 'Reload' );
+    this.rbutton.removeClass('evented');
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loading = function( text ) {
+
+    text = text || 'Reloading...';
+    this.rbutton.addClass('evented');
+    this.rbutton.html(text);
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.reload = function(  ) {
+
+    this.loading();
+    this.options.event.reload();
 
 };
 

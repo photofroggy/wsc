@@ -134,6 +134,226 @@ Chatterbox.Popup.Prompt.prototype.build = function(  ) {
 
 };
 
+/**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ */
+Chatterbox.Popup.ItemPicker = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        'position': [10, 60],
+        'ref': 'item-picker',
+        'title': 'Items',
+        'event': {
+            'select': function( item ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options['default'];
+    this.pages = [];
+    this.cpage = null;
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;
+
+Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.render('ip.main', {});
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        'left': this.options.position[0],
+        'bottom': this.options.position[1]
+    });
+    this.closeb.removeClass('medium');
+    this.pbook = this.window.find('section.pages');
+    this.tabs = this.window.find('section.tabs ul');
+    this.buttons = this.window.find('section.buttons');
+    
+    var ip = this;
+    var page = null;
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        page = this.pages[i];
+        page.build();
+        if( i == 0 )
+            this.select_page(page);
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.refresh = function(  ) {
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        this.pages[i].refresh();
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.page = function( name, dpage ) {
+
+    name = name.toLowerCase();
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        if( this.pages[i].name.toLowerCase() == name )
+            return this.pages[i];
+    }
+    
+    return (dpage || null);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_page = function( options ) {
+
+    this.pages.push( new Chatterbox.Popup.ItemPicker.Page( this, options ) );
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'href': '#button',
+        'title': 'Button',
+        'label': 'Button'
+    }, ( options || {} ) );
+    
+    this.buttons.append(Chatterbox.render( 'ip.button', options ));
+    return this.buttons.find('a[href='+options.href+']');
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
+
+    this.options.event.select(item);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select_page = function( page ) {
+
+    if( this.cpage != null )
+        this.cpage.hide();
+    
+    this.cpage = page || null;
+    
+    if( this.cpage != null )
+        this.cpage.show();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
+
+    this.picker = picker;
+    this.options = Object.extend( {
+        'ref': 'page',
+        'href': '#page',
+        'label': 'Page',
+        'title': 'page',
+        'items': [],
+        'content': '',
+    }, ( options || {} ));
+    this.name = this.options.label;
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
+
+    var list = this.build_list();
+    if( list.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + list + '</ul>';
+    }
+    
+    this.picker.pbook.append( Chatterbox.render('ip.page', this.options) );
+    this.picker.tabs.append(Chatterbox.render('ip.tab', this.options));
+    this.view = this.picker.pbook.find('div.page#'+this.options.ref);
+    this.items = this.view.find('ul');
+    this.tab = this.picker.tabs.find('#'+this.options.ref);
+    this.hook_events();
+    
+    var page = this;
+    this.tab.find('a').click( function(  ) {
+        page.picker.select_page( page );
+        return false;
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
+
+    var content = this.build_list();
+    if( content.length == 0 ) {
+        this.options.content = '<em>No items on this page.</em>';
+    } else {
+        this.options.content = '<ul>' + content + '</ul>';
+    }
+    this.view.html(this.options.content);
+    this.items = this.view.find('ul');
+    this.hook_events();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hook_events = function(  ) {
+
+    var page = this;
+    this.items.find('li').each( function( index, elem ) {
+        var obj = page.view.find(elem);
+        var item = obj.find('.value').html();
+        obj.click( function(  ) {
+            page.picker.select(item);
+        } );
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
+
+    var ul = [];
+    var item = null;
+    var title, val;
+    for( var i in this.options.items ) {
+        if( !this.options.items.hasOwnProperty(i) )
+            continue;
+        item = this.options.items[i];
+        val = item.value || item;
+        title = item.title || val;
+        ul.push(
+            '<li class="item" title="'+title+'">\
+            <span class="hicon"><i class="iconic check"></i></span>\
+            <span class="value">'+val+'</span>\
+            </li>'
+        );
+    }
+    
+    return ul.join('');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.show = function(  ) {
+
+    this.tab.addClass('selected');
+    this.view.css('display', 'block');
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
+
+    this.tab.removeClass('selected');
+    this.view.css('display', 'none');
+
+};
+
+
+
 
 
 
