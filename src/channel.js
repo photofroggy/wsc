@@ -34,10 +34,6 @@ wsc.Channel = function( client, ns, hidden ) {
     this.selector = client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
     this.monitor = Object.size(this.client.channelo) == 0;
-    
-    // Flags to tell whether or not we already have the title/topic (for changes)
-    this._got_topic = false;
-    this._got_title = false;
 
 };
 
@@ -173,18 +169,12 @@ wsc.Channel.prototype.property = function( e ) {
     
     switch(prop) {
         case "title":
-        case "topic":
-            this.set_header(prop, e);
-            
+        case "topic":            
             // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ((prop == "topic" && this._got_topic) || (prop == "title" && this._got_title))
+            if ( this.info[prop].content.length != 0 )
                 this.server_message(prop + " was changed by " + e.pkt["arg"]["by"]);
                 
-            if (prop == "topic")
-                this._got_topic = true;
-            else
-                this._got_title = true;
-                
+            this.set_header(prop, e);
             break;
         case "privclasses":
             this.set_privclasses(e);
