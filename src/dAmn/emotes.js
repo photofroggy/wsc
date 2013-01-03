@@ -129,6 +129,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             }
             
             settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        },
+        function(  ) {
+            settings.emotes.picker.loaded();
+            return false;
         });
         
         if( settings.emotes.page !== null ) {
@@ -159,6 +163,24 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     
     };
     
+    settings.emotes.prepare = function( item ) {
+    
+        item = replaceAll( item, '&', '&amp;' );
+        item = replaceAll( item, '<', '&lt;' );
+        item = replaceAll( item, '>', '&gt;' );
+        return replaceAll( item, '"', '&quot;' );
+    
+    };
+    
+    settings.emotes.repair = function( item ) {
+    
+        item = replaceAll( item, '&quot;', '"' );
+        item = replaceAll( item, '&lt;', '<' );
+        item = replaceAll( item, '&gt;', '>' );
+        return replaceAll( item, '&amp;', '&' );
+    
+    };
+    
     settings.emotes.sort = function(  ) {
     
         var map = [
@@ -180,7 +202,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             emote = settings.emotes.emote[i];
             mitem = {
-                'value': emote.code,
+                'value': settings.emotes.prepare(emote.code),
                 'title': 'created by ' + emote.by
             };
             
@@ -212,7 +234,9 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     };
     
     settings.emotes.select = function( item ) {
-        client.ui.control.set_text( client.ui.control.get_text( ) + item );
+        client.ui.control.set_text(
+            client.ui.control.get_text( ) + settings.emotes.repair(item)
+        );
     };
     
     client.bind('send.msg.before', settings.emotes.swap);
