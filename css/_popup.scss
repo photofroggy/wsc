@@ -2,7 +2,6 @@
 @mixin popup {
     div.floater {
         position: absolute;
-        top: 0px;
         
         div.inner {
             height: 100%;
@@ -32,6 +31,93 @@
                     a.close {
                         position: relative;
                         top: 3px;
+                    }
+                }
+            }
+        }
+        
+        &.item-picker {
+            div.inner {
+                @include round-box(0px);
+                @include shadow(none);
+                height: 300px;
+                min-width: 350px;
+                border-bottom: none;
+                h2 {
+                    @include round-top(0px);
+                }
+                .content {
+                    height: 80%;
+                    ul {
+                        list-style: none;
+                        padding: 0px;
+                        margin: 0px;
+                    }
+                    section.tabs {
+                        height: 25px;
+                        ul {
+                            padding: 2px 0px;
+                            li {
+                                float: left;
+                                a {
+                                    padding: 2px;
+                                    margin: 2px;
+                                    border: 1px solid black;
+                                    font-size: 10px;
+                                }
+                            }
+                        }
+                    }
+                    section.pages {
+                        background-color: rgba(255, 255, 255, 0.75);
+                        height: 75%;
+                        border: 1px solid black;
+                        overflow: auto;
+                        .page {
+                            display: none;
+                            ul {
+                                li {
+                                    border-bottom-width: 1px;
+                                    border-bottom-style: dotted;
+                                    margin: 0px;
+                                    padding: 4px 10px;
+                                    &:hover {
+                                        cursor: pointer;                                        
+                                        background-color: rgba(0, 0, 0, 0.15);
+                                        span.hicon {
+                                            display: block;
+                                        }
+                                    }
+                                    span.value {
+                                        display: block;
+                                    }
+                                    span.hicon {
+                                        display: none;
+                                        float: right;
+                                        color: #0AAF2B;
+                                        font-size: 19px;
+                                        i {
+                                            font-style: normal;
+                                        }
+                                    }
+                                    &:last-child {
+                                        border-bottom: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    section.buttons {
+                        position: absolute;
+                        top: auto;
+                        bottom: 10px;
+                        right: 10px;
+                        .button.text {
+                            border: 1px solid black;
+                            &.evented {
+                                cursor: default;
+                            }
+                        }
                     }
                 }
             }

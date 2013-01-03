@@ -111,7 +111,6 @@ Chatterbox.Control.prototype.multiline = function( on ) {
     return this.mli;
 
 };
-
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {

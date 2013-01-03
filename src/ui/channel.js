@@ -109,10 +109,13 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.window.css({'display': 'block'});
     this.tab.addClass('active');
     this.tab.removeClass('noise chatting tabbed fill');
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.resize();
-    this.wrap.scrollTop(this.wrap.prop('scrollHeight') - this.wrap.innerHeight());
-    this.scroll();
+    var c = this;
+    setTimeout( function(  ) {
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+        c.resize();
+        c.scroll();
+        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+    }, 500);
 };
 
 /**
@@ -271,8 +274,10 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     // Add content.
     this.wrap.append(Chatterbox.render('logitem', data));
     this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
-    this.st+= this.wrap.find('li.logmsg').last().height();
-    this.wrap.scrollTop( this.st );
+    if( this.visible ) {
+        this.st+= this.wrap.find('li.logmsg').last().height();
+        this.wrap.scrollTop( this.st );
+    }
     
     // Scrollio
     this.scroll();

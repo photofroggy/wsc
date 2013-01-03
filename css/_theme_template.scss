@@ -317,6 +317,54 @@
     }
     
     div.floater {
+        &.item-picker {
+            div.inner {
+                border-color: $inner-border;
+                section.tabs {
+                    ul li.selected a {
+                        background-color: rgba(145, 163, 173, 0.75);
+                    }
+                }
+                section.pages {
+                    border-color: $inner-border;
+                    ul {
+                        li {
+                            border-color: $inner-border;
+                            span.value {
+                                color: $chrome-a;
+                                &:hover {
+                                    color: $chrome-ah;
+                                }
+                            }
+                        }
+                    }
+                }
+                section.tabs ul li a,
+                section.buttons .button.text {
+                    background: none;
+                    @include round-box(0px);
+                    @include shadow(none);
+                    color: $chrome-a;
+                    text-decoration: $chrome-ad;
+                    background-color: rgba(255, 255, 255, 0.75);
+                    text-shadow: none;
+                    border-color: $inner-border;
+                    &:hover {
+                        color: $chrome-ah;
+                        text-decoration: $chrome-ahd;
+                        background-color: rgba(145, 163, 173, 0.75);
+                    }
+                    &.evented {
+                        color: $inner-border;
+                        &:hover {
+                            background-color: rgba(255, 255, 255, 0.75);
+                            color: $inner-border;
+                        }
+                    }
+                }
+            }
+        }
+        
         div.inner {
             background-color: $chrome;
             border-color: $settings-outer-border;
