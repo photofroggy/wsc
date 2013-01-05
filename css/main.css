@@ -35,6 +35,10 @@ a:hover {
     color: #CA662E;
 }
 
+cite {
+    color: #297AB9;
+}
+
 div.squeeze {
     width: 800px;
     height: 100%;
@@ -125,20 +129,37 @@ section {
     font-size: 14px;
 }
 
-section .imgr {
-    display: block;
-    position: relative;
-    float: right;
-    max-width: 250px;
-    right: 20px;
-    margin: 4px;
-}
-
-section .imgr img {
-    box-shadow: 0 0 15px #616161;
+section:last-child {
+    border-bottom: none;
 }
 
 section h2 {
     font-size: 26px;
-    padding: 15px 0px;
+    padding: 0px 0px 15px 0px;
+}
+
+section .imgr {
+    display: block;
+    clear: both;
+    overflow: hidden;
+}
+
+section .imgr span.imgr {
+    display: block;
+    position: relative;
+    float: left;
+    max-width: 250px;
+    right: 20px;
+    margin: 0px 10px;
+    padding: 10px;
+    clear: none;
+}
+
+section .imgr span.imgr img {
+    box-shadow: 0 0 15px #616161;
+}
+
+section .imgr p {
+    max-width: 380px;
+    float: left;
 }
