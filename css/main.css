@@ -142,34 +142,70 @@ section h2 {
     padding: 0px 0px 15px 0px;
 }
 
+section h3 {
+    font-size: 20px;
+    padding: 15px 0px;
+    color: #2F5329;
+}
+
 section img {
     display: block;
     margin: 15px auto;
 }
 
-section .imgr {
+section ul {
+    padding: 0px 60px;
+    list-style: none;
+    font-size: 12px;
+    line-height: 1.6em;
+}
+
+section .img {
     display: block;
     clear: both;
     overflow: hidden;
 }
 
-section .imgr span.imgr {
+section .img span.img {
     display: block;
     position: relative;
-    float: left;
     max-width: 35%;
-    right: 20px;
     margin: 0px 10px;
     padding: 10px;
     clear: none;
 }
 
-section .imgr span.imgr img {
+section .img span.img img {
     display: inline-block;
     margin: 0px;
 }
 
-section .imgr .tl {
+section .img .t {
     max-width: 60%;
+}
+
+section .img .img.r {
+    float: right;
+    right: 20px;
+}
+
+section .img .t.l {
     float: left;
+}
+
+section .img .img.l {
+    float: left;
+    left: 20px;
+}
+
+section .img .t.r {
+    float: right;
+}
+
+section p + article {
+    margin-top: 20px;
+}
+
+section article + p {
+    margin-top: 20px;
 }
