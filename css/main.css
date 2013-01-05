@@ -42,7 +42,7 @@ div.squeeze {
 }
 
 div.start-button {
-    position: absolute;
+    position: fixed;
     top: 10px;
     right: 10px;
     text-align: center;
@@ -66,11 +66,11 @@ div.start-button a {
     font-family: Georgia;
     font-style: italic;
     font-size: 12px;
-    background-color: black;
+    background-color: gray;
 }
 
 div.start-button a:hover {
-    background-color: gray;
+    background-color: #D60909;
 }
 
 nav.menu {
@@ -93,19 +93,20 @@ nav.menu ul li {
 }
 
 nav.menu ul li a {
-    color: #A5B9BD;
+    color: #86B4BD;
     padding: 15px 20px;
-    background-color: rgba(148, 194, 181, 0.25);
+    background-color: rgba(215, 238, 237, 0.9);
     margin: 0px 5px;
 }
 
 nav.menu ul li a:hover {
-    color: #6B9199;
-    background-color: rgba(107, 216, 216, 0.25);
+    color: #498794;
+    background-color: rgba(145, 230, 226, 0.9);
 }
 
 nav.menu ul li a.active {
-    color: #6B9199;
+    color: #498794;
+    background-color: rgba(159, 199, 197, 0.9);
 }
 
 div.content {
