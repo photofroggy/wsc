@@ -1,0 +1,143 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    color: #43703A;
+    font-family: Verdana;
+    line-height: 1.6em;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+h1,h2,h3,h4 {
+    color: #849481;
+}
+
+p + p {
+    padding-top: 20px;
+}
+
+em {
+    font-family: Georgia;
+    font-style: italic;
+    color: #E66611;
+}
+
+a {
+    text-decoration: none;
+    color: #349AAD;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #CA662E;
+}
+
+div.squeeze {
+    width: 800px;
+    height: 100%;
+    margin: 0em auto;
+}
+
+div.start-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    padding: 2px;
+    border-radius: 55px;
+    border: 5px solid black;
+    line-height: 1em;
+}
+
+div.start-button:hover {
+    border-color: black;
+}
+
+div.start-button a {
+    display: block;
+    width: 58px;
+    height: 60px;
+    padding: 20px;
+    border-radius: 50px;
+    color: white;
+    font-family: Georgia;
+    font-style: italic;
+    font-size: 12px;
+    background-color: black;
+}
+
+div.start-button a:hover {
+    background-color: gray;
+}
+
+nav.menu {
+    position: fixed;
+    top: 0px;
+    height: 60px;
+    width: 800px;
+    line-height: .6em;
+}
+
+nav.menu ul {
+    list-style: none;
+}
+
+nav.menu ul li {
+    display: block;
+    float: left;
+    padding: 15px 0px;
+    font-size: 12px;
+}
+
+nav.menu ul li a {
+    color: #A5B9BD;
+    padding: 15px 20px;
+    background-color: rgba(148, 194, 181, 0.25);
+    margin: 0px 5px;
+}
+
+nav.menu ul li a:hover {
+    color: #6B9199;
+    background-color: rgba(107, 216, 216, 0.25);
+}
+
+nav.menu ul li a.active {
+    color: #6B9199;
+}
+
+div.content {
+    margin: 5em 1em;
+}
+
+div.content h1 {
+    padding: 25px 0px;
+}
+
+section {
+    padding: 30px 15px;
+    margin: 0px 50px;
+    overflow: hidden;
+    border-bottom: 1px solid #DDE2E6;
+    font-size: 14px;
+}
+
+section .imgr {
+    display: block;
+    position: relative;
+    float: right;
+    max-width: 250px;
+    right: 20px;
+    margin: 4px;
+}
+
+section .imgr img {
+    box-shadow: 0 0 15px #616161;
+}
+
+section h2 {
+    font-size: 26px;
+    padding: 15px 0px;
+}
