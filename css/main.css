@@ -39,8 +39,12 @@ cite {
     color: #297AB9;
 }
 
+img {
+    box-shadow: 0 0 15px #616161;
+}
+
 div.squeeze {
-    width: 800px;
+    width: 70%;
     height: 100%;
     margin: 0em auto;
 }
@@ -78,7 +82,7 @@ div.start-button a:hover {
 }
 
 nav.menu {
-    position: fixed;
+    position: absolute;
     top: 0px;
     height: 60px;
     width: 800px;
@@ -138,6 +142,11 @@ section h2 {
     padding: 0px 0px 15px 0px;
 }
 
+section img {
+    display: block;
+    margin: 15px auto;
+}
+
 section .imgr {
     display: block;
     clear: both;
@@ -148,7 +157,7 @@ section .imgr span.imgr {
     display: block;
     position: relative;
     float: left;
-    max-width: 250px;
+    max-width: 35%;
     right: 20px;
     margin: 0px 10px;
     padding: 10px;
@@ -156,10 +165,11 @@ section .imgr span.imgr {
 }
 
 section .imgr span.imgr img {
-    box-shadow: 0 0 15px #616161;
+    display: inline-block;
+    margin: 0px;
 }
 
 section .imgr p {
-    max-width: 380px;
+    max-width: 60%;
     float: left;
 }
