@@ -169,7 +169,7 @@ section .imgr span.imgr img {
     margin: 0px;
 }
 
-section .imgr p {
+section .imgr .tl {
     max-width: 60%;
     float: left;
 }
