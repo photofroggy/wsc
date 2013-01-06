@@ -25,6 +25,10 @@ em {
     color: #E66611;
 }
 
+i {
+    font-family: Georgia;
+}
+
 a {
     text-decoration: none;
     color: #349AAD;
@@ -208,4 +212,60 @@ section p + article {
 
 section article + p {
     margin-top: 20px;
+}
+
+article.min {
+    height: 60px;
+    border: 1px solid #DDE2E6;
+    padding: 0px 15px;
+    color: #85A389;
+}
+
+article.min h3 {
+    -webkit-transition: color, .5s;
+    transition: color, .5s;
+    color: #A8BDA5;
+}
+
+article.min h3 span {
+    -webkit-transition: color, .5s;
+    transition: color, .5s;
+    display: inline;
+    margin-left: 10px;
+    font-family: Georgia;
+    font-style: italic;
+    font-size: 12px;
+    color: #C3CED8;
+}
+
+article.min .content {
+    opacity: 0;
+}
+
+article.min:hover {
+    height: auto;
+    border: 1px solid #DDE2E6;
+    padding-bottom: 20px;
+}
+
+article.min:hover h3 {
+    -webkit-transition: color, 1s;
+    transition: color, 1s;
+    color: #5A795E;
+}
+
+article.min:hover h3 span {
+    -webkit-transition: color, 1s;
+    transition: color, 1s;
+    color: #86929B;
+}
+
+article.min:hover .content {
+    -webkit-transition: opacity, 1s;
+    transition: opacity, 1s;
+    opacity: 1;
+}
+
+article.min:not(:first-child) {
+    margin-top: 15px;
 }
