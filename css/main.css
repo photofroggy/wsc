@@ -11,8 +11,12 @@ html, body {
     padding: 0px;
 }
 
+html {
+    background-color: rgba(225, 250, 244, 0.25);
+}
+
 h1,h2,h3,h4 {
-    color: #849481;
+    color: #2F5329;
 }
 
 p + p {
@@ -53,36 +57,75 @@ div.squeeze {
     margin: 0em auto;
 }
 
-div.start-button {
-    position: fixed;
-    top: 10px;
-    right: 10px;
+div.rbtn {
     text-align: center;
     padding: 2px;
-    border-radius: 55px;
+    border-radius: 50px;
     border: 5px solid black;
     line-height: 1em;
+    background-color: white;
 }
 
-div.start-button:hover {
-    border-color: black;
-}
-
-div.start-button a {
+div.rbtn a {
     display: block;
-    width: 58px;
+    width: 60px;
     height: 60px;
     padding: 20px;
     border-radius: 50px;
     color: white;
     font-family: Georgia;
     font-style: italic;
+    background-color: black;
+}
+
+div.rbtn a:hover {
+    background-color: gray;
+}
+
+div.rbtn.start {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    border-radius: 55px;
+}
+
+div.rbtn.start a {
+    width: 58px;
     font-size: 12px;
     background-color: gray;
 }
 
-div.start-button a:hover {
+div.rbtn.start a:hover {
     background-color: #D60909;
+}
+
+div.rbtn.wsc {
+    margin: 0em auto 4em auto;
+    border-radius: 55px;
+    width: 92px;
+}
+
+div.rbtn.wsc a {
+    height: 58px;
+    padding: 30px 16px 0px 16px;
+    border-radius: 45px;
+    font-size: 35px;
+    background-color: #61B4DB;
+    text-shadow: 0px -1px #105F85;
+}
+
+div.rbtn.wsc a:hover {
+    background-color: #BB6240;
+    text-shadow: 0 -1px #7E3519;
+}
+
+div.rbtn.wsc a:hover:after {
+    content: attr(hint);
+    display: block;
+    padding-top: 7px;
+    line-height: 13px;
+    font-size: 11px;
+    text-shadow: 0 -1px #7E3519;
 }
 
 nav.menu {
@@ -122,7 +165,8 @@ nav.menu ul li a.active {
 }
 
 div.content {
-    margin: 5em 1em;
+    margin: 8em 1em;
+    height: 100%;
 }
 
 div.content h1 {
@@ -219,6 +263,7 @@ article.min {
     border: 1px solid #DDE2E6;
     padding: 0px 15px;
     color: #85A389;
+    background-color: white;
 }
 
 article.min h3 {
