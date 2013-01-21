@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.9.57';
+Chatterbox.VERSION = '0.10.58';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -519,7 +519,14 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         }
     };
     this.mulw = 0;
-    this.titled = false;
+    // Dimensions...
+    this.d = {
+        u: [0, 0],                  // User panel [ width, height ]
+        h: {                        // Header
+            title: [0, 0],          //      Title [ width, height ]
+            topic: [0, 0]           //      Topic [ width, height ]
+        }
+    };
 
 };
 
@@ -687,19 +694,17 @@ Chatterbox.Channel.prototype.resize = function( ) {
     
     // Userlist width.
     this.el.u.width(1);
-    var userwidth = this.el.u[0].scrollWidth + this.manager.swidth + 5;
-    if( userwidth > this.mulw ) {
-        userwidth = this.mulw;
+    this.d.u[0] = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    if( this.d.u[0] > this.mulw ) {
+        this.d.u[0] = this.mulw;
     }
-    this.el.u.width(userwidth);
+    this.el.u.width(this.d.u[0]);
     
     // Change log width based on userlist width.
-    cw = cw - this.el.u.outerWidth();
+    cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    if( this.titled ) {
-        wh = wh - this.el.h.title.outerHeight(true);
-    }
+    wh = wh - this.d.h.title[1];
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -710,7 +715,8 @@ Chatterbox.Channel.prototype.resize = function( ) {
     this.scroll();
     
     // User list dimensions
-    this.el.u.css({height: this.el.l.p.innerHeight()});
+    this.d.u[1] = this.el.l.p.innerHeight();
+    this.el.u.css({height: this.d.u[1]});
 };
 
 /**
@@ -996,10 +1002,16 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     );
     
     this.el.h[head] = this.el.m.find('header div.' + head);
-    this.el.h[head].css( { display: ( content ? 'block' : 'none' ) } );
     
-    if( head == 'title' ) {
-        this.titled = ( content.length > 0 );
+    if( content.length > 0 ) {
+        this.el.h[head].css( { display: 'block' } );
+        this.d.h[head] = [
+            this.el.h[head].outerWidth(true),
+            this.el.h[head].outerHeight(true)
+        ];
+    } else {
+        this.el.h[head].css( { display: 'none' } );
+        this.d.h[head] = [0, 0];
     }
         
     this.resize();
@@ -1051,6 +1063,10 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
     this.el.m.find('div.chatusers').html(html);
     this.el.u = this.el.m.find('div.chatusers');
     this.el.u.css({display: 'block'});
+    this.d.u = [
+        this.el.u.outerWidth(),
+        this.el.u.outerHeight()
+    ];
     
     for( var index in infoboxes ) {
         this.userinfo(infoboxes[index]);
