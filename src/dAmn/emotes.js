@@ -77,7 +77,6 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                             settings.emotes.picker.loaded();
                         }
                     }
-                    settings.save();
                 },
                 'close': function( event ) {
                     settings.emotes.on = orig.on;

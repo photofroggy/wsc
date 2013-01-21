@@ -14,22 +14,37 @@ wsc.dAmn.Extension = function( client ) {
     
     var storage = client.storage.folder('dAmn');
     storage.emotes = storage.folder('emotes');
+    storage.colours = storage.folder('colours');
     var settings = {
         'emotes': {
             'on': false,
             'emote': []
+        },
+        'colours': {
+            'on': false,
+            'send': false,
+            'msg': '000000',
+            'user': '000000'
         }
     };
     
     settings.save = function(  ) {
         
         storage.emotes.set('on', settings.emotes.on);
+        storage.colours.set('on', settings.colours.on);
+        storage.colours.set('send', settings.colours.send);
+        storage.colours.set('msg', settings.colours.msg);
+        storage.colours.set('user', settings.colours.user);
         
     };
     
     settings.load = function(  ) {
     
         settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
+        settings.colours.on = (storage.colours.get('on', 'false') == 'true');
+        settings.colours.send = (storage.colours.get('send', 'false') == 'true');
+        settings.colours.msg = storage.colours.get('msg', '');
+        settings.colours.user = storage.colours.get('user', '');
     
     };
     
@@ -60,6 +75,9 @@ wsc.dAmn.Extension = function( client ) {
             event.user.info.push(event.user.member.typename);
     });
     
+    client.ui.on( 'settings.save', settings.save );
+    client.ui.on( 'settings.close', settings.load );
+    
     client.ui.on( 'log_whois.before', function( event, ui ) {
         event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
         event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
@@ -71,6 +89,7 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
 
 };

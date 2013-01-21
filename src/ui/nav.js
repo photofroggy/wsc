@@ -128,7 +128,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                 orig.theme = replaceAll(ui.theme(), 'wsct_', '');
                 orig.tc = ui.nav.closer();
                 
-                ui.trigger('settings.save', {
+                ui.trigger('settings.save.ui', {
                     'clock': orig.clock,
                     'tabclose': orig.tc,
                     'theme': 'wsct_' + orig.theme

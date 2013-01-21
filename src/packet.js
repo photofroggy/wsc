@@ -10,8 +10,10 @@ wsc.Packet = function( data, separator ) {
         return null;
     }
     
-    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
     separator = separator || '=';
+    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
+    var args = null;
+    var idx = -1;
     
     try {
         // Crop the body.
@@ -26,23 +28,22 @@ wsc.Packet = function( data, separator ) {
         if( args[0].indexOf( separator ) == -1 ) {
             cline = args.shift().split(' ');
             pkt.cmd = cline.shift() || null;
-            if( cline.length > 0 )
-                pkt.param = cline.join(' ');
+            pkt.param = cline.join(' ') || null;
         }
         
-        for( n in args ) {
+        for( var n in args ) {
             arg = args[n];
-            si = arg.search(separator);
+            idx = arg.search(separator);
             
-            if( si == -1 )
+            if( idx == -1 )
                 continue;
             
-            pkt.arg[arg.substr( 0, si )] = arg.substr( si + separator.length ) || '';
+            pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || '';
         }
         
         if( pkt.body != null ) {
             subs = pkt.body.split('\n\n');
-            for(i in subs) {
+            for(var i in subs) {
                 sub = wsc.Packet( subs[i], separator );
                 if( sub == null )
                     break;

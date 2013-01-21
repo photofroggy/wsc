@@ -538,6 +538,18 @@ Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items"
     <section class="mitems">{items}</section>\
     </div>';
 
+Chatterbox.template.settings.item.colour = {};
+Chatterbox.template.settings.item.colour.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.colour.render = { 'title': Chatterbox.template.settings.krender.title };
+
+Chatterbox.template.settings.item.colour.post = Chatterbox.template.clean(['ref', 'title', 'default']);
+Chatterbox.template.settings.item.colour.events = [['blur', 'input'],['inspect', 'input']];
+Chatterbox.template.settings.item.colour.frame = '{title}<div class="{ref} textfield"><form><input type="color" value="{default}" /></form></div>';
+
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
@@ -600,6 +612,10 @@ Chatterbox.template.settings.item.form.field.text.render = {
 Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
+
+Chatterbox.template.settings.item.form.field.colour = {};
+Chatterbox.template.settings.item.form.field.colour.post = Chatterbox.template.clean(['ref', 'default']);
+Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}" type="color" value="{default}" />';
 
 
 

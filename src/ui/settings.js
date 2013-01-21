@@ -132,6 +132,7 @@ Chatterbox.Settings.prototype.save = function(  ) {
 
     this.config.save(this);
     this.changed = false;
+    this.manager.trigger( 'settings.save', { 'config': this.config } );
 
 };
 
@@ -146,6 +147,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
     this.manager.nav.settings.open = false;
     this.manager.nav.settings.window = null;
     this.config.close(this);
+    this.manager.trigger( 'settings.close', { 'config': this.config } );
 
 };
 
@@ -1226,6 +1228,48 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.build = function( form ) {
 Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 
     this.lwrap.height( this.fwrap.find('.checkbox').height() );
+
+};
+
+
+/**
+ * Form colour field.
+ * 
+ * @class Colour
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Colour = function( type, options ) {
+
+    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
+
+};
+
+Chatterbox.Settings.Item.Form.Colour.prototype = new Chatterbox.Settings.Item.Form.Field();
+Chatterbox.Settings.Item.Form.Colour.prototype.constructor = Chatterbox.Settings.Item.Form.Colour;
+
+/**
+ * Build the colour field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Colour.prototype.build = function( form ) {
+
+    Chatterbox.Settings.Item.Form.Field.prototype.build.call(this, form);
+    this.resize();
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.fwrap.height() );
 
 };
 
