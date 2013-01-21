@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.9.56';
+Chatterbox.VERSION = '0.9.57';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -500,6 +500,26 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     this.namespace = ui.deform_ns(ns);
     this.visible = false;
     this.st = 0;
+    // UI elements.
+    this.el = {
+        t: {                        // Tab
+            o: null,                //      Object..
+            l: null,                //      Link
+            c: null,                //      Close button
+        },                          //
+        m: null,                    // Main
+        l: {                        // Channel log
+            p: null,                //      Panel
+            w: null,                //      Wrap
+        },                          //
+        u: null,                    // User panel
+        h: {                        // Header
+            title: null,            //      Title
+            topic: null,            //      Topic
+        }
+    };
+    this.mulw = 0;
+    this.titled = false;
 
 };
 
@@ -516,24 +536,31 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     ns = this.namespace;
     
-    // Draw.
-    this.tab = this.manager.nav.add_tab( selector, ns );
-    this.tabl = this.tab.find('.tab');
-    this.tabc = this.tab.find('.close');
+    // Tabs.
+    this.el.t.o = this.manager.nav.add_tab( selector, ns );
+    this.el.t.l = this.el.t.o.find('.tab');
+    this.el.t.c = this.el.t.o.find('.close');
+    // Draw
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
-    this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.logpanel = this.window.find('#' + selector + "-log");
-    this.wrap = this.logpanel.find('ul.logwrap');
-    this.userpanel = this.window.find('#' + selector + "-users");
+    this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
+    this.el.h.title = this.el.m.find('header div.title');
+    this.el.h.topic = this.el.m.find('header div.topic');
+    this.el.l.p = this.el.m.find('#' + selector + "-log");
+    this.el.l.w = this.el.l.p.find('ul.logwrap');
+    this.el.u = this.el.m.find('#' + selector + "-users");
+    // Max user list width;
+    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
     
-    this.tabl.click(function () {
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
         chan.manager.toggle_channel(selector);
         return false;
     });
     
-    this.tabc.click(function ( e ) {
+    // When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
         chan.manager.trigger( 'tab.close.clicked', {
             'ns': chan.namespace,
             'chan': chan,
@@ -544,7 +571,7 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     var focus = true;
     
-    this.window.click(
+    this.el.m.click(
         function( e ) {
             if( focus )
                 chan.manager.control.focus();
@@ -553,14 +580,14 @@ Chatterbox.Channel.prototype.build = function( ) {
         }
     );
     
-    this.logpanel.select(
+    this.el.l.p.select(
         function( ) {
             focus = false;
         }
     );
     
     if( this.hidden ) {
-        this.tab.toggleClass('hidden');
+        this.el.t.o.toggleClass('hidden');
     }
     
     this.built = true;
@@ -573,8 +600,8 @@ Chatterbox.Channel.prototype.build = function( ) {
  */
 Chatterbox.Channel.prototype.hide = function( ) {
     //console.log("hide " + this.info.selector);
-    this.window.css({'display': 'none'});
-    this.tab.removeClass('active');
+    this.el.m.css({'display': 'none'});
+    this.el.t.o.removeClass('active');
     this.visible = false;
 };
 
@@ -584,18 +611,17 @@ Chatterbox.Channel.prototype.hide = function( ) {
  * @method show
  */
 Chatterbox.Channel.prototype.show = function( ) {
-    //console.log("show  " + this.info.selector);
     this.visible = true;
-    this.window.css({'display': 'block'});
-    this.tab.addClass('active');
-    this.tab.removeClass('noise chatting tabbed fill');
+    this.el.m.css({'display': 'block'});
+    this.el.t.o.addClass('active');
+    this.el.t.o.removeClass('noise chatting tabbed fill');
     var c = this;
     setTimeout( function(  ) {
-        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
         c.resize();
-        c.scroll();
-        c.wrap.scrollTop(c.wrap.prop('scrollHeight') - c.wrap.innerHeight());
-    }, 500);
+        c.pad();
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+    }, 1000);
 };
 
 /**
@@ -604,8 +630,8 @@ Chatterbox.Channel.prototype.show = function( ) {
  * @method remove
  */
 Chatterbox.Channel.prototype.remove = function(  ) {
-    this.tab.remove();
-    this.window.remove();
+    this.el.t.o.remove();
+    this.el.m.remove();
 };
 
 /**
@@ -615,13 +641,13 @@ Chatterbox.Channel.prototype.remove = function(  ) {
  */
 Chatterbox.Channel.prototype.scroll = function( ) {
     this.pad();
-    var ws = this.wrap.prop('scrollWidth') - this.wrap.innerWidth();
-    var hs = this.wrap.prop('scrollHeight') - this.wrap.innerHeight();
+    var ws = this.el.l.w.prop('scrollWidth') - this.el.l.w.innerWidth();
+    var hs = this.el.l.w.prop('scrollHeight') - this.el.l.w.innerHeight();
     if( ws > 0 )
         hs += ws;
-    if( hs < 0 || (hs - this.wrap.scrollTop()) > 100 )
+    if( hs < 0 || (hs - this.el.l.w.scrollTop()) > 100 )
         return;
-    this.wrap.scrollTop(hs);
+    this.el.l.w.scrollTop(hs);
 };
 
 /**
@@ -632,18 +658,18 @@ Chatterbox.Channel.prototype.scroll = function( ) {
  */
 Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
-    this.wrap.css({'padding-top': 0, 'height': 'auto'});
-    wh = this.wrap.innerHeight();
-    lh = this.logpanel.innerHeight() - this.logpanel.find('header').height() - 3;
-    pad = lh - wh;
+    this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
+    var wh = this.el.l.w.innerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.height() - 3;
+    var pad = lh - wh;
     
     if( pad > 0 )
-        this.wrap.css({'padding-top': pad});
+        this.el.l.w.css({'padding-top': pad});
     else
-        this.wrap.css({
+        this.el.l.w.css({
             'padding-top': 0,
             'height': lh});
-    this.wrap.scrollTop(this.st);
+    this.el.l.w.scrollTop(this.st);
 };
 
 /**
@@ -652,34 +678,31 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * @method resize
  */
 Chatterbox.Channel.prototype.resize = function( ) {
-    this.wrap.css({'padding-top': 0});
+    this.el.l.w.css({'padding-top': 0});
     // Height.
-    wh = this.manager.chatbook.height();
-    this.window.height(wh);
+    var wh = this.manager.chatbook.height();
+    this.el.m.height(wh);
     // Width.
-    cw = this.window.width();
-    cu = this.window.find('div.chatusers');
-    // Header height
-    title = this.window.find('header div.title');
-    topic = this.window.find('header div.topic');
+    var cw = this.el.m.width();
     
-    // Log width.
-    if( cu.css('display') != 'none') {
-        cu.width(1);
-        userwidth = cu[0].scrollWidth + this.manager.swidth + 5;
-        max = parseInt(cu.css('max-width').slice(0,-2));
-        if( userwidth > max ) {
-            userwidth = max;
-        }
-        cu.width(userwidth);
-        cw = cw - cu.outerWidth();
+    // Userlist width.
+    this.el.u.width(1);
+    var userwidth = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    if( userwidth > this.mulw ) {
+        userwidth = this.mulw;
     }
+    this.el.u.width(userwidth);
     
-    if( title.css('display') == 'block' )
-        wh = wh - title.outerHeight(true);
+    // Change log width based on userlist width.
+    cw = cw - this.el.u.outerWidth();
+    
+    // Account for channel title in height.
+    if( this.titled ) {
+        wh = wh - this.el.h.title.outerHeight(true);
+    }
         
     // Log panel dimensions
-    this.logpanel.css({
+    this.el.l.p.css({
         height: wh - 3,
         width: cw - 3});
     
@@ -687,7 +710,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     this.scroll();
     
     // User list dimensions
-    cu.css({height: this.logpanel.innerHeight()});
+    this.el.u.css({height: this.el.l.p.innerHeight()});
 };
 
 /**
@@ -699,7 +722,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.logpanel.find( '.logmsg' );
+    msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -748,15 +771,15 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
     
     this.manager.trigger( 'log_item.before', data );
     if( this.visible ) {
-        this.st = this.wrap.scrollTop();
+        this.st = this.el.l.w.scrollTop();
     }
     
     // Add content.
-    this.wrap.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.wrap.find('li').last() } );
+    this.el.l.w.append(Chatterbox.render('logitem', data));
+    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
     if( this.visible ) {
-        this.st+= this.wrap.find('li.logmsg').last().height();
-        this.wrap.scrollTop( this.st );
+        this.st+= this.el.l.w.find('li.logmsg').last().height();
+        this.el.l.w.scrollTop( this.st );
     }
     
     // Scrollio
@@ -772,7 +795,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
 Chatterbox.Channel.prototype.retime = function(  ) {
 
     var tsf = '';
-    var wrap = this.wrap;
+    var wrap = this.el.l.w;
 
     if( this.manager.settings.clock ) {
         tsf = '{HH}:{mm}:{ss}';
@@ -812,9 +835,9 @@ Chatterbox.Channel.prototype.server_message = function( msg, info ) {
  * @method clear
  */
 Chatterbox.Channel.prototype.clear = function(  ) {
-    this.logpanel.find('li.logmsg').remove();
-    this.logpanel.find('li.loginfo').remove();
-    this.wrap.height(0);
+    this.el.l.p.find('li.logmsg').remove();
+    this.el.l.p.find('li.loginfo').remove();
+    this.el.l.w.height(0);
     this.resize();
 };
 
@@ -832,11 +855,11 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
     };
     this.manager.trigger( 'log_info.before', data );
     delete data['ns'];
-    var b = this.wrap.append(Chatterbox.render( 'loginfobox', data ));
+    var b = this.el.l.w.append(Chatterbox.render( 'loginfobox', data ));
     this.scroll();
     
     var ui = this;
-    var box = this.wrap.find('li.' + data.ref);
+    var box = this.el.l.w.find('li.' + data.ref);
     box.find('a.close').click(
         function( e ) {
             ui.wrap.find(this).parent().remove();
@@ -966,16 +989,17 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * @param content {String} HTML to use for the header.
  */
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
-    headd = this.window.find("header div." + head);
-    headd.replaceWith(
+    head = head.toLowerCase();
+    
+    this.el.h[head].replaceWith(
         Chatterbox.render('header', {'head': head, 'content': content || ''})
     );
-    headd = this.window.find('header div.' + head);
     
-    if( content ) {
-        headd.css({display: 'block'});
-    } else {
-        this.window.find('header div.' + head).css({display: 'none'});
+    this.el.h[head] = this.el.m.find('header div.' + head);
+    this.el.h[head].css( { display: ( content ? 'block' : 'none' ) } );
+    
+    if( head == 'title' ) {
+        this.titled = ( content.length > 0 );
     }
         
     this.resize();
@@ -990,7 +1014,7 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
  */
 Chatterbox.Channel.prototype.get_header = function( head ) {
 
-    return this.window.find('header div.' + head);
+    return this.el.h[head.toLowerCase()];
 
 };
 
@@ -1005,13 +1029,16 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
     if( Object.size(userlist) == 0 )
         return;
     
-    infoboxes = [];
-    html = '';
+    var infoboxes = [];
+    var html = '';
+    var pc = {};
+    var conn = '';
+    var user = '';
     
-    for( order in userlist ) {
+    for( var order in userlist ) {
         pc = userlist[order];
         html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
-        for( un in pc.users ) {
+        for( var un in pc.users ) {
             user = pc.users[un];
             conn = user.conn == 1 ? '' : '[' + user.conn + ']';
             html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
@@ -1021,11 +1048,11 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
         html+= '</ul></div>';
     }
     
-    this.window.find('div.chatusers').html(html);
-    this.userpanel = this.window.find('div.chatusers');
-    this.userpanel.css({display: 'block'});
+    this.el.m.find('div.chatusers').html(html);
+    this.el.u = this.el.m.find('div.chatusers');
+    this.el.u.css({display: 'block'});
     
-    for( index in infoboxes ) {
+    for( var index in infoboxes ) {
         this.userinfo(infoboxes[index]);
     }
     this.resize();
@@ -1044,8 +1071,8 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.tab;
-    ( message || this.window.find('.logmsg').last() ).addClass('highlight');
+    var tab = this.el.t.o;
+    ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     
     if( tab.hasClass('active') )
         return;
@@ -1082,7 +1109,7 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     
     var u = '';
     var si = 0;
-    var msg = this.window.find('.logmsg').last();
+    var msg = this.el.m.find('.logmsg').last();
     
     for( var i in this.manager.umuted ) {
         if( !this.manager.umuted.hasOwnProperty(i) )
@@ -1095,11 +1122,11 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         }
     }
     
-    if( !this.tab.hasClass('active') ) {
-        this.tab.addClass('noise');
-        if( !this.tab.hasClass('tabbed') ) {
+    if( !this.el.t.o.hasClass('active') ) {
+        this.el.t.o.addClass('noise');
+        if( !this.el.t.o.hasClass('tabbed') ) {
             if( msg.find('.cevent').length == 0 ) {
-                this.tab.addClass('chatting');
+                this.el.t.o.addClass('chatting');
             }
         }
     }
@@ -1116,7 +1143,7 @@ Chatterbox.Channel.prototype.noise = function(  ) {
  */
 Chatterbox.Channel.prototype.userinfo = function( user ) {
 
-    var link = this.window.find( 'a#' + user.name );
+    var link = this.el.m.find( 'a#' + user.name );
     
     if( link.length == 0 )
         return;
@@ -1127,10 +1154,11 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     link.hover(
         function( e ) {
             user.info = [];
-            ed = { 'ns': chan.namespace, 'user': user };
+            var ed = { 'ns': chan.namespace, 'user': user };
             chan.manager.trigger( 'userinfo.before', ed );
             user = ed.user;
-            infoli = '';
+            var infoli = '';
+            
             for( index in user.info ) {
                 infoli+= '<li>' + user.info[index] + '</li>';
             }
@@ -1143,7 +1171,7 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
             
             box = chan.window.find('.userinfo#'+user.name);
             chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            pos = link.offset();
+            var pos = link.offset();
             box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
             box.find('.info').height(box.height());
             
@@ -1177,10 +1205,11 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
  */
 Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
 
-    o = box.offset();
-    eb = box.outerHeight(true) + o.top;
-    er = box.outerWidth(true) + o.left;
-    x = event.pageX; y = event.pageY;
+    var o = box.offset();
+    var eb = box.outerHeight(true) + o.top;
+    var er = box.outerWidth(true) + o.left;
+    var x = event.pageX;
+    var y = event.pageY;
     
     if( x > o.left
         && x < er
@@ -1208,7 +1237,7 @@ Chatterbox.Channel.prototype.mute_user = function( user ) {
 
     if( !user )
         return;
-    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
+    this.el.l.w.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'none'});
     this.scroll();
 
 };
@@ -1223,7 +1252,7 @@ Chatterbox.Channel.prototype.unmute_user = function( user ) {
 
     if( !user )
         return;
-    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
+    this.el.l.w.find('li.logmsg.u-' + user.toLowerCase()).css({'display': 'list-item'});
     this.scroll();
 
 };
@@ -1238,7 +1267,7 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 
     if( !user )
         return;
-    this.wrap.find('li.logmsg.u-' + user.toLowerCase()).remove();
+    this.el.l.w.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
 
 };
@@ -1904,7 +1933,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
                 orig.theme = replaceAll(ui.theme(), 'wsct_', '');
                 orig.tc = ui.nav.closer();
                 
-                ui.trigger('settings.save', {
+                ui.trigger('settings.save.ui', {
                     'clock': orig.clock,
                     'tabclose': orig.tc,
                     'theme': 'wsct_' + orig.theme
@@ -2000,6 +2029,7 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
 Chatterbox.Popup = function( ui, options ) {
 
     this.manager = ui;
+    this.pview = ( this.manager || {view: {find: function(){}} } ).view;
     this.window = null;
     this.closeb = null;
     this.options = Object.extend({
@@ -2025,8 +2055,8 @@ Chatterbox.Popup.prototype.build = function(  ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
     }
     
-    this.manager.view.append(Chatterbox.render( 'popup', fill ));
-    this.window = this.manager.view.find('.floater.' + fill.ref);
+    this.pview.append(Chatterbox.render( 'popup', fill ));
+    this.window = this.pview.find('.floater.' + fill.ref);
     
     if( this.options.close ) {
         this.closeb = this.window.find('a.close');
@@ -2137,6 +2167,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
+    this.pview = this.pview.find('.chatbook');
     this.data = this.options['default'];
     this.pages = [];
     this.cpage = null;
@@ -2479,6 +2510,7 @@ Chatterbox.Settings.prototype.save = function(  ) {
 
     this.config.save(this);
     this.changed = false;
+    this.manager.trigger( 'settings.save', { 'config': this.config } );
 
 };
 
@@ -2493,6 +2525,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
     this.manager.nav.settings.open = false;
     this.manager.nav.settings.window = null;
     this.config.close(this);
+    this.manager.trigger( 'settings.close', { 'config': this.config } );
 
 };
 
@@ -3578,6 +3611,48 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 
 
 /**
+ * Form colour field.
+ * 
+ * @class Colour
+ * @constructor
+ * @param type {String} The type of field this field is.
+ * @param options {Object} Field options.
+ */
+Chatterbox.Settings.Item.Form.Colour = function( type, options ) {
+
+    Chatterbox.Settings.Item.Form.Field.call(this, type, options);
+
+};
+
+Chatterbox.Settings.Item.Form.Colour.prototype = new Chatterbox.Settings.Item.Form.Field();
+Chatterbox.Settings.Item.Form.Colour.prototype.constructor = Chatterbox.Settings.Item.Form.Colour;
+
+/**
+ * Build the colour field.
+ * 
+ * @method build
+ * @param form {Object} Settings page form.
+ */
+Chatterbox.Settings.Item.Form.Colour.prototype.build = function( form ) {
+
+    Chatterbox.Settings.Item.Form.Field.prototype.build.call(this, form);
+    this.resize();
+
+};
+
+/**
+ * Resize the settings window boxes stuff.
+ * 
+ * @method resize
+ */
+Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
+
+    this.lwrap.height( this.fwrap.height() );
+
+};
+
+
+/**
  * Radio box item.
  * 
  * @class Radio
@@ -4433,6 +4508,18 @@ Chatterbox.template.settings.item.items.frame = '{title}<div class="{ref} items"
     <section class="mitems">{items}</section>\
     </div>';
 
+Chatterbox.template.settings.item.colour = {};
+Chatterbox.template.settings.item.colour.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.colour.render = { 'title': Chatterbox.template.settings.krender.title };
+
+Chatterbox.template.settings.item.colour.post = Chatterbox.template.clean(['ref', 'title', 'default']);
+Chatterbox.template.settings.item.colour.events = [['blur', 'input'],['inspect', 'input']];
+Chatterbox.template.settings.item.colour.frame = '{title}<div class="{ref} textfield"><form><input type="color" value="{default}" /></form></div>';
+
 Chatterbox.template.settings.item.form = {};
 Chatterbox.template.settings.item.form.pre = [
     Chatterbox.template.settings.item.twopane.wrap,
@@ -4495,6 +4582,10 @@ Chatterbox.template.settings.item.form.field.text.render = {
 Chatterbox.template.settings.item.form.field.text.frame = '{title}<p>\
                                         {text}\
                                     </p>';
+
+Chatterbox.template.settings.item.form.field.colour = {};
+Chatterbox.template.settings.item.form.field.colour.post = Chatterbox.template.clean(['ref', 'default']);
+Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}" type="color" value="{default}" />';
 
 
 

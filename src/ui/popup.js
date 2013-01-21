@@ -14,6 +14,7 @@
 Chatterbox.Popup = function( ui, options ) {
 
     this.manager = ui;
+    this.pview = ( this.manager || {view: {find: function(){}} } ).view;
     this.window = null;
     this.closeb = null;
     this.options = Object.extend({
@@ -39,8 +40,8 @@ Chatterbox.Popup.prototype.build = function(  ) {
         fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
     }
     
-    this.manager.view.append(Chatterbox.render( 'popup', fill ));
-    this.window = this.manager.view.find('.floater.' + fill.ref);
+    this.pview.append(Chatterbox.render( 'popup', fill ));
+    this.window = this.pview.find('.floater.' + fill.ref);
     
     if( this.options.close ) {
         this.closeb = this.window.find('a.close');
@@ -151,6 +152,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
     }, options );
     
     Chatterbox.Popup.call( this, ui, options );
+    this.pview = this.pview.find('.chatbook');
     this.data = this.options['default'];
     this.pages = [];
     this.cpage = null;

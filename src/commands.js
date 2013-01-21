@@ -64,14 +64,14 @@ wsc.defaults.Extension = function( client ) {
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
-        client.ui.on('settings.save', settings_save);
+        client.ui.on('settings.save.ui', settings_save);
+        client.ui.on('settings.save', function(  ) { client.config_save(); } );
     };
     
     var settings_save = function( e, ui ) {
         client.settings.ui.theme = e.theme;
         client.settings.ui.clock = e.clock;
         client.settings.ui.tabclose = e.tabclose;
-        client.config_save();
     };
     
     var settings_page = function( e, ui ) {
