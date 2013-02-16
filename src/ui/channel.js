@@ -440,7 +440,7 @@ Chatterbox.Channel.prototype.log_whois = function( data ) {
         var conn = whois.conns[i];
         var text = '<section class="conn"><p><em>connection ' + ((parseInt(i) + 1).toString()) + ':</em></p>';
         text+= '<ul>';
-        for( x in conn ) {
+        for( var x in conn ) {
             text+= '<li><strong>' + conn[x][0] + ':</strong> ' + conn[x][1] + '</li>';
         }
         text+= '</ul>'

@@ -708,7 +708,7 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    e = { 'input': reason, 'ns': namespace };
+    e = { 'input': reason || '', 'ns': namespace };
     this.trigger( 'send.kick.before', e );
     this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 
