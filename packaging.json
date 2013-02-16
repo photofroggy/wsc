@@ -23,6 +23,7 @@
             "files": [
                 "src/base.js",
                 "src/events.js",
+                "src/cryptomd5.js",
                 "src/transport.js",
                 "src/lib.js",
                 "src/storage.js",
@@ -47,6 +48,7 @@
             "files": [
                 "src/base.js",
                 "src/events.js",
+                "src/cryptomd5.js",
                 "src/transport.js",
                 "src/lib.js",
                 "src/storage.js",

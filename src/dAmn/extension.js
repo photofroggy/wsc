@@ -13,6 +13,7 @@ wsc.dAmn.Extension = function( client ) {
     client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
     
     var storage = client.storage.folder('dAmn');
+    storage.bds = storage.folder('bds');
     storage.emotes = storage.folder('emotes');
     storage.colours = storage.folder('colours');
     var settings = {
@@ -89,6 +90,7 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    wsc.dAmn.BDS( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
 

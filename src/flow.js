@@ -162,7 +162,7 @@ wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
         ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
-        client.create_ns(ns);
+        client.create_ns(ns, client.hidden.is(ns));
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
         client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);

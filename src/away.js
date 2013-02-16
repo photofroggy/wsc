@@ -16,6 +16,7 @@ wsc.defaults.Extension.Away = function( client ) {
             'away': "{user}: I've been away for {timesince}. Reason: {reason}"
         }
     };
+    client.away = settings;
     
     var init = function(  ) {
     

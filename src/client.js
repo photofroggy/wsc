@@ -57,6 +57,38 @@ wsc.Client = function( view, options, mozilla ) {
         'count': 0,
         'channel': []
     };
+    this.away = {};
+    
+    var cli = this;
+    // Hidden channels
+    this.hidden = {
+        'ns': [],
+        'on': true,
+        'add': function( ns ) {
+            if( !ns )
+                return false;
+            ns = cli.format_ns(ns).toLowerCase();
+            if( cli.hidden.ns.indexOf( ns ) > -1 )
+                return true;
+            cli.hidden.ns.push( ns );
+            return true;
+        },
+        'remove': function( ns ) {
+            if( !ns )
+                return false;
+            ns = cli.format_ns(ns).toLowerCase();
+            if( cli.hidden.ns.indexOf( ns ) == -1 )
+                return true;
+            cli.hidden.ns.splice( cli.hidden.ns.indexOf( ns ), 1 );
+            return true;
+        },
+        'is': function( ns ) {
+            if( !ns )
+                return false;
+            ns = cli.format_ns(ns).toLowerCase();
+            return cli.hidden.ns.indexOf( ns ) > -1;
+        }
+    };
     
     this.settings = Object.extend( this.settings, options );
     this.config_load();

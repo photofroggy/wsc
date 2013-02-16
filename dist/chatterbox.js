@@ -214,6 +214,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
+    this.monitoro.show();
     //this.control.setInput();
     this.control.focus();
     
@@ -1424,8 +1425,10 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan )
+    if( !chan || chan.hidden ) {
+        chan.hide();
         return;
+    }
     
     if(this.current) {
         if(this.current == chan)
@@ -1433,6 +1436,8 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
         // Hide previous channel, if any.
         this.current.hide();
         prev = this.current;
+    } else {
+        this.manager.monitoro.hide();
     }
     
     // Show clicked channel.
