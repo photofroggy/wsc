@@ -96,6 +96,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             p = p.join(',');
             if( t != client.settings.username )
                 return;
+            if( !(user in pchats) )
+                return;
             clearTimeout( pchats[user] );
             client.ui.channel( '@' + user ).server_message('Chat request rejected', p);
         },
