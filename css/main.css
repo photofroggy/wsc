@@ -258,6 +258,18 @@ section article + p {
     margin-top: 20px;
 }
 
+section * + footer {
+    margin-top: 20px;
+}
+
+section footer {
+    font-size: 12px
+}
+
+section footer em {
+    font-style: italic;
+}
+
 article.min {
     height: 60px;
     border: 1px solid #DDE2E6;
@@ -314,3 +326,5 @@ article.min:hover .content {
 article.min:not(:first-child) {
     margin-top: 15px;
 }
+
+
