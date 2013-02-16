@@ -958,6 +958,7 @@ div.wsc a.iconic.close.square {
 }
 div.wsc div.floater {
   position: absolute;
+  z-index: 999;
 }
 div.wsc div.floater div.inner {
   height: 100%;

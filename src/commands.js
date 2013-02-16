@@ -26,6 +26,7 @@ wsc.defaults.Extension = function( client ) {
         
         // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
+        client.bind('cmd.chat', cmd_pjoin );
         client.bind('cmd.part', cmd_part );
         // send ...
         client.bind('cmd.say', cmd_say );
@@ -189,6 +190,21 @@ wsc.defaults.Extension = function( client ) {
         
         for( index in chans )
             client.join(chans[index]);
+    };
+    
+    // Join a channel
+    var cmd_pjoin = function( e ) {
+        var chans = e.args.split(' ');
+        var chans = chans.toString() == '' ? [] : chans;
+        
+        if( e.ns != e.target )
+            chans.unshift(e.target);
+        
+        if( chans.toString() == '' )
+            return;
+        
+        for( index in chans )
+            client.join('@' + chans[index]);
     };
     
     // Leave a channel

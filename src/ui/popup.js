@@ -143,7 +143,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
-        'position': [10, 60],
+        'position': [100, 60],
         'ref': 'item-picker',
         'title': 'Items',
         'event': {
@@ -167,7 +167,7 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
     this.options.content = Chatterbox.render('ip.main', {});
     Chatterbox.Popup.prototype.build.call(this);
     this.window.css({
-        'left': this.options.position[0],
+        'right': this.options.position[0],
         'bottom': this.options.position[1]
     });
     this.closeb.removeClass('medium');

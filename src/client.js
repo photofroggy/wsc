@@ -304,7 +304,7 @@ wsc.Client.prototype.close = function(  ) {
  */
 wsc.Client.prototype.channel = function( namespace, channel ) {
 
-    namespace = this.deform_ns(namespace).slice(1).toLowerCase();
+    namespace = this.format_ns(namespace).toLowerCase();
     
     if( !this.channelo[namespace] && channel )
         this.channelo[namespace] = channel;
@@ -455,7 +455,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
         return;
     
     chan.remove();
-    delete this.channelo[chan.selector];
+    delete this.channelo[chan.raw.toLowerCase()];
 
 };
 
@@ -691,10 +691,10 @@ wsc.Client.prototype.ban = function( namespace, user ) {
  * @param namespace {String} Channel to unban someone from.
  * @param user {String} User to unban.
  */
-wsc.Client.prototype.unban = function( namespae, user ) {
+wsc.Client.prototype.unban = function( namespace, user ) {
 
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('unban', user, {}, ( !pc ? '' : pc ))));
+        wsc_packetstr('unban', user)));
 
 };
 
@@ -708,7 +708,7 @@ wsc.Client.prototype.unban = function( namespae, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    e = { 'input': reason, 'ns': namespace };
+    e = { 'input': reason || '', 'ns': namespace };
     this.trigger( 'send.kick.before', e );
     this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
 

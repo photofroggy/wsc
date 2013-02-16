@@ -186,7 +186,7 @@ wsc.Flow.prototype.part = function( event, client ) {
         if( event.r.length > 0 )
             info = '[' + event.r + ']';
         else
-            client.remove_ns(ns);
+            client.remove_ns(event.ns);
         
         msg = 'You have left ' + ns;
         c.server_message(msg, info);
