@@ -31,7 +31,7 @@ wsc.Channel = function( client, ns, hidden ) {
     this.hidden = hidden;
     this.ui = null;
     this.raw = client.format_ns(ns);
-    this.selector = client.deform_ns(ns).slice(1).toLowerCase();
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
     this.monitor = Object.size(this.client.channelo) == 0;
 
@@ -44,7 +44,7 @@ wsc.Channel = function( client, ns, hidden ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-    this.client.ui.create_channel(this.namespace, this.hidden);
+    this.client.ui.create_channel(this.raw, this.hidden);
     this.ui = this.client.ui.channel(ns);
 };
 

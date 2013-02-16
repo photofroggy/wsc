@@ -67,7 +67,7 @@ Chatterbox.Chatbook.prototype.loop = function(  ) {
  * @return {Object} The channel object representing the channel defined by `namespace`
  */
 Chatterbox.Chatbook.prototype.channel = function( namespace, chan ) {
-    namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
+    namespace = this.manager.format_ns(namespace).toLowerCase();
     
     if( !this.chan[namespace] && chan )
         this.chan[namespace] = chan;
@@ -175,12 +175,12 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     
     var chan = this.channel(ns);
     chan.remove();
-    delete this.chan[chan.selector];
+    delete this.chan[chan.raw.toLowerCase()];
     
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.namespace);
+    rpos = this.trail.indexOf(chan.raw);
     this.trail.splice(rpos, 1);
 };
 

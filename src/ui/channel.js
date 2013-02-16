@@ -10,13 +10,12 @@
  */
 Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
-    var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = monitor || false;
     this.built = false;
-    this.selector = selector;
     this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = ui.deform_ns(ns);
     this.visible = false;
     this.st = 0;
@@ -61,8 +60,8 @@ Chatterbox.Channel.prototype.build = function( ) {
         return;
     
     var selector = this.selector;
-    ns = this.namespace;
-    
+    var ns = this.namespace;
+    var raw = this.raw;
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
@@ -82,14 +81,14 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
-        chan.manager.toggle_channel(selector);
+        chan.manager.toggle_channel(raw);
         return false;
     });
     
     // When someone clicks the tab close button.
     this.el.t.c.click(function ( e ) {
         chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.namespace,
+            'ns': chan.raw,
             'chan': chan,
             'e': e
         } );

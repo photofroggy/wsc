@@ -805,7 +805,7 @@ wsc.Channel = function( client, ns, hidden ) {
     this.hidden = hidden;
     this.ui = null;
     this.raw = client.format_ns(ns);
-    this.selector = client.deform_ns(ns).slice(1).toLowerCase();
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
     this.monitor = Object.size(this.client.channelo) == 0;
 
@@ -818,7 +818,7 @@ wsc.Channel = function( client, ns, hidden ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-    this.client.ui.create_channel(this.namespace, this.hidden);
+    this.client.ui.create_channel(this.raw, this.hidden);
     this.ui = this.client.ui.channel(ns);
 };
 
@@ -1805,7 +1805,7 @@ wsc.Flow.prototype.part = function( event, client ) {
         if( event.r.length > 0 )
             info = '[' + event.r + ']';
         else
-            client.remove_ns(ns);
+            client.remove_ns(event.ns);
         
         msg = 'You have left ' + ns;
         c.server_message(msg, info);
@@ -1975,6 +1975,7 @@ wsc.defaults.Extension = function( client ) {
         
         // standard dAmn commands.
         client.bind('cmd.join', cmd_join );
+        client.bind('cmd.chat', cmd_pjoin );
         client.bind('cmd.part', cmd_part );
         // send ...
         client.bind('cmd.say', cmd_say );
@@ -2138,6 +2139,21 @@ wsc.defaults.Extension = function( client ) {
         
         for( index in chans )
             client.join(chans[index]);
+    };
+    
+    // Join a channel
+    var cmd_pjoin = function( e ) {
+        var chans = e.args.split(' ');
+        var chans = chans.toString() == '' ? [] : chans;
+        
+        if( e.ns != e.target )
+            chans.unshift(e.target);
+        
+        if( chans.toString() == '' )
+            return;
+        
+        for( index in chans )
+            client.join('@' + chans[index]);
     };
     
     // Leave a channel
@@ -3288,7 +3304,7 @@ wsc.Client.prototype.close = function(  ) {
  */
 wsc.Client.prototype.channel = function( namespace, channel ) {
 
-    namespace = this.deform_ns(namespace).slice(1).toLowerCase();
+    namespace = this.format_ns(namespace).toLowerCase();
     
     if( !this.channelo[namespace] && channel )
         this.channelo[namespace] = channel;
@@ -3439,7 +3455,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
         return;
     
     chan.remove();
-    delete this.channelo[chan.selector];
+    delete this.channelo[chan.raw.toLowerCase()];
 
 };
 
@@ -4641,13 +4657,12 @@ Chatterbox.UI.prototype.add_theme = function( theme ) {
  */
 Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
-    var selector = ui.deform_ns(ns).slice(1).toLowerCase();
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = monitor || false;
     this.built = false;
-    this.selector = selector;
     this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = ui.deform_ns(ns);
     this.visible = false;
     this.st = 0;
@@ -4692,8 +4707,8 @@ Chatterbox.Channel.prototype.build = function( ) {
         return;
     
     var selector = this.selector;
-    ns = this.namespace;
-    
+    var ns = this.namespace;
+    var raw = this.raw;
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
@@ -4713,14 +4728,14 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
-        chan.manager.toggle_channel(selector);
+        chan.manager.toggle_channel(raw);
         return false;
     });
     
     // When someone clicks the tab close button.
     this.el.t.c.click(function ( e ) {
         chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.namespace,
+            'ns': chan.raw,
             'chan': chan,
             'e': e
         } );
@@ -5509,7 +5524,7 @@ Chatterbox.Chatbook.prototype.loop = function(  ) {
  * @return {Object} The channel object representing the channel defined by `namespace`
  */
 Chatterbox.Chatbook.prototype.channel = function( namespace, chan ) {
-    namespace = this.manager.deform_ns(namespace).slice(1).toLowerCase();
+    namespace = this.manager.format_ns(namespace).toLowerCase();
     
     if( !this.chan[namespace] && chan )
         this.chan[namespace] = chan;
@@ -5617,12 +5632,12 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     
     var chan = this.channel(ns);
     chan.remove();
-    delete this.chan[chan.selector];
+    delete this.chan[chan.raw.toLowerCase()];
     
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.namespace);
+    rpos = this.trail.indexOf(chan.raw);
     this.trail.splice(rpos, 1);
 };
 
@@ -6325,7 +6340,7 @@ Chatterbox.Popup.ItemPicker = function( ui, options ) {
 
     options = options || {};
     options = Object.extend( {
-        'position': [10, 60],
+        'position': [100, 60],
         'ref': 'item-picker',
         'title': 'Items',
         'event': {
@@ -6349,7 +6364,7 @@ Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
     this.options.content = Chatterbox.render('ip.main', {});
     Chatterbox.Popup.prototype.build.call(this);
     this.window.css({
-        'left': this.options.position[0],
+        'right': this.options.position[0],
         'bottom': this.options.position[1]
     });
     this.closeb.removeClass('medium');

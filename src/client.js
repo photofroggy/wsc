@@ -304,7 +304,7 @@ wsc.Client.prototype.close = function(  ) {
  */
 wsc.Client.prototype.channel = function( namespace, channel ) {
 
-    namespace = this.deform_ns(namespace).slice(1).toLowerCase();
+    namespace = this.format_ns(namespace).toLowerCase();
     
     if( !this.channelo[namespace] && channel )
         this.channelo[namespace] = channel;
@@ -455,7 +455,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
         return;
     
     chan.remove();
-    delete this.channelo[chan.selector];
+    delete this.channelo[chan.raw.toLowerCase()];
 
 };
 
