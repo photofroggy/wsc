@@ -628,7 +628,7 @@ Chatterbox.Channel.prototype.show = function( ) {
         c.resize();
         c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 1000);
+    }, 500);
 };
 
 /**
@@ -868,7 +868,7 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
     var box = this.el.l.w.find('li.' + data.ref);
     box.find('a.close').click(
         function( e ) {
-            ui.wrap.find(this).parent().remove();
+            ui.el.l.w.find(this).parent().remove();
             ui.resize();
             return false;
         }
