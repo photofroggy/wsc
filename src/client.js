@@ -691,10 +691,10 @@ wsc.Client.prototype.ban = function( namespace, user ) {
  * @param namespace {String} Channel to unban someone from.
  * @param user {String} User to unban.
  */
-wsc.Client.prototype.unban = function( namespae, user ) {
+wsc.Client.prototype.unban = function( namespace, user ) {
 
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('unban', user, {}, ( !pc ? '' : pc ))));
+        wsc_packetstr('unban', user)));
 
 };
 
