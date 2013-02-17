@@ -9207,7 +9207,7 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     settings.colours.send_colour = function( event ) {
         if( !settings.colours.send )
             return;
-        e.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        event.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
     };
     
     settings.colours.parse_colour = function( event ) {
