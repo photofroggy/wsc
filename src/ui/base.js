@@ -32,7 +32,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'username': '',
         'domain': 'website.com',
         'clock': true,
-        'tabclose': true
+        'tabclose': true,
+        'developer': false
     };
     
     view.extend( this.settings, options );
@@ -476,6 +477,16 @@ Chatterbox.UI.prototype.add_theme = function( theme ) {
     
     this.settings.themes.push(theme);
 
+};
+
+/**
+ * Toggle developer mode for the UI.
+ *
+ * @method developer
+ */
+Chatterbox.UI.prototype.developer = function( mode ) {
+    this.settings.developer = mode;
+    this.chatbook.developer();
 };
 
 

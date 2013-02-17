@@ -2,18 +2,60 @@
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    settings.bds = {
+        // Main DSP channel.
+        mns: 'chat:datashare',
+        ns: [],
+        // Check if we should be processing messages from a given channel.
+        channel: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            return settings.bds.ns.indexOf( ns ) > -1;
+        },
+        // Add a channel
+        add: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            if( settings.bds.ns.indexOf( ns ) > -1 )
+                return true;
+            settings.bds.ns.push( ns );
+            return true;
+        },
+        // Remove a channel
+        remove: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            if( settings.bds.ns.indexOf( ns ) == -1 )
+                return true;
+            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
+            return true;
+        },
+        // Because it's fun spamming #ds
+        'provides': [
+            'BOTCHECK',
+            'CLINK'
+        ]
+    };
+    // Allow other parts of client to use the channel listing.
+    client.bds = settings.bds;
+    settings.bds.add(settings.bds.mns);
     
     var init = function(  ) {
         client.hidden.add('#datashare');
         client.exclude.push('#datashare');
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
+        client.bind('pkt.join', handle.join);
         // BOTCHECK
         client.bind('BDS.BOTCHECK.DIRECT', handle.botcheck);
         client.bind('BDS.BOTCHECK.ALL', handle.botcheck);
         // pchats
         client.bind('CDS.LINK.REQUEST', handle.clreq);
         client.bind('CDS.LINK.REJECT', handle.clrj);
+        client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
     };
@@ -26,6 +68,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     
     var bds_msg = function( event ) {
+        if( !settings.bds.channel(event.ns) )
+            return;
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -52,6 +96,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Provider
+        join: function( event ) {
+            if( event.ns.toLowerCase() != settings.bds.mns )
+                return;
+            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+        },
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
@@ -90,23 +140,23 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         },
         // CDS:LINK:REJECT
         clrj: function( event ) {
-            var user = event.user;
+            var user = event.user.toLowerCase();
             var p = event.payload.split(',');
             var t = p.shift();
             p = p.join(',');
-            if( t != client.settings.username )
+            if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
             if( !(user in pchats) )
                 return;
             clearTimeout( pchats[user] );
-            client.ui.channel( '@' + user ).server_message('Chat request rejected', p);
+            client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
         // CDS:LINK:ACK
         clra: function( event ) {
-            var user = event.user;
+            var user = event.user.toLowerCase();
             var p = event.payload.split(',');
             var t = p.shift();
-            if( t != client.settings.username )
+            if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
             clearTimeout( pchats[user] );
         },
@@ -129,16 +179,18 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             // Send notice...
             var user = event.sns.substr(1);
             var ns = event.ns;
-            client.ui.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
+            client.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
             client.npmsg( 'chat:datashare', 'CDS:LINK:REQUEST:' + user );
-            pchats[user] = setTimeout(function() {
-                client.ui.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+            pchats[user.toLowerCase()] = setTimeout(function() {
+                try {
+                    client.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+                } catch( err ) {}
             }, 10000);
         },
         // pchat recv_join
         pcrj: function( event ) {
             try {
-                clearTimeout( pchats[event.user] );
+                clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
         }
     };

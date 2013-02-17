@@ -2053,6 +2053,7 @@ wsc.defaults.Extension = function( client ) {
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
+        orig.devel = client.settings.developer;
         
         page.item('Form', {
             'ref': 'login',
@@ -2078,6 +2079,35 @@ wsc.defaults.Extension = function( client ) {
                 }
             }
         }, true);
+        
+        page.item('Form', {
+            'ref': 'developer',
+            'title': 'Developer Mode',
+            'text': 'Turn developer mode on or off.\n\nDeveloper mode will expose any hidden\
+                channel tabs, amongst other things. Keep this turned off unless you\'re working\
+                on implementing something.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'items': [
+                        { 'value': 'on', 'title': 'On', 'selected': orig.devel }
+                    ]
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                    client.settings.developer = (event.data.enabled.indexOf('on') != -1);
+                    client.ui.developer(client.settings.developer);
+                },
+                'save': function( event ) {
+                    orig.devel = client.settings.developer;
+                },
+                'close': function( event ) {
+                    client.settings.developer = orig.devel;
+                    client.ui.developer(client.settings.developer);
+                }
+            }
+        });
         
         page.item('Text', {
             'ref': 'intro',
@@ -3074,7 +3104,8 @@ wsc.Client = function( view, options, mozilla ) {
             "themes": wsc.defaults.themes,
             "tabclose": true,
             "clock": true
-        }
+        },
+        "developer": false
     };
     this.autojoin = {
         'on': true,
@@ -3125,7 +3156,8 @@ wsc.Client = function( view, options, mozilla ) {
         'username': this.settings.username,
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
-        'tabclose': this.settings.ui.tabclose
+        'tabclose': this.settings.ui.tabclose,
+        'developer': this.settings.developer
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
@@ -3152,6 +3184,7 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
+    this.settings.developer = ( this.storage.get('developer', this.settings.developer.toString()) == 'true' );
     this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
     this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
     this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
@@ -3181,6 +3214,7 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
+    this.storage.set('developer', this.settings.developer);
     this.storage.ui.set('theme', this.settings.ui.theme);
     this.storage.ui.set('clock', this.settings.ui.clock.toString());
     this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
@@ -4255,7 +4289,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'username': '',
         'domain': 'website.com',
         'clock': true,
-        'tabclose': true
+        'tabclose': true,
+        'developer': false
     };
     
     view.extend( this.settings, options );
@@ -4701,6 +4736,16 @@ Chatterbox.UI.prototype.add_theme = function( theme ) {
 
 };
 
+/**
+ * Toggle developer mode for the UI.
+ *
+ * @method developer
+ */
+Chatterbox.UI.prototype.developer = function( mode ) {
+    this.settings.developer = mode;
+    this.chatbook.developer();
+};
+
 
 /**
  * Object for managing channel interfaces.
@@ -4816,7 +4861,7 @@ Chatterbox.Channel.prototype.build = function( ) {
         }
     );
     
-    if( this.hidden ) {
+    if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
@@ -4852,6 +4897,21 @@ Chatterbox.Channel.prototype.show = function( ) {
         c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
     }, 500);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.Channel.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
 };
 
 /**
@@ -5618,8 +5678,12 @@ Chatterbox.Chatbook.prototype.channels = function( ) {
  * @return {Object} WscUIChannel object.
  */
 Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
-    chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
+    var chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
     chan.build();
+    // Update the paper trail.
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
     this.toggle_channel(ns);
     this.manager.resize();
     return chan;
@@ -5649,8 +5713,10 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var prev = chan;
     
     if( !chan || chan.hidden ) {
-        chan.hide();
-        return;
+        if( !this.manager.settings.developer ) {
+            chan.hide();
+            return;
+        }
     }
     
     if(this.current) {
@@ -5660,7 +5726,8 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
         this.current.hide();
         prev = this.current;
     } else {
-        this.manager.monitoro.hide();
+        if( this.manager.monitoro !== null )
+            this.manager.monitoro.hide();
     }
     
     // Show clicked channel.
@@ -5668,11 +5735,6 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
-    
-    // Update the paper trail.
-    if( this.trail.indexOf(chan.namespace) == -1 ) {
-        this.trail.push(chan.namespace);
-    }
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.namespace,
@@ -5726,6 +5788,9 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
         
         if( !nc.hidden )
             break;
+        
+        if( this.manager.settings.developer )
+            break;
     }
     
     this.toggle_channel(nc.namespace);
@@ -5754,6 +5819,9 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
             nc = this.channel(this.trail[0]);
         }
         if( !nc.hidden )
+            break;
+        
+        if( this.manager.settings.developer )
             break;
     }
     
@@ -5837,6 +5905,17 @@ Chatterbox.Chatbook.prototype.retime = function(  ) {
         this.chan[ns].retime();
     }
 
+};
+
+/**
+ * Toggle the developer mode of each channel.
+ *
+ * @method developer
+ */
+Chatterbox.Chatbook.prototype.developer = function(  ) {
+    this.each( function( ns, chan ) {
+        chan.developer();
+    } );
 };
 
 /**
@@ -8846,18 +8925,60 @@ wsc.dAmn.STATE = 'alpha';
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    settings.bds = {
+        // Main DSP channel.
+        mns: 'chat:datashare',
+        ns: [],
+        // Check if we should be processing messages from a given channel.
+        channel: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            return settings.bds.ns.indexOf( ns ) > -1;
+        },
+        // Add a channel
+        add: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            if( settings.bds.ns.indexOf( ns ) > -1 )
+                return true;
+            settings.bds.ns.push( ns );
+            return true;
+        },
+        // Remove a channel
+        remove: function( ns ) {
+            if( !ns )
+                return false;
+            ns = client.format_ns(ns).toLowerCase();
+            if( settings.bds.ns.indexOf( ns ) == -1 )
+                return true;
+            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
+            return true;
+        },
+        // Because it's fun spamming #ds
+        'provides': [
+            'BOTCHECK',
+            'CLINK'
+        ]
+    };
+    // Allow other parts of client to use the channel listing.
+    client.bds = settings.bds;
+    settings.bds.add(settings.bds.mns);
     
     var init = function(  ) {
         client.hidden.add('#datashare');
         client.exclude.push('#datashare');
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
+        client.bind('pkt.join', handle.join);
         // BOTCHECK
         client.bind('BDS.BOTCHECK.DIRECT', handle.botcheck);
         client.bind('BDS.BOTCHECK.ALL', handle.botcheck);
         // pchats
         client.bind('CDS.LINK.REQUEST', handle.clreq);
         client.bind('CDS.LINK.REJECT', handle.clrj);
+        client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
     };
@@ -8870,6 +8991,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     
     var bds_msg = function( event ) {
+        if( !settings.bds.channel(event.ns) )
+            return;
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -8896,6 +9019,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Provider
+        join: function( event ) {
+            if( event.ns.toLowerCase() != settings.bds.mns )
+                return;
+            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+        },
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
@@ -8934,23 +9063,23 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         },
         // CDS:LINK:REJECT
         clrj: function( event ) {
-            var user = event.user;
+            var user = event.user.toLowerCase();
             var p = event.payload.split(',');
             var t = p.shift();
             p = p.join(',');
-            if( t != client.settings.username )
+            if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
             if( !(user in pchats) )
                 return;
             clearTimeout( pchats[user] );
-            client.ui.channel( '@' + user ).server_message('Chat request rejected', p);
+            client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
         // CDS:LINK:ACK
         clra: function( event ) {
-            var user = event.user;
+            var user = event.user.toLowerCase();
             var p = event.payload.split(',');
             var t = p.shift();
-            if( t != client.settings.username )
+            if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
             clearTimeout( pchats[user] );
         },
@@ -8973,16 +9102,18 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             // Send notice...
             var user = event.sns.substr(1);
             var ns = event.ns;
-            client.ui.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
+            client.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
             client.npmsg( 'chat:datashare', 'CDS:LINK:REQUEST:' + user );
-            pchats[user] = setTimeout(function() {
-                client.ui.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+            pchats[user.toLowerCase()] = setTimeout(function() {
+                try {
+                    client.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+                } catch( err ) {}
             }, 10000);
         },
         // pchat recv_join
         pcrj: function( event ) {
             try {
-                clearTimeout( pchats[event.user] );
+                clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
         }
     };

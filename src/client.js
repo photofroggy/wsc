@@ -50,7 +50,8 @@ wsc.Client = function( view, options, mozilla ) {
             "themes": wsc.defaults.themes,
             "tabclose": true,
             "clock": true
-        }
+        },
+        "developer": false
     };
     this.autojoin = {
         'on': true,
@@ -101,7 +102,8 @@ wsc.Client = function( view, options, mozilla ) {
         'username': this.settings.username,
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
-        'tabclose': this.settings.ui.tabclose
+        'tabclose': this.settings.ui.tabclose,
+        'developer': this.settings.developer
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
@@ -128,6 +130,7 @@ wsc.Client = function( view, options, mozilla ) {
  */
 wsc.Client.prototype.config_load = function(  ) {
 
+    this.settings.developer = ( this.storage.get('developer', this.settings.developer.toString()) == 'true' );
     this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
     this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
     this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
@@ -157,6 +160,7 @@ wsc.Client.prototype.config_load = function(  ) {
  */
 wsc.Client.prototype.config_save = function(  ) {
 
+    this.storage.set('developer', this.settings.developer);
     this.storage.ui.set('theme', this.settings.ui.theme);
     this.storage.ui.set('clock', this.settings.ui.clock.toString());
     this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
