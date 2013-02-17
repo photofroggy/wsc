@@ -9,7 +9,7 @@
  * @param ns {String} Channel namespace.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Channel = function( client, ns, hidden ) {
+wsc.Channel = function( client, ns, hidden, monitor ) {
 
     this.info = {
         'members': {},
@@ -29,6 +29,7 @@ wsc.Channel = function( client, ns, hidden ) {
     
     this.client = client;
     this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
@@ -45,7 +46,7 @@ wsc.Channel = function( client, ns, hidden ) {
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
     this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(ns);
+    this.ui = this.client.ui.channel(this.raw);
 };
 
 /**

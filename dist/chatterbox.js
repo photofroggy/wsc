@@ -504,7 +504,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
-    this.monitor = monitor || false;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
     this.raw = ui.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();

@@ -199,6 +199,7 @@ wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
     this.control = new this.settings.control( this );
+    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
@@ -468,9 +469,9 @@ wsc.Client.prototype.format_ns = function( namespace ) {
  * @param namespace {String} Namespace to use for the channel.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Client.prototype.create_ns = function( namespace, hidden ) {
+wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
-    chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden));
+    var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
     chan.build();
 
 };
@@ -634,7 +635,7 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('msg', 'main', {}, e.input)
@@ -651,7 +652,7 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('npmsg', 'main', {}, e.input)
@@ -668,7 +669,7 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { 'input': action, 'ns': namespace };
+    var e = { 'input': action, 'ns': namespace };
     this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('action', 'main', {}, e.input)

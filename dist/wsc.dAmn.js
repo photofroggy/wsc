@@ -801,7 +801,7 @@ function packetEvtName( pkt ) {
  * @param ns {String} Channel namespace.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Channel = function( client, ns, hidden ) {
+wsc.Channel = function( client, ns, hidden, monitor ) {
 
     this.info = {
         'members': {},
@@ -821,6 +821,7 @@ wsc.Channel = function( client, ns, hidden ) {
     
     this.client = client;
     this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
@@ -837,7 +838,7 @@ wsc.Channel = function( client, ns, hidden ) {
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
     this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(ns);
+    this.ui = this.client.ui.channel(this.raw);
 };
 
 /**
@@ -3253,6 +3254,7 @@ wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
     this.control = new this.settings.control( this );
+    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
@@ -3522,9 +3524,9 @@ wsc.Client.prototype.format_ns = function( namespace ) {
  * @param namespace {String} Namespace to use for the channel.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Client.prototype.create_ns = function( namespace, hidden ) {
+wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
-    chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden));
+    var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
     chan.build();
 
 };
@@ -3688,7 +3690,7 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('msg', 'main', {}, e.input)
@@ -3705,7 +3707,7 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('npmsg', 'main', {}, e.input)
@@ -3722,7 +3724,7 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { 'input': action, 'ns': namespace };
+    var e = { 'input': action, 'ns': namespace };
     this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('action', 'main', {}, e.input)
@@ -4761,7 +4763,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
-    this.monitor = monitor || false;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
     this.raw = ui.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
