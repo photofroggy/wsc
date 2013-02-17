@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.11.59';
+Chatterbox.VERSION = '0.12.60';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -32,7 +32,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'username': '',
         'domain': 'website.com',
         'clock': true,
-        'tabclose': true
+        'tabclose': true,
+        'developer': false
     };
     
     view.extend( this.settings, options );
@@ -214,6 +215,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
+    this.monitoro.show();
     //this.control.setInput();
     this.control.focus();
     
@@ -475,6 +477,16 @@ Chatterbox.UI.prototype.add_theme = function( theme ) {
     
     this.settings.themes.push(theme);
 
+};
+
+/**
+ * Toggle developer mode for the UI.
+ *
+ * @method developer
+ */
+Chatterbox.UI.prototype.developer = function( mode ) {
+    this.settings.developer = mode;
+    this.chatbook.developer();
 };
 
 

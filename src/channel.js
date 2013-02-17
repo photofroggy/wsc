@@ -281,7 +281,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
         var un = names[i];
         var member = this.info.members[un];
         
-        if( !( member['pc'] in pcs ) )
+        if( !(member['pc'] in pcs) )
             pcs[member['pc']] = {'name': member['pc'], 'users': []};
         
         var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
@@ -313,6 +313,9 @@ wsc.Channel.prototype.set_user_list = function( ) {
         ulist.push(pcs[pc]);
     }
     
+    if( 'Room Members' in pcs )
+        ulist.push(pcs['Room Members']);
+    
     if( this.ui != null ) {
         this.ui.set_user_list(ulist);
     }
@@ -342,6 +345,8 @@ wsc.Channel.prototype.register_user = function( pkt ) {
         }
         this.info.members[un]["conn"]++;
     }
+    if( !('pc' in this.info.members[un]) ) 
+        this.info.members[un]['pc'] = 'Room Members';
 };
 
 /**

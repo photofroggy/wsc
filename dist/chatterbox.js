@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.11.59';
+Chatterbox.VERSION = '0.12.60';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -32,7 +32,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'username': '',
         'domain': 'website.com',
         'clock': true,
-        'tabclose': true
+        'tabclose': true,
+        'developer': false
     };
     
     view.extend( this.settings, options );
@@ -214,6 +215,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
+    this.monitoro.show();
     //this.control.setInput();
     this.control.focus();
     
@@ -477,6 +479,16 @@ Chatterbox.UI.prototype.add_theme = function( theme ) {
 
 };
 
+/**
+ * Toggle developer mode for the UI.
+ *
+ * @method developer
+ */
+Chatterbox.UI.prototype.developer = function( mode ) {
+    this.settings.developer = mode;
+    this.chatbook.developer();
+};
+
 
 /**
  * Object for managing channel interfaces.
@@ -592,7 +604,7 @@ Chatterbox.Channel.prototype.build = function( ) {
         }
     );
     
-    if( this.hidden ) {
+    if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
@@ -628,6 +640,21 @@ Chatterbox.Channel.prototype.show = function( ) {
         c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
     }, 500);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.Channel.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
 };
 
 /**
@@ -1394,8 +1421,12 @@ Chatterbox.Chatbook.prototype.channels = function( ) {
  * @return {Object} WscUIChannel object.
  */
 Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
-    chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
+    var chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
     chan.build();
+    // Update the paper trail.
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
     this.toggle_channel(ns);
     this.manager.resize();
     return chan;
@@ -1424,8 +1455,12 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan )
-        return;
+    if( !chan || chan.hidden ) {
+        if( !this.manager.settings.developer ) {
+            chan.hide();
+            return;
+        }
+    }
     
     if(this.current) {
         if(this.current == chan)
@@ -1433,6 +1468,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
         // Hide previous channel, if any.
         this.current.hide();
         prev = this.current;
+    } else {
+        if( this.manager.monitoro !== null )
+            this.manager.monitoro.hide();
     }
     
     // Show clicked channel.
@@ -1440,11 +1478,6 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
-    
-    // Update the paper trail.
-    if( this.trail.indexOf(chan.namespace) == -1 ) {
-        this.trail.push(chan.namespace);
-    }
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.namespace,
@@ -1498,6 +1531,9 @@ Chatterbox.Chatbook.prototype.channel_left = function(  ) {
         
         if( !nc.hidden )
             break;
+        
+        if( this.manager.settings.developer )
+            break;
     }
     
     this.toggle_channel(nc.namespace);
@@ -1526,6 +1562,9 @@ Chatterbox.Chatbook.prototype.channel_right = function(  ) {
             nc = this.channel(this.trail[0]);
         }
         if( !nc.hidden )
+            break;
+        
+        if( this.manager.settings.developer )
             break;
     }
     
@@ -1609,6 +1648,17 @@ Chatterbox.Chatbook.prototype.retime = function(  ) {
         this.chan[ns].retime();
     }
 
+};
+
+/**
+ * Toggle the developer mode of each channel.
+ *
+ * @method developer
+ */
+Chatterbox.Chatbook.prototype.developer = function(  ) {
+    this.each( function( ns, chan ) {
+        chan.developer();
+    } );
 };
 
 /**

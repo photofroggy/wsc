@@ -81,6 +81,7 @@ wsc.defaults.Extension = function( client ) {
         var orig = {};
         orig.username = client.settings.username;
         orig.pk = client.settings.pk;
+        orig.devel = client.settings.developer;
         
         page.item('Form', {
             'ref': 'login',
@@ -106,6 +107,35 @@ wsc.defaults.Extension = function( client ) {
                 }
             }
         }, true);
+        
+        page.item('Form', {
+            'ref': 'developer',
+            'title': 'Developer Mode',
+            'text': 'Turn developer mode on or off.\n\nDeveloper mode will expose any hidden\
+                channel tabs, amongst other things. Keep this turned off unless you\'re working\
+                on implementing something.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'items': [
+                        { 'value': 'on', 'title': 'On', 'selected': orig.devel }
+                    ]
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                    client.settings.developer = (event.data.enabled.indexOf('on') != -1);
+                    client.ui.developer(client.settings.developer);
+                },
+                'save': function( event ) {
+                    orig.devel = client.settings.developer;
+                },
+                'close': function( event ) {
+                    client.settings.developer = orig.devel;
+                    client.ui.developer(client.settings.developer);
+                }
+            }
+        });
         
         page.item('Text', {
             'ref': 'intro',

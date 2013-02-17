@@ -112,7 +112,7 @@ Chatterbox.Channel.prototype.build = function( ) {
         }
     );
     
-    if( this.hidden ) {
+    if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
@@ -148,6 +148,21 @@ Chatterbox.Channel.prototype.show = function( ) {
         c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
     }, 500);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.Channel.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
 };
 
 /**
