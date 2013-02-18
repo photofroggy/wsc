@@ -297,6 +297,7 @@ wsc.defaults.Extension = function( client ) {
     
     // Say something.
     var cmd_say = function( e ) {
+        if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     

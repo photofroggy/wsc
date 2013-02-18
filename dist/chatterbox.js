@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.12.60';
+Chatterbox.VERSION = '0.13.61';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1673,16 +1673,26 @@ Chatterbox.Control = function( ui ) {
     this.manager = ui;
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
-    this.form = this.view.find('form.msg');
-    this.input = this.form.find('input.msg');
-    this.brow = this.view.find('p');
-    this.mli = this.form.find('textarea.msg');
-    this.ci = this.input;
     this.ml = false;
-    this.mlb = this.brow.find('a[href~=#multiline].button');
+    
+    /**
+     * UI elements
+     */
+    this.el = {
+        form: this.view.find('form.msg'),                       // Input form
+        i: {                                                    // Input field
+            s: this.view.find('form.msg input.msg'),            //      Single line input
+            m: this.view.find('form.msg textarea.msg'),         //      Multi line input
+            c: null,                                            //      Current input element
+            t: this.view.find('p a[href~=#multiline].button')   //      Toggle multiline button
+        },
+        brow: this.view.find('p')                               // Control brow
+    };
+    // Default input mode is single line.
+    this.el.i.c = this.el.i.s;
     
     var ctrl = this;
-    this.mlb.click(function( event ) {
+    this.el.i.t.click(function( event ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
@@ -1695,7 +1705,7 @@ Chatterbox.Control = function( ui ) {
  * @method focus
  */
 Chatterbox.Control.prototype.focus = function( ) {
-    this.ci.focus();
+    this.el.i.c.focus();
 };
 
 /**
@@ -1708,9 +1718,9 @@ Chatterbox.Control.prototype.resize = function( ) {
     this.view.css({
         width: '100%'});
     // Form dimensionals.
-    this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 100});
-    this.mli.css({'width': this.manager.view.width() - 90});
+    this.el.form.css({'width': this.manager.view.width() - 20});
+    this.el.i.s.css({'width': this.manager.view.width() - 100});
+    this.el.i.m.css({'width': this.manager.view.width() - 90});
 };
 
 
@@ -1735,14 +1745,14 @@ Chatterbox.Control.prototype.height = function( ) {
  */
 Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
     if( this.manager.mozilla ) {
-        this.input.keypress( onkeypress || this._onkeypress );
-        this.mli.keypress( onkeypress || this._onkeypress );
+        this.el.i.s.keypress( onkeypress || this._onkeypress );
+        this.el.i.m.keypress( onkeypress || this._onkeypress );
     } else {
-        this.input.keydown( onkeypress || this._onkeypress );
-        this.mli.keydown( onkeypress || this._onkeypress );
+        this.el.i.s.keydown( onkeypress || this._onkeypress );
+        this.el.i.m.keydown( onkeypress || this._onkeypress );
     }
     
-    this.form.submit( onsubmit || this._onsubmit );
+    this.el.form.submit( onsubmit || this._onsubmit );
 };
 
 /**
@@ -1758,22 +1768,17 @@ Chatterbox.Control.prototype.multiline = function( on ) {
         return this.ml;
     
     this.ml = on;
+    var off = ( this.ml ? 's' : 'm' );
+    on = ( this.ml ? 'm' : 's' );
     
-    if( this.ml ) {
-        this.input.css('display', 'none');
-        this.mli.css('display', 'inline-block');
-        this.ci = this.mli;
-        this.manager.resize();
-        return this.ml;
-    }
-    
-    this.mli.css('display', 'none');
-    this.input.css('display', 'inline-block');
-    this.ci = this.input;
+    this.el.i[off].css('display', 'none');
+    this.el.i[on].css('display', 'inline-block');
+    this.el.i.c = this.el.i[on];
     this.manager.resize();
-    return this.mli;
+    return this.ml;
 
 };
+
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -1790,8 +1795,8 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.brow.append(Chatterbox.render('control_button', options));
-    var button = this.brow.find('a[href='+options.href+'].button');
+    this.el.brow.append(Chatterbox.render('control_button', options));
+    var button = this.el.brow.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
@@ -1810,16 +1815,16 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.ci.val();
+    d = this.el.i.c.val();
     i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
-        this.ci.val('');
+        this.el.i.c.val('');
         return d;
     }
     
     chunk = d.slice(i + 1);
-    this.ci.val( d.slice(0, i) );
+    this.el.i.c.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
         return this.chomp();
@@ -1834,11 +1839,11 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.ci.val();
+    d = this.el.i.c.val();
     if( !d )
-        this.ci.val(data);
+        this.el.i.c.val(data);
     else
-        this.ci.val(d + ' ' + data);
+        this.el.i.c.val(d + ' ' + data);
 };
 
 /**
@@ -1850,9 +1855,9 @@ Chatterbox.Control.prototype.unchomp = function( data ) {
 Chatterbox.Control.prototype.get_text = function( text ) {
 
     if( text == undefined )
-        return this.ci.val();
-    this.ci.val( text || '' );
-    return this.ci.val();
+        return this.el.i.c.val();
+    this.el.i.c.val( text || '' );
+    return this.el.i.c.val();
 
 };
 
@@ -1864,7 +1869,7 @@ Chatterbox.Control.prototype.get_text = function( text ) {
  */
 Chatterbox.Control.prototype.set_text = function( text ) {
 
-    this.ci.val( text || '' );
+    this.el.i.c.val( text || '' );
 
 };
 
@@ -1879,22 +1884,28 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.showclose = this.manager.settings.tabclose;
-    this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.nav.find('#chattabs');
-    this.buttons = this.nav.find('#tabnav');
-    this.tableft = this.buttons.find('.arrow_left');
-    this.tabright = this.buttons.find('.arrow_right');
-    this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
     
+    /* UI Elements
+     * Something similar to the channel elements object.
+     */
+    this.el = {
+        n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
+        b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
+        l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
+        r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
+        s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
+    };
+    
     if( !this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
-            this.tabs.addClass('hc');
+        if( !this.el.t.hasClass('hc') )
+            this.el.t.addClass('hc');
     }
     
     var nav = this;
-    this.settingsb.click(
+    this.el.s.click(
         function( event ) {
             if( nav.settings.open )
                 return false;
@@ -1922,14 +1933,14 @@ Chatterbox.Navigation = function( ui ) {
         }
     );
     
-    this.tableft.click(
+    this.el.l.click(
         function(  ) {
             nav.manager.channel_left();
             return false;
         }
     );
     
-    this.tabright.click(
+    this.el.r.click(
         function(  ) {
             nav.manager.channel_right();
             return false;
@@ -2021,7 +2032,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.nav.height();
+    return this.el.n.height();
 };
 
 /**
@@ -2033,8 +2044,8 @@ Chatterbox.Navigation.prototype.height = function(  ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.tabs.find('#' + selector + '-tab');
+    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
+    return this.el.t.find('#' + selector + '-tab');
 };
 
 /**
@@ -2044,7 +2055,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -2065,15 +2076,15 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
     
     this.showclose = visible;
     if( this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
+        if( !this.el.t.hasClass('hc') )
             return;
-        this.tabs.removeClass('hc');
+        this.el.t.removeClass('hc');
         return;
     }
     
-    if( this.tabs.hasClass('hc') )
+    if( this.el.t.hasClass('hc') )
         return;
-    this.tabs.addClass('hc');
+    this.el.t.addClass('hc');
 
 };
 
