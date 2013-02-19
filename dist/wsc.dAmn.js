@@ -10097,6 +10097,19 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
             return link;
         },
         
+        request: function( user, suppress, oncmd ) {
+            var link = settings.bds.link.open( user, oncmd );
+            
+            if( link == null )
+                return null;
+            
+            if( suppress === true )
+                return link;
+            
+            client.npmsg( settings.bds.mns, 'BDS:LINK:REQUEST:' + user );
+            return link;
+        },
+        
         open: function( user, oncmd ) {
             user = user.toLowerCase();
             
