@@ -41,6 +41,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     
     var bds_msg = function( event ) {
+        if( event.user.toLowerCase() == client.settings.username.toLowerCase() )
+            return;
+        
         if( !settings.bds.channel.contains(event.ns) )
             return;
         var bdse = {
@@ -64,7 +67,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
-        client.trigger('pkt.' + head[0], bdse);
+        client.trigger( head[0], bdse );
         client.trigger( bdse.name, bdse );
     };
     
@@ -139,6 +142,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.ns.indexOf('pchat') != 0 ) {
                 return;
             }
+            
+            if( client.bds.channel.contains( event.ns ) )
+                return;
             
             // Not members property.
             if( event.pkt.arg.p != 'members' ) {
