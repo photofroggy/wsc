@@ -2846,7 +2846,7 @@ wsc.defaults.Extension.Away = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( client.exclude.contains( event.sns.toLowerCase() ) )
+        if( client.exclude.contains( event.ns ) )
             return;
         
         var t = new Date();
