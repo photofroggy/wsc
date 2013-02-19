@@ -152,15 +152,15 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.el.i.c.val();
-    i = d.lastIndexOf(' ');
+    var d = this.el.i.c.val();
+    var i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
         this.el.i.c.val('');
         return d;
     }
     
-    chunk = d.slice(i + 1);
+    var chunk = d.slice(i + 1);
     this.el.i.c.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
@@ -176,7 +176,7 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.el.i.c.val();
+    var d = this.el.i.c.val();
     if( !d )
         this.el.i.c.val(data);
     else

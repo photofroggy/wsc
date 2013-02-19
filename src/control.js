@@ -184,13 +184,14 @@ wsc.Control.prototype.start_tab = function( event ) {
     this.tab.type = 0;
     
     // We only tab the last word in the input. Slice!
-    needle = this.ui.chomp();
+    var needle = this.ui.chomp();
     this.ui.unchomp(needle);
     
     // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" ) {
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
         this.tab.type = needle[0] == '/' ? 1 : 2;
-        needle = needle.slice(1);
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
     } else {
         this.tab.type = 0;
     }
@@ -207,16 +208,18 @@ wsc.Control.prototype.start_tab = function( event ) {
                 this.tab.matched.push(user);
     } else if( this.tab.type == 1 ) {
         // Matching with commands.
-        for( i in this.client.cmds ) {
+        for( var i in this.client.cmds ) {
             cmd = this.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }
     } else if( this.tab.type == 2 ) {
         // Matching with channels.
-        for( chan in this.client.channelo )
-            if( chan.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(this.client.channel(chan).namespace);
+        var ctrl = this;
+        this.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
     }
 
 };

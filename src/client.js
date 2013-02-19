@@ -24,7 +24,6 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
-    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -61,36 +60,10 @@ wsc.Client = function( view, options, mozilla ) {
     this.away = {};
     
     var cli = this;
+    // Channels excluded from loops.
+    this.exclude = new StringSet();
     // Hidden channels
-    this.hidden = {
-        'ns': [],
-        'on': true,
-        'add': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) > -1 )
-                return true;
-            cli.hidden.ns.push( ns );
-            return true;
-        },
-        'remove': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) == -1 )
-                return true;
-            cli.hidden.ns.splice( cli.hidden.ns.indexOf( ns ), 1 );
-            return true;
-        },
-        'is': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            return cli.hidden.ns.indexOf( ns ) > -1;
-        }
-    };
-    
+    this.hidden = new StringSet();
     this.settings = Object.extend( this.settings, options );
     this.config_load();
     this.config_save();
@@ -389,10 +362,10 @@ wsc.Client.prototype.each_channel = function( method, include ) {
         chan = this.channelo[ns];
         
         if( !include )
-            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+            if( this.exclude.contains( chan.raw ) )
                 continue;
         
-        if( method( chan.namespace, chan ) === false )
+        if( method( chan.raw, chan ) === false )
             break;
     }
     

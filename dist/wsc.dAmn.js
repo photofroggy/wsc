@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.4.22';
+wsc.VERSION = '1.4.23';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.18.107';
+wsc.REVISION = '0.18.108';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -604,6 +604,67 @@ function timeLengthString( length ) {
     
     return oxlist(ret);
 }
+
+/**
+ * Sets. Yeah. Fun.
+ */
+function StringSet( items ) {
+
+    this.items = items || [];
+
+};
+
+/**
+ * Add an item.
+ */
+StringSet.prototype.add = function( item, unshift ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( this.contains( item ) )
+        return true;
+    
+    if( unshift )
+        this.items.unshift( item );
+    else
+        this.items.push( item );
+    
+    return true;
+
+};
+
+/**
+ * Remove an item.
+ */
+StringSet.prototype.remove = function( item ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( !this.contains( item ) )
+        return true;
+    
+    this.items.splice( this.items.indexOf( item ), 1 );
+    return true;
+
+};
+
+/**
+ * Contains an item?
+ */
+StringSet.prototype.contains = function( item ) {
+
+    if( !item )
+        return false;
+    
+    return this.items.indexOf( item.toLowerCase() ) != -1;
+
+};
 /**
  * Storage object.
  * Allows you to save stuffs yo.
@@ -1218,12 +1279,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     var msg = e['message'].toLowerCase();
+    var hlight = msg.indexOf(u) != -1;
     
-    if( msg.indexOf(u) < 0 )
+    if( !hlight && e.sns[0] != '@' )
         return;
     
-    if( this.ui != null)
-        this.ui.highlight();
+    if( this.ui != null) {
+        if( hlight )
+            this.ui.highlight( );
+        else
+            this.ui.highlight( false );
+    }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );
 
@@ -1807,9 +1873,9 @@ wsc.Flow.prototype.login = function( event, client ) {
  */
 wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
-        ns = client.deform_ns(event.pkt["param"]);
+        var ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
-        client.create_ns(ns, client.hidden.is(ns));
+        client.create_ns(ns, client.hidden.contains(event.pkt['param']));
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
         client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
@@ -2780,7 +2846,7 @@ wsc.defaults.Extension.Away = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
+        if( client.exclude.contains( event.sns.toLowerCase() ) )
             return;
         
         var t = new Date();
@@ -3084,7 +3150,6 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
-    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -3121,36 +3186,10 @@ wsc.Client = function( view, options, mozilla ) {
     this.away = {};
     
     var cli = this;
+    // Channels excluded from loops.
+    this.exclude = new StringSet();
     // Hidden channels
-    this.hidden = {
-        'ns': [],
-        'on': true,
-        'add': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) > -1 )
-                return true;
-            cli.hidden.ns.push( ns );
-            return true;
-        },
-        'remove': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) == -1 )
-                return true;
-            cli.hidden.ns.splice( cli.hidden.ns.indexOf( ns ), 1 );
-            return true;
-        },
-        'is': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            return cli.hidden.ns.indexOf( ns ) > -1;
-        }
-    };
-    
+    this.hidden = new StringSet();
     this.settings = Object.extend( this.settings, options );
     this.config_load();
     this.config_save();
@@ -3449,10 +3488,10 @@ wsc.Client.prototype.each_channel = function( method, include ) {
         chan = this.channelo[ns];
         
         if( !include )
-            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+            if( this.exclude.contains( chan.raw ) )
                 continue;
         
-        if( method( chan.namespace, chan ) === false )
+        if( method( chan.raw, chan ) === false )
             break;
     }
     
@@ -4079,13 +4118,14 @@ wsc.Control.prototype.start_tab = function( event ) {
     this.tab.type = 0;
     
     // We only tab the last word in the input. Slice!
-    needle = this.ui.chomp();
+    var needle = this.ui.chomp();
     this.ui.unchomp(needle);
     
     // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" ) {
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
         this.tab.type = needle[0] == '/' ? 1 : 2;
-        needle = needle.slice(1);
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
     } else {
         this.tab.type = 0;
     }
@@ -4102,16 +4142,18 @@ wsc.Control.prototype.start_tab = function( event ) {
                 this.tab.matched.push(user);
     } else if( this.tab.type == 1 ) {
         // Matching with commands.
-        for( i in this.client.cmds ) {
+        for( var i in this.client.cmds ) {
             cmd = this.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }
     } else if( this.tab.type == 2 ) {
         // Matching with channels.
-        for( chan in this.client.channelo )
-            if( chan.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(this.client.channel(chan).namespace);
+        var ctrl = this;
+        this.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
     }
 
 };
@@ -4270,7 +4312,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.13.61';
+Chatterbox.VERSION = '0.13.62';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5378,7 +5420,10 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
     var tab = this.el.t.o;
-    ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    
+    if( message !== false ) {
+        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    }
     
     if( tab.hasClass('active') )
         return;
@@ -6079,15 +6124,15 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.el.i.c.val();
-    i = d.lastIndexOf(' ');
+    var d = this.el.i.c.val();
+    var i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
         this.el.i.c.val('');
         return d;
     }
     
-    chunk = d.slice(i + 1);
+    var chunk = d.slice(i + 1);
     this.el.i.c.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
@@ -6103,7 +6148,7 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.el.i.c.val();
+    var d = this.el.i.c.val();
     if( !d )
         this.el.i.c.val(data);
     else
@@ -8946,34 +8991,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
-        ns: [],
-        // Check if we should be processing messages from a given channel.
-        channel: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            return settings.bds.ns.indexOf( ns ) > -1;
-        },
-        // Add a channel
-        add: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) > -1 )
-                return true;
-            settings.bds.ns.push( ns );
-            return true;
-        },
-        // Remove a channel
-        remove: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) == -1 )
-                return true;
-            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
-            return true;
-        },
+        channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
             'BOTCHECK',
@@ -8982,11 +9000,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     // Allow other parts of client to use the channel listing.
     client.bds = settings.bds;
-    settings.bds.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.mns);
     
     var init = function(  ) {
-        client.hidden.add('#datashare');
-        client.exclude.push('#datashare');
+        client.hidden.add(settings.bds.mns);
+        client.exclude.add(settings.bds.mns);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
@@ -9009,7 +9027,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     
     var bds_msg = function( event ) {
-        if( !settings.bds.channel(event.ns) )
+        if( !settings.bds.channel.contains(event.ns) )
             return;
         var bdse = {
             'ns': event.ns,
@@ -9944,7 +9962,7 @@ wsc.dAmn.Extension = function( client ) {
     
     client.flow.dAmnServer = client.flow.chatserver;
     
-    client.exclude.push( '#devart' );
+    client.exclude.add( 'chat:devart' );
     
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);

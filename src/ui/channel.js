@@ -622,7 +622,10 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
     var tab = this.el.t.o;
-    ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    
+    if( message !== false ) {
+        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    }
     
     if( tab.hasClass('active') )
         return;

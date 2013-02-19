@@ -426,12 +426,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     var msg = e['message'].toLowerCase();
+    var hlight = msg.indexOf(u) != -1;
     
-    if( msg.indexOf(u) < 0 )
+    if( !hlight && e.sns[0] != '@' )
         return;
     
-    if( this.ui != null)
-        this.ui.highlight();
+    if( this.ui != null) {
+        if( hlight )
+            this.ui.highlight( );
+        else
+            this.ui.highlight( false );
+    }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );
 

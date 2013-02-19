@@ -5,34 +5,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
-        ns: [],
-        // Check if we should be processing messages from a given channel.
-        channel: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            return settings.bds.ns.indexOf( ns ) > -1;
-        },
-        // Add a channel
-        add: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) > -1 )
-                return true;
-            settings.bds.ns.push( ns );
-            return true;
-        },
-        // Remove a channel
-        remove: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) == -1 )
-                return true;
-            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
-            return true;
-        },
+        channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
             'BOTCHECK',
@@ -41,11 +14,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     // Allow other parts of client to use the channel listing.
     client.bds = settings.bds;
-    settings.bds.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.mns);
     
     var init = function(  ) {
-        client.hidden.add('#datashare');
-        client.exclude.push('#datashare');
+        client.hidden.add(settings.bds.mns);
+        client.exclude.add(settings.bds.mns);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
@@ -68,7 +41,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     
     var bds_msg = function( event ) {
-        if( !settings.bds.channel(event.ns) )
+        if( !settings.bds.channel.contains(event.ns) )
             return;
         var bdse = {
             'ns': event.ns,
