@@ -90,7 +90,8 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
-    wsc.dAmn.BDS( client, storage.bds, settings );
+    wsc.dAmn.BDS( client, storage.bds, settings );    
+    wsc.dAmn.BDS.Channel( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
 
