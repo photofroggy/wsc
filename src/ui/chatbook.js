@@ -176,10 +176,11 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  * @param ns {String} Name of the channel to remove.
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 ) 
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 && !chan.hidden ) 
         return;
     
-    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.raw.toLowerCase()];
     
