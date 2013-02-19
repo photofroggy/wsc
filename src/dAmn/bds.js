@@ -12,7 +12,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'CLINK'
         ]
     };
-    // Allow other parts of client to use the channel listing.
+    // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
     settings.bds.channel.add(settings.bds.mns);
     
