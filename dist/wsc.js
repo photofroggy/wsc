@@ -910,7 +910,7 @@ wsc.Channel.prototype.build = function( ) {
 wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
-    this.ui.manager.remove_channel(this.namespace);
+    this.ui.manager.remove_channel(this.raw);
 };
 
 /**
@@ -5802,10 +5802,11 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  * @param ns {String} Name of the channel to remove.
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 ) 
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 && !chan.hidden ) 
         return;
     
-    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.raw.toLowerCase()];
     
