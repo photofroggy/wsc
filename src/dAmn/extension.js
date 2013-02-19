@@ -14,6 +14,7 @@ wsc.dAmn.Extension = function( client ) {
     
     var storage = client.storage.folder('dAmn');
     storage.bds = storage.folder('bds');
+    storage.bds.channel = storage.bds.folder('channel');
     storage.emotes = storage.folder('emotes');
     storage.colours = storage.folder('colours');
     var settings = {
