@@ -4312,7 +4312,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.13.62';
+Chatterbox.VERSION = '0.13.63';
 Chatterbox.STATE = 'beta';
 
 /**

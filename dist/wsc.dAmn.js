@@ -4312,7 +4312,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.13.62';
+Chatterbox.VERSION = '0.13.63';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -8982,7 +8982,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.5.15';
+wsc.dAmn.VERSION = '0.6.16';
 wsc.dAmn.STATE = 'alpha';
 
 
