@@ -17,6 +17,9 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
     
     // Putting helper functions in here means other extensions can use them.
     settings.bds.link = {
+        // White list of users who can open LINKs with this client.
+        white: ( new StringSet() ),
+        // Collection of open LINKs
         connections: {},
         
         // Indicates the state of a connection.
@@ -28,7 +31,7 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
         },
         
         // Get a link thing.
-        conn: function( user, oncmd ) {
+        conn: function( user, oncmd, onopen, onclose ) {
             user = user.toLowerCase();
             
             if( user in settings.bds.link.connections )
@@ -51,13 +54,17 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
                     return true;
                 },
                 
-                oncmd: ( oncmd || function( message ) {} )
+                oncmd: ( oncmd || function( event, client ) {} ),
+                
+                onopen: ( onopen || function( event, client ) {} ),
+                
+                onclose: ( onclose || function( event, client ) {} )
             };
             
             return link;
         },
         
-        request: function( user, suppress, oncmd ) {
+        request: function( user, suppress, oncmd, onopen, onclose ) {
             var link = settings.bds.link.open( user, oncmd );
             
             if( link == null )
@@ -70,7 +77,7 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
             return link;
         },
         
-        open: function( user, oncmd ) {
+        open: function( user, oncmd, onopen, onclose ) {
             user = user.toLowerCase();
             
             if( user in settings.bds.link.connections ) {
@@ -117,13 +124,23 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
         cmd: function( event ) {
             if( !settings.bds.channel.contains(event.ns) )
                 return;
-            settings.bds.link.conn( event.sns.substr(1), event, client );
+            if( event.sns[0] != '@' )
+                return;
+            settings.bds.link.conn( event.sns.substr(1) ).oncmd( event, client );
         },
         
         request: function( event ) {
-            // TODO: some sort of check to prevent accepts?
             if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
+            
+            var uinfo = client.channel(event.ns).info.members[event.user];
+            
+            if( parseInt(client.channel(event.ns).get_privclass_order( uinfo.pc ) ) < 39 ) {
+                if( !settings.bds.link.white.contains( event.user ) ) {
+                    client.npmsg( event.ns, 'BDS:LINK:REJECT:' + event.user );
+                    return;
+                }
+            }
             
             settings.bds.link.open( event.user );
             client.npmsg( event.ns, 'BDS:LINK:ACCEPT:' + event.user );
@@ -165,11 +182,15 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
                 return;
             
             link.state = settings.bds.link.state.open;
-            client.trigger('BDS.LINK.OPEN', {
+            
+            var e = {
                 name: 'BDS.LINK.OPEN',
                 link: link,
                 ns: link.ns
-            });
+            };
+            
+            link.onopen( e, client );
+            client.trigger('BDS.LINK.OPEN', e);
         },
         
         part: function( event ) {
@@ -179,11 +200,15 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
             var link = settings.bds.link.conn( event.sns.substr(1) );
             
             link.state = settings.bds.link.state.closed;
-            client.trigger('BDS.LINK.CLOSED', {
+            
+            var e = {
                 name: 'BDS.LINK.CLOSED',
                 link: link,
                 ns: link.ns
-            });
+            };
+            
+            link.onclose( e, client );
+            client.trigger('BDS.LINK.CLOSED', e);
             
             delete settings.bds.link.connections[link.un];
         },
@@ -198,11 +223,15 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
                 return;
             
             link.state = settings.bds.link.state.open;
-            client.trigger('BDS.LINK.OPEN', {
+            
+            var e = {
                 name: 'BDS.LINK.OPEN',
                 link: link,
                 ns: link.ns
-            });
+            };
+            
+            link.onopen( e, client );
+            client.trigger('BDS.LINK.OPEN', e);
         },
         
         recv_part: function( event ) {
