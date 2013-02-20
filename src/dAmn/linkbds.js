@@ -157,7 +157,9 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
         },
         
         accept: function( event ) {
-            // TODO: Stuff to make sure we're not just randomly accepting links.
+            if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
             settings.bds.link.open( event.user );
         },
         

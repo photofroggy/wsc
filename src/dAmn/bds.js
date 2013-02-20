@@ -68,6 +68,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         bdse.payload = payload;
         bdse.head = head;
         client.trigger( head[0], bdse );
+        client.trigger( head[0] + '.' + head[1], bdse );
         client.trigger( bdse.name, bdse );
     };
     
