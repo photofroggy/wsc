@@ -85,6 +85,8 @@
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
     $heading-color: #063B63,
+    $topic-bg: #81AAC5,
+    $topic-color: #063B63,
     $highlight: #FDC8A5,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
@@ -213,9 +215,9 @@
                 }
             }
             div.topic {
-                background-color: $heading-bg;
+                background-color: $topic-bg;
                 border-color: $inner-border;
-                color: $heading-color;
+                color: $topic-color;
             }
         }
         
@@ -279,6 +281,7 @@
         div.pc {
             h3, h4 {
                 background-color: $heading-bg;
+                border-color: $inner-border !important;
                 color: $heading-color;
             }
             ul {

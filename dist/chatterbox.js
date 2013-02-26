@@ -693,7 +693,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.height() - 3;
+    var lh = this.el.l.p.innerHeight() - this.d.h.topic[1];
     var pad = lh - wh;
     
     if( pad > 0 )

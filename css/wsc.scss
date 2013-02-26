@@ -63,6 +63,7 @@ div.wsc {
             float: left;
             width: 100%;
             border: 1px solid black;
+            border-top-left-radius: 10px;
             
             a {
                 padding: 0px;
@@ -108,6 +109,8 @@ div.wsc.wsct_dAmn {
         $chrome-ahd: underline,
         $heading-bg: #BBC6B9,
         $heading-color: #2C3635,
+        $topic-bg: #E8EEE6,
+        $topic-color: #2C3635,
         $inner-border: #9EAEA0,
         $outer-border: #858585,
         $chrome-color: #2C3635,

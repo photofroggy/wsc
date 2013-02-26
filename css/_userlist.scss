@@ -18,9 +18,13 @@
                 padding: 5px;
                 padding: 2px 10px;
                 font-size: 12px;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                
                 &.first {
                     -moz-border-radius: inherit;
                     border-radius: inherit;
+                    border-top: none;
                 }
             }
             
@@ -28,6 +32,7 @@
                 list-style: none;
                 padding: 4px 5px;
                 margin: 0px;
+                margin-bottom: 10px;
                 
                 li {
                     font-size: 11px;
@@ -43,6 +48,12 @@
                         }
                     }
                 }
+            }
+        }
+        
+        div.pc:first-child {
+            h3, h4 {
+                border-top: none;
             }
         }
     }
