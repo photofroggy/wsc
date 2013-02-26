@@ -693,7 +693,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.d.h.topic[1];
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -721,9 +721,11 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Userlist width.
     this.el.u.width(1);
     this.d.u[0] = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    
     if( this.d.u[0] > this.mulw ) {
         this.d.u[0] = this.mulw;
     }
+    
     this.el.u.width(this.d.u[0]);
     
     // Change log width based on userlist width.
@@ -1483,7 +1485,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     this.manager.trigger( 'channel.selected', {
-        'ns': chan.namespace,
+        'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );

@@ -163,7 +163,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     this.manager.trigger( 'channel.selected', {
-        'ns': chan.namespace,
+        'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
