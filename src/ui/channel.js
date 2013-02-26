@@ -432,7 +432,7 @@ Chatterbox.Channel.prototype.log_whois = function( data ) {
         var mcon = [];
         
         if( rcon.online ) {
-            stamp = (new Date - (rcon.online * 1000));
+            var stamp = (new Date - (rcon.online * 1000));
             mcon.push([ 'online', DateStamp(stamp / 1000) + formatTime(' [{HH}:{mm}:{ss}]', new Date(stamp)) ]);
         }
         if( rcon.idle )
