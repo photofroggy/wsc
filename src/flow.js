@@ -125,7 +125,6 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
         // Autojoin!
-        // TODO: multi-channel?
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
             if( client.autojoin.on ) {

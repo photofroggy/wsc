@@ -36,6 +36,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
+        
+        if( client.channel(settings.bds.mns) )
+            return;
+        
         client.join('#datashare');
     };
     
@@ -46,6 +50,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         if( !settings.bds.channel.contains(event.ns) )
             return;
+        
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -55,18 +60,22 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'payload': '',
             'head': ''
         };
+        
         var msg = event.message.split(':');
         var head = [null, null, null];
         var payload = null;
+        
         for( var i in head ) {
             head[i] = msg.shift() || null;
             if( head[i] == null )
                 return;
         }
+        
         payload = msg.join(':');
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
+        
         client.trigger( head[0], bdse );
         client.trigger( head[0] + '.' + head[1], bdse );
         client.trigger( bdse.name, bdse );
@@ -77,8 +86,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
                 return;
+            
+            if( event.pkt.arg.e != 'ok' )
+                return;
+            
             client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
+        
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
@@ -89,6 +103,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
         },
+        
         // CDS:LINK:REQUEST
         clreq: function( event ) {
             if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
@@ -115,6 +130,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             client.cchannel.server_message(event.user + ' wants to talk in private',
                 'Type <code>/chat '+event.user+'</code> to talk to them');
         },
+        
         // CDS:LINK:REJECT
         clrj: function( event ) {
             var user = event.user.toLowerCase();
@@ -128,6 +144,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
+        
         // CDS:LINK:ACK
         clra: function( event ) {
             var user = event.user.toLowerCase();
@@ -137,6 +154,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             clearTimeout( pchats[user] );
         },
+        
         // pchat property
         pcp: function( event ) {
             // Not a pchat
@@ -167,6 +185,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 } catch( err ) {}
             }, 10000);
         },
+        
         // pchat recv_join
         pcrj: function( event ) {
             try {

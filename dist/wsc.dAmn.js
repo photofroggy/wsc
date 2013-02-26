@@ -1838,7 +1838,6 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
         // Autojoin!
-        // TODO: multi-channel?
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
             if( client.autojoin.on ) {
@@ -8982,7 +8981,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.6.18';
+wsc.dAmn.VERSION = '0.6.19';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -9023,6 +9022,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
+        
+        if( client.channel(settings.bds.mns) )
+            return;
+        
         client.join('#datashare');
     };
     
@@ -9033,6 +9036,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         if( !settings.bds.channel.contains(event.ns) )
             return;
+        
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -9042,18 +9046,22 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'payload': '',
             'head': ''
         };
+        
         var msg = event.message.split(':');
         var head = [null, null, null];
         var payload = null;
+        
         for( var i in head ) {
             head[i] = msg.shift() || null;
             if( head[i] == null )
                 return;
         }
+        
         payload = msg.join(':');
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
+        
         client.trigger( head[0], bdse );
         client.trigger( head[0] + '.' + head[1], bdse );
         client.trigger( bdse.name, bdse );
@@ -9064,8 +9072,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
                 return;
+            
+            if( event.pkt.arg.e != 'ok' )
+                return;
+            
             client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
+        
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
@@ -9076,6 +9089,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
         },
+        
         // CDS:LINK:REQUEST
         clreq: function( event ) {
             if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
@@ -9102,6 +9116,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             client.cchannel.server_message(event.user + ' wants to talk in private',
                 'Type <code>/chat '+event.user+'</code> to talk to them');
         },
+        
         // CDS:LINK:REJECT
         clrj: function( event ) {
             var user = event.user.toLowerCase();
@@ -9115,6 +9130,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
+        
         // CDS:LINK:ACK
         clra: function( event ) {
             var user = event.user.toLowerCase();
@@ -9124,6 +9140,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             clearTimeout( pchats[user] );
         },
+        
         // pchat property
         pcp: function( event ) {
             // Not a pchat
@@ -9154,6 +9171,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 } catch( err ) {}
             }, 10000);
         },
+        
         // pchat recv_join
         pcrj: function( event ) {
             try {
@@ -10295,7 +10313,7 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
  * 
  * @example
  *     // Parse something.
- *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     var msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
  *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
  *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
