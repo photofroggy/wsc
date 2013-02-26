@@ -703,7 +703,8 @@ div.wsc div.chatwindow div.chatlog {
   float: left;
   width: 100%;
   border: 1px solid black;
-  border-top-left-radius: 10px;
+  border-radius: 10px 10px 0px 0px;
+  margin-right: 5px;
 }
 div.wsc div.chatwindow div.chatlog a {
   padding: 0px;
@@ -1514,7 +1515,7 @@ div.wsc.wsct_default div.chatcontrol {
 }
 div.wsc.wsct_default div.chatusers {
   border: 1px solid #0d4d69;
-  border-left: none;
+  background-color: #406d8b;
 }
 div.wsc.wsct_default div.chatusers div.pc h3, div.wsc.wsct_default div.chatusers div.pc h4 {
   background-color: #81aac5;
@@ -1830,7 +1831,7 @@ div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
-  background-color: #bbc6b9;
+  background-color: #c2ddbe;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
   border-color: #858585;
@@ -1840,12 +1841,12 @@ div.wsc.wsct_dAmn div.chatcontrol {
 }
 div.wsc.wsct_dAmn div.chatusers {
   border: 1px solid #9eaea0;
-  border-left: none;
+  background-color: #dae7d7;
 }
 div.wsc.wsct_dAmn div.chatusers div.pc h3, div.wsc.wsct_dAmn div.chatusers div.pc h4 {
-  background-color: #bbc6b9;
+  background-color: #c2ddbe;
   border-color: #9eaea0 !important;
-  color: #2c3635;
+  color: #4f6457;
 }
 div.wsc.wsct_dAmn div.chatusers div.pc ul {
   color: #2c3635;
@@ -1863,10 +1864,10 @@ div.wsc.wsct_dAmn div.chatusers div.pc ul a em {
 }
 div.wsc.wsct_dAmn div.chatwindow div.userinfo {
   border-color: #9eaea0;
-  background-color: #bbc6b9;
+  background-color: #c2ddbe;
 }
 div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info {
-  background-color: #d0dbd0;
+  background-color: #dae7d7;
   border-color: #9eaea0;
   color: #2c3635;
 }
@@ -1945,7 +1946,7 @@ div.wsc.wsct_dAmn div.floater.settings {
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #9eaea0;
   border-radius: 0;
-  background-color: #bbc6b9;
+  background-color: #c2ddbe;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs .active .tab {
   background-color: #dce7dc;
@@ -1968,5 +1969,5 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item.fain
   color: #848684;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item h3 {
-  color: #2c3635;
+  color: #4f6457;
 }

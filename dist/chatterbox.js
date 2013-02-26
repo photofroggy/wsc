@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.13.64';
+Chatterbox.VERSION = '0.13.65';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -737,7 +737,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Log panel dimensions
     this.el.l.p.css({
         height: wh - 3,
-        width: cw - 3});
+        width: cw - 10});
     
     // Scroll again just to make sure.
     this.scroll();

@@ -87,6 +87,7 @@
     $heading-color: #063B63,
     $topic-bg: #81AAC5,
     $topic-color: #063B63,
+    $userlist-bg: #406D8B,
     $highlight: #FDC8A5,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
@@ -298,14 +299,14 @@
             }
         }
         border: 1px solid $inner-border;
-        border-left: none;
+        background-color: $userlist-bg;
     }
     
     div.chatwindow div.userinfo {
         border-color: $inner-border;
         background-color: $heading-bg;
         div.info {
-            background-color: $chrome;
+            background-color: $userlist-bg;
             border-color: $inner-border;
             color: $chrome-color;
             a {
