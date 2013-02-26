@@ -716,7 +716,6 @@ div.wsc div.chatwindow div.chatlog img {
 }
 div.wsc div.chatwindow div.chatlog ul.logwrap {
   overflow: auto;
-  padding-bottom: 4px;
   list-style: none;
 }
 div.wsc div.chatwindow header {
