@@ -730,20 +730,20 @@ div.wsc div.chatwindow header textarea {
   height: 60px;
 }
 div.wsc div.chatwindow header .button {
-  padding: 3px 7px !important;
+  padding: 0px 4px !important;
   position: relative;
-  right: 10px;
+  right: 5px;
   display: none;
   float: right;
   width: 10px;
   margin-bottom: -25px !important;
 }
 div.wsc div.chatwindow header a[href=\#save] {
-  right: 40px;
-  top: -55px;
+  right: 30px;
+  top: -60px;
 }
 div.wsc div.chatwindow header a[href=\#cancel] {
-  top: -55px;
+  top: -60px;
 }
 div.wsc div.chatwindow header div {
   margin: 0px;

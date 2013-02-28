@@ -5435,7 +5435,7 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
             this.el.h[head].m.outerWidth(true),
             this.el.h[head].m.outerHeight(true)
         ];
-        var tline = (this.el.h[head].m.outerHeight(true) - 10) * (-1);
+        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
         this.el.h[head].e.css('top', tline);
     } else {
         this.el.h[head].m.css( { display: 'none' } );
