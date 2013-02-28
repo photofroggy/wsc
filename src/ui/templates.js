@@ -128,12 +128,20 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @type String
  */
 Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
-                    <header>\
+                    <header class="title">\
                         <div class="title"></div>\
+                        <textarea></textarea>\
+                        <a href="#edit" class="button iconic pen"></a>\
+                        <a href="#save" class="button iconic check"></a>\
+                        <a href="#cancel" class="button iconic x"></a>\
                     </header>\
                     <div class="chatlog" id="{selector}-log">\
-                        <header>\
+                        <header class="topic">\
                             <div class="topic"></div>\
+                            <textarea></textarea>\
+                            <a href="#edit" class="button iconic pen"></a>\
+                            <a href="#save" class="button iconic check"></a>\
+                            <a href="#cancel" class="button iconic x"></a>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\

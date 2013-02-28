@@ -722,9 +722,31 @@ div.wsc div.chatwindow div.chatlog ul.logwrap {
 div.wsc div.chatwindow header {
   width: auto;
   height: auto;
-  overflow: hidden;
   border-bottom: none;
   line-height: 1.3em;
+}
+div.wsc div.chatwindow header textarea {
+  display: none;
+  height: 60px;
+}
+div.wsc div.chatwindow header .button {
+  padding: 3px 7px !important;
+  position: relative;
+  right: 10px;
+  display: none;
+  float: right;
+  width: 10px;
+  margin-bottom: -25px;
+}
+div.wsc div.chatwindow header a[href=\#save] {
+  right: 40px;
+  top: -55px;
+}
+div.wsc div.chatwindow header a[href=\#cancel] {
+  top: -55px;
+}
+div.wsc div.chatwindow header.topic a[href=\#save] {
+  right: 70px;
 }
 div.wsc div.chatwindow header div {
   margin: 0px;

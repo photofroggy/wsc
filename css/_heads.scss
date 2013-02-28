@@ -4,9 +4,34 @@
     
         width: auto;
         height: auto;
-        overflow: hidden;
         border-bottom: none;
         line-height: 1.3em;
+        textarea {
+            display: none;
+            height: 60px;
+        }
+        
+        .button {
+            padding: 3px 7px !important;
+            position: relative;
+            right: 10px;
+            display: none;
+            float: right;
+            width: 10px;
+            margin-bottom: -25px;
+        }
+        a[href=\#save] {
+            right: 40px;
+            top: -55px;
+        }
+        a[href=\#cancel] {
+            top: -55px;
+        }
+        &.topic {
+            a[href=\#save] {
+                right: 70px;
+            }
+        }
         
         div {
             margin: 0px;

@@ -187,6 +187,14 @@ wsc.Client.prototype.build = function(  ) {
         client.remove_ns(event.ns);
         return false;
     } );
+    
+    this.ui.on('title.save', function( event, ui ) {
+        client.set(event.ns, 'title', event.value);
+    } );
+    
+    this.ui.on('topic.save', function( event, ui ) {
+        client.set(event.ns, 'topic', event.value);
+    } );
 
 };
 

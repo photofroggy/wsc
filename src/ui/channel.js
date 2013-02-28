@@ -33,8 +33,22 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         },                          //
         u: null,                    // User panel
         h: {                        // Header
-            title: null,            //      Title
-            topic: null,            //      Topic
+            title: {                //      Title
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            },
+            topic: {                //      Topic
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            }
         }
     };
     this.mulw = 0;
@@ -44,6 +58,16 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         h: {                        // Header
             title: [0, 0],          //      Title [ width, height ]
             topic: [0, 0]           //      Topic [ width, height ]
+        }
+    };
+    this.head = {
+        title: {
+            text: '',
+            html: ''
+        },
+        topic: {
+            text: '',
+            html: ''
         }
     };
 
@@ -70,8 +94,6 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.el.h.title = this.el.m.find('header div.title');
-    this.el.h.topic = this.el.m.find('header div.topic');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
@@ -95,28 +117,85 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    var focus = true;
-    
-    this.el.m.click(
-        function( e ) {
-            if( focus )
-                chan.manager.control.focus();
-            else
-                focus = true;
-        }
-    );
-    
-    this.el.l.p.select(
-        function( ) {
-            focus = false;
-        }
-    );
+    this.setup_header('title');
+    this.setup_header('topic');
     
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
     this.built = true;
+};
+
+/**
+ * Set up a header so it can be edited in the UI.
+ * 
+ * @method setup_header
+ */
+Chatterbox.Channel.prototype.setup_header = function( head ) {
+    
+    var chan = this;
+    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
+    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
+    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
+    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    
+    this.el.h[head].m.parent().mouseover( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'block');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'block');
+        chan.el.h[head].c.css('display', 'block');
+    } );
+    
+    this.el.h[head].m.parent().mouseout( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'none');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+    } );
+    
+    this.el.h[head].e.click( function( e ) {
+        chan.el.h[head].t.text(chan.head[head].text);
+        chan.el.h[head].t.css({
+            'display': 'block',
+            'width': chan.el.h[head].m.innerWidth() - 10,
+        });
+        chan.el.h[head].m.css('display', 'none');
+        chan.el.h[head].e.css('display', 'none');
+        chan.el.h[head].editing = true;
+        chan.resize();
+        return false;
+    } );
+    
+    this.el.h[head].s.click( function( e ) {
+        chan.el.h[head].t.css('display', 'none');
+        chan.el.h[head].m.css('display', 'block');
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+        chan.el.h[head].editing = false;
+        var val = chan.el.h[head].t.val();
+        chan.manager.trigger( head + '.save', {
+            ns: chan.raw,
+            value: val
+        } );
+        chan.el.h[head].t.text('');
+        return false;
+    } );
+    
+    this.el.h[head].c.click( function( e ) {
+        chan.el.h[head].t.css('display', 'none');
+        chan.el.h[head].m.css('display', 'block');
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+        chan.el.h[head].editing = false;
+        return false;
+    } );
+    
 };
 
 /**
@@ -201,7 +280,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -533,20 +612,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
     head = head.toLowerCase();
     
-    this.el.h[head].replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': content || ''})
+    this.head[head].text = content.text();
+    this.head[head].html = content.html();
+    
+    this.el.h[head].m.replaceWith(
+        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head] = this.el.m.find('header div.' + head);
+    this.el.h[head].m = this.el.m.find('header div.' + head);
     
-    if( content.length > 0 ) {
-        this.el.h[head].css( { display: 'block' } );
+    if( this.head[head].text.length > 0 ) {
+        this.el.h[head].m.css( { display: 'block' } );
         this.d.h[head] = [
-            this.el.h[head].outerWidth(true),
-            this.el.h[head].outerHeight(true)
+            this.el.h[head].m.outerWidth(true),
+            this.el.h[head].m.outerHeight(true)
         ];
+        var tline = (this.el.h[head].m.outerHeight(true) - 10) * (-1);
+        this.el.h[head].e.css('top', tline);
     } else {
-        this.el.h[head].css( { display: 'none' } );
+        this.el.h[head].m.css( { display: 'none' } );
         this.d.h[head] = [0, 0];
     }
         
