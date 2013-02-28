@@ -18,7 +18,7 @@
             display: none;
             float: right;
             width: 10px;
-            margin-bottom: -25px;
+            margin-bottom: -25px !important;
         }
         a[href=\#save] {
             right: 40px;
@@ -26,11 +26,6 @@
         }
         a[href=\#cancel] {
             top: -55px;
-        }
-        &.topic {
-            a[href=\#save] {
-                right: 70px;
-            }
         }
         
         div {

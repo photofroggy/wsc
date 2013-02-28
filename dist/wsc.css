@@ -736,7 +736,7 @@ div.wsc div.chatwindow header .button {
   display: none;
   float: right;
   width: 10px;
-  margin-bottom: -25px;
+  margin-bottom: -25px !important;
 }
 div.wsc div.chatwindow header a[href=\#save] {
   right: 40px;
@@ -744,9 +744,6 @@ div.wsc div.chatwindow header a[href=\#save] {
 }
 div.wsc div.chatwindow header a[href=\#cancel] {
   top: -55px;
-}
-div.wsc div.chatwindow header.topic a[href=\#save] {
-  right: 70px;
 }
 div.wsc div.chatwindow header div {
   margin: 0px;
