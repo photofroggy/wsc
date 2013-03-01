@@ -149,7 +149,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.ui.control.add_state({
             'ref': 'away',
-            'label': 'Currently away: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
+            'label': 'Away, reason: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
         });
     
     };

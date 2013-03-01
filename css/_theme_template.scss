@@ -103,7 +103,8 @@
     $settings-outer-border: #0D4D69,
     $settings-inner-border: #0D4D69,
     $settings-item-border: #8CB3C4,
-    $settings-item-faint-color: #5FA4B4) {
+    $settings-item-faint-color: #5FA4B4,
+    $brow-state-color: #063B63) {
     
     color: $base;
     a {
@@ -278,6 +279,7 @@
         background-color: $chrome;
         div.brow {
             ul.states li {
+                color: $brow-state-color;
             }
         }
     }
