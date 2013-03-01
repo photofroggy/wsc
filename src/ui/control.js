@@ -136,13 +136,40 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.el.brow.b.append(Chatterbox.render('control_button', options));
+    this.el.brow.b.append(Chatterbox.render('brow_button', options));
     var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
         return false;
     } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        'ref': 'state',
+        'label': 'some state'
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( 'li#' + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render('brow_state', options));
+        return this.el.brow.s.find('li#' + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
 

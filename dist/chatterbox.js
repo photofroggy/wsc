@@ -1904,13 +1904,40 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.el.brow.b.append(Chatterbox.render('control_button', options));
+    this.el.brow.b.append(Chatterbox.render('brow_button', options));
     var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
         return false;
     } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        'ref': 'state',
+        'label': 'some state'
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( 'li#' + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render('brow_state', options));
+        return this.el.brow.s.find('li#' + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
 
@@ -4263,8 +4290,6 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                     <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
                 </ul>\
                 <ul class="states">\
-                    <li>test</li>\
-                    <li>test 2</li>\
                 </ul>\
             </div>\
             <form class="msg">\
@@ -4274,7 +4299,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.

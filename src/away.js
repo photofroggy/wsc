@@ -146,6 +146,11 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.add_state({
+            'ref': 'away',
+            'label': 'Currently away: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
+        });
     
     };
     
@@ -162,6 +167,8 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.rem_state('away');
     };
     
     var pkt_highlighted = function( event, client ) {

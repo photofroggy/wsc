@@ -108,8 +108,6 @@ Chatterbox.template.control = '<div class="chatcontrol">\
                     <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
                 </ul>\
                 <ul class="states">\
-                    <li>test</li>\
-                    <li>test 2</li>\
                 </ul>\
             </div>\
             <form class="msg">\
@@ -119,7 +117,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.
