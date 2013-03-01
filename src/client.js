@@ -264,7 +264,7 @@ wsc.Client.prototype.clear_listeners = function( event ) {
  */
 wsc.Client.prototype.trigger = function( event, data ) {
 
-    this.events.emit( event, data, this );
+    return this.events.emit( event, data, this );
 
 };
 

@@ -30,17 +30,19 @@ function EventEmitter() {
         var args = Array.prototype.slice.call(arguments);
         var event = args.shift();
         var callbacks = events[event] || false;
+        var called = 0;
         if(callbacks === false) {
-            return self;
+            return called;
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
                 bubble = callbacks[i].apply({}, args);
+                called++;
                 if( bubble === false )
                     break;
             }
         }
-        return self;
+        return called;
     }
 
     function listeners(event) {

@@ -84,6 +84,12 @@ wsc.Control.prototype.cache_input = function( event ) {
  */
 wsc.Control.prototype.get_history = function( namespace ) {
 
+    if( !namespace ) {
+        if( !this.client.cchannel ) {
+             namespace = '~monitor';
+        }
+    }
+    
     namespace = namespace || this.client.cchannel.namespace;
     
     if( !this.history[namespace] )
@@ -104,7 +110,7 @@ wsc.Control.prototype.append_history = function( data ) {
     if( !data )
         return;
     
-    h = this.get_history();
+    var h = this.get_history();
     h.list.unshift(data);
     h.index = -1;
     
@@ -338,9 +344,13 @@ wsc.Control.prototype.handle = function( event, data ) {
     if( data == '' )
         return;
     
+    if( !this.client.cchannel )
+        return;
+    
+    var autocmd = false;
+    
     if( data[0] != '/' ) {
-        if( !this.client.cchannel )
-            return;
+        autocmd = true;
     }
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
@@ -350,7 +360,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     ens = this.client.cchannel.namespace;
     etarget = ens;
     
-    if( bits[0] ) {
+    if( !autocmd && bits[0] ) {
         hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
@@ -359,13 +369,17 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     arg = bits.join(' ');
     
-    this.client.trigger('cmd.' + cmdn, {
+    var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
         cmd: cmdn,
         args: arg,
         target: etarget,
         ns: ens
     });
+    
+    if( fired == 0 ) {
+        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+    }
 
 };
 

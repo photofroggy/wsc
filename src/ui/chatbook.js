@@ -187,7 +187,7 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.raw);
+    var rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
 };
 

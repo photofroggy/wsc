@@ -42,17 +42,19 @@ function EventEmitter() {
         var args = Array.prototype.slice.call(arguments);
         var event = args.shift();
         var callbacks = events[event] || false;
+        var called = 0;
         if(callbacks === false) {
-            return self;
+            return called;
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
                 bubble = callbacks[i].apply({}, args);
+                called++;
                 if( bubble === false )
                     break;
             }
         }
-        return self;
+        return called;
     }
 
     function listeners(event) {
@@ -3392,7 +3394,7 @@ wsc.Client.prototype.clear_listeners = function( event ) {
  */
 wsc.Client.prototype.trigger = function( event, data ) {
 
-    this.events.emit( event, data, this );
+    return this.events.emit( event, data, this );
 
 };
 
@@ -4028,6 +4030,12 @@ wsc.Control.prototype.cache_input = function( event ) {
  */
 wsc.Control.prototype.get_history = function( namespace ) {
 
+    if( !namespace ) {
+        if( !this.client.cchannel ) {
+             namespace = '~monitor';
+        }
+    }
+    
     namespace = namespace || this.client.cchannel.namespace;
     
     if( !this.history[namespace] )
@@ -4048,7 +4056,7 @@ wsc.Control.prototype.append_history = function( data ) {
     if( !data )
         return;
     
-    h = this.get_history();
+    var h = this.get_history();
     h.list.unshift(data);
     h.index = -1;
     
@@ -4282,9 +4290,13 @@ wsc.Control.prototype.handle = function( event, data ) {
     if( data == '' )
         return;
     
+    if( !this.client.cchannel )
+        return;
+    
+    var autocmd = false;
+    
     if( data[0] != '/' ) {
-        if( !this.client.cchannel )
-            return;
+        autocmd = true;
     }
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
@@ -4294,7 +4306,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     ens = this.client.cchannel.namespace;
     etarget = ens;
     
-    if( bits[0] ) {
+    if( !autocmd && bits[0] ) {
         hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
@@ -4303,13 +4315,17 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     arg = bits.join(' ');
     
-    this.client.trigger('cmd.' + cmdn, {
+    var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
         cmd: cmdn,
         args: arg,
         target: etarget,
         ns: ens
     });
+    
+    if( fired == 0 ) {
+        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+    }
 
 };
 
@@ -4969,38 +4985,51 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     this.el.h[head].e.click( function( e ) {
         chan.el.h[head].t.text(chan.head[head].text);
+        
         chan.el.h[head].t.css({
             'display': 'block',
             'width': chan.el.h[head].m.innerWidth() - 10,
         });
+        
         chan.el.h[head].m.css('display', 'none');
         chan.el.h[head].e.css('display', 'none');
         chan.el.h[head].editing = true;
+        
         chan.resize();
+        
         return false;
     } );
     
-    this.el.h[head].s.click( function( e ) {
+    var collapse = function(  ) {
+        var val = chan.el.h[head].t.val();
+        chan.el.h[head].t.text('');
         chan.el.h[head].t.css('display', 'none');
         chan.el.h[head].m.css('display', 'block');
         chan.el.h[head].s.css('display', 'none');
         chan.el.h[head].c.css('display', 'none');
         chan.el.h[head].editing = false;
-        var val = chan.el.h[head].t.val();
+        
+        //setTimeout( function(  ) {
+            chan.resize();
+        //}, 100 );
+        
+        return val;
+    };
+    
+    this.el.h[head].s.click( function( e ) {
+        var val = collapse();
+        
         chan.manager.trigger( head + '.save', {
             ns: chan.raw,
             value: val
         } );
+        
         chan.el.h[head].t.text('');
         return false;
     } );
     
     this.el.h[head].c.click( function( e ) {
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        collapse();
         return false;
     } );
     
@@ -5296,6 +5325,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
             return false;
         }
     );
+    
+    this.scroll();
     
     return box;
 };
@@ -5909,7 +5940,7 @@ Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.raw);
+    var rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
 };
 

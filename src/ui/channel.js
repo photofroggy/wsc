@@ -161,38 +161,51 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     this.el.h[head].e.click( function( e ) {
         chan.el.h[head].t.text(chan.head[head].text);
+        
         chan.el.h[head].t.css({
             'display': 'block',
             'width': chan.el.h[head].m.innerWidth() - 10,
         });
+        
         chan.el.h[head].m.css('display', 'none');
         chan.el.h[head].e.css('display', 'none');
         chan.el.h[head].editing = true;
+        
         chan.resize();
+        
         return false;
     } );
     
-    this.el.h[head].s.click( function( e ) {
+    var collapse = function(  ) {
+        var val = chan.el.h[head].t.val();
+        chan.el.h[head].t.text('');
         chan.el.h[head].t.css('display', 'none');
         chan.el.h[head].m.css('display', 'block');
         chan.el.h[head].s.css('display', 'none');
         chan.el.h[head].c.css('display', 'none');
         chan.el.h[head].editing = false;
-        var val = chan.el.h[head].t.val();
+        
+        //setTimeout( function(  ) {
+            chan.resize();
+        //}, 100 );
+        
+        return val;
+    };
+    
+    this.el.h[head].s.click( function( e ) {
+        var val = collapse();
+        
         chan.manager.trigger( head + '.save', {
             ns: chan.raw,
             value: val
         } );
+        
         chan.el.h[head].t.text('');
         return false;
     } );
     
     this.el.h[head].c.click( function( e ) {
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        collapse();
         return false;
     } );
     
@@ -488,6 +501,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
             return false;
         }
     );
+    
+    this.scroll();
     
     return box;
 };
