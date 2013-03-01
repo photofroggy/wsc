@@ -1789,9 +1789,13 @@ Chatterbox.Control = function( ui ) {
             s: this.view.find('form.msg input.msg'),            //      Single line input
             m: this.view.find('form.msg textarea.msg'),         //      Multi line input
             c: null,                                            //      Current input element
-            t: this.view.find('p a[href~=#multiline].button')   //      Toggle multiline button
+            t: this.view.find('ul.buttons a[href~=#multiline].button')   //      Toggle multiline button
         },
-        brow: this.view.find('p')                               // Control brow
+        brow: {
+            m: this.view.find('div.brow'),                               // Control brow
+            b: this.view.find('div.brow ul.buttons'),
+            s: this.view.find('div.brow ul.states')
+        }
     };
     // Default input mode is single line.
     this.el.i.c = this.el.i.s;
@@ -1900,13 +1904,40 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.el.brow.append(Chatterbox.render('control_button', options));
-    var button = this.el.brow.find('a[href='+options.href+'].button');
+    this.el.brow.b.append(Chatterbox.render('brow_button', options));
+    var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
         return false;
     } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        'ref': 'state',
+        'label': 'some state'
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( 'li#' + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render('brow_state', options));
+        return this.el.brow.s.find('li#' + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
 
@@ -4254,7 +4285,13 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
-            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
+            <div class="brow">\
+                <ul class="buttons">\
+                    <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
+                </ul>\
+                <ul class="states">\
+                </ul>\
+            </div>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <textarea class="msg"></textarea>\
@@ -4262,7 +4299,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.

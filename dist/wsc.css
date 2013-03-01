@@ -868,21 +868,41 @@ div.wsc div.chatcontrol {
   border-bottom: 1px solid black;
   font-size: 12px;
 }
-div.wsc div.chatcontrol p {
+div.wsc div.chatcontrol div.brow {
   margin: 0px;
   padding: 2px;
   padding-left: 7px;
 }
-div.wsc div.chatcontrol p a.button {
+div.wsc div.chatcontrol div.brow ul {
+  display: inline-block;
+  list-style: none;
+}
+div.wsc div.chatcontrol div.brow ul li {
+  float: left;
+}
+div.wsc div.chatcontrol div.brow ul.states {
+  float: right;
+  margin-right: 100px;
+}
+div.wsc div.chatcontrol div.brow ul.states li {
+  margin-left: 5px;
+  padding-right: 5px;
+  border-right: 1px dotted black;
+}
+div.wsc div.chatcontrol div.brow ul.states li:last-child {
+  border-right: none;
+}
+div.wsc div.chatcontrol div.brow a.button {
   font-size: 16px;
   line-height: .9em;
   padding: 4px;
   margin-right: 5px;
 }
-div.wsc div.chatcontrol p a.button.text {
+div.wsc div.chatcontrol div.brow a.button.text {
   font-size: 12px;
   position: relative;
-  top: -1px;
+  top: 3px;
+  padding: 3px;
 }
 div.wsc div.chatcontrol form.msg {
   clear: both;
@@ -1532,6 +1552,9 @@ div.wsc.wsct_default div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .
 div.wsc.wsct_default div.chatcontrol {
   background-color: #406d8b;
 }
+div.wsc.wsct_default div.chatcontrol div.brow ul.states li {
+  color: #063b63;
+}
 div.wsc.wsct_default div.chatusers {
   border: 1px solid #0d4d69;
   background-color: #406d8b;
@@ -1857,6 +1880,9 @@ div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .inf
 }
 div.wsc.wsct_dAmn div.chatcontrol {
   background-color: #d0dbd0;
+}
+div.wsc.wsct_dAmn div.chatcontrol div.brow ul.states li {
+  color: #6a6f6a;
 }
 div.wsc.wsct_dAmn div.chatusers {
   border: 1px solid #9eaea0;

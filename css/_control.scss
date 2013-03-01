@@ -7,10 +7,29 @@
         border-bottom: 1px solid black;
         font-size: 12px;
         
-        p {
+        div.brow {
             margin: 0px;
             padding: 2px;
             padding-left: 7px;
+            ul {
+                display: inline-block;
+                list-style: none;
+                li {
+                    float: left;
+                }
+                &.states {
+                    float: right;
+                    margin-right: 100px;
+                    li {
+                        margin-left: 5px;
+                        padding-right: 5px;
+                        border-right: 1px dotted black;
+                    }
+                    li:last-child {
+                        border-right: none;
+                    }
+                }
+            }
             a.button {
                 font-size: 16px;
                 line-height: .9em;
@@ -19,7 +38,8 @@
                 &.text {
                     font-size: 12px;
                     position: relative;
-                    top: -1px;
+                    top: 3px;
+                    padding: 3px;
                 }
             }
         }
