@@ -103,7 +103,15 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
-            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
+            <div class="brow">\
+                <ul class="buttons">\
+                    <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
+                </ul>\
+                <ul class="states">\
+                    <li>test</li>\
+                    <li>test 2</li>\
+                </ul>\
+            </div>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <textarea class="msg"></textarea>\
@@ -111,7 +119,7 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+Chatterbox.template.control_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 
 /**
  * HTML for a channel tab.

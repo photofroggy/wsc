@@ -21,9 +21,13 @@ Chatterbox.Control = function( ui ) {
             s: this.view.find('form.msg input.msg'),            //      Single line input
             m: this.view.find('form.msg textarea.msg'),         //      Multi line input
             c: null,                                            //      Current input element
-            t: this.view.find('p a[href~=#multiline].button')   //      Toggle multiline button
+            t: this.view.find('ul.buttons a[href~=#multiline].button')   //      Toggle multiline button
         },
-        brow: this.view.find('p')                               // Control brow
+        brow: {
+            m: this.view.find('div.brow'),                               // Control brow
+            b: this.view.find('div.brow ul.buttons'),
+            s: this.view.find('div.brow ul.states')
+        }
     };
     // Default input mode is single line.
     this.el.i.c = this.el.i.s;
@@ -132,8 +136,8 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.el.brow.append(Chatterbox.render('control_button', options));
-    var button = this.el.brow.find('a[href='+options.href+'].button');
+    this.el.brow.b.append(Chatterbox.render('control_button', options));
+    var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
