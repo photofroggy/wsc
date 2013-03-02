@@ -10675,7 +10675,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&/ol\t': [0, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return data[0] + ( (' (' + data[1] + ')') || '');
+                return data[0] + ( data[1] ? (' (' + data[1] + ')') : '');
             },
             function( data ) {
                 t = data[1];
