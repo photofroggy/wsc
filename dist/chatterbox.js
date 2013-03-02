@@ -1128,20 +1128,24 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.el.h[head].m = this.el.m.find('header div.' + head);
     
-    if( this.head[head].text.length > 0 ) {
-        this.el.h[head].m.css( { display: 'block' } );
-        this.d.h[head] = [
-            this.el.h[head].m.outerWidth(true),
-            this.el.h[head].m.outerHeight(true)
-        ];
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
-    } else {
-        this.el.h[head].m.css( { display: 'none' } );
-        this.d.h[head] = [0, 0];
-    }
-        
-    this.resize();
+    var chan = this;
+    
+    setTimeout( function(  ) {
+        if( chan.head[head].text.length > 0 ) {
+            chan.el.h[head].m.css( { display: 'block' } );
+            chan.d.h[head] = [
+                chan.el.h[head].m.outerWidth(true),
+                chan.el.h[head].m.outerHeight(true)
+            ];
+            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
+            chan.el.h[head].e.css('top', tline);
+        } else {
+            chan.el.h[head].m.css( { display: 'none' } );
+            chan.d.h[head] = [0, 0];
+        }
+            
+        chan.resize();
+    }, 100 );
 };
 
 /**
