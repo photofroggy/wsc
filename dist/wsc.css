@@ -1357,6 +1357,13 @@ div.wsc div.floater.settings footer a.close {
   position: relative;
   top: 3px;
 }
+div.wsc div.pager {
+  position: absolute;
+  top: 10px;
+  right: 160px;
+  background-color: rgba(0, 0, 0, 0.48);
+  z-index: 100;
+}
 
 /* Themes */
 /* Default theme */

@@ -213,6 +213,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();

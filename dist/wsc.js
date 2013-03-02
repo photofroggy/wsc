@@ -4552,6 +4552,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
@@ -6568,6 +6569,38 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
 };
 
 
+
+/**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ */
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    
+    this.el = {
+        m: null
+    };
+    
+    this.build();
+
+};
+
+/**
+ * Build the Pager interface...
+ * 
+ * @method build
+ */
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find('div.pager');
+    this.el.m.css({
+        'width': 100,
+        'height': 500
+    });
+
+};
 /**
  * Popup window base class.
  * Should allow people to easily create popups... or something.
@@ -8612,7 +8645,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\

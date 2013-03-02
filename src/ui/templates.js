@@ -87,7 +87,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
