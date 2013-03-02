@@ -8674,17 +8674,17 @@ Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                     <header class="title">\
                         <div class="title"></div>\
                         <textarea></textarea>\
-                        <a href="#edit" class="button iconic pen"></a>\
-                        <a href="#save" class="button iconic check"></a>\
-                        <a href="#cancel" class="button iconic x"></a>\
+                        <a href="#edit" class="button iconic pen" title="Edit the title"></a>\
+                        <a href="#save" class="button iconic check" title="Save changes"></a>\
+                        <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
                     <div class="chatlog" id="{selector}-log">\
                         <header class="topic">\
                             <div class="topic"></div>\
                             <textarea></textarea>\
-                            <a href="#edit" class="button iconic pen"></a>\
-                            <a href="#save" class="button iconic check"></a>\
-                            <a href="#cancel" class="button iconic x"></a>\
+                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
+                            <a href="#save" class="button iconic check" title="Save changes"></a>\
+                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
