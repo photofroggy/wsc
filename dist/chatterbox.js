@@ -853,6 +853,18 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // User list dimensions
     this.d.u[1] = this.el.l.p.innerHeight();
     this.el.u.css({height: this.d.u[1]});
+    
+    // Make sure edit buttons are in the right place.
+    for( var head in this.head ) {
+        if( !this.head.hasOwnProperty( head ) )
+            continue;
+        
+        if( this.head[head].text.length == 0 )
+            continue;
+        
+        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
+        this.el.h[head].e.css('top', tline);
+    }
 };
 
 /**
