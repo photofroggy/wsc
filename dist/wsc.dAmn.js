@@ -5072,36 +5072,6 @@ Chatterbox.Channel.prototype.hide = function( ) {
 };
 
 /**
- * Figure out the measurements of different elements of the channel.
- *
- * @method measure
- */
-Chatterbox.Channel.prototype.measure = function(  ) {
-    /*
-    for( var head in this.head ) {
-        if( !this.head.hasOwnProperty( head ) )
-            continue;
-        
-        if( this.head[head].text.length > 0 ) {
-            this.d.h[head] = [
-                this.el.h[head].m.outerWidth(true),
-                this.el.h[head].m.outerHeight(true)
-            ];
-            var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-            this.el.h[head].e.css('top', tline);
-        } else {
-            this.d.h[head] = [0, 0];
-        }
-    }*/
-    
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
-    
-};
-
-/**
  * Display the channel.
  * 
  * @method show
@@ -5113,7 +5083,6 @@ Chatterbox.Channel.prototype.show = function( ) {
     this.el.t.o.removeClass('noise chatting tabbed fill');
     var c = this;
     setTimeout( function(  ) {
-        c.measure();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
         c.resize();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
@@ -5519,6 +5488,8 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     setTimeout( function(  ) {
         if( chan.head[head].text.length > 0 ) {
             chan.el.h[head].m.css( { display: 'block' } );
+            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
+            chan.el.h[head].e.css('top', tline);
         } else {
             chan.el.h[head].m.css( { display: 'none' } );
         }
