@@ -4345,7 +4345,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.14.67';
+Chatterbox.VERSION = '0.14.68';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4931,6 +4931,23 @@ Chatterbox.Channel.prototype.build = function( ) {
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
+    
+    // Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
