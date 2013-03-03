@@ -250,6 +250,21 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     </span>';
 
 /**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
+
+/**
  * Settings stuff.
  *
  * @class settings

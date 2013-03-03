@@ -6583,7 +6583,15 @@ Chatterbox.Pager = function( ui ) {
         m: null
     };
     
+    this.notices = [];
+    
     this.build();
+    
+    this.notice({
+        'ref': 'testing',
+        'heading': 'Test',
+        'content': 'Testing out this notices stuff.'
+    });
 
 };
 
@@ -6595,10 +6603,33 @@ Chatterbox.Pager = function( ui ) {
 Chatterbox.Pager.prototype.build = function(  ) {
 
     this.el.m = this.manager.view.find('div.pager');
-    this.el.m.css({
-        'width': 100,
-        'height': 500
-    });
+
+};
+
+/**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ */
+Chatterbox.Pager.prototype.notice = function( options ) {
+
+    var notice = {
+        el: null,
+        options: Object.extend( {
+            'ref': 'notice',
+            'icon': '',
+            'heading': 'Some notice',
+            'content': 'Notice content goes here.'
+        }, ( options || {} ) )
+    };
+    
+    this.notices.push( notice );
+    
+    notice.el = this.el.m.append(
+        Chatterbox.render( 'pager.notice', notice.options )
+    );
+    
+    return notice;
 
 };
 /**
@@ -8806,6 +8837,21 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.
