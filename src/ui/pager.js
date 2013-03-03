@@ -7,6 +7,8 @@
 Chatterbox.Pager = function( ui ) {
 
     this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
     
     this.el = {
         m: null
@@ -15,13 +17,6 @@ Chatterbox.Pager = function( ui ) {
     this.notices = [];
     
     this.build();
-    
-    this.notice({
-        'ref': 'testing',
-        'heading': 'Test',
-        'content': 'Testing out this notices stuff.',
-        'icon': '<img src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1"/>'
-    });
 
 };
 
@@ -41,7 +36,7 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky ) {
 
     var notice = {
         frame: null,
@@ -70,6 +65,12 @@ Chatterbox.Pager.prototype.notice = function( options ) {
         return false;
     } );
     
+    if( !sticky ) {
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, p.lifespan );
+    }
+    
     return notice;
 
 };
@@ -79,17 +80,35 @@ Chatterbox.Pager.prototype.notice = function( options ) {
  * 
  * @remove_notice
  */
-Chatterbox.Pager.prototype.remove_notice = function( notice ) {
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
 
-    var nin = this.notices.indexOf( notice );
+    var p = this;
     
-    if( nin == -1 )
+    if( this.notices.indexOf( notice ) == -1 )
         return false;
     
-    notice.frame.fadeTo(500, 0).slideUp( function(  ) {
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
     } );
     
-    this.notices.splice( nin, 1 );
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
 
 };
