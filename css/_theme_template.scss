@@ -104,7 +104,12 @@
     $settings-inner-border: #0D4D69,
     $settings-item-border: #8CB3C4,
     $settings-item-faint-color: #5FA4B4,
-    $brow-state-color: #063B63) {
+    $brow-state-color: #063B63,
+    $pager-bg: #81AAC5,
+    $pager-header: #063B63,
+    $pager-color: #3E7A88,
+    $pager-close: #063B63,
+    $pager-closeh: #B9280D) {
     
     color: $base;
     a {
@@ -422,6 +427,25 @@
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+    
+    div.pager {
+        div.notice {
+            background-color: $pager-bg;
+            border-color: $outer-border;
+            h3 {
+                color: $pager-header;
+            }
+            p {
+                color: $pager-color;
+            }
+            a.close_notice {
+                color: $pager-close;
+                &:hover {
+                    color: $pager-closeh;
                 }
             }
         }

@@ -1835,7 +1835,7 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  * @param client {Object} Client object.
  */
 wsc.Flow.prototype.login = function( event, client ) {
-    console.log(event.pkt);
+    
     if(event.pkt["arg"]["e"] == "ok") {
         // Use the username returned by the server!
         info = new wsc.Packet('info\n' + event.data);
