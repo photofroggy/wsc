@@ -107,26 +107,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
-                    settings.emotes.notice = new Chatterbox.Popup( client.ui, {
-                        'title': 'Emotes',
-                        'content': 'Custom emoticons loaded!'
-                    } );
-                    settings.emotes.notice.build();
-                    settings.emotes.notice.window.css({
-                        'bottom': 60,
-                        'right': 50
-                    });
-                    setTimeout( function(  ) {
-                        if( settings.emotes.notice == null )
-                            return;
-                        settings.emotes.notice.window.fadeOut(
-                            'slow',
-                            function(  ) {
-                                settings.emotes.notice.window.remove();
-                                settings.emotes.notice = null;
-                            }
-                        );
-                    }, 5000 );
+                    client.ui.pager.notice({
+                        'ref': 'emotes-loaded',
+                        'heading': 'Emote CLOUD',
+                        'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
+                    }, false, 5000);
                 }
             }
             

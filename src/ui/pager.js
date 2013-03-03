@@ -36,7 +36,7 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
 
     var notice = {
         frame: null,
@@ -68,9 +68,12 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
     } );
     
     if( !sticky ) {
+        if( !lifespan )
+            lifespan = p.lifespan;
+        
         setTimeout( function(  ) {
             p.remove_notice( notice, true );
-        }, p.lifespan );
+        }, lifespan );
     }
     
     return notice;
