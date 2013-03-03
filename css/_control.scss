@@ -46,8 +46,7 @@
         
         form.msg {
             clear: both;
-            padding: 7px;
-            padding-top: 2px;
+            padding-left: 7px;
             margin: 0px;
             margin-bottom: 5px;
             width: 100%;
@@ -56,6 +55,7 @@
                 line-height: 1.6em;
                 display: inline-block;
                 float: left;
+                height: 22px;
             }
             textarea.msg {
                 display: none;
@@ -78,12 +78,12 @@
         border: 1px solid black;
         @include round-box(5px);
         font-size: 13px;
-        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
+        // @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:active {
             background: none;
             border: 1px solid black;
             cursor: pointer;
-            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+            // @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
         }
         &:hover {
             cursor: pointer;
@@ -109,14 +109,14 @@
         @include round-box(20px);
         font-size: 13px;
         padding: 1px;
-        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
+        // @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:hover {
             background: none;
             border: 1px solid black;
             cursor: pointer;
         }
         &:active {
-            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+            // @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
         }
         &.big {
             height: 25px;
@@ -131,6 +131,10 @@
         &.square {
             @include round-box(5px);
         }
+    }
+    
+    form.msg input[type="submit"] {
+        padding: 4px;
     }
 
 }

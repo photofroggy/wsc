@@ -233,7 +233,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 15 );
 
 };
 
@@ -1867,7 +1867,8 @@ Chatterbox.Control.prototype.resize = function( ) {
  * @method height
  */
 Chatterbox.Control.prototype.height = function( ) {
-    return this.view.height();
+    var h = this.view.outerHeight();
+    return h;
 };
 
 
@@ -2196,7 +2197,8 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.el.n.height();
+    var h = this.el.n.outerHeight();
+    return h;
 };
 
 /**

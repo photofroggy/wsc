@@ -71,7 +71,8 @@ Chatterbox.Control.prototype.resize = function( ) {
  * @method height
  */
 Chatterbox.Control.prototype.height = function( ) {
-    return this.view.height();
+    var h = this.view.outerHeight();
+    return h;
 };
 
 

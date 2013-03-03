@@ -906,8 +906,7 @@ div.wsc div.chatcontrol div.brow a.button.text {
 }
 div.wsc div.chatcontrol form.msg {
   clear: both;
-  padding: 7px;
-  padding-top: 2px;
+  padding-left: 7px;
   margin: 0px;
   margin-bottom: 5px;
   width: 100%;
@@ -917,6 +916,7 @@ div.wsc div.chatcontrol form.msg input.msg {
   line-height: 1.6em;
   display: inline-block;
   float: left;
+  height: 22px;
 }
 div.wsc div.chatcontrol form.msg textarea.msg {
   display: none;
@@ -937,18 +937,12 @@ div.wsc form.msg input[type="submit"] {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   font-size: 13px;
-  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.button:active,
 div.wsc form.msg input[type="submit"]:active {
   background: none;
   border: 1px solid black;
   cursor: pointer;
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
-  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.button:hover,
 div.wsc form.msg input[type="submit"]:hover {
@@ -975,19 +969,11 @@ div.wsc a.iconic.close {
   -webkit-border-radius: 20px;
   font-size: 13px;
   padding: 1px;
-  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.iconic.close:hover {
   background: none;
   border: 1px solid black;
   cursor: pointer;
-}
-div.wsc a.iconic.close:active {
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
-  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.75);
 }
 div.wsc a.iconic.close.big {
   height: 25px;
@@ -1003,6 +989,9 @@ div.wsc a.iconic.close.square {
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+}
+div.wsc form.msg input[type="submit"] {
+  padding: 4px;
 }
 div.wsc div.floater {
   position: absolute;
@@ -1436,7 +1425,7 @@ div.wsc.wsct_default form.msg input[type="submit"]:active {
   background-color: #42bec9;
   border-color: #406d8b;
   color: #d4f4fc;
-  text-shadow: 0px -1px #1773a0;
+  text-shadow: none;
 }
 div.wsc.wsct_default a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1747,41 +1736,41 @@ div.wsc.wsct_dAmn a:hover {
 }
 div.wsc.wsct_dAmn a.button,
 div.wsc.wsct_dAmn form.msg input[type="submit"] {
-  background: -webkit-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
-  background: -moz-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
-  background: -ms-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
-  background: -o-linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
-  background: linear-gradient(top, #cfdad2 0%, #62806a 5%, #2b4e34 97%);
-  background-color: #2b4e34;
-  border-color: #20462a;
-  color: #c0e4c9;
-  text-shadow: 0px -1px #002409;
+  background: -webkit-linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
+  background: -moz-linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
+  background: -ms-linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
+  background: -o-linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
+  background: linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
+  background-color: #b5c4b5;
+  border-color: #788a7d;
+  color: #7e9c7e;
+  text-shadow: 0px -1px #55685b;
   text-decoration: none;
 }
 div.wsc.wsct_dAmn a.button:hover,
 div.wsc.wsct_dAmn form.msg input[type="submit"]:hover {
-  background: -webkit-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
-  background: -moz-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
-  background: -ms-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
-  background: -o-linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
-  background: linear-gradient(top, #ffd3d3 0%, #b61c1c 5%, #681b1b 97%);
-  background-color: #681b1b;
-  border-color: #611a14;
-  color: #c0e4c9;
-  text-shadow: 0px -1px #1773a0;
+  background: -webkit-linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
+  background: -moz-linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
+  background: -ms-linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
+  background: -o-linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
+  background: linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
+  background-color: #bedbbe;
+  border-color: #788a7d;
+  color: #96ad96;
+  text-shadow: 0px -1px #55685b;
   text-decoration: none;
 }
 div.wsc.wsct_dAmn a.button:active,
 div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
-  background: -webkit-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
-  background: -moz-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
-  background: -ms-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
-  background: -o-linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
-  background: linear-gradient(top, #cfdad2 0%, #2b4e34 5%, #62806a 97%);
-  background-color: #62806a;
-  border-color: #20462a;
-  color: #bad5c0;
-  text-shadow: 0px -1px #002409;
+  background: -webkit-linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
+  background: -moz-linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
+  background: -ms-linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
+  background: -o-linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
+  background: linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
+  background-color: #d0dbd0;
+  border-color: #788a7d;
+  color: #7e9c7e;
+  text-shadow: none;
 }
 div.wsc.wsct_dAmn a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);

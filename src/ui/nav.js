@@ -157,7 +157,8 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.el.n.height();
+    var h = this.el.n.outerHeight();
+    return h;
 };
 
 /**
