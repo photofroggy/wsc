@@ -320,8 +320,12 @@ wsc.Protocol.prototype.log = function( client, event ) {
             client.ui.log_item(event);
         }
     } catch(err) {
-        console.log('>> Failed to log message for ' + event.sns + '::');
-        console.log('>> ' + event.html);
+        try {
+            client.ui.channel(client.mns).server_message('Failed to log for ' + event.sns, event.html);
+        } catch( err ) {
+            console.log('>> Failed to log message for ' + event.sns + '::');
+            console.log('>> ' + event.html);
+        }
     }
 
 };

@@ -9,22 +9,28 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.showclose = this.manager.settings.tabclose;
-    this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.nav.find('#chattabs');
-    this.buttons = this.nav.find('#tabnav');
-    this.tableft = this.buttons.find('.arrow_left');
-    this.tabright = this.buttons.find('.arrow_right');
-    this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
     
+    /* UI Elements
+     * Something similar to the channel elements object.
+     */
+    this.el = {
+        n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
+        b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
+        l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
+        r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
+        s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
+    };
+    
     if( !this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
-            this.tabs.addClass('hc');
+        if( !this.el.t.hasClass('hc') )
+            this.el.t.addClass('hc');
     }
     
     var nav = this;
-    this.settingsb.click(
+    this.el.s.click(
         function( event ) {
             if( nav.settings.open )
                 return false;
@@ -52,14 +58,14 @@ Chatterbox.Navigation = function( ui ) {
         }
     );
     
-    this.tableft.click(
+    this.el.l.click(
         function(  ) {
             nav.manager.channel_left();
             return false;
         }
     );
     
-    this.tabright.click(
+    this.el.r.click(
         function(  ) {
             nav.manager.channel_right();
             return false;
@@ -151,7 +157,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.nav.height();
+    return this.el.n.height();
 };
 
 /**
@@ -163,8 +169,8 @@ Chatterbox.Navigation.prototype.height = function(  ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.tabs.find('#' + selector + '-tab');
+    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
+    return this.el.t.find('#' + selector + '-tab');
 };
 
 /**
@@ -174,7 +180,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -195,15 +201,15 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
     
     this.showclose = visible;
     if( this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
+        if( !this.el.t.hasClass('hc') )
             return;
-        this.tabs.removeClass('hc');
+        this.el.t.removeClass('hc');
         return;
     }
     
-    if( this.tabs.hasClass('hc') )
+    if( this.el.t.hasClass('hc') )
         return;
-    this.tabs.addClass('hc');
+    this.el.t.addClass('hc');
 
 };
 

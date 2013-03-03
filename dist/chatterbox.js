@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.12.60';
+Chatterbox.VERSION = '0.15.69';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -213,6 +213,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
@@ -504,7 +505,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
-    this.monitor = monitor || false;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
     this.raw = ui.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
@@ -525,8 +526,22 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         },                          //
         u: null,                    // User panel
         h: {                        // Header
-            title: null,            //      Title
-            topic: null,            //      Topic
+            title: {                //      Title
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            },
+            topic: {                //      Topic
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            }
         }
     };
     this.mulw = 0;
@@ -536,6 +551,16 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         h: {                        // Header
             title: [0, 0],          //      Title [ width, height ]
             topic: [0, 0]           //      Topic [ width, height ]
+        }
+    };
+    this.head = {
+        title: {
+            text: '',
+            html: ''
+        },
+        topic: {
+            text: '',
+            html: ''
         }
     };
 
@@ -562,14 +587,29 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.el.h.title = this.el.m.find('header div.title');
-    this.el.h.topic = this.el.m.find('header div.topic');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
+    
+    // Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
@@ -587,28 +627,98 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    var focus = true;
-    
-    this.el.m.click(
-        function( e ) {
-            if( focus )
-                chan.manager.control.focus();
-            else
-                focus = true;
-        }
-    );
-    
-    this.el.l.p.select(
-        function( ) {
-            focus = false;
-        }
-    );
+    this.setup_header('title');
+    this.setup_header('topic');
     
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
     this.built = true;
+};
+
+/**
+ * Set up a header so it can be edited in the UI.
+ * 
+ * @method setup_header
+ */
+Chatterbox.Channel.prototype.setup_header = function( head ) {
+    
+    var chan = this;
+    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
+    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
+    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
+    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    
+    this.el.h[head].m.parent().mouseover( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'block');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'block');
+        chan.el.h[head].c.css('display', 'block');
+    } );
+    
+    this.el.h[head].m.parent().mouseout( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'none');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+    } );
+    
+    this.el.h[head].e.click( function( e ) {
+        chan.el.h[head].t.text(chan.head[head].text);
+        
+        chan.el.h[head].t.css({
+            'display': 'block',
+            'width': chan.el.h[head].m.innerWidth() - 10,
+        });
+        
+        chan.el.h[head].m.css('display', 'none');
+        chan.el.h[head].e.css('display', 'none');
+        chan.el.h[head].editing = true;
+        
+        chan.resize();
+        
+        return false;
+    } );
+    
+    var collapse = function(  ) {
+        var val = chan.el.h[head].t.val();
+        chan.el.h[head].t.text('');
+        chan.el.h[head].t.css('display', 'none');
+        chan.el.h[head].m.css('display', 'block');
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+        chan.el.h[head].editing = false;
+        
+        //setTimeout( function(  ) {
+            chan.resize();
+        //}, 100 );
+        
+        return val;
+    };
+    
+    this.el.h[head].s.click( function( e ) {
+        var val = collapse();
+        
+        chan.manager.trigger( head + '.save', {
+            ns: chan.raw,
+            value: val
+        } );
+        
+        chan.el.h[head].t.text('');
+        return false;
+    } );
+    
+    this.el.h[head].c.click( function( e ) {
+        collapse();
+        return false;
+    } );
+    
 };
 
 /**
@@ -637,9 +747,8 @@ Chatterbox.Channel.prototype.show = function( ) {
     setTimeout( function(  ) {
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
         c.resize();
-        c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 500);
+    }, 100);
 };
 
 /**
@@ -693,7 +802,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.height() - 3;
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -721,21 +830,23 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Userlist width.
     this.el.u.width(1);
     this.d.u[0] = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    
     if( this.d.u[0] > this.mulw ) {
         this.d.u[0] = this.mulw;
     }
+    
     this.el.u.width(this.d.u[0]);
     
     // Change log width based on userlist width.
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.d.h.title[1];
+    wh = wh - this.el.h.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
         height: wh - 3,
-        width: cw - 3});
+        width: cw - 10});
     
     // Scroll again just to make sure.
     this.scroll();
@@ -743,6 +854,18 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // User list dimensions
     this.d.u[1] = this.el.l.p.innerHeight();
     this.el.u.css({height: this.d.u[1]});
+    
+    // Make sure edit buttons are in the right place.
+    for( var head in this.head ) {
+        if( !this.head.hasOwnProperty( head ) )
+            continue;
+        
+        if( this.head[head].text.length == 0 )
+            continue;
+        
+        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
+        this.el.h[head].e.css('top', tline);
+    }
 };
 
 /**
@@ -900,6 +1023,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
         }
     );
     
+    this.scroll();
+    
     return box;
 };
 
@@ -924,7 +1049,7 @@ Chatterbox.Channel.prototype.log_whois = function( data ) {
         var mcon = [];
         
         if( rcon.online ) {
-            stamp = (new Date - (rcon.online * 1000));
+            var stamp = (new Date - (rcon.online * 1000));
             mcon.push([ 'online', DateStamp(stamp / 1000) + formatTime(' [{HH}:{mm}:{ss}]', new Date(stamp)) ]);
         }
         if( rcon.idle )
@@ -1023,24 +1148,28 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
     head = head.toLowerCase();
     
-    this.el.h[head].replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': content || ''})
+    this.head[head].text = content.text();
+    this.head[head].html = content.html();
+    
+    this.el.h[head].m.replaceWith(
+        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head] = this.el.m.find('header div.' + head);
+    this.el.h[head].m = this.el.m.find('header div.' + head);
     
-    if( content.length > 0 ) {
-        this.el.h[head].css( { display: 'block' } );
-        this.d.h[head] = [
-            this.el.h[head].outerWidth(true),
-            this.el.h[head].outerHeight(true)
-        ];
-    } else {
-        this.el.h[head].css( { display: 'none' } );
-        this.d.h[head] = [0, 0];
-    }
-        
-    this.resize();
+    var chan = this;
+    
+    setTimeout( function(  ) {
+        if( chan.head[head].text.length > 0 ) {
+            chan.el.h[head].m.css( { display: 'block' } );
+            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
+            chan.el.h[head].e.css('top', tline);
+        } else {
+            chan.el.h[head].m.css( { display: 'none' } );
+        }
+            
+        chan.resize();
+    }, 100 );
 };
 
 /**
@@ -1114,7 +1243,10 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
     var tab = this.el.t.o;
-    ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    
+    if( message !== false ) {
+        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    }
     
     if( tab.hasClass('active') )
         return;
@@ -1480,7 +1612,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     this.manager.trigger( 'channel.selected', {
-        'ns': chan.namespace,
+        'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
@@ -1493,17 +1625,18 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  * @param ns {String} Name of the channel to remove.
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 ) 
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 && !chan.hidden ) 
         return;
     
-    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.raw.toLowerCase()];
     
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.raw);
+    var rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
 };
 
@@ -1673,16 +1806,30 @@ Chatterbox.Control = function( ui ) {
     this.manager = ui;
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
-    this.form = this.view.find('form.msg');
-    this.input = this.form.find('input.msg');
-    this.brow = this.view.find('p');
-    this.mli = this.form.find('textarea.msg');
-    this.ci = this.input;
     this.ml = false;
-    this.mlb = this.brow.find('a[href~=#multiline].button');
+    
+    /**
+     * UI elements
+     */
+    this.el = {
+        form: this.view.find('form.msg'),                       // Input form
+        i: {                                                    // Input field
+            s: this.view.find('form.msg input.msg'),            //      Single line input
+            m: this.view.find('form.msg textarea.msg'),         //      Multi line input
+            c: null,                                            //      Current input element
+            t: this.view.find('ul.buttons a[href~=#multiline].button')   //      Toggle multiline button
+        },
+        brow: {
+            m: this.view.find('div.brow'),                               // Control brow
+            b: this.view.find('div.brow ul.buttons'),
+            s: this.view.find('div.brow ul.states')
+        }
+    };
+    // Default input mode is single line.
+    this.el.i.c = this.el.i.s;
     
     var ctrl = this;
-    this.mlb.click(function( event ) {
+    this.el.i.t.click(function( event ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
@@ -1695,7 +1842,7 @@ Chatterbox.Control = function( ui ) {
  * @method focus
  */
 Chatterbox.Control.prototype.focus = function( ) {
-    this.ci.focus();
+    this.el.i.c.focus();
 };
 
 /**
@@ -1708,9 +1855,9 @@ Chatterbox.Control.prototype.resize = function( ) {
     this.view.css({
         width: '100%'});
     // Form dimensionals.
-    this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 100});
-    this.mli.css({'width': this.manager.view.width() - 90});
+    this.el.form.css({'width': this.manager.view.width() - 20});
+    this.el.i.s.css({'width': this.manager.view.width() - 100});
+    this.el.i.m.css({'width': this.manager.view.width() - 90});
 };
 
 
@@ -1735,14 +1882,14 @@ Chatterbox.Control.prototype.height = function( ) {
  */
 Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
     if( this.manager.mozilla ) {
-        this.input.keypress( onkeypress || this._onkeypress );
-        this.mli.keypress( onkeypress || this._onkeypress );
+        this.el.i.s.keypress( onkeypress || this._onkeypress );
+        this.el.i.m.keypress( onkeypress || this._onkeypress );
     } else {
-        this.input.keydown( onkeypress || this._onkeypress );
-        this.mli.keydown( onkeypress || this._onkeypress );
+        this.el.i.s.keydown( onkeypress || this._onkeypress );
+        this.el.i.m.keydown( onkeypress || this._onkeypress );
     }
     
-    this.form.submit( onsubmit || this._onsubmit );
+    this.el.form.submit( onsubmit || this._onsubmit );
 };
 
 /**
@@ -1758,22 +1905,17 @@ Chatterbox.Control.prototype.multiline = function( on ) {
         return this.ml;
     
     this.ml = on;
+    var off = ( this.ml ? 's' : 'm' );
+    on = ( this.ml ? 'm' : 's' );
     
-    if( this.ml ) {
-        this.input.css('display', 'none');
-        this.mli.css('display', 'inline-block');
-        this.ci = this.mli;
-        this.manager.resize();
-        return this.ml;
-    }
-    
-    this.mli.css('display', 'none');
-    this.input.css('display', 'inline-block');
-    this.ci = this.input;
+    this.el.i[off].css('display', 'none');
+    this.el.i[on].css('display', 'inline-block');
+    this.el.i.c = this.el.i[on];
     this.manager.resize();
-    return this.mli;
+    return this.ml;
 
 };
+
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -1790,13 +1932,40 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.brow.append(Chatterbox.render('control_button', options));
-    var button = this.brow.find('a[href='+options.href+'].button');
+    this.el.brow.b.append(Chatterbox.render('brow_button', options));
+    var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
         return false;
     } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        'ref': 'state',
+        'label': 'some state'
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( 'li#' + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render('brow_state', options));
+        return this.el.brow.s.find('li#' + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
 
@@ -1810,16 +1979,16 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.ci.val();
-    i = d.lastIndexOf(' ');
+    var d = this.el.i.c.val();
+    var i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
-        this.ci.val('');
+        this.el.i.c.val('');
         return d;
     }
     
-    chunk = d.slice(i + 1);
-    this.ci.val( d.slice(0, i) );
+    var chunk = d.slice(i + 1);
+    this.el.i.c.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
         return this.chomp();
@@ -1834,11 +2003,11 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.ci.val();
+    var d = this.el.i.c.val();
     if( !d )
-        this.ci.val(data);
+        this.el.i.c.val(data);
     else
-        this.ci.val(d + ' ' + data);
+        this.el.i.c.val(d + ' ' + data);
 };
 
 /**
@@ -1850,9 +2019,9 @@ Chatterbox.Control.prototype.unchomp = function( data ) {
 Chatterbox.Control.prototype.get_text = function( text ) {
 
     if( text == undefined )
-        return this.ci.val();
-    this.ci.val( text || '' );
-    return this.ci.val();
+        return this.el.i.c.val();
+    this.el.i.c.val( text || '' );
+    return this.el.i.c.val();
 
 };
 
@@ -1864,7 +2033,7 @@ Chatterbox.Control.prototype.get_text = function( text ) {
  */
 Chatterbox.Control.prototype.set_text = function( text ) {
 
-    this.ci.val( text || '' );
+    this.el.i.c.val( text || '' );
 
 };
 
@@ -1879,22 +2048,28 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.showclose = this.manager.settings.tabclose;
-    this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.nav.find('#chattabs');
-    this.buttons = this.nav.find('#tabnav');
-    this.tableft = this.buttons.find('.arrow_left');
-    this.tabright = this.buttons.find('.arrow_right');
-    this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
     
+    /* UI Elements
+     * Something similar to the channel elements object.
+     */
+    this.el = {
+        n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
+        b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
+        l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
+        r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
+        s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
+    };
+    
     if( !this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
-            this.tabs.addClass('hc');
+        if( !this.el.t.hasClass('hc') )
+            this.el.t.addClass('hc');
     }
     
     var nav = this;
-    this.settingsb.click(
+    this.el.s.click(
         function( event ) {
             if( nav.settings.open )
                 return false;
@@ -1922,14 +2097,14 @@ Chatterbox.Navigation = function( ui ) {
         }
     );
     
-    this.tableft.click(
+    this.el.l.click(
         function(  ) {
             nav.manager.channel_left();
             return false;
         }
     );
     
-    this.tabright.click(
+    this.el.r.click(
         function(  ) {
             nav.manager.channel_right();
             return false;
@@ -2021,7 +2196,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.nav.height();
+    return this.el.n.height();
 };
 
 /**
@@ -2033,8 +2208,8 @@ Chatterbox.Navigation.prototype.height = function(  ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.tabs.find('#' + selector + '-tab');
+    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
+    return this.el.t.find('#' + selector + '-tab');
 };
 
 /**
@@ -2044,7 +2219,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -2065,19 +2240,135 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
     
     this.showclose = visible;
     if( this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
+        if( !this.el.t.hasClass('hc') )
             return;
-        this.tabs.removeClass('hc');
+        this.el.t.removeClass('hc');
         return;
     }
     
-    if( this.tabs.hasClass('hc') )
+    if( this.el.t.hasClass('hc') )
         return;
-    this.tabs.addClass('hc');
+    this.el.t.addClass('hc');
 
 };
 
 
+
+/**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ */
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
+    
+    this.el = {
+        m: null
+    };
+    
+    this.notices = [];
+    
+    this.build();
+
+};
+
+/**
+ * Build the Pager interface...
+ * 
+ * @method build
+ */
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find('div.pager');
+
+};
+
+/**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ */
+Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+
+    var notice = {
+        frame: null,
+        close: null,
+        options: Object.extend( {
+            'ref': 'notice',
+            'icon': '',
+            'heading': 'Some notice',
+            'content': 'Notice content goes here.'
+        }, ( options || {} ) )
+    };
+    
+    notice.options.content = notice.options.content.split('\n').join('</p><p>');
+    
+    this.notices.push( notice );
+    
+    this.el.m.append(
+        Chatterbox.render( 'pager.notice', notice.options )
+    );
+    
+    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.close = notice.frame.find('a.close_notice');
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        p.remove_notice( notice );
+        return false;
+    } );
+    
+    if( !sticky ) {
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, p.lifespan );
+    }
+    
+    return notice;
+
+};
+
+/**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ */
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
+
+    var p = this;
+    
+    if( this.notices.indexOf( notice ) == -1 )
+        return false;
+    
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
+        notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
+    } );
+    
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
+
+};
 /**
  * Popup window base class.
  * Should allow people to easily create popups... or something.
@@ -4122,7 +4413,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -4138,7 +4430,13 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
-            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
+            <div class="brow">\
+                <ul class="buttons">\
+                    <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
+                </ul>\
+                <ul class="states">\
+                </ul>\
+            </div>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <textarea class="msg"></textarea>\
@@ -4146,7 +4444,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.
@@ -4163,12 +4462,20 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @type String
  */
 Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
-                    <header>\
+                    <header class="title">\
                         <div class="title"></div>\
+                        <textarea></textarea>\
+                        <a href="#edit" class="button iconic pen" title="Edit the title"></a>\
+                        <a href="#save" class="button iconic check" title="Save changes"></a>\
+                        <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
                     <div class="chatlog" id="{selector}-log">\
-                        <header>\
+                        <header class="topic">\
                             <div class="topic"></div>\
+                            <textarea></textarea>\
+                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
+                            <a href="#save" class="button iconic check" title="Save changes"></a>\
+                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
@@ -4267,6 +4574,22 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.

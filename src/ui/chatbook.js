@@ -163,7 +163,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     this.manager.trigger( 'channel.selected', {
-        'ns': chan.namespace,
+        'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
@@ -176,17 +176,18 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  * @param ns {String} Name of the channel to remove.
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 ) 
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 && !chan.hidden ) 
         return;
     
-    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.raw.toLowerCase()];
     
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.raw);
+    var rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
 };
 

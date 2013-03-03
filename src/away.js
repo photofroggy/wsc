@@ -146,6 +146,11 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.add_state({
+            'ref': 'away',
+            'label': 'Away, reason: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
+        });
     
     };
     
@@ -162,6 +167,8 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.rem_state('away');
     };
     
     var pkt_highlighted = function( event, client ) {
@@ -175,7 +182,7 @@ wsc.defaults.Extension.Away = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
+        if( client.exclude.contains( event.ns ) )
             return;
         
         var t = new Date();

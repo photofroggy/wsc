@@ -172,3 +172,64 @@ function timeLengthString( length ) {
     
     return oxlist(ret);
 }
+
+/**
+ * Sets. Yeah. Fun.
+ */
+function StringSet( items ) {
+
+    this.items = items || [];
+
+};
+
+/**
+ * Add an item.
+ */
+StringSet.prototype.add = function( item, unshift ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( this.contains( item ) )
+        return true;
+    
+    if( unshift )
+        this.items.unshift( item );
+    else
+        this.items.push( item );
+    
+    return true;
+
+};
+
+/**
+ * Remove an item.
+ */
+StringSet.prototype.remove = function( item ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( !this.contains( item ) )
+        return true;
+    
+    this.items.splice( this.items.indexOf( item ), 1 );
+    return true;
+
+};
+
+/**
+ * Contains an item?
+ */
+StringSet.prototype.contains = function( item ) {
+
+    if( !item )
+        return false;
+    
+    return this.items.indexOf( item.toLowerCase() ) != -1;
+
+};

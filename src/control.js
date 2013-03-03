@@ -84,6 +84,12 @@ wsc.Control.prototype.cache_input = function( event ) {
  */
 wsc.Control.prototype.get_history = function( namespace ) {
 
+    if( !namespace ) {
+        if( !this.client.cchannel ) {
+             namespace = '~monitor';
+        }
+    }
+    
     namespace = namespace || this.client.cchannel.namespace;
     
     if( !this.history[namespace] )
@@ -104,7 +110,7 @@ wsc.Control.prototype.append_history = function( data ) {
     if( !data )
         return;
     
-    h = this.get_history();
+    var h = this.get_history();
     h.list.unshift(data);
     h.index = -1;
     
@@ -184,13 +190,14 @@ wsc.Control.prototype.start_tab = function( event ) {
     this.tab.type = 0;
     
     // We only tab the last word in the input. Slice!
-    needle = this.ui.chomp();
+    var needle = this.ui.chomp();
     this.ui.unchomp(needle);
     
     // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" ) {
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
         this.tab.type = needle[0] == '/' ? 1 : 2;
-        needle = needle.slice(1);
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
     } else {
         this.tab.type = 0;
     }
@@ -207,16 +214,18 @@ wsc.Control.prototype.start_tab = function( event ) {
                 this.tab.matched.push(user);
     } else if( this.tab.type == 1 ) {
         // Matching with commands.
-        for( i in this.client.cmds ) {
+        for( var i in this.client.cmds ) {
             cmd = this.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }
     } else if( this.tab.type == 2 ) {
         // Matching with channels.
-        for( chan in this.client.channelo )
-            if( chan.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(this.client.channel(chan).namespace);
+        var ctrl = this;
+        this.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
     }
 
 };
@@ -335,9 +344,13 @@ wsc.Control.prototype.handle = function( event, data ) {
     if( data == '' )
         return;
     
+    if( !this.client.cchannel )
+        return;
+    
+    var autocmd = false;
+    
     if( data[0] != '/' ) {
-        if( !this.client.cchannel )
-            return;
+        autocmd = true;
     }
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
@@ -347,7 +360,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     ens = this.client.cchannel.namespace;
     etarget = ens;
     
-    if( bits[0] ) {
+    if( !autocmd && bits[0] ) {
         hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
@@ -356,13 +369,17 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     arg = bits.join(' ');
     
-    this.client.trigger('cmd.' + cmdn, {
+    var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
         cmd: cmdn,
         args: arg,
         target: etarget,
         ns: ens
     });
+    
+    if( fired == 0 ) {
+        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+    }
 
 };
 

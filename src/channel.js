@@ -9,7 +9,7 @@
  * @param ns {String} Channel namespace.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Channel = function( client, ns, hidden ) {
+wsc.Channel = function( client, ns, hidden, monitor ) {
 
     this.info = {
         'members': {},
@@ -29,6 +29,7 @@ wsc.Channel = function( client, ns, hidden ) {
     
     this.client = client;
     this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
@@ -45,7 +46,7 @@ wsc.Channel = function( client, ns, hidden ) {
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
     this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(ns);
+    this.ui = this.client.ui.channel(this.raw);
 };
 
 /**
@@ -56,7 +57,7 @@ wsc.Channel.prototype.build = function( ) {
 wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
-    this.ui.manager.remove_channel(this.namespace);
+    this.ui.manager.remove_channel(this.raw);
 };
 
 /**
@@ -171,8 +172,11 @@ wsc.Channel.prototype.property = function( e ) {
         case "title":
         case "topic":            
             // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 )
-                this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+            if ( this.info[prop].content.length != 0 ) {
+                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
+                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+                }
+            }
                 
             this.set_header(prop, e);
             break;
@@ -203,7 +207,7 @@ wsc.Channel.prototype.set_header = function( head, e ) {
     if( this.ui == null )
         return;
     
-    this.ui.set_header(head, e.value.html() || '');
+    this.ui.set_header(head, e.value || (new wsc.MessageString) );
 };
 
 /**
@@ -425,12 +429,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     var msg = e['message'].toLowerCase();
+    var hlight = msg.indexOf(u) != -1;
     
-    if( msg.indexOf(u) < 0 )
+    if( !hlight && e.sns[0] != '@' )
         return;
     
-    if( this.ui != null)
-        this.ui.highlight();
+    if( this.ui != null) {
+        if( hlight )
+            this.ui.highlight( );
+        else
+            this.ui.highlight( false );
+    }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );
 

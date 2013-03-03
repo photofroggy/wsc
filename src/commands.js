@@ -297,6 +297,7 @@ wsc.defaults.Extension = function( client ) {
     
     // Say something.
     var cmd_say = function( e ) {
+        if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
@@ -397,7 +398,13 @@ wsc.defaults.Extension = function( client ) {
         if( event.ns.indexOf('login:') != 0 )
             return;
         
-        client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+        var usr = event.sns.substr(1);
+        
+        client.ui.pager.notice({
+            'ref': 'whois-' + usr,
+            'heading': 'Whois Failed',
+            'content': 'Whois failed for ' + usr + '. No such user online.'
+        });
     
     };
     

@@ -1,0 +1,116 @@
+
+/**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ */
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
+    
+    this.el = {
+        m: null
+    };
+    
+    this.notices = [];
+    
+    this.build();
+
+};
+
+/**
+ * Build the Pager interface...
+ * 
+ * @method build
+ */
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find('div.pager');
+
+};
+
+/**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ */
+Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+
+    var notice = {
+        frame: null,
+        close: null,
+        options: Object.extend( {
+            'ref': 'notice',
+            'icon': '',
+            'heading': 'Some notice',
+            'content': 'Notice content goes here.'
+        }, ( options || {} ) )
+    };
+    
+    notice.options.content = notice.options.content.split('\n').join('</p><p>');
+    
+    this.notices.push( notice );
+    
+    this.el.m.append(
+        Chatterbox.render( 'pager.notice', notice.options )
+    );
+    
+    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.close = notice.frame.find('a.close_notice');
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        p.remove_notice( notice );
+        return false;
+    } );
+    
+    if( !sticky ) {
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, p.lifespan );
+    }
+    
+    return notice;
+
+};
+
+/**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ */
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
+
+    var p = this;
+    
+    if( this.notices.indexOf( notice ) == -1 )
+        return false;
+    
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
+        notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
+    } );
+    
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
+
+};

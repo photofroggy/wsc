@@ -4,9 +4,29 @@
     
         width: auto;
         height: auto;
-        overflow: hidden;
         border-bottom: none;
         line-height: 1.3em;
+        textarea {
+            display: none;
+            height: 60px;
+        }
+        
+        .button {
+            padding: 0px 4px !important;
+            position: relative;
+            right: 5px;
+            display: none;
+            float: right;
+            width: 10px;
+            margin-bottom: -25px !important;
+        }
+        a[href=\#save] {
+            right: 30px;
+            top: -60px;
+        }
+        a[href=\#cancel] {
+            top: -60px;
+        }
         
         div {
             margin: 0px;
@@ -24,6 +44,7 @@
             }
             
             &.topic {
+                padding: 5px 10px;
                 border-bottom: 1px solid black;
                 /*border-bottom: none;*/
                 &.topic img { vertical-align: middle; }

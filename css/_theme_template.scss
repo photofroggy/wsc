@@ -85,6 +85,9 @@
     $inner-border: #0D4D69,
     $heading-bg: #81AAC5,
     $heading-color: #063B63,
+    $topic-bg: #81AAC5,
+    $topic-color: #063B63,
+    $userlist-bg: #406D8B,
     $highlight: #FDC8A5,
     $tabbed: #FF5959,
     $tabbed-fill: #9AD7F1,
@@ -100,7 +103,13 @@
     $settings-outer-border: #0D4D69,
     $settings-inner-border: #0D4D69,
     $settings-item-border: #8CB3C4,
-    $settings-item-faint-color: #5FA4B4) {
+    $settings-item-faint-color: #5FA4B4,
+    $brow-state-color: #063B63,
+    $pager-bg: #81AAC5,
+    $pager-header: #063B63,
+    $pager-color: #3E7A88,
+    $pager-close: #063B63,
+    $pager-closeh: #B9280D) {
     
     color: $base;
     a {
@@ -213,9 +222,9 @@
                 }
             }
             div.topic {
-                background-color: $heading-bg;
+                background-color: $topic-bg;
                 border-color: $inner-border;
-                color: $heading-color;
+                color: $topic-color;
             }
         }
         
@@ -273,12 +282,18 @@
     
     div.chatcontrol {
         background-color: $chrome;
+        div.brow {
+            ul.states li {
+                color: $brow-state-color;
+            }
+        }
     }
     
     div.chatusers {
         div.pc {
             h3, h4 {
                 background-color: $heading-bg;
+                border-color: $inner-border !important;
                 color: $heading-color;
             }
             ul {
@@ -295,14 +310,14 @@
             }
         }
         border: 1px solid $inner-border;
-        border-left: none;
+        background-color: $userlist-bg;
     }
     
     div.chatwindow div.userinfo {
         border-color: $inner-border;
         background-color: $heading-bg;
         div.info {
-            background-color: $chrome;
+            background-color: $userlist-bg;
             border-color: $inner-border;
             color: $chrome-color;
             a {
@@ -412,6 +427,25 @@
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+    
+    div.pager {
+        div.notice {
+            background-color: $pager-bg;
+            border-color: $outer-border;
+            h3 {
+                color: $pager-header;
+            }
+            p {
+                color: $pager-color;
+            }
+            a.close_notice {
+                color: $pager-close;
+                &:hover {
+                    color: $pager-closeh;
                 }
             }
         }

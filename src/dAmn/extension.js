@@ -64,7 +64,7 @@ wsc.dAmn.Extension = function( client ) {
     
     client.flow.dAmnServer = client.flow.chatserver;
     
-    client.exclude.push( '#devart' );
+    client.exclude.add( 'chat:devart' );
     
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
@@ -91,6 +91,7 @@ wsc.dAmn.Extension = function( client ) {
     } );
     
     wsc.dAmn.BDS( client, storage.bds, settings );
+    wsc.dAmn.BDS.Link( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
 

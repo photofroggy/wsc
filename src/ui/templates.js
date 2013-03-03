@@ -87,7 +87,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -103,7 +104,13 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
-            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
+            <div class="brow">\
+                <ul class="buttons">\
+                    <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
+                </ul>\
+                <ul class="states">\
+                </ul>\
+            </div>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <textarea class="msg"></textarea>\
@@ -111,7 +118,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.
@@ -128,12 +136,20 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @type String
  */
 Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
-                    <header>\
+                    <header class="title">\
                         <div class="title"></div>\
+                        <textarea></textarea>\
+                        <a href="#edit" class="button iconic pen" title="Edit the title"></a>\
+                        <a href="#save" class="button iconic check" title="Save changes"></a>\
+                        <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
                     <div class="chatlog" id="{selector}-log">\
-                        <header>\
+                        <header class="topic">\
                             <div class="topic"></div>\
+                            <textarea></textarea>\
+                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
+                            <a href="#save" class="button iconic check" title="Save changes"></a>\
+                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
@@ -232,6 +248,22 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.

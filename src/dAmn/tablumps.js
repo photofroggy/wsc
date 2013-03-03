@@ -4,7 +4,7 @@
  * 
  * @example
  *     // Parse something.
- *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     var msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
  *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
  *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
@@ -158,7 +158,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&/ol\t': [0, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return data[0] + ( (' (' + data[1] + ')') || '');
+                return data[0] + ( data[1] ? (' (' + data[1] + ')') : '');
             },
             function( data ) {
                 t = data[1];

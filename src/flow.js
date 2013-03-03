@@ -125,7 +125,6 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
         // Autojoin!
-        // TODO: multi-channel?
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
             if( client.autojoin.on ) {
@@ -160,9 +159,9 @@ wsc.Flow.prototype.login = function( event, client ) {
  */
 wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
-        ns = client.deform_ns(event.pkt["param"]);
+        var ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
-        client.create_ns(ns, client.hidden.is(ns));
+        client.create_ns(ns, client.hidden.contains(event.pkt['param']));
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
         client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);

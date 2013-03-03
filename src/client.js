@@ -24,7 +24,6 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
-    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -61,36 +60,10 @@ wsc.Client = function( view, options, mozilla ) {
     this.away = {};
     
     var cli = this;
+    // Channels excluded from loops.
+    this.exclude = new StringSet();
     // Hidden channels
-    this.hidden = {
-        'ns': [],
-        'on': true,
-        'add': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) > -1 )
-                return true;
-            cli.hidden.ns.push( ns );
-            return true;
-        },
-        'remove': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) == -1 )
-                return true;
-            cli.hidden.ns.splice( cli.hidden.ns.indexOf( ns ), 1 );
-            return true;
-        },
-        'is': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            return cli.hidden.ns.indexOf( ns ) > -1;
-        }
-    };
-    
+    this.hidden = new StringSet();
     this.settings = Object.extend( this.settings, options );
     this.config_load();
     this.config_save();
@@ -199,6 +172,7 @@ wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
     this.control = new this.settings.control( this );
+    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
@@ -212,6 +186,14 @@ wsc.Client.prototype.build = function(  ) {
         client.part(event.ns);
         client.remove_ns(event.ns);
         return false;
+    } );
+    
+    this.ui.on('title.save', function( event, ui ) {
+        client.set(event.ns, 'title', event.value);
+    } );
+    
+    this.ui.on('topic.save', function( event, ui ) {
+        client.set(event.ns, 'topic', event.value);
     } );
 
 };
@@ -282,7 +264,7 @@ wsc.Client.prototype.clear_listeners = function( event ) {
  */
 wsc.Client.prototype.trigger = function( event, data ) {
 
-    this.events.emit( event, data, this );
+    return this.events.emit( event, data, this );
 
 };
 
@@ -388,10 +370,10 @@ wsc.Client.prototype.each_channel = function( method, include ) {
         chan = this.channelo[ns];
         
         if( !include )
-            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+            if( this.exclude.contains( chan.raw ) )
                 continue;
         
-        if( method( chan.namespace, chan ) === false )
+        if( method( chan.raw, chan ) === false )
             break;
     }
     
@@ -468,9 +450,9 @@ wsc.Client.prototype.format_ns = function( namespace ) {
  * @param namespace {String} Namespace to use for the channel.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Client.prototype.create_ns = function( namespace, hidden ) {
+wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
-    chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden));
+    var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
     chan.build();
 
 };
@@ -634,7 +616,7 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('msg', 'main', {}, e.input)
@@ -651,7 +633,7 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('npmsg', 'main', {}, e.input)
@@ -668,7 +650,7 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { 'input': action, 'ns': namespace };
+    var e = { 'input': action, 'ns': namespace };
     this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('action', 'main', {}, e.input)

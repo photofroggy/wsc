@@ -5,47 +5,20 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
-        ns: [],
-        // Check if we should be processing messages from a given channel.
-        channel: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            return settings.bds.ns.indexOf( ns ) > -1;
-        },
-        // Add a channel
-        add: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) > -1 )
-                return true;
-            settings.bds.ns.push( ns );
-            return true;
-        },
-        // Remove a channel
-        remove: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) == -1 )
-                return true;
-            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
-            return true;
-        },
+        channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
             'BOTCHECK',
             'CLINK'
         ]
     };
-    // Allow other parts of client to use the channel listing.
+    // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
-    settings.bds.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.mns);
     
     var init = function(  ) {
-        client.hidden.add('#datashare');
-        client.exclude.push('#datashare');
+        client.hidden.add(settings.bds.mns);
+        client.exclude.add(settings.bds.mns);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
@@ -63,13 +36,21 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
+        
+        if( client.channel(settings.bds.mns) )
+            return;
+        
         client.join('#datashare');
     };
     
     
     var bds_msg = function( event ) {
-        if( !settings.bds.channel(event.ns) )
+        if( event.user.toLowerCase() == client.settings.username.toLowerCase() )
             return;
+        
+        if( !settings.bds.channel.contains(event.ns) )
+            return;
+        
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -79,19 +60,24 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'payload': '',
             'head': ''
         };
+        
         var msg = event.message.split(':');
         var head = [null, null, null];
         var payload = null;
+        
         for( var i in head ) {
             head[i] = msg.shift() || null;
             if( head[i] == null )
                 return;
         }
+        
         payload = msg.join(':');
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
-        client.trigger('pkt.' + head[0], bdse);
+        
+        client.trigger( head[0], bdse );
+        client.trigger( head[0] + '.' + head[1], bdse );
         client.trigger( bdse.name, bdse );
     };
     
@@ -100,18 +86,24 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
                 return;
+            
+            if( event.pkt.arg.e != 'ok' )
+                return;
+            
             client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
+        
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
-            var ver = wsc.VERSION + 'r' + wsc.REVISION + '-' + wsc.dAmn.VERSION;
+            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
         },
+        
         // CDS:LINK:REQUEST
         clreq: function( event ) {
             if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
@@ -135,9 +127,18 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
-            client.cchannel.server_message(event.user + ' wants to talk in private',
-                'Type <code>/chat '+event.user+'</code> to talk to them');
+            
+            console.log( client.channel(event.ns).info.members[event.user] );
+            
+            client.ui.pager.notice({
+                'ref': 'clink-' + event.user,
+                'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
+                    client.channel(event.ns).info.members[event.user].usericon) + '" />',
+                'heading': 'Chat ' + event.user,
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+            }, true );
         },
+        
         // CDS:LINK:REJECT
         clrj: function( event ) {
             var user = event.user.toLowerCase();
@@ -151,6 +152,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
+        
         // CDS:LINK:ACK
         clra: function( event ) {
             var user = event.user.toLowerCase();
@@ -160,12 +162,16 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             clearTimeout( pchats[user] );
         },
+        
         // pchat property
         pcp: function( event ) {
             // Not a pchat
             if( event.ns.indexOf('pchat') != 0 ) {
                 return;
             }
+            
+            if( client.bds.channel.contains( event.ns ) )
+                return;
             
             // Not members property.
             if( event.pkt.arg.p != 'members' ) {
@@ -187,6 +193,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 } catch( err ) {}
             }, 10000);
         },
+        
         // pchat recv_join
         pcrj: function( event ) {
             try {

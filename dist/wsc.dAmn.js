@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.4.21';
+wsc.VERSION = '1.5.27';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.18.106';
+wsc.REVISION = '0.19.112';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -42,17 +42,19 @@ function EventEmitter() {
         var args = Array.prototype.slice.call(arguments);
         var event = args.shift();
         var callbacks = events[event] || false;
+        var called = 0;
         if(callbacks === false) {
-            return self;
+            return called;
         }
         for(var i in callbacks) {
             if(callbacks.hasOwnProperty(i)) {
                 bubble = callbacks[i].apply({}, args);
+                called++;
                 if( bubble === false )
                     break;
             }
         }
-        return self;
+        return called;
     }
 
     function listeners(event) {
@@ -604,6 +606,67 @@ function timeLengthString( length ) {
     
     return oxlist(ret);
 }
+
+/**
+ * Sets. Yeah. Fun.
+ */
+function StringSet( items ) {
+
+    this.items = items || [];
+
+};
+
+/**
+ * Add an item.
+ */
+StringSet.prototype.add = function( item, unshift ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( this.contains( item ) )
+        return true;
+    
+    if( unshift )
+        this.items.unshift( item );
+    else
+        this.items.push( item );
+    
+    return true;
+
+};
+
+/**
+ * Remove an item.
+ */
+StringSet.prototype.remove = function( item ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( !this.contains( item ) )
+        return true;
+    
+    this.items.splice( this.items.indexOf( item ), 1 );
+    return true;
+
+};
+
+/**
+ * Contains an item?
+ */
+StringSet.prototype.contains = function( item ) {
+
+    if( !item )
+        return false;
+    
+    return this.items.indexOf( item.toLowerCase() ) != -1;
+
+};
 /**
  * Storage object.
  * Allows you to save stuffs yo.
@@ -801,7 +864,7 @@ function packetEvtName( pkt ) {
  * @param ns {String} Channel namespace.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Channel = function( client, ns, hidden ) {
+wsc.Channel = function( client, ns, hidden, monitor ) {
 
     this.info = {
         'members': {},
@@ -821,6 +884,7 @@ wsc.Channel = function( client, ns, hidden ) {
     
     this.client = client;
     this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
@@ -837,7 +901,7 @@ wsc.Channel = function( client, ns, hidden ) {
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
     this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(ns);
+    this.ui = this.client.ui.channel(this.raw);
 };
 
 /**
@@ -848,7 +912,7 @@ wsc.Channel.prototype.build = function( ) {
 wsc.Channel.prototype.remove = function( ) {
     if( this.ui == null )
         return;
-    this.ui.manager.remove_channel(this.namespace);
+    this.ui.manager.remove_channel(this.raw);
 };
 
 /**
@@ -963,8 +1027,11 @@ wsc.Channel.prototype.property = function( e ) {
         case "title":
         case "topic":            
             // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 )
-                this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+            if ( this.info[prop].content.length != 0 ) {
+                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
+                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+                }
+            }
                 
             this.set_header(prop, e);
             break;
@@ -995,7 +1062,7 @@ wsc.Channel.prototype.set_header = function( head, e ) {
     if( this.ui == null )
         return;
     
-    this.ui.set_header(head, e.value.html() || '');
+    this.ui.set_header(head, e.value || (new wsc.MessageString) );
 };
 
 /**
@@ -1217,12 +1284,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     var msg = e['message'].toLowerCase();
+    var hlight = msg.indexOf(u) != -1;
     
-    if( msg.indexOf(u) < 0 )
+    if( !hlight && e.sns[0] != '@' )
         return;
     
-    if( this.ui != null)
-        this.ui.highlight();
+    if( this.ui != null) {
+        if( hlight )
+            this.ui.highlight( );
+        else
+            this.ui.highlight( false );
+    }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );
 
@@ -1634,8 +1706,12 @@ wsc.Protocol.prototype.log = function( client, event ) {
             client.ui.log_item(event);
         }
     } catch(err) {
-        console.log('>> Failed to log message for ' + event.sns + '::');
-        console.log('>> ' + event.html);
+        try {
+            client.ui.channel(client.mns).server_message('Failed to log for ' + event.sns, event.html);
+        } catch( err ) {
+            console.log('>> Failed to log message for ' + event.sns + '::');
+            console.log('>> ' + event.html);
+        }
     }
 
 };
@@ -1767,7 +1843,6 @@ wsc.Flow.prototype.login = function( event, client ) {
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
         // Autojoin!
-        // TODO: multi-channel?
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
             if( client.autojoin.on ) {
@@ -1802,9 +1877,9 @@ wsc.Flow.prototype.login = function( event, client ) {
  */
 wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
-        ns = client.deform_ns(event.pkt["param"]);
+        var ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
-        client.create_ns(ns, client.hidden.is(ns));
+        client.create_ns(ns, client.hidden.contains(event.pkt['param']));
         client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
         client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
@@ -2269,6 +2344,7 @@ wsc.defaults.Extension = function( client ) {
     
     // Say something.
     var cmd_say = function( e ) {
+        if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
@@ -2369,7 +2445,13 @@ wsc.defaults.Extension = function( client ) {
         if( event.ns.indexOf('login:') != 0 )
             return;
         
-        client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+        var usr = event.sns.substr(1);
+        
+        client.ui.pager.notice({
+            'ref': 'whois-' + usr,
+            'heading': 'Whois Failed',
+            'content': 'Whois failed for ' + usr + '. No such user online.'
+        });
     
     };
     
@@ -2745,6 +2827,11 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.add_state({
+            'ref': 'away',
+            'label': 'Away, reason: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
+        });
     
     };
     
@@ -2761,6 +2848,8 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
+        
+        client.ui.control.rem_state('away');
     };
     
     var pkt_highlighted = function( event, client ) {
@@ -2774,7 +2863,7 @@ wsc.defaults.Extension.Away = function( client ) {
         if( event.user == client.settings.username )
             return;
         
-        if( client.exclude.indexOf( event.sns.toLowerCase() ) != -1 )
+        if( client.exclude.contains( event.ns ) )
             return;
         
         var t = new Date();
@@ -3078,7 +3167,6 @@ wsc.Client = function( view, options, mozilla ) {
     this.conn = null;
     this.channelo = {};
     this.cchannel = null;
-    this.exclude = [];
     this.cmds = [];
     this.settings = {
         "domain": "website.com",
@@ -3115,36 +3203,10 @@ wsc.Client = function( view, options, mozilla ) {
     this.away = {};
     
     var cli = this;
+    // Channels excluded from loops.
+    this.exclude = new StringSet();
     // Hidden channels
-    this.hidden = {
-        'ns': [],
-        'on': true,
-        'add': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) > -1 )
-                return true;
-            cli.hidden.ns.push( ns );
-            return true;
-        },
-        'remove': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            if( cli.hidden.ns.indexOf( ns ) == -1 )
-                return true;
-            cli.hidden.ns.splice( cli.hidden.ns.indexOf( ns ), 1 );
-            return true;
-        },
-        'is': function( ns ) {
-            if( !ns )
-                return false;
-            ns = cli.format_ns(ns).toLowerCase();
-            return cli.hidden.ns.indexOf( ns ) > -1;
-        }
-    };
-    
+    this.hidden = new StringSet();
     this.settings = Object.extend( this.settings, options );
     this.config_load();
     this.config_save();
@@ -3253,6 +3315,7 @@ wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
     this.control = new this.settings.control( this );
+    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
@@ -3266,6 +3329,14 @@ wsc.Client.prototype.build = function(  ) {
         client.part(event.ns);
         client.remove_ns(event.ns);
         return false;
+    } );
+    
+    this.ui.on('title.save', function( event, ui ) {
+        client.set(event.ns, 'title', event.value);
+    } );
+    
+    this.ui.on('topic.save', function( event, ui ) {
+        client.set(event.ns, 'topic', event.value);
     } );
 
 };
@@ -3336,7 +3407,7 @@ wsc.Client.prototype.clear_listeners = function( event ) {
  */
 wsc.Client.prototype.trigger = function( event, data ) {
 
-    this.events.emit( event, data, this );
+    return this.events.emit( event, data, this );
 
 };
 
@@ -3442,10 +3513,10 @@ wsc.Client.prototype.each_channel = function( method, include ) {
         chan = this.channelo[ns];
         
         if( !include )
-            if( this.exclude.indexOf( chan.namespace.toLowerCase() ) != -1 )
+            if( this.exclude.contains( chan.raw ) )
                 continue;
         
-        if( method( chan.namespace, chan ) === false )
+        if( method( chan.raw, chan ) === false )
             break;
     }
     
@@ -3522,9 +3593,9 @@ wsc.Client.prototype.format_ns = function( namespace ) {
  * @param namespace {String} Namespace to use for the channel.
  * @param hidden {Boolean} Should the channel tab be hidden?
  */
-wsc.Client.prototype.create_ns = function( namespace, hidden ) {
+wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
-    chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden));
+    var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
     chan.build();
 
 };
@@ -3688,7 +3759,7 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.msg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('msg', 'main', {}, e.input)
@@ -3705,7 +3776,7 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    e = { 'input': message, 'ns': namespace };
+    var e = { 'input': message, 'ns': namespace };
     this.trigger( 'send.npmsg.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('npmsg', 'main', {}, e.input)
@@ -3722,7 +3793,7 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    e = { 'input': action, 'ns': namespace };
+    var e = { 'input': action, 'ns': namespace };
     this.trigger( 'send.action.before', e );
     this.send(wsc_packetstr('send', this.format_ns(namespace), {},
         wsc_packetstr('action', 'main', {}, e.input)
@@ -3972,6 +4043,12 @@ wsc.Control.prototype.cache_input = function( event ) {
  */
 wsc.Control.prototype.get_history = function( namespace ) {
 
+    if( !namespace ) {
+        if( !this.client.cchannel ) {
+             namespace = '~monitor';
+        }
+    }
+    
     namespace = namespace || this.client.cchannel.namespace;
     
     if( !this.history[namespace] )
@@ -3992,7 +4069,7 @@ wsc.Control.prototype.append_history = function( data ) {
     if( !data )
         return;
     
-    h = this.get_history();
+    var h = this.get_history();
     h.list.unshift(data);
     h.index = -1;
     
@@ -4072,13 +4149,14 @@ wsc.Control.prototype.start_tab = function( event ) {
     this.tab.type = 0;
     
     // We only tab the last word in the input. Slice!
-    needle = this.ui.chomp();
+    var needle = this.ui.chomp();
     this.ui.unchomp(needle);
     
     // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" ) {
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
         this.tab.type = needle[0] == '/' ? 1 : 2;
-        needle = needle.slice(1);
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
     } else {
         this.tab.type = 0;
     }
@@ -4095,16 +4173,18 @@ wsc.Control.prototype.start_tab = function( event ) {
                 this.tab.matched.push(user);
     } else if( this.tab.type == 1 ) {
         // Matching with commands.
-        for( i in this.client.cmds ) {
+        for( var i in this.client.cmds ) {
             cmd = this.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }
     } else if( this.tab.type == 2 ) {
         // Matching with channels.
-        for( chan in this.client.channelo )
-            if( chan.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(this.client.channel(chan).namespace);
+        var ctrl = this;
+        this.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
     }
 
 };
@@ -4223,9 +4303,13 @@ wsc.Control.prototype.handle = function( event, data ) {
     if( data == '' )
         return;
     
+    if( !this.client.cchannel )
+        return;
+    
+    var autocmd = false;
+    
     if( data[0] != '/' ) {
-        if( !this.client.cchannel )
-            return;
+        autocmd = true;
     }
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
@@ -4235,7 +4319,7 @@ wsc.Control.prototype.handle = function( event, data ) {
     ens = this.client.cchannel.namespace;
     etarget = ens;
     
-    if( bits[0] ) {
+    if( !autocmd && bits[0] ) {
         hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
@@ -4244,13 +4328,17 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     arg = bits.join(' ');
     
-    this.client.trigger('cmd.' + cmdn, {
+    var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
         cmd: cmdn,
         args: arg,
         target: etarget,
         ns: ens
     });
+    
+    if( fired == 0 ) {
+        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+    }
 
 };
 
@@ -4263,7 +4351,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.12.60';
+Chatterbox.VERSION = '0.15.69';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4470,6 +4558,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
@@ -4761,7 +4850,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
-    this.monitor = monitor || false;
+    this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
     this.raw = ui.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
@@ -4782,8 +4871,22 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         },                          //
         u: null,                    // User panel
         h: {                        // Header
-            title: null,            //      Title
-            topic: null,            //      Topic
+            title: {                //      Title
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            },
+            topic: {                //      Topic
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            }
         }
     };
     this.mulw = 0;
@@ -4793,6 +4896,16 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         h: {                        // Header
             title: [0, 0],          //      Title [ width, height ]
             topic: [0, 0]           //      Topic [ width, height ]
+        }
+    };
+    this.head = {
+        title: {
+            text: '',
+            html: ''
+        },
+        topic: {
+            text: '',
+            html: ''
         }
     };
 
@@ -4819,14 +4932,29 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.el.h.title = this.el.m.find('header div.title');
-    this.el.h.topic = this.el.m.find('header div.topic');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
+    
+    // Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
@@ -4844,28 +4972,98 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    var focus = true;
-    
-    this.el.m.click(
-        function( e ) {
-            if( focus )
-                chan.manager.control.focus();
-            else
-                focus = true;
-        }
-    );
-    
-    this.el.l.p.select(
-        function( ) {
-            focus = false;
-        }
-    );
+    this.setup_header('title');
+    this.setup_header('topic');
     
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
     
     this.built = true;
+};
+
+/**
+ * Set up a header so it can be edited in the UI.
+ * 
+ * @method setup_header
+ */
+Chatterbox.Channel.prototype.setup_header = function( head ) {
+    
+    var chan = this;
+    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
+    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
+    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
+    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    
+    this.el.h[head].m.parent().mouseover( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'block');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'block');
+        chan.el.h[head].c.css('display', 'block');
+    } );
+    
+    this.el.h[head].m.parent().mouseout( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css('display', 'none');
+            return;
+        }
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+    } );
+    
+    this.el.h[head].e.click( function( e ) {
+        chan.el.h[head].t.text(chan.head[head].text);
+        
+        chan.el.h[head].t.css({
+            'display': 'block',
+            'width': chan.el.h[head].m.innerWidth() - 10,
+        });
+        
+        chan.el.h[head].m.css('display', 'none');
+        chan.el.h[head].e.css('display', 'none');
+        chan.el.h[head].editing = true;
+        
+        chan.resize();
+        
+        return false;
+    } );
+    
+    var collapse = function(  ) {
+        var val = chan.el.h[head].t.val();
+        chan.el.h[head].t.text('');
+        chan.el.h[head].t.css('display', 'none');
+        chan.el.h[head].m.css('display', 'block');
+        chan.el.h[head].s.css('display', 'none');
+        chan.el.h[head].c.css('display', 'none');
+        chan.el.h[head].editing = false;
+        
+        //setTimeout( function(  ) {
+            chan.resize();
+        //}, 100 );
+        
+        return val;
+    };
+    
+    this.el.h[head].s.click( function( e ) {
+        var val = collapse();
+        
+        chan.manager.trigger( head + '.save', {
+            ns: chan.raw,
+            value: val
+        } );
+        
+        chan.el.h[head].t.text('');
+        return false;
+    } );
+    
+    this.el.h[head].c.click( function( e ) {
+        collapse();
+        return false;
+    } );
+    
 };
 
 /**
@@ -4894,9 +5092,8 @@ Chatterbox.Channel.prototype.show = function( ) {
     setTimeout( function(  ) {
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
         c.resize();
-        c.pad();
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 500);
+    }, 100);
 };
 
 /**
@@ -4950,7 +5147,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.height() - 3;
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -4978,21 +5175,23 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // Userlist width.
     this.el.u.width(1);
     this.d.u[0] = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    
     if( this.d.u[0] > this.mulw ) {
         this.d.u[0] = this.mulw;
     }
+    
     this.el.u.width(this.d.u[0]);
     
     // Change log width based on userlist width.
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.d.h.title[1];
+    wh = wh - this.el.h.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
         height: wh - 3,
-        width: cw - 3});
+        width: cw - 10});
     
     // Scroll again just to make sure.
     this.scroll();
@@ -5000,6 +5199,18 @@ Chatterbox.Channel.prototype.resize = function( ) {
     // User list dimensions
     this.d.u[1] = this.el.l.p.innerHeight();
     this.el.u.css({height: this.d.u[1]});
+    
+    // Make sure edit buttons are in the right place.
+    for( var head in this.head ) {
+        if( !this.head.hasOwnProperty( head ) )
+            continue;
+        
+        if( this.head[head].text.length == 0 )
+            continue;
+        
+        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
+        this.el.h[head].e.css('top', tline);
+    }
 };
 
 /**
@@ -5157,6 +5368,8 @@ Chatterbox.Channel.prototype.log_info = function( ref, content ) {
         }
     );
     
+    this.scroll();
+    
     return box;
 };
 
@@ -5181,7 +5394,7 @@ Chatterbox.Channel.prototype.log_whois = function( data ) {
         var mcon = [];
         
         if( rcon.online ) {
-            stamp = (new Date - (rcon.online * 1000));
+            var stamp = (new Date - (rcon.online * 1000));
             mcon.push([ 'online', DateStamp(stamp / 1000) + formatTime(' [{HH}:{mm}:{ss}]', new Date(stamp)) ]);
         }
         if( rcon.idle )
@@ -5280,24 +5493,28 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
     head = head.toLowerCase();
     
-    this.el.h[head].replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': content || ''})
+    this.head[head].text = content.text();
+    this.head[head].html = content.html();
+    
+    this.el.h[head].m.replaceWith(
+        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head] = this.el.m.find('header div.' + head);
+    this.el.h[head].m = this.el.m.find('header div.' + head);
     
-    if( content.length > 0 ) {
-        this.el.h[head].css( { display: 'block' } );
-        this.d.h[head] = [
-            this.el.h[head].outerWidth(true),
-            this.el.h[head].outerHeight(true)
-        ];
-    } else {
-        this.el.h[head].css( { display: 'none' } );
-        this.d.h[head] = [0, 0];
-    }
-        
-    this.resize();
+    var chan = this;
+    
+    setTimeout( function(  ) {
+        if( chan.head[head].text.length > 0 ) {
+            chan.el.h[head].m.css( { display: 'block' } );
+            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
+            chan.el.h[head].e.css('top', tline);
+        } else {
+            chan.el.h[head].m.css( { display: 'none' } );
+        }
+            
+        chan.resize();
+    }, 100 );
 };
 
 /**
@@ -5371,7 +5588,10 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
     var tab = this.el.t.o;
-    ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    
+    if( message !== false ) {
+        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
+    }
     
     if( tab.hasClass('active') )
         return;
@@ -5737,7 +5957,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.resize();
     
     this.manager.trigger( 'channel.selected', {
-        'ns': chan.namespace,
+        'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
@@ -5750,17 +5970,18 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  * @param ns {String} Name of the channel to remove.
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
-    if( this.channels() == 0 ) 
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 && !chan.hidden ) 
         return;
     
-    var chan = this.channel(ns);
     chan.remove();
     delete this.chan[chan.raw.toLowerCase()];
     
     if( this.current == chan )
         this.channel_left();
     
-    rpos = this.trail.indexOf(chan.raw);
+    var rpos = this.trail.indexOf(chan.namespace);
     this.trail.splice(rpos, 1);
 };
 
@@ -5930,16 +6151,30 @@ Chatterbox.Control = function( ui ) {
     this.manager = ui;
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
-    this.form = this.view.find('form.msg');
-    this.input = this.form.find('input.msg');
-    this.brow = this.view.find('p');
-    this.mli = this.form.find('textarea.msg');
-    this.ci = this.input;
     this.ml = false;
-    this.mlb = this.brow.find('a[href~=#multiline].button');
+    
+    /**
+     * UI elements
+     */
+    this.el = {
+        form: this.view.find('form.msg'),                       // Input form
+        i: {                                                    // Input field
+            s: this.view.find('form.msg input.msg'),            //      Single line input
+            m: this.view.find('form.msg textarea.msg'),         //      Multi line input
+            c: null,                                            //      Current input element
+            t: this.view.find('ul.buttons a[href~=#multiline].button')   //      Toggle multiline button
+        },
+        brow: {
+            m: this.view.find('div.brow'),                               // Control brow
+            b: this.view.find('div.brow ul.buttons'),
+            s: this.view.find('div.brow ul.states')
+        }
+    };
+    // Default input mode is single line.
+    this.el.i.c = this.el.i.s;
     
     var ctrl = this;
-    this.mlb.click(function( event ) {
+    this.el.i.t.click(function( event ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
@@ -5952,7 +6187,7 @@ Chatterbox.Control = function( ui ) {
  * @method focus
  */
 Chatterbox.Control.prototype.focus = function( ) {
-    this.ci.focus();
+    this.el.i.c.focus();
 };
 
 /**
@@ -5965,9 +6200,9 @@ Chatterbox.Control.prototype.resize = function( ) {
     this.view.css({
         width: '100%'});
     // Form dimensionals.
-    this.form.css({'width': this.manager.view.width() - 20});
-    this.input.css({'width': this.manager.view.width() - 100});
-    this.mli.css({'width': this.manager.view.width() - 90});
+    this.el.form.css({'width': this.manager.view.width() - 20});
+    this.el.i.s.css({'width': this.manager.view.width() - 100});
+    this.el.i.m.css({'width': this.manager.view.width() - 90});
 };
 
 
@@ -5992,14 +6227,14 @@ Chatterbox.Control.prototype.height = function( ) {
  */
 Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
     if( this.manager.mozilla ) {
-        this.input.keypress( onkeypress || this._onkeypress );
-        this.mli.keypress( onkeypress || this._onkeypress );
+        this.el.i.s.keypress( onkeypress || this._onkeypress );
+        this.el.i.m.keypress( onkeypress || this._onkeypress );
     } else {
-        this.input.keydown( onkeypress || this._onkeypress );
-        this.mli.keydown( onkeypress || this._onkeypress );
+        this.el.i.s.keydown( onkeypress || this._onkeypress );
+        this.el.i.m.keydown( onkeypress || this._onkeypress );
     }
     
-    this.form.submit( onsubmit || this._onsubmit );
+    this.el.form.submit( onsubmit || this._onsubmit );
 };
 
 /**
@@ -6015,22 +6250,17 @@ Chatterbox.Control.prototype.multiline = function( on ) {
         return this.ml;
     
     this.ml = on;
+    var off = ( this.ml ? 's' : 'm' );
+    on = ( this.ml ? 'm' : 's' );
     
-    if( this.ml ) {
-        this.input.css('display', 'none');
-        this.mli.css('display', 'inline-block');
-        this.ci = this.mli;
-        this.manager.resize();
-        return this.ml;
-    }
-    
-    this.mli.css('display', 'none');
-    this.input.css('display', 'inline-block');
-    this.ci = this.input;
+    this.el.i[off].css('display', 'none');
+    this.el.i[on].css('display', 'inline-block');
+    this.el.i.c = this.el.i[on];
     this.manager.resize();
-    return this.mli;
+    return this.ml;
 
 };
+
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -6047,13 +6277,40 @@ Chatterbox.Control.prototype.add_button = function( options ) {
         options.icon = ' text';
     }
     
-    this.brow.append(Chatterbox.render('control_button', options));
-    var button = this.brow.find('a[href='+options.href+'].button');
+    this.el.brow.b.append(Chatterbox.render('brow_button', options));
+    var button = this.el.brow.b.find('a[href='+options.href+'].button');
     
     button.click( function( event ) {
         options['handler']();
         return false;
     } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        'ref': 'state',
+        'label': 'some state'
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( 'li#' + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render('brow_state', options));
+        return this.el.brow.s.find('li#' + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
 
@@ -6067,16 +6324,16 @@ Chatterbox.Control.prototype._onsubmit = function( event ) {};
  * @return {String} The last word in the input box.
  */
 Chatterbox.Control.prototype.chomp = function( ) {
-    d = this.ci.val();
-    i = d.lastIndexOf(' ');
+    var d = this.el.i.c.val();
+    var i = d.lastIndexOf(' ');
     
     if( i == -1 ) {
-        this.ci.val('');
+        this.el.i.c.val('');
         return d;
     }
     
-    chunk = d.slice(i + 1);
-    this.ci.val( d.slice(0, i) );
+    var chunk = d.slice(i + 1);
+    this.el.i.c.val( d.slice(0, i) );
     
     if( chunk.length == 0 )
         return this.chomp();
@@ -6091,11 +6348,11 @@ Chatterbox.Control.prototype.chomp = function( ) {
  * @param data {String} Text to append.
  */
 Chatterbox.Control.prototype.unchomp = function( data ) {
-    d = this.ci.val();
+    var d = this.el.i.c.val();
     if( !d )
-        this.ci.val(data);
+        this.el.i.c.val(data);
     else
-        this.ci.val(d + ' ' + data);
+        this.el.i.c.val(d + ' ' + data);
 };
 
 /**
@@ -6107,9 +6364,9 @@ Chatterbox.Control.prototype.unchomp = function( data ) {
 Chatterbox.Control.prototype.get_text = function( text ) {
 
     if( text == undefined )
-        return this.ci.val();
-    this.ci.val( text || '' );
-    return this.ci.val();
+        return this.el.i.c.val();
+    this.el.i.c.val( text || '' );
+    return this.el.i.c.val();
 
 };
 
@@ -6121,7 +6378,7 @@ Chatterbox.Control.prototype.get_text = function( text ) {
  */
 Chatterbox.Control.prototype.set_text = function( text ) {
 
-    this.ci.val( text || '' );
+    this.el.i.c.val( text || '' );
 
 };
 
@@ -6136,22 +6393,28 @@ Chatterbox.Navigation = function( ui ) {
 
     this.manager = ui;
     this.showclose = this.manager.settings.tabclose;
-    this.nav = this.manager.view.find('nav.tabs');
-    this.tabs = this.nav.find('#chattabs');
-    this.buttons = this.nav.find('#tabnav');
-    this.tableft = this.buttons.find('.arrow_left');
-    this.tabright = this.buttons.find('.arrow_right');
-    this.settingsb = this.buttons.find('#settings-button');
     this.settings = {};
     this.settings.open = false;
     
+    /* UI Elements
+     * Something similar to the channel elements object.
+     */
+    this.el = {
+        n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
+        b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
+        l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
+        r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
+        s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
+    };
+    
     if( !this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
-            this.tabs.addClass('hc');
+        if( !this.el.t.hasClass('hc') )
+            this.el.t.addClass('hc');
     }
     
     var nav = this;
-    this.settingsb.click(
+    this.el.s.click(
         function( event ) {
             if( nav.settings.open )
                 return false;
@@ -6179,14 +6442,14 @@ Chatterbox.Navigation = function( ui ) {
         }
     );
     
-    this.tableft.click(
+    this.el.l.click(
         function(  ) {
             nav.manager.channel_left();
             return false;
         }
     );
     
-    this.tabright.click(
+    this.el.r.click(
         function(  ) {
             nav.manager.channel_right();
             return false;
@@ -6278,7 +6541,7 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.nav.height();
+    return this.el.n.height();
 };
 
 /**
@@ -6290,8 +6553,8 @@ Chatterbox.Navigation.prototype.height = function(  ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.tabs.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.tabs.find('#' + selector + '-tab');
+    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
+    return this.el.t.find('#' + selector + '-tab');
 };
 
 /**
@@ -6301,7 +6564,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.tabs.width( this.nav.width() - this.buttons.outerWidth() - 20 );
+    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -6322,19 +6585,135 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
     
     this.showclose = visible;
     if( this.showclose ) {
-        if( !this.tabs.hasClass('hc') )
+        if( !this.el.t.hasClass('hc') )
             return;
-        this.tabs.removeClass('hc');
+        this.el.t.removeClass('hc');
         return;
     }
     
-    if( this.tabs.hasClass('hc') )
+    if( this.el.t.hasClass('hc') )
         return;
-    this.tabs.addClass('hc');
+    this.el.t.addClass('hc');
 
 };
 
 
+
+/**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ */
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
+    
+    this.el = {
+        m: null
+    };
+    
+    this.notices = [];
+    
+    this.build();
+
+};
+
+/**
+ * Build the Pager interface...
+ * 
+ * @method build
+ */
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find('div.pager');
+
+};
+
+/**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ */
+Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+
+    var notice = {
+        frame: null,
+        close: null,
+        options: Object.extend( {
+            'ref': 'notice',
+            'icon': '',
+            'heading': 'Some notice',
+            'content': 'Notice content goes here.'
+        }, ( options || {} ) )
+    };
+    
+    notice.options.content = notice.options.content.split('\n').join('</p><p>');
+    
+    this.notices.push( notice );
+    
+    this.el.m.append(
+        Chatterbox.render( 'pager.notice', notice.options )
+    );
+    
+    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.close = notice.frame.find('a.close_notice');
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        p.remove_notice( notice );
+        return false;
+    } );
+    
+    if( !sticky ) {
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, p.lifespan );
+    }
+    
+    return notice;
+
+};
+
+/**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ */
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
+
+    var p = this;
+    
+    if( this.notices.indexOf( notice ) == -1 )
+        return false;
+    
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
+        notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
+    } );
+    
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
+
+};
 /**
  * Popup window base class.
  * Should allow people to easily create popups... or something.
@@ -8379,7 +8758,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -8395,7 +8775,13 @@ Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>
  * @type String
  */
 Chatterbox.template.control = '<div class="chatcontrol">\
-            <p><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></p>\
+            <div class="brow">\
+                <ul class="buttons">\
+                    <li><a href="#multiline" title="Toggle multiline input" class="button iconic list"></a></li>\
+                </ul>\
+                <ul class="states">\
+                </ul>\
+            </div>\
             <form class="msg">\
                 <input type="text" class="msg" />\
                 <textarea class="msg"></textarea>\
@@ -8403,7 +8789,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
             </form>\
         </div>';
 
-Chatterbox.template.control_button = '<a href="{href}" title="{title}" class="button{icon}">{label}</a>';
+Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
 /**
  * HTML for a channel tab.
@@ -8420,12 +8807,20 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @type String
  */
 Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
-                    <header>\
+                    <header class="title">\
                         <div class="title"></div>\
+                        <textarea></textarea>\
+                        <a href="#edit" class="button iconic pen" title="Edit the title"></a>\
+                        <a href="#save" class="button iconic check" title="Save changes"></a>\
+                        <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
                     <div class="chatlog" id="{selector}-log">\
-                        <header>\
+                        <header class="topic">\
                             <div class="topic"></div>\
+                            <textarea></textarea>\
+                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
+                            <a href="#save" class="button iconic check" title="Save changes"></a>\
+                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
@@ -8524,6 +8919,22 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.
@@ -8918,7 +9329,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.5.15';
+wsc.dAmn.VERSION = '0.7.20';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -8928,47 +9339,20 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
-        ns: [],
-        // Check if we should be processing messages from a given channel.
-        channel: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            return settings.bds.ns.indexOf( ns ) > -1;
-        },
-        // Add a channel
-        add: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) > -1 )
-                return true;
-            settings.bds.ns.push( ns );
-            return true;
-        },
-        // Remove a channel
-        remove: function( ns ) {
-            if( !ns )
-                return false;
-            ns = client.format_ns(ns).toLowerCase();
-            if( settings.bds.ns.indexOf( ns ) == -1 )
-                return true;
-            settings.bds.ns.splice( settings.bds.ns.indexOf( ns ), 1 );
-            return true;
-        },
+        channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
             'BOTCHECK',
             'CLINK'
         ]
     };
-    // Allow other parts of client to use the channel listing.
+    // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
-    settings.bds.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.mns);
     
     var init = function(  ) {
-        client.hidden.add('#datashare');
-        client.exclude.push('#datashare');
+        client.hidden.add(settings.bds.mns);
+        client.exclude.add(settings.bds.mns);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
@@ -8986,13 +9370,21 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
+        
+        if( client.channel(settings.bds.mns) )
+            return;
+        
         client.join('#datashare');
     };
     
     
     var bds_msg = function( event ) {
-        if( !settings.bds.channel(event.ns) )
+        if( event.user.toLowerCase() == client.settings.username.toLowerCase() )
             return;
+        
+        if( !settings.bds.channel.contains(event.ns) )
+            return;
+        
         var bdse = {
             'ns': event.ns,
             'sns': event.sns,
@@ -9002,19 +9394,24 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'payload': '',
             'head': ''
         };
+        
         var msg = event.message.split(':');
         var head = [null, null, null];
         var payload = null;
+        
         for( var i in head ) {
             head[i] = msg.shift() || null;
             if( head[i] == null )
                 return;
         }
+        
         payload = msg.join(':');
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
-        client.trigger('pkt.' + head[0], bdse);
+        
+        client.trigger( head[0], bdse );
+        client.trigger( head[0] + '.' + head[1], bdse );
         client.trigger( bdse.name, bdse );
     };
     
@@ -9023,18 +9420,24 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
                 return;
+            
+            if( event.pkt.arg.e != 'ok' )
+                return;
+            
             client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
+        
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
-            var ver = wsc.VERSION + 'r' + wsc.REVISION + '-' + wsc.dAmn.VERSION;
+            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
         },
+        
         // CDS:LINK:REQUEST
         clreq: function( event ) {
             if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
@@ -9058,9 +9461,18 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
-            client.cchannel.server_message(event.user + ' wants to talk in private',
-                'Type <code>/chat '+event.user+'</code> to talk to them');
+            
+            console.log( client.channel(event.ns).info.members[event.user] );
+            
+            client.ui.pager.notice({
+                'ref': 'clink-' + event.user,
+                'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
+                    client.channel(event.ns).info.members[event.user].usericon) + '" />',
+                'heading': 'Chat ' + event.user,
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+            }, true );
         },
+        
         // CDS:LINK:REJECT
         clrj: function( event ) {
             var user = event.user.toLowerCase();
@@ -9074,6 +9486,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
+        
         // CDS:LINK:ACK
         clra: function( event ) {
             var user = event.user.toLowerCase();
@@ -9083,12 +9496,16 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             clearTimeout( pchats[user] );
         },
+        
         // pchat property
         pcp: function( event ) {
             // Not a pchat
             if( event.ns.indexOf('pchat') != 0 ) {
                 return;
             }
+            
+            if( client.bds.channel.contains( event.ns ) )
+                return;
             
             // Not members property.
             if( event.pkt.arg.p != 'members' ) {
@@ -9110,6 +9527,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 } catch( err ) {}
             }, 10000);
         },
+        
         // pchat recv_join
         pcrj: function( event ) {
             try {
@@ -9205,7 +9623,7 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     settings.colours.send_colour = function( event ) {
         if( !settings.colours.send )
             return;
-        e.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        event.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
     };
     
     settings.colours.parse_colour = function( event ) {
@@ -9926,7 +10344,7 @@ wsc.dAmn.Extension = function( client ) {
     
     client.flow.dAmnServer = client.flow.chatserver;
     
-    client.exclude.push( '#devart' );
+    client.exclude.add( 'chat:devart' );
     
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
@@ -9953,6 +10371,7 @@ wsc.dAmn.Extension = function( client ) {
     } );
     
     wsc.dAmn.BDS( client, storage.bds, settings );
+    wsc.dAmn.BDS.Link( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
 
@@ -9968,10 +10387,26 @@ wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
  * @constructor
  */
 wsc.dAmn.avatar.link = function( un, icon ) {
+    
+    var src = wsc.dAmn.avatar.src( un, icon );
+    
+    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
+            alt=":icon'+un+':" src="' + src + '" height="50" /></a>';
+};
+
+
+/**
+ * Works out the src url for an avatar.
+ *
+ * @method src
+ */
+wsc.dAmn.avatar.src = function( un, icon ) {
+
     icon = parseInt(icon);
     var cachebuster = (icon >> 2) & 15;
     icon = icon & 3;
     var ext = wsc.dAmn.avatar.ext[icon] || 'gif';
+    var ico = 'default';
     
     if (cachebuster) {
         cachebuster = '?' + cachebuster;
@@ -9980,9 +10415,7 @@ wsc.dAmn.avatar.link = function( un, icon ) {
         cachebuster = '';
     }
     
-    if( icon == 0 ) { 
-        ico = 'default';
-    } else {
+    if( icon != 0 ) {
         var ru = new RegExp('\\$un(\\[([0-9]+)\\])', 'g');
         
         var ico = '$un[0]/$un[1]/{un}'.replace(ru, function ( m, s, i ) {
@@ -9991,16 +10424,264 @@ wsc.dAmn.avatar.link = function( un, icon ) {
         ico = replaceAll( ico, '{un}', un.toLowerCase() );
     }
     
-    return '<a target="_blank" title=":icon'+un+':" href="http://'+un+'.deviantart.com/"><img class="avatar"\
-            alt=":icon'+un+':" src="http://a.deviantart.net/avatars/'+ico+'.'+ext+cachebuster+'" height="50" width="50" /></a>';
+    return 'http://a.deviantart.net/avatars/' + ico + '.' + ext + cachebuster;
 };
-/**
+wsc.dAmn.BDS.Link = function( client, storage, settings ) {
+
+    var init = function(  ) {
+        // BDS events.
+        client.bind('BDS', handler.cmd);
+        client.bind('BDS.LINK.REQUEST', handler.request);
+        client.bind('BDS.LINK.REJECT', handler.reject);
+        client.bind('BDS.LINK.ACCEPT', handler.accept);
+        client.bind('BDS.LINK.CLOSE', handler.close);
+        // dAmn events.
+        client.bind('pkt.join', handler.join);
+        client.bind('pkt.part', handler.part);
+        client.bind('pkt.recv_join', handler.recv_join);
+        client.bind('pkt.recv_part', handler.recv_part);
+    };
+    
+    // Putting helper functions in here means other extensions can use them.
+    settings.bds.link = {
+        // White list of users who can open LINKs with this client.
+        white: ( new StringSet() ),
+        // Collection of open LINKs
+        connections: {},
+        
+        // Indicates the state of a connection.
+        // Closed isn't really needed as the connection will be destroyed when closed.
+        state: {
+            closed: 0,
+            opening: 1,
+            open: 2
+        },
+        
+        // Get a link thing.
+        conn: function( user, oncmd, onopen, onclose ) {
+            user = user.toLowerCase();
+            
+            if( user in settings.bds.link.connections )
+                return settings.bds.link.connections[user];
+            
+            var uns = client.format_ns('@' + user);
+            
+            var link = {
+                state: settings.bds.link.state.closed,
+                ns: uns,
+                un: user,
+                close: function(  ) {
+                    settings.bds.link.close( link.un );
+                },
+                
+                send: function( message ) {
+                    if( link.state != settings.bds.link.state.open )
+                        return false;
+                    client.npmsg( link.ns, message );
+                    return true;
+                },
+                
+                oncmd: ( oncmd || function( event, client ) {} ),
+                
+                onopen: ( onopen || function( event, client ) {} ),
+                
+                onclose: ( onclose || function( event, client ) {} )
+            };
+            
+            return link;
+        },
+        
+        request: function( user, suppress, oncmd, onopen, onclose ) {
+            var link = settings.bds.link.open( user, oncmd );
+            
+            if( link == null )
+                return null;
+            
+            if( suppress === true )
+                return link;
+            
+            client.npmsg( settings.bds.mns, 'BDS:LINK:REQUEST:' + user );
+            return link;
+        },
+        
+        open: function( user, oncmd, onopen, onclose ) {
+            user = user.toLowerCase();
+            
+            if( user in settings.bds.link.connections ) {
+                return null;
+            }
+            
+            var link = settings.bds.link.conn( user, oncmd );
+            link.state = settings.bds.link.state.opening;
+            
+            settings.bds.link.connections[user] = link;
+            settings.bds.channel.add(link.ns);
+            client.hidden.add(link.ns);
+            client.exclude.add(link.ns);
+            client.join(link.ns);
+            
+            return link;
+        },
+        
+        close: function( user, suppress ) {
+            user = user.toLowerCase();
+            
+            if( !( user in settings.bds.link.connections ) ) {
+                return false;
+            }
+            
+            var link = settings.bds.link.conn( user );
+            
+            if( suppress !== true )
+                link.send( 'BDS:LINK:CLOSE' );
+            
+            client.part(link.ns);
+            link.state = settings.bds.link.state.closed;
+            
+            return true;
+        }
+    };
+    
+    var handler = {
+        
+        /**
+         * BDS Event handlers.
+         */
+        
+        cmd: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            if( event.sns[0] != '@' )
+                return;
+            settings.bds.link.conn( event.sns.substr(1) ).oncmd( event, client );
+        },
+        
+        request: function( event ) {
+            if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            var uinfo = client.channel(event.ns).info.members[event.user];
+            
+            if( parseInt(client.channel(event.ns).get_privclass_order( uinfo.pc ) ) < 39 ) {
+                if( !settings.bds.link.white.contains( event.user ) ) {
+                    client.npmsg( event.ns, 'BDS:LINK:REJECT:' + event.user );
+                    return;
+                }
+            }
+            
+            settings.bds.link.open( event.user );
+            client.npmsg( event.ns, 'BDS:LINK:ACCEPT:' + event.user );
+        },
+        
+        reject: function( event ) {
+            // Dealing with rejection is never nice.
+            var user = event.user.toLowerCase();
+            
+            if( !( user in settings.bds.link.connections ) )
+                return;
+            
+            settings.bds.link.connections[user].close();
+        },
+        
+        accept: function( event ) {
+            if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            settings.bds.link.open( event.user );
+        },
+        
+        close: function( event ) {
+            settings.bds.link.close( event.user, true );
+        },
+        
+        /**
+         * dAmn Event handlers
+         */
+        
+        join: function( event ) {
+            if( event.pkt.arg.e != 'ok' )
+                return;
+            
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            if( client.channel(event.ns).get_usernames().length == 1 )
+                return;
+            
+            link.state = settings.bds.link.state.open;
+            
+            var e = {
+                name: 'BDS.LINK.OPEN',
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onopen( e, client );
+            client.trigger('BDS.LINK.OPEN', e);
+        },
+        
+        part: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            link.state = settings.bds.link.state.closed;
+            
+            var e = {
+                name: 'BDS.LINK.CLOSED',
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onclose( e, client );
+            client.trigger('BDS.LINK.CLOSED', e);
+            
+            delete settings.bds.link.connections[link.un];
+        },
+        
+        recv_join: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            if( link.state != settings.bds.link.state.opening )
+                return;
+            
+            link.state = settings.bds.link.state.open;
+            
+            var e = {
+                name: 'BDS.LINK.OPEN',
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onopen( e, client );
+            client.trigger('BDS.LINK.OPEN', e);
+        },
+        
+        recv_part: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            link.close( true );
+        },
+        
+    };
+    
+    init();
+
+};/**
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
  * 
  * @example
  *     // Parse something.
- *     msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
+ *     var msg = new wsc.TablumpString('hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.');
  *     console.log(msg.raw); // 'hey, check &b\t&a\thttp://google.com\tgoogle.com\tgoogle&/a\t&/b\t for answers.'
  *     console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
@@ -10154,7 +10835,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&/ol\t': [0, '</ol>'],
         '&link\t': [ 3,
             function( data ) {
-                return data[0] + ( (' (' + data[1] + ')') || '');
+                return data[0] + ( data[1] ? (' (' + data[1] + ')') : '');
             },
             function( data ) {
                 t = data[1];
