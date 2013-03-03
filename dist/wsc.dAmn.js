@@ -4552,6 +4552,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
@@ -6591,6 +6592,120 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
 };
 
 
+
+/**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ */
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
+    
+    this.el = {
+        m: null
+    };
+    
+    this.notices = [];
+    
+    this.build();
+
+};
+
+/**
+ * Build the Pager interface...
+ * 
+ * @method build
+ */
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find('div.pager');
+
+};
+
+/**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ */
+Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+
+    var notice = {
+        frame: null,
+        close: null,
+        options: Object.extend( {
+            'ref': 'notice',
+            'icon': '',
+            'heading': 'Some notice',
+            'content': 'Notice content goes here.'
+        }, ( options || {} ) )
+    };
+    
+    this.notices.push( notice );
+    
+    this.el.m.append(
+        Chatterbox.render( 'pager.notice', notice.options )
+    );
+    
+    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.close = notice.frame.find('a.close_notice');
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        p.remove_notice( notice );
+        return false;
+    } );
+    
+    if( !sticky ) {
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, p.lifespan );
+    }
+    
+    return notice;
+
+};
+
+/**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ */
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
+
+    var p = this;
+    
+    if( this.notices.indexOf( notice ) == -1 )
+        return false;
+    
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
+        notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
+    } );
+    
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
+
+};
 /**
  * Popup window base class.
  * Should allow people to easily create popups... or something.
@@ -8635,7 +8750,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -8795,6 +8911,22 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.

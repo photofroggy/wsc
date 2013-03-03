@@ -1357,6 +1357,35 @@ div.wsc div.floater.settings footer a.close {
   position: relative;
   top: 3px;
 }
+div.wsc div.pager {
+  position: absolute;
+  top: 25px;
+  right: 160px;
+  z-index: 100;
+}
+div.wsc div.pager div.notice {
+  padding: 10px 15px 10px 0px;
+  margin-bottom: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.43);
+  overflow: auto;
+}
+div.wsc div.pager div.notice div.icon {
+  float: left;
+  margin-left: 15px;
+}
+div.wsc div.pager div.notice div.content {
+  float: left;
+  margin-left: 15px;
+  max-width: 350px;
+}
+div.wsc div.pager div.notice a.close_notice {
+  float: right;
+  text-decoration: none;
+  font-size: 16px;
+}
 
 /* Themes */
 /* Default theme */
@@ -1687,6 +1716,22 @@ div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item.f
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #063b63;
 }
+div.wsc.wsct_default div.pager div.notice {
+  background-color: #81aac5;
+  border-color: #0d4d69;
+}
+div.wsc.wsct_default div.pager div.notice h3 {
+  color: #063b63;
+}
+div.wsc.wsct_default div.pager div.notice p {
+  color: #3e7a88;
+}
+div.wsc.wsct_default div.pager div.notice a.close_notice {
+  color: #063b63;
+}
+div.wsc.wsct_default div.pager div.notice a.close_notice:hover {
+  color: #b9280d;
+}
 
 /* dAmn style theme */
 div.wsc.wsct_dAmn {
@@ -2015,4 +2060,20 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item.fain
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #4f6457;
+}
+div.wsc.wsct_dAmn div.pager div.notice {
+  background-color: #e8eee6;
+  border-color: #858585;
+}
+div.wsc.wsct_dAmn div.pager div.notice h3 {
+  color: #4f6457;
+}
+div.wsc.wsct_dAmn div.pager div.notice p {
+  color: #515c52;
+}
+div.wsc.wsct_dAmn div.pager div.notice a.close_notice {
+  color: #4f6457;
+}
+div.wsc.wsct_dAmn div.pager div.notice a.close_notice:hover {
+  color: #b9280d;
 }

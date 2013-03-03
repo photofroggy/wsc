@@ -87,7 +87,8 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+Chatterbox.template.ui = '<div class="pager"></div>\
+        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -247,6 +248,22 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
     <a href="#submit" class="button submit">{submit-button}</a>\
     <a href="#remove" class="button close big square iconic x"></a>\
     </span>';
+
+/**
+ * Pager notices and such.
+ */
+Chatterbox.template.pager = {
+    notice: {
+        frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
+            <div class="icon">{icon}</div>\
+            <div class="content">\
+                <h3>{heading}</h3>\
+                <p>{content}</p>\
+            </div>\
+            </div>'
+    }
+};
 
 /**
  * Settings stuff.

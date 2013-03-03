@@ -22,6 +22,7 @@
 @import "control";
 @import "popup";
 @import "settings";
+@import "pager";
 @import "theme_template";
 
 /* Layout */
@@ -92,6 +93,7 @@ div.wsc {
     @include control;
     @include popup;
     @include settings;
+    @include pager;
 
 }
 
@@ -166,6 +168,10 @@ div.wsc.wsct_dAmn {
         $settings-inner-border: #9EAEA0,
         $settings-outer-border: #858585,
         $settings-item-faint-color: #848684,
-        $brow-state-color: #6A6F6A
+        $brow-state-color: #6A6F6A,
+        $pager-bg: #E8EEE6,
+        $pager-header: #4F6457,
+        $pager-color: #515C52,
+        $pager-close: #4F6457
     );
 }
