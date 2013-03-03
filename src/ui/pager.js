@@ -19,7 +19,8 @@ Chatterbox.Pager = function( ui ) {
     this.notice({
         'ref': 'testing',
         'heading': 'Test',
-        'content': 'Testing out this notices stuff.'
+        'content': 'Testing out this notices stuff.',
+        'icon': '<img src="http://a.deviantart.net/avatars/p/h/photofroggy.png?1"/>'
     });
 
 };
@@ -43,7 +44,8 @@ Chatterbox.Pager.prototype.build = function(  ) {
 Chatterbox.Pager.prototype.notice = function( options ) {
 
     var notice = {
-        el: null,
+        frame: null,
+        close: null,
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
@@ -54,10 +56,40 @@ Chatterbox.Pager.prototype.notice = function( options ) {
     
     this.notices.push( notice );
     
-    notice.el = this.el.m.append(
+    this.el.m.append(
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
+    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.close = notice.frame.find('a.close_notice');
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        p.remove_notice( notice );
+        return false;
+    } );
+    
     return notice;
+
+};
+
+/**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ */
+Chatterbox.Pager.prototype.remove_notice = function( notice ) {
+
+    var nin = this.notices.indexOf( notice );
+    
+    if( nin == -1 )
+        return false;
+    
+    notice.frame.fadeTo(500, 0).slideUp( function(  ) {
+        notice.frame.remove();
+    } );
+    
+    this.notices.splice( nin, 1 );
 
 };

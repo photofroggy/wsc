@@ -255,6 +255,7 @@ Chatterbox.template.prompt.main = '<span class="label">{label}</span>\
 Chatterbox.template.pager = {
     notice: {
         frame: '<div class="notice" id="{ref}">\
+            <a href="#close" class="close_notice iconic x"></a>\
             <div class="icon">{icon}</div>\
             <div class="content">\
                 <h3>{heading}</h3>\
