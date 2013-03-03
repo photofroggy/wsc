@@ -895,14 +895,13 @@ div.wsc div.chatcontrol div.brow ul.states li:last-child {
 div.wsc div.chatcontrol div.brow a.button {
   font-size: 16px;
   line-height: .9em;
-  padding: 4px;
   margin-right: 5px;
 }
 div.wsc div.chatcontrol div.brow a.button.text {
   font-size: 12px;
   position: relative;
   top: 3px;
-  padding: 3px;
+  padding: 4px 7px 5px 7px;
 }
 div.wsc div.chatcontrol form.msg {
   clear: both;
@@ -930,7 +929,7 @@ div.wsc div.chatcontrol form.msg input[type="submit"] {
 div.wsc a.button,
 div.wsc form.msg input[type="submit"] {
   text-align: middle;
-  padding: 5px 10px;
+  padding: 5px 7px;
   background: none;
   border: 1px solid black;
   border-radius: 5px;

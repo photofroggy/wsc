@@ -33,13 +33,12 @@
             a.button {
                 font-size: 16px;
                 line-height: .9em;
-                padding: 4px;
                 margin-right: 5px;
                 &.text {
                     font-size: 12px;
                     position: relative;
                     top: 3px;
-                    padding: 3px;
+                    padding: 4px 7px 5px 7px;
                 }
             }
         }
@@ -73,7 +72,7 @@
     a.button,
     form.msg input[type="submit"] {
         text-align: middle;
-        padding: 5px 10px;
+        padding: 5px 7px;
         background: none;
         border: 1px solid black;
         @include round-box(5px);
