@@ -49,6 +49,8 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
         }, ( options || {} ) )
     };
     
+    notice.options.content = notice.options.content.split('\n').join('</p><p>');
+    
     this.notices.push( notice );
     
     this.el.m.append(

@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.4.26';
+wsc.VERSION = '1.5.27';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.18.111';
+wsc.REVISION = '0.19.112';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -2445,7 +2445,13 @@ wsc.defaults.Extension = function( client ) {
         if( event.ns.indexOf('login:') != 0 )
             return;
         
-        client.cchannel.server_message( 'Whois failed for ' + (event.sns.substr(1)), 'not online');
+        var usr = event.sns.substr(1);
+        
+        client.ui.pager.notice({
+            'ref': 'whois-' + usr,
+            'heading': 'Whois Failed',
+            'content': 'Whois failed for ' + usr + '. No such user online.'
+        });
     
     };
     
@@ -6643,6 +6649,8 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
         }, ( options || {} ) )
     };
     
+    notice.options.content = notice.options.content.split('\n').join('</p><p>');
+    
     this.notices.push( notice );
     
     this.el.m.append(
@@ -9321,7 +9329,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.6.19';
+wsc.dAmn.VERSION = '0.7.20';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -9453,8 +9461,16 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
-            client.cchannel.server_message(event.user + ' wants to talk in private',
-                'Type <code>/chat '+event.user+'</code> to talk to them');
+            
+            console.log( client.channel(event.ns).info.members[event.user] );
+            
+            client.ui.pager.notice({
+                'ref': 'clink-' + event.user,
+                'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
+                    client.channel(event.ns).info.members[event.user].usericon) + '" />',
+                'heading': 'Chat ' + event.user,
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+            }, true );
         },
         
         // CDS:LINK:REJECT

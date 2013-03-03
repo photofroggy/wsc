@@ -127,8 +127,16 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
-            client.cchannel.server_message(event.user + ' wants to talk in private',
-                'Type <code>/chat '+event.user+'</code> to talk to them');
+            
+            console.log( client.channel(event.ns).info.members[event.user] );
+            
+            client.ui.pager.notice({
+                'ref': 'clink-' + event.user,
+                'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
+                    client.channel(event.ns).info.members[event.user].usericon) + '" />',
+                'heading': 'Chat ' + event.user,
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+            }, true );
         },
         
         // CDS:LINK:REJECT
