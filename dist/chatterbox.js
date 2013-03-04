@@ -2298,6 +2298,8 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     var notice = {
         frame: null,
         close: null,
+        foot: null,
+        b: {},
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
@@ -2316,6 +2318,18 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     
     notice.frame = this.el.m.find( '#' + notice.options.ref );
     notice.close = notice.frame.find('a.close_notice');
+    notice.foot = notice.frame.find('footer.buttons');
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render('pager.button', bopt) );
+        notice.b[b] = notice.foot.find('a#' + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
     
     var p = this;
     
@@ -4591,8 +4605,12 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 

@@ -260,8 +260,12 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 

@@ -128,14 +128,36 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
             
-            console.log( client.channel(event.ns).info.members[event.user] );
-            
-            client.ui.pager.notice({
+            var pnotice = client.ui.pager.notice({
                 'ref': 'clink-' + event.user,
                 'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
                     client.channel(event.ns).info.members[event.user].usericon) + '" />',
                 'heading': 'Chat ' + event.user,
-                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them, or use the buttons below.',
+                'buttons': {
+                    'accept': {
+                        'ref': 'accept',
+                        'target': 'accept',
+                        'label': 'Accept',
+                        'title': 'Join the private chat',
+                        'click': function(  ) {
+                            client.ui.pager.remove_notice( pnotice );
+                            client.join('@' + event.user);
+                            return false;
+                        }
+                    },
+                    'reject': {
+                        'ref': 'reject',
+                        'target': 'reject',
+                        'label': 'Reject',
+                        'title': 'Reject the private chat',
+                        'click': function(  ) {
+                            client.npmsg(event.ns, 'CDS:LINK:REJECT:' + event.user);
+                            client.ui.pager.remove_notice( pnotice );
+                            return false;
+                        }
+                    }
+                }
             }, true );
         },
         

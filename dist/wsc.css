@@ -936,6 +936,7 @@ div.wsc form.msg input[type="submit"] {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   font-size: 13px;
+  font-weight: bold;
 }
 div.wsc a.button:active,
 div.wsc form.msg input[type="submit"]:active {
@@ -1352,7 +1353,8 @@ div.wsc div.pager {
   z-index: 100;
 }
 div.wsc div.pager div.notice {
-  padding: 10px 15px 10px 0px;
+  padding: 15px;
+  padding-left: 0px;
   margin-bottom: 10px;
   background-color: white;
   border: 1px solid black;
@@ -1368,6 +1370,13 @@ div.wsc div.pager div.notice div.content {
   float: left;
   margin-left: 15px;
   max-width: 350px;
+}
+div.wsc div.pager div.notice div.content footer.buttons {
+  padding-top: 10px;
+}
+div.wsc div.pager div.notice div.content footer.buttons a.button {
+  margin-right: 5px;
+  font-size: 16px;
 }
 div.wsc div.pager div.notice a.close_notice {
   float: right;
@@ -1398,7 +1407,6 @@ div.wsc.wsct_default form.msg input[type="submit"] {
   background-color: #0c8a8f;
   border-color: #406d8b;
   color: #d4f4fc;
-  text-shadow: 0px -1px #0a384e;
   text-decoration: none;
 }
 div.wsc.wsct_default a.button:hover,
@@ -1411,7 +1419,6 @@ div.wsc.wsct_default form.msg input[type="submit"]:hover {
   background-color: #681b1b;
   border-color: #611a14;
   color: #d4f4fc;
-  text-shadow: 0px -1px #1773a0;
   text-decoration: none;
 }
 div.wsc.wsct_default a.button:active,
@@ -1424,7 +1431,6 @@ div.wsc.wsct_default form.msg input[type="submit"]:active {
   background-color: #42bec9;
   border-color: #406d8b;
   color: #d4f4fc;
-  text-shadow: none;
 }
 div.wsc.wsct_default a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1741,9 +1747,8 @@ div.wsc.wsct_dAmn form.msg input[type="submit"] {
   background: -o-linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
   background: linear-gradient(top, #e7f3e7 0%, #d0dbd0 5%, #b5c4b5 97%);
   background-color: #b5c4b5;
-  border-color: #788a7d;
-  color: #7e9c7e;
-  text-shadow: 0px -1px #55685b;
+  border-color: #a2ada5;
+  color: #718d71;
   text-decoration: none;
 }
 div.wsc.wsct_dAmn a.button:hover,
@@ -1754,9 +1759,8 @@ div.wsc.wsct_dAmn form.msg input[type="submit"]:hover {
   background: -o-linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
   background: linear-gradient(top, #e7f3e7 0%, #ddecdd 5%, #bedbbe 97%);
   background-color: #bedbbe;
-  border-color: #788a7d;
+  border-color: #a2ada5;
   color: #96ad96;
-  text-shadow: 0px -1px #55685b;
   text-decoration: none;
 }
 div.wsc.wsct_dAmn a.button:active,
@@ -1767,9 +1771,8 @@ div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
   background: -o-linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
   background: linear-gradient(top, #e7f3e7 0%, #b5c4b5 5%, #d0dbd0 97%);
   background-color: #d0dbd0;
-  border-color: #788a7d;
+  border-color: #a2ada5;
   color: #7e9c7e;
-  text-shadow: none;
 }
 div.wsc.wsct_dAmn a.iconic.close {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);

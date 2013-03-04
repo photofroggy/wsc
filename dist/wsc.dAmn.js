@@ -6643,6 +6643,8 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     var notice = {
         frame: null,
         close: null,
+        foot: null,
+        b: {},
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
@@ -6661,6 +6663,18 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     
     notice.frame = this.el.m.find( '#' + notice.options.ref );
     notice.close = notice.frame.find('a.close_notice');
+    notice.foot = notice.frame.find('footer.buttons');
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render('pager.button', bopt) );
+        notice.b[b] = notice.foot.find('a#' + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
     
     var p = this;
     
@@ -8936,8 +8950,12 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 
@@ -9467,14 +9485,36 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
             
-            console.log( client.channel(event.ns).info.members[event.user] );
-            
-            client.ui.pager.notice({
+            var pnotice = client.ui.pager.notice({
                 'ref': 'clink-' + event.user,
                 'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
                     client.channel(event.ns).info.members[event.user].usericon) + '" />',
                 'heading': 'Chat ' + event.user,
-                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them, or use the buttons below.',
+                'buttons': {
+                    'accept': {
+                        'ref': 'accept',
+                        'target': 'accept',
+                        'label': 'Accept',
+                        'title': 'Join the private chat',
+                        'click': function(  ) {
+                            client.ui.pager.remove_notice( pnotice );
+                            client.join('@' + event.user);
+                            return false;
+                        }
+                    },
+                    'reject': {
+                        'ref': 'reject',
+                        'target': 'reject',
+                        'label': 'Reject',
+                        'title': 'Reject the private chat',
+                        'click': function(  ) {
+                            client.npmsg(event.ns, 'CDS:LINK:REJECT:' + event.user);
+                            client.ui.pager.remove_notice( pnotice );
+                            return false;
+                        }
+                    }
+                }
             }, true );
         },
         

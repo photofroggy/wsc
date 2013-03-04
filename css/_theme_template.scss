@@ -126,14 +126,14 @@
         background-color: $bgbg;
         border-color: $buttonb;
         color: $button;
-        text-shadow: 0px -1px $button-shadow;
+        //text-shadow: 0px -1px $button-shadow;
         text-decoration: $buttond;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $hbgbg;
             border-color: $buttonhb;
             color: $buttonh;
-            text-shadow: 0px -1px $buttonh-shadow;
+            //text-shadow: 0px -1px $buttonh-shadow;
             text-decoration: $buttonhd;
         }
         &:active {
@@ -141,7 +141,6 @@
             background-color: $abgbg;
             border-color: $buttonab;
             color: $buttona;
-            text-shadow: none;
         }
     }
     
