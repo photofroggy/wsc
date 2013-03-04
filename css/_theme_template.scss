@@ -109,7 +109,11 @@
     $pager-header: #063B63,
     $pager-color: #3E7A88,
     $pager-close: #063B63,
-    $pager-closeh: #B9280D) {
+    $pager-closeh: #B9280D,
+    $x: #063B63,
+    $xh: #B9280D,
+    $xd: none,
+    $xhd: none) {
     
     color: $base;
     a {
@@ -145,25 +149,34 @@
     }
     
     a.iconic.close {
-        @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
-        color: $close !important;
-        text-shadow: 0px -1px $close-shadow;
-        font-weight: bold;
-        border-color: $closeb;
-        text-decoration: $closed !important;
+        color: $x !important;
+        text-decoration: $xd !important;
         &:hover {
-            @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
-            color: $closeh !important;
-            text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closehd !important;
-            border-color: $closehb;
+            color: $xh !important;
+            text-decoration: $xhd !important;
         }
-        &:active {
-            @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
-            color: $closea !important;
+        
+        &.button {
+            @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
+            color: $close !important;
             text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closead !important;
-            border-color: $closeab;
+            font-weight: bold;
+            border-color: $closeb;
+            text-decoration: $closed !important;
+            &:hover {
+                @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
+                color: $closeh !important;
+                text-shadow: 0px -1px $close-shadow;
+                text-decoration: $closehd !important;
+                border-color: $closehb;
+            }
+            &:active {
+                @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
+                color: $closea !important;
+                text-shadow: 0px -1px $close-shadow;
+                text-decoration: $closead !important;
+                border-color: $closeab;
+            }
         }
     }
     

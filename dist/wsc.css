@@ -957,23 +957,19 @@ div.wsc form.msg input[type="submit"].text {
 }
 div.wsc a.iconic.close {
   background: none;
-  height: 13px;
-  width: 13px;
-  background-color: black;
-  color: white;
-  border: 1px solid black;
   text-align: center;
   line-height: 1em;
-  border-radius: 20px;
-  -moz-border-radius: 20px;
-  -webkit-border-radius: 20px;
-  font-size: 13px;
+  font-size: 16px;
   padding: 1px;
 }
 div.wsc a.iconic.close:hover {
   background: none;
-  border: 1px solid black;
   cursor: pointer;
+}
+div.wsc a.iconic.close.button {
+  background-color: black;
+  color: white;
+  border: 1px solid black;
 }
 div.wsc a.iconic.close.big {
   height: 25px;
@@ -1433,6 +1429,14 @@ div.wsc.wsct_default form.msg input[type="submit"]:active {
   color: #d4f4fc;
 }
 div.wsc.wsct_default a.iconic.close {
+  color: #063b63 !important;
+  text-decoration: none !important;
+}
+div.wsc.wsct_default a.iconic.close:hover {
+  color: #b9280d !important;
+  text-decoration: none !important;
+}
+div.wsc.wsct_default a.iconic.close.button {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1444,7 +1448,7 @@ div.wsc.wsct_default a.iconic.close {
   border-color: #6b0101;
   text-decoration: none !important;
 }
-div.wsc.wsct_default a.iconic.close:hover {
+div.wsc.wsct_default a.iconic.close.button:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -moz-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -ms-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1455,7 +1459,7 @@ div.wsc.wsct_default a.iconic.close:hover {
   text-decoration: none !important;
   border-color: #035261;
 }
-div.wsc.wsct_default a.iconic.close:active {
+div.wsc.wsct_default a.iconic.close.button:active {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
@@ -1775,6 +1779,14 @@ div.wsc.wsct_dAmn form.msg input[type="submit"]:active {
   color: #7e9c7e;
 }
 div.wsc.wsct_dAmn a.iconic.close {
+  color: #4f6457 !important;
+  text-decoration: none !important;
+}
+div.wsc.wsct_dAmn a.iconic.close:hover {
+  color: #b9280d !important;
+  text-decoration: none !important;
+}
+div.wsc.wsct_dAmn a.iconic.close.button {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #fc6053 5%, #b1362c 97%);
@@ -1786,7 +1798,7 @@ div.wsc.wsct_dAmn a.iconic.close {
   border-color: #6b0101;
   text-decoration: none !important;
 }
-div.wsc.wsct_dAmn a.iconic.close:hover {
+div.wsc.wsct_dAmn a.iconic.close.button:hover {
   background: -webkit-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -moz-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
   background: -ms-linear-gradient(top, #a1daff 0%, #5abdf5 5%, #147aaa 97%);
@@ -1797,7 +1809,7 @@ div.wsc.wsct_dAmn a.iconic.close:hover {
   text-decoration: none !important;
   border-color: #035261;
 }
-div.wsc.wsct_dAmn a.iconic.close:active {
+div.wsc.wsct_dAmn a.iconic.close.button:active {
   background: -webkit-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -moz-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
   background: -ms-linear-gradient(top, #ffa69e 0%, #b1362c 5%, #fc6053 97%);
