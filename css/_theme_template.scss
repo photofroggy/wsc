@@ -47,6 +47,31 @@
     $hbgi: #FFD3D3,
     $hbgsl: #B61C1C,
     $hbgbg: #681B1B,
+    // NAV BUTTONS
+    $nbutton: #B7C4B7,
+    $nbuttonh: #D3DDD3,
+    $nbuttona: #B7C4B7,
+    $nbuttond: none,
+    $nbuttonhd: none,
+    $nbuttonb: #5B6859,
+    $nbuttonhb: #5B6859,
+    $nbuttonab: #5B6859,
+    $nbutton-shadow: #0A384E, 
+    $nbuttonh-shadow: #1773A0, 
+    $nbuttona-shadow: #1773A0, 
+    $nbgs: top,
+    $nbgi: #BFCABD,
+    $nbgsl: #849183,
+    $nbgbg: #657562,
+    $hnbgs: top,
+    $hnbgi: #DBE4DA,
+    $hnbgsl: #B3C2B2,
+    $hnbgbg: #839480,
+    $anbgs: top,
+    $anbgi: #BFCABD,
+    $anbgsl: #657562,
+    $anbgbg: #849183,
+    // /NAV BUTTONS
     $close: #FFF6E4,
     $closeh: #FFF6E4,
     $closea: #FFF6E4,
@@ -211,6 +236,31 @@
             }
             &.active a.tab {
                 @include button-gradient($tab-abgs, $tab-abgi, $tab-abgsl, $tab-abgbg);
+            }
+        }
+        ul#tabnav li {
+            a.button,
+            form.msg input[type="submit"] {
+                @include button-gradient($nbgs, $nbgi, $nbgsl, $nbgbg);
+                background-color: $nbgbg;
+                border-color: $nbuttonb;
+                color: $nbutton;
+                //text-shadow: 0px -1px $button-shadow;
+                text-decoration: $nbuttond;
+                &:hover {
+                    @include button-gradient($hnbgs, $hnbgi, $hnbgsl, $hnbgbg);
+                    background-color: $hnbgbg;
+                    border-color: $nbuttonhb;
+                    color: $nbuttonh;
+                    //text-shadow: 0px -1px $nbuttonh-shadow;
+                    text-decoration: $nbuttonhd;
+                }
+                &:active {
+                    @include button-gradient($anbgs, $anbgi, $anbgsl, $anbgbg);
+                    background-color: $anbgbg;
+                    border-color: $nbuttonab;
+                    color: $nbuttona;
+                }
             }
         }
     }
