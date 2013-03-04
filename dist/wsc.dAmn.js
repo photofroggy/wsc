@@ -6776,7 +6776,9 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
             'icon': '',
             'heading': 'Some notice',
             'content': 'Notice content goes here.'
-        }, ( options || {} ) )
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestory: function(  ) {}
     };
     
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
@@ -6805,6 +6807,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     var p = this;
     
     notice.close.click( function(  ) {
+        notice.onclose();
         p.remove_notice( notice );
         return false;
     } );
@@ -6837,6 +6840,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
         p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
     } );
     
     if( interrupt ) {
@@ -9485,6 +9489,8 @@ wsc.dAmn.STATE = 'alpha';
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    var pns = {};
+    
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
@@ -9642,6 +9648,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                     }
                 }
             }, true );
+            
+            pns[event.user] = pnotice;
+            
+            pnotice.onclose = function(  ) {
+                client.npmsg( event.ns, 'CDS:LINK:REJECT:' + event.user );
+            };
         },
         
         // CDS:LINK:REJECT
@@ -9701,9 +9713,17 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         // pchat recv_join
         pcrj: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
             try {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
+            
+            if( !( event.user in pns ) )
+                return;
+            
+            client.ui.pager.remove_notice( pns[event.user] );
         }
     };
 

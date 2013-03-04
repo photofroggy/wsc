@@ -48,7 +48,9 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
             'icon': '',
             'heading': 'Some notice',
             'content': 'Notice content goes here.'
-        }, ( options || {} ) )
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestory: function(  ) {}
     };
     
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
@@ -77,6 +79,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
     var p = this;
     
     notice.close.click( function(  ) {
+        notice.onclose();
         p.remove_notice( notice );
         return false;
     } );
@@ -109,6 +112,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
         p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
     } );
     
     if( interrupt ) {

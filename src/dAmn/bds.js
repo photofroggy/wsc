@@ -2,6 +2,8 @@
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    var pns = {};
+    
     settings.bds = {
         // Main DSP channel.
         mns: 'chat:datashare',
@@ -159,6 +161,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                     }
                 }
             }, true );
+            
+            pns[event.user] = pnotice;
+            
+            pnotice.onclose = function(  ) {
+                client.npmsg( event.ns, 'CDS:LINK:REJECT:' + event.user );
+            };
         },
         
         // CDS:LINK:REJECT
@@ -218,9 +226,17 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         // pchat recv_join
         pcrj: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
             try {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
+            
+            if( !( event.user in pns ) )
+                return;
+            
+            client.ui.pager.remove_notice( pns[event.user] );
         }
     };
 
