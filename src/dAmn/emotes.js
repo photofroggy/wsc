@@ -126,26 +126,29 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         });
     };
     
-    settings.emotes.swap = function( e ) {
+    settings.emotes.swap = function( data, done ) {
     
-        if( !settings.emotes.on )
+        if( !settings.emotes.on ) {
+            done( data );
             return;
+        }
         
         var fec = -1;
         for( var code in settings.emotes.emote ) {
             if( !settings.emotes.emote.hasOwnProperty(code) )
                 continue;
-            fec = e.input.indexOf(code);
+            fec = data.input.indexOf(code);
             if( fec == -1 )
                 continue;
             
-            e.input = replaceAll(
-                e.input, code,
+            data.input = replaceAll(
+                data.input, code,
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
             );
         }
         
-        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+        data.input = replaceAll( data.input, ':B', ':bucktooth:' );
+        done( data );
     
     };
     
@@ -243,10 +246,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         );
     };
     
-    client.bind('send.msg.before', settings.emotes.swap);
-    client.bind('send.action.before', settings.emotes.swap);
-    client.bind('send.kick.before', settings.emotes.swap);
-    client.bind('send.set.before', settings.emotes.swap);
+    client.middle('send.msg', settings.emotes.swap);
+    client.middle('send.action', settings.emotes.swap);
+    client.middle('send.kick', settings.emotes.swap);
+    client.middle('send.set', settings.emotes.swap);
     
     if( !settings.emotes.on )
         return;

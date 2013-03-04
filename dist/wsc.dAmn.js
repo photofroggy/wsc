@@ -667,6 +667,53 @@ StringSet.prototype.contains = function( item ) {
     return this.items.indexOf( item.toLowerCase() ) != -1;
 
 };
+
+/**
+ * Middleware management and execution.
+ * 
+ */
+wsc.Middleware = function(  ) {
+
+    this.callbacks = {};
+
+};
+
+/**
+ * Add a middleware callback for the given event.
+ * 
+ * @method add
+ */
+wsc.Middleware.prototype.add = function( event, callback ) {
+
+    var callbacks = this.callbacks[event] || false;
+    
+    if( callbacks === false )
+        this.callbacks[event] = [];
+    
+    this.callbacks[event].push( callback );
+    return this.callbacks[event].length;
+
+};
+
+/**
+ * Call a method, invoking middleware according to the given event name.
+ * 
+ * @method run
+ */
+wsc.Middleware.prototype.run = function( event, method, data ) {
+    
+    var mw = (this.callbacks[event] || []).slice();
+    mw.push( method );
+    
+    var done = function( data ) {
+        
+        mw.shift()( data, done );
+        
+    };
+    
+    done( data );
+
+};
 /**
  * Storage object.
  * Allows you to save stuffs yo.
@@ -3211,6 +3258,8 @@ wsc.Client = function( view, options, mozilla ) {
     this.config_load();
     this.config_save();
     
+    this.mw = new wsc.Middleware();
+    
     this.ui = new this.settings.ui_object( view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
@@ -3408,6 +3457,28 @@ wsc.Client.prototype.clear_listeners = function( event ) {
 wsc.Client.prototype.trigger = function( event, data ) {
 
     return this.events.emit( event, data, this );
+
+};
+
+/**
+ * Add a middleware method.
+ * 
+ * @method middle
+ */
+wsc.Client.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ *
+ * @method cascade
+ */
+wsc.Client.prototype.cascade = function( event, callback, data ) {
+
+    this.mw.run( event, callback, data );
 
 };
 
@@ -3759,11 +3830,14 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.msg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.msg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('msg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -3776,11 +3850,14 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.npmsg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.npmsg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('npmsg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -3793,11 +3870,14 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    var e = { 'input': action, 'ns': namespace };
-    this.trigger( 'send.action.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.action',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('action', 'main', {}, data.input)
+            ));
+        }, { 'input': action, 'ns': namespace }
+    );
 
 };
 
@@ -4384,6 +4464,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
+    this.mw = new wsc.Middleware();
+    
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
@@ -4439,6 +4521,28 @@ Chatterbox.UI.prototype.trigger = function( event, data ) {
 Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
+
+};
+
+/**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ */
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ */
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
 
 };
 
@@ -5239,11 +5343,18 @@ Chatterbox.Channel.prototype.loop = function(  ) {
  * @param msg {String} Message to display.
  */
 Chatterbox.Channel.prototype.log = function( msg ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg};
-    this.manager.trigger( 'log.before', data );
-    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+    
+    var chan = this;
+    
+    this.manager.cascade( 'log',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+        }, {
+            'ns': this.raw,
+            'sns': this.namespace,
+            'message': msg
+        }
+    );
 };
 
 /**
@@ -5254,37 +5365,40 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
-    ts = '';
+    var ts = '';
     
     if( this.manager.settings.clock ) {
         ts = formatTime('{HH}:{mm}:{ss}', date);
     } else {
         ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
     }
-        
-    data = {
-        'ts': ts,
-        'ms': date.getTime(),
-        'message': item.html,
-        'user': (item.user || 'system' ).toLowerCase()
-    };
     
-    this.manager.trigger( 'log_item.before', data );
-    if( this.visible ) {
-        this.st = this.el.l.w.scrollTop();
-    }
+    var chan = this;;
     
-    // Add content.
-    this.el.l.w.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
-    if( this.visible ) {
-        this.st+= this.el.l.w.find('li.logmsg').last().height();
-        this.el.l.w.scrollTop( this.st );
-    }
-    
-    // Scrollio
-    this.scroll();
-    this.noise();
+    this.manager.cascade( 'log_item',
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            // Add content.
+            chan.el.l.w.append(Chatterbox.render('logitem', data));
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last() } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find('li.logmsg').last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            // Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            'ts': ts,
+            'ms': date.getTime(),
+            'message': item.html,
+            'user': (item.user || 'system' ).toLowerCase()
+        }
+    );
 };
 
 /**
@@ -5321,12 +5435,17 @@ Chatterbox.Channel.prototype.retime = function(  ) {
  * @param [info] {String} Extra information for the message.
  */
 Chatterbox.Channel.prototype.server_message = function( msg, info ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg,
-        'info': info};
-    this.manager.trigger( 'server_message.before', data );
-    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+    var chan = this;
+    
+    this.manager.cascade( 'server_message',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+        }, {
+            'ns': this.namespace,
+            'message': msg,
+            'info': info
+        }
+    );
 };
 
 /**
@@ -5348,7 +5467,7 @@ Chatterbox.Channel.prototype.clear = function(  ) {
  * @param content {String} Infobox contents.
  */
 Chatterbox.Channel.prototype.log_info = function( ref, content ) {
-    data = {
+    var data = {
         'ns': this.namespace,
         'ref': ref,
         'content': content
@@ -9665,23 +9784,32 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     
     };
     
-    settings.colours.send_colour = function( event ) {
-        if( !settings.colours.send )
+    settings.colours.send_colour = function( data, done ) {
+        if( !settings.colours.send ) {
+            done( data );
             return;
-        event.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        }
+        
+        data.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        done( data );
     };
     
     settings.colours.parse_colour = function( event ) {
         if( !settings.colours.on )
             return;
         
-        var html = event.item.html();
-        var m = html.match( /<abbr title="colors:([A-F0-9]{6}):([A-F0-9]{6})"><\/abbr>/ );
+        var abbr = event.item.find('abbr');
+        
+        if( abbr.length == 0 )
+            return;
+        
+        abbr = abbr.last();
+        var m = abbr.prop('title').match( /colors:([A-F0-9]{6}):([A-F0-9]{6})/ );
         
         if( m == null )
             return;
         
-        event.item.html( replaceAll( html, m[0], '' ) );
+        abbr.remove();
         event.item.find('.cmsg, .caction').css('color', '#' + m[2]);
         event.item.find('.cmsg.user, .caction.user').css('color', '#' + m[1]);
     };
@@ -9689,8 +9817,8 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     client.ui.on('settings.open.ran', settings.colours.configure_page);
     client.ui.on('log_item.after', settings.colours.parse_colour);
     
-    client.bind('send.msg.before', settings.colours.send_colour);
-    client.bind('send.action.before', settings.colours.send_colour);
+    client.middle('send.msg', settings.colours.send_colour);
+    client.middle('send.action', settings.colours.send_colour);
 
 };
 
@@ -9821,26 +9949,29 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         });
     };
     
-    settings.emotes.swap = function( e ) {
+    settings.emotes.swap = function( data, done ) {
     
-        if( !settings.emotes.on )
+        if( !settings.emotes.on ) {
+            done( data );
             return;
+        }
         
         var fec = -1;
         for( var code in settings.emotes.emote ) {
             if( !settings.emotes.emote.hasOwnProperty(code) )
                 continue;
-            fec = e.input.indexOf(code);
+            fec = data.input.indexOf(code);
             if( fec == -1 )
                 continue;
             
-            e.input = replaceAll(
-                e.input, code,
+            data.input = replaceAll(
+                data.input, code,
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
             );
         }
         
-        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+        data.input = replaceAll( data.input, ':B', ':bucktooth:' );
+        done( data );
     
     };
     
@@ -9938,10 +10069,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         );
     };
     
-    client.bind('send.msg.before', settings.emotes.swap);
-    client.bind('send.action.before', settings.emotes.swap);
-    client.bind('send.kick.before', settings.emotes.swap);
-    client.bind('send.set.before', settings.emotes.swap);
+    client.middle('send.msg', settings.emotes.swap);
+    client.middle('send.action', settings.emotes.swap);
+    client.middle('send.kick', settings.emotes.swap);
+    client.middle('send.set', settings.emotes.swap);
     
     if( !settings.emotes.on )
         return;

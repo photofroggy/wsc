@@ -68,6 +68,8 @@ wsc.Client = function( view, options, mozilla ) {
     this.config_load();
     this.config_save();
     
+    this.mw = new wsc.Middleware();
+    
     this.ui = new this.settings.ui_object( view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
@@ -265,6 +267,28 @@ wsc.Client.prototype.clear_listeners = function( event ) {
 wsc.Client.prototype.trigger = function( event, data ) {
 
     return this.events.emit( event, data, this );
+
+};
+
+/**
+ * Add a middleware method.
+ * 
+ * @method middle
+ */
+wsc.Client.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ *
+ * @method cascade
+ */
+wsc.Client.prototype.cascade = function( event, callback, data ) {
+
+    this.mw.run( event, callback, data );
 
 };
 
@@ -616,11 +640,14 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.msg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.msg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('msg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -633,11 +660,14 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.npmsg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.npmsg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('npmsg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -650,11 +680,14 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    var e = { 'input': action, 'ns': namespace };
-    this.trigger( 'send.action.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.action',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('action', 'main', {}, data.input)
+            ));
+        }, { 'input': action, 'ns': namespace }
+    );
 
 };
 

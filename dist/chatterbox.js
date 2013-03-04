@@ -39,6 +39,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
+    this.mw = new wsc.Middleware();
+    
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
@@ -94,6 +96,28 @@ Chatterbox.UI.prototype.trigger = function( event, data ) {
 Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
+
+};
+
+/**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ */
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ */
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
 
 };
 
@@ -894,11 +918,18 @@ Chatterbox.Channel.prototype.loop = function(  ) {
  * @param msg {String} Message to display.
  */
 Chatterbox.Channel.prototype.log = function( msg ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg};
-    this.manager.trigger( 'log.before', data );
-    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+    
+    var chan = this;
+    
+    this.manager.cascade( 'log',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+        }, {
+            'ns': this.raw,
+            'sns': this.namespace,
+            'message': msg
+        }
+    );
 };
 
 /**
@@ -909,37 +940,40 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
-    ts = '';
+    var ts = '';
     
     if( this.manager.settings.clock ) {
         ts = formatTime('{HH}:{mm}:{ss}', date);
     } else {
         ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
     }
-        
-    data = {
-        'ts': ts,
-        'ms': date.getTime(),
-        'message': item.html,
-        'user': (item.user || 'system' ).toLowerCase()
-    };
     
-    this.manager.trigger( 'log_item.before', data );
-    if( this.visible ) {
-        this.st = this.el.l.w.scrollTop();
-    }
+    var chan = this;;
     
-    // Add content.
-    this.el.l.w.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
-    if( this.visible ) {
-        this.st+= this.el.l.w.find('li.logmsg').last().height();
-        this.el.l.w.scrollTop( this.st );
-    }
-    
-    // Scrollio
-    this.scroll();
-    this.noise();
+    this.manager.cascade( 'log_item',
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            // Add content.
+            chan.el.l.w.append(Chatterbox.render('logitem', data));
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last() } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find('li.logmsg').last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            // Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            'ts': ts,
+            'ms': date.getTime(),
+            'message': item.html,
+            'user': (item.user || 'system' ).toLowerCase()
+        }
+    );
 };
 
 /**
@@ -976,12 +1010,17 @@ Chatterbox.Channel.prototype.retime = function(  ) {
  * @param [info] {String} Extra information for the message.
  */
 Chatterbox.Channel.prototype.server_message = function( msg, info ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg,
-        'info': info};
-    this.manager.trigger( 'server_message.before', data );
-    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+    var chan = this;
+    
+    this.manager.cascade( 'server_message',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+        }, {
+            'ns': this.namespace,
+            'message': msg,
+            'info': info
+        }
+    );
 };
 
 /**
@@ -1003,7 +1042,7 @@ Chatterbox.Channel.prototype.clear = function(  ) {
  * @param content {String} Infobox contents.
  */
 Chatterbox.Channel.prototype.log_info = function( ref, content ) {
-    data = {
+    var data = {
         'ns': this.namespace,
         'ref': ref,
         'content': content
