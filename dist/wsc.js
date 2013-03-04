@@ -3949,9 +3949,12 @@ wsc.Client.prototype.unban = function( namespace, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    e = { 'input': reason || '', 'ns': namespace };
-    this.trigger( 'send.kick.before', e );
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
+    var c = this;
+    this.cascade( 'send.kick',
+        function( data ) {
+            c.send(wsc_packetstr('kick', c.format_ns(data.ns), { 'u': data.user }, data.input || null));
+        }, { 'input': reason || '', 'ns': namespace, 'user': user }
+    );
 
 };
 
@@ -4008,9 +4011,13 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    e = { 'input': value, 'ns': namespace };
     this.trigger( 'send.set.before', e );
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
+    var c = this;
+    this.cascade( 'send.set',
+        function( data ) {
+            c.send(wsc_packetstr('set', c.format_ns(data.ns), { 'p': data.property }, data.input));
+        }, { 'input': value, 'ns': namespace, 'property': property }
+    );
 
 };
 
