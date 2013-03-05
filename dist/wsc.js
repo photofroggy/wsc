@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.5.27';
+wsc.VERSION = '1.5.28';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.19.112';
+wsc.REVISION = '0.19.113';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -4438,7 +4438,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.15.69';
+Chatterbox.VERSION = '0.15.70';
 Chatterbox.STATE = 'beta';
 
 /**
