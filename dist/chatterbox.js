@@ -2340,7 +2340,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
             'content': 'Notice content goes here.'
         }, ( options || {} ) ),
         onclose: function(  ) {},
-        ondestory: function(  ) {}
+        ondestroy: function(  ) {}
     };
     
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
