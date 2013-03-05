@@ -513,17 +513,17 @@ div.wsc nav.tabs ul.tabs li {
 }
 div.wsc nav.tabs ul.tabs li a.tab {
   text-decoration: none;
-  padding: 2px 5px;
+  padding: 4px 5px 3px 5px;
   border: 1px solid black;
   border-bottom: none;
   display: block;
-  margin-top: -6px;
+  margin-top: -9px;
 }
 div.wsc nav.tabs ul.tabs li a.tab:hover {
   text-decoration: none;
   border: 1px solid black;
   border-bottom: none;
-  padding: 5px 5px;
+  padding: 5px 5px 4px 5px;
   margin-top: -11px;
 }
 div.wsc nav.tabs ul.tabs li.active {
