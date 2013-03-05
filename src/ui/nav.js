@@ -162,6 +162,41 @@ Chatterbox.Navigation.prototype.height = function(  ) {
 };
 
 /**
+ * Add a button to the top button row.
+ *
+ * @method add_button
+ */
+Chatterbox.Navigation.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = ' text';
+    }
+    
+    this.el.b.prepend(Chatterbox.render('nav_button', options));
+    var button = this.el.b.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        options['handler']();
+        return false;
+    } );
+    
+    this.resize();
+    
+    return button;
+
+};
+
+/**
  * Add a channel tab to the navigation bar.
  * 
  * @method add_tab
