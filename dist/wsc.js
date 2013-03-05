@@ -2540,7 +2540,7 @@ wsc.defaults.Extension = function( client ) {
 wsc.defaults.Extension.Autojoin = function( client ) {
 
     var settings = client.autojoin;
-    client.ui.control.add_button( {
+    client.ui.nav.add_button( {
         'label': 'Autojoin',
         'title': 'Join your autojoin channels',
         'href': '#autojoin-do',
@@ -6694,6 +6694,8 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
         options['handler']();
         return false;
     } );
+    
+    this.resize();
     
     return button;
 

@@ -4,7 +4,7 @@
 wsc.defaults.Extension.Autojoin = function( client ) {
 
     var settings = client.autojoin;
-    client.ui.control.add_button( {
+    client.ui.nav.add_button( {
         'label': 'Autojoin',
         'title': 'Join your autojoin channels',
         'href': '#autojoin-do',

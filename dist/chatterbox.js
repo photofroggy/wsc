@@ -2263,6 +2263,8 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
         return false;
     } );
     
+    this.resize();
+    
     return button;
 
 };

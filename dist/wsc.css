@@ -500,6 +500,11 @@ div.wsc nav.tabs ul#tabnav li a {
   margin: 0px 5px 0px 0px;
   font-size: 16px;
 }
+div.wsc nav.tabs ul#tabnav li a.text {
+  position: relative;
+  top: 3px;
+  font-weight: normal;
+}
 div.wsc nav.tabs ul li {
   float: left;
   margin-top: 2px;
