@@ -86,14 +86,8 @@ Chatterbox.Control.prototype.height = function( ) {
  *   `submit`.
  */
 Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    if( this.manager.mozilla ) {
-        this.el.i.s.keypress( onkeypress || this._onkeypress );
-        this.el.i.m.keypress( onkeypress || this._onkeypress );
-    } else {
-        this.el.i.s.keydown( onkeypress || this._onkeypress );
-        this.el.i.m.keydown( onkeypress || this._onkeypress );
-    }
-    
+    this.el.i.s.keydown( onkeypress || this._onkeypress );
+    this.el.i.m.keydown( onkeypress || this._onkeypress );
     this.el.form.submit( onsubmit || this._onsubmit );
 };
 
