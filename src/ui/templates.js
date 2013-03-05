@@ -121,6 +121,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
 Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
 
+Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
+
 /**
  * HTML for a channel tab.
  * 
