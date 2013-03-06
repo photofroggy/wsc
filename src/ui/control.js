@@ -37,8 +37,75 @@ Chatterbox.Control = function( ui ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
+    
+    // FORMATTING BUTTONS
+    
+    this.add_button({
+        'label': '<b>b</b>',
+        'icon': false,
+        'href': '#bold',
+        'title': 'Bold text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<b>', '</b>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<i>i</i>',
+        'icon': false,
+        'href': '#italic',
+        'title': 'Italic text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<i>', '</i>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<u>u</u>',
+        'icon': false,
+        'href': '#underline',
+        'title': 'Underline text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<u>', '</u>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sup>sup</sup>',
+        'icon': false,
+        'href': '#sup',
+        'title': 'Superscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sup>', '</sup>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sub>sub</sub>',
+        'icon': false,
+        'href': '#sub',
+        'title': 'Subscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sub>', '</sub>');
+        }
+    });
 
 };
+
+// Lifted from superdAmn.
+// SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+Chatterbox.Control.prototype.surroundtext = function(tf, left, right){
+    // Thanks, Zikes
+    var tmpScroll     = tf.scrollTop;
+    var t             = tf.value, s = tf.selectionStart, e = tf.selectionEnd;
+    var selectedText  = tf.value.substring(s,e);
+    tf.value          = t.substring(0,s) + left + selectedText + right + t.substring(e);
+    tf.selectionStart = s + left.length;
+    tf.selectionEnd   = s + left.length + selectedText.length;
+    tf.scrollTop      = tmpScroll;
+    tf.focus();
+};
+
 
 /**
  * Steal the lime light. Brings the cursor to the input panel.

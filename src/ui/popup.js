@@ -37,7 +37,7 @@ Chatterbox.Popup.prototype.build = function(  ) {
     var fill = this.options;
     
     if( this.options.close ) {
-        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
+        fill.title+= '<a href="#close" class="close iconic x"></a>';
     }
     
     this.pview.append(Chatterbox.render( 'popup', fill ));
