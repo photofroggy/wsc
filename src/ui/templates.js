@@ -87,7 +87,12 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager"></div>\
+Chatterbox.template.ui = '<div class="pager">\
+            <audio class="alert">\
+                <source src="{media}click.ogg" type="audio/ogg">\
+                <source src="{media}click.mp3" type="audio/mpeg">\
+            </audio>\
+        </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\

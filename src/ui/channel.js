@@ -792,6 +792,12 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     
     toggles();
     
+    if( this.hidden )
+        return;
+    
+    if( this.namespace[0] == '@' )
+        this.manager.pager.sound.click();
+    
 };
 
 /**

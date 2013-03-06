@@ -48,7 +48,8 @@ wsc.Client = function( view, options, mozilla ) {
             "theme": wsc.defaults.theme,
             "themes": wsc.defaults.themes,
             "tabclose": true,
-            "clock": true
+            "clock": true,
+            "media": "/static/"
         },
         "developer": false
     };
@@ -78,7 +79,8 @@ wsc.Client = function( view, options, mozilla ) {
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
         'tabclose': this.settings.ui.tabclose,
-        'developer': this.settings.developer
+        'developer': this.settings.developer,
+        'media': this.settings.ui.media
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;

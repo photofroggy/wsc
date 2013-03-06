@@ -1354,6 +1354,9 @@ div.wsc div.pager {
   right: 160px;
   z-index: 100;
 }
+div.wsc div.pager audio {
+  display: none;
+}
 div.wsc div.pager div.notice {
   padding: 15px;
   padding-left: 0px;

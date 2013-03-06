@@ -33,7 +33,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true,
         'tabclose': true,
-        'developer': false
+        'developer': false,
+        'media': '/static/'
     };
     
     view.extend( this.settings, options );
@@ -233,7 +234,7 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( Chatterbox.template.ui );
+    this.view.append( Chatterbox.render('ui', this.settings) );
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );

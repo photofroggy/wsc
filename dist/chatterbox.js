@@ -33,7 +33,8 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true,
         'tabclose': true,
-        'developer': false
+        'developer': false,
+        'media': '/static/'
     };
     
     view.extend( this.settings, options );
@@ -233,7 +234,7 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( Chatterbox.template.ui );
+    this.view.append( Chatterbox.render('ui', this.settings) );
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
@@ -1308,6 +1309,12 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     }
     
     toggles();
+    
+    if( this.hidden )
+        return;
+    
+    if( this.namespace[0] == '@' )
+        this.manager.pager.sound.click();
     
 };
 
@@ -2403,7 +2410,12 @@ Chatterbox.Pager = function( ui ) {
     this.halflife = 5000;
     
     this.el = {
-        m: null
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
     };
     
     this.notices = [];
@@ -2420,6 +2432,15 @@ Chatterbox.Pager = function( ui ) {
 Chatterbox.Pager.prototype.build = function(  ) {
 
     this.el.m = this.manager.view.find('div.pager');
+    this.el.click = this.el.m.find('audio')[0];
+    this.el.click.load();
+    
+    var p = this;
+    this.sound.click = function(  ) {
+        p.el.click.pause();
+        p.el.click.currentTime = 0;
+        p.el.click.play();
+    };
 
 };
 
@@ -2428,7 +2449,7 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
 
     var notice = {
         frame: null,
@@ -2484,6 +2505,9 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
             p.remove_notice( notice, true );
         }, lifespan );
     }
+    
+    if( silent !== true )
+        this.sound.click();
     
     return notice;
 
@@ -4571,7 +4595,12 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager"></div>\
+Chatterbox.template.ui = '<div class="pager">\
+            <audio class="alert">\
+                <source src="{media}click.ogg" type="audio/ogg">\
+                <source src="{media}click.mp3" type="audio/mpeg">\
+            </audio>\
+        </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\

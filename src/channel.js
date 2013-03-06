@@ -435,10 +435,13 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     if( this.ui != null) {
-        if( hlight )
+        if( hlight ) {
             this.ui.highlight( );
-        else
+            if( !this.hidden )
+                this.ui.manager.pager.sound.click();
+        } else {
             this.ui.highlight( false );
+        }
     }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );

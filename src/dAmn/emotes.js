@@ -111,7 +111,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
                         'ref': 'emotes-loaded',
                         'heading': 'Emote CLOUD',
                         'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
-                    }, false, 5000);
+                    }, false, 5000, true);
                 }
             }
             

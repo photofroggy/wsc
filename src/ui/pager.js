@@ -11,7 +11,12 @@ Chatterbox.Pager = function( ui ) {
     this.halflife = 5000;
     
     this.el = {
-        m: null
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
     };
     
     this.notices = [];
@@ -28,6 +33,15 @@ Chatterbox.Pager = function( ui ) {
 Chatterbox.Pager.prototype.build = function(  ) {
 
     this.el.m = this.manager.view.find('div.pager');
+    this.el.click = this.el.m.find('audio')[0];
+    this.el.click.load();
+    
+    var p = this;
+    this.sound.click = function(  ) {
+        p.el.click.pause();
+        p.el.click.currentTime = 0;
+        p.el.click.play();
+    };
 
 };
 
@@ -36,7 +50,7 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
 
     var notice = {
         frame: null,
@@ -92,6 +106,9 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan ) {
             p.remove_notice( notice, true );
         }, lifespan );
     }
+    
+    if( silent !== true )
+        this.sound.click();
     
     return notice;
 
