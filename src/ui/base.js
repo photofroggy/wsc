@@ -257,7 +257,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 15 );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 11 );
 
 };
 
