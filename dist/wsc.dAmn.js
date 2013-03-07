@@ -10740,6 +10740,7 @@ wsc.dAmn.Extension = function( client ) {
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };
 
@@ -11041,7 +11042,38 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
     
     init();
 
-};/**
+};
+/**
+ * Extension to handle stash links posted in the chat.
+ */
+wsc.dAmn.Stash = function( client, storage, settings ) {
+
+    var init = function(  ) {
+    
+        client.ui.on('log_item.after', handle.log_item);
+    
+    };
+    
+    var handle = {
+    
+        log_item: function( event ) {
+        
+            var links = event.item.find('a[href^="http://sta.sh"]');
+            
+            links.each( function( i, dlink ) {
+                var link = event.item.find(dlink);
+                console.log(dlink, dlink.prop('href'));
+            } );
+        
+        }
+    
+    };
+    
+    init();
+
+};
+
+/**
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
  * 

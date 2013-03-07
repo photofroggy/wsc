@@ -94,5 +94,6 @@ wsc.dAmn.Extension = function( client ) {
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
     wsc.dAmn.Colours( client, storage.colours, settings );
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };
