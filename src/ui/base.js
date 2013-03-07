@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.71';
+Chatterbox.VERSION = '0.16.72';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -36,6 +36,14 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'tabclose': true,
         'developer': false,
         'media': '/static/'
+    };
+    
+    this.sound = {
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
     };
     
     view.extend( this.settings, options );
@@ -249,6 +257,18 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     //this.control.setInput();
     this.control.focus();
+    
+    // Sound bank
+    this.sound.bank.m = this.view.find('div.soundbank');
+    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
+    this.sound.bank.c.load();
+    
+    var bank = this.sound.bank;
+    this.sound.click = function(  ) {
+        bank.c.pause();
+        bank.c.currentTime = 0;
+        bank.c.play();
+    };
     
     // Focusing stuff?
     var ui = this;

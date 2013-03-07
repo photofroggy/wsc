@@ -776,12 +776,12 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     
     if( tab.hasClass('active') ) {
         if( !this.manager.viewing )
-            this.manager.pager.sound.click();
+            this.manager.sound.click();
         return;
     }
     
     if( !this.hidden ) {
-        this.manager.pager.sound.click();
+        this.manager.sound.click();
     }
     
     if( tab.hasClass('tabbed') )

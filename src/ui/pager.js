@@ -33,15 +33,6 @@ Chatterbox.Pager = function( ui ) {
 Chatterbox.Pager.prototype.build = function(  ) {
 
     this.el.m = this.manager.view.find('div.pager');
-    this.el.click = this.el.m.find('audio')[0];
-    this.el.click.load();
-    
-    var p = this;
-    this.sound.click = function(  ) {
-        p.el.click.pause();
-        p.el.click.currentTime = 0;
-        p.el.click.play();
-    };
 
 };
 
@@ -108,7 +99,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     }
     
     if( silent !== true )
-        this.sound.click();
+        this.manager.sound.click();
     
     return notice;
 

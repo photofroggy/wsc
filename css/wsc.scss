@@ -37,6 +37,10 @@ div.wsc {
     line-height: 1.6em;
     clear: both;
     
+    div.soundbank {
+        display: none;
+    }
+    
     @include navbar;
     
     a {

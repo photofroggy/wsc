@@ -4441,7 +4441,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.71';
+Chatterbox.VERSION = '0.16.72';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4471,6 +4471,14 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'tabclose': true,
         'developer': false,
         'media': '/static/'
+    };
+    
+    this.sound = {
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
     };
     
     view.extend( this.settings, options );
@@ -4684,6 +4692,18 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     //this.control.setInput();
     this.control.focus();
+    
+    // Sound bank
+    this.sound.bank.m = this.view.find('div.soundbank');
+    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
+    this.sound.bank.c.load();
+    
+    var bank = this.sound.bank;
+    this.sound.click = function(  ) {
+        bank.c.pause();
+        bank.c.currentTime = 0;
+        bank.c.play();
+    };
     
     // Focusing stuff?
     var ui = this;
@@ -5744,12 +5764,12 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     
     if( tab.hasClass('active') ) {
         if( !this.manager.viewing )
-            this.manager.pager.sound.click();
+            this.manager.sound.click();
         return;
     }
     
     if( !this.hidden ) {
-        this.manager.pager.sound.click();
+        this.manager.sound.click();
     }
     
     if( tab.hasClass('tabbed') )
@@ -6900,15 +6920,6 @@ Chatterbox.Pager = function( ui ) {
 Chatterbox.Pager.prototype.build = function(  ) {
 
     this.el.m = this.manager.view.find('div.pager');
-    this.el.click = this.el.m.find('audio')[0];
-    this.el.click.load();
-    
-    var p = this;
-    this.sound.click = function(  ) {
-        p.el.click.pause();
-        p.el.click.currentTime = 0;
-        p.el.click.play();
-    };
 
 };
 
@@ -6975,7 +6986,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     }
     
     if( silent !== true )
-        this.sound.click();
+        this.manager.sound.click();
     
     return notice;
 
@@ -9064,11 +9075,13 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager">\
-            <audio class="alert">\
+Chatterbox.template.ui = '<div class="soundbank">\
+            <audio class="click">\
                 <source src="{media}click.ogg" type="audio/ogg">\
                 <source src="{media}click.mp3" type="audio/mpeg">\
             </audio>\
+        </div>\
+        <div class="pager">\
         </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
