@@ -2542,7 +2542,8 @@ wsc.defaults.Extension.Autojoin = function( client ) {
 
     var settings = client.autojoin;
     client.ui.nav.add_button( {
-        'label': 'Autojoin',
+        'icon': 'chat',
+        'label': '',
         'title': 'Join your autojoin channels',
         'href': '#autojoin-do',
         'handler': function(  ) {
@@ -4441,7 +4442,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.72';
+Chatterbox.VERSION = '0.16.73';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5320,7 +5321,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     // Height.
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
-    var wh = height - 5;
+    var wh = height;
     this.el.m.height(wh);
     // Width.
     this.el.m.css('width', width - 10);

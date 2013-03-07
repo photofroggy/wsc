@@ -9,7 +9,7 @@
         
         div.brow {
             margin: 0px;
-            padding: 4px 2px 1px 7px;
+            padding: 2px 2px 0px 7px;
             ul {
                 display: inline-block;
                 list-style: none;
@@ -36,8 +36,8 @@
                 &.text {
                     font-size: 12px;
                     position: relative;
-                    top: 3px;
-                    padding: 4px 7px 5px 7px;
+                    top: 2px;
+                    padding: 3px 4px 2px 4px;
                     font-weight: normal;
                 }
             }
@@ -72,10 +72,10 @@
     a.button,
     form.msg input[type="submit"] {
         text-align: middle;
-        padding: 5px 7px;
+        padding: 3px 5px;
         background: none;
         border: 1px solid black;
-        @include round-box(5px);
+        @include round-box(3px);
         font-size: 13px;
         font-weight: bold;
         // @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
@@ -119,9 +119,8 @@
         }
         
         &.big {
-            height: 25px;
-            width: 25px;
-            font-size: 25px;
+            padding: 1px 4px;
+            font-size: 18px;
         }
         &.medium {
             height: 20px;
@@ -129,7 +128,7 @@
             font-size: 20px;
         }
         &.square {
-            @include round-box(5px);
+            @include round-box(3px);
         }
     }
     
