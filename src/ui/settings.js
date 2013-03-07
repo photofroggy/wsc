@@ -102,6 +102,7 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+    this.book.width( wrap.innerWidth() - 20 );
     this.config.resize();
 
 };

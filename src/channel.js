@@ -437,8 +437,6 @@ wsc.Channel.prototype.recv_msg = function( e ) {
     if( this.ui != null) {
         if( hlight ) {
             this.ui.highlight( );
-            if( !this.hidden )
-                this.ui.manager.pager.sound.click();
         } else {
             this.ui.highlight( false );
         }

@@ -234,7 +234,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    //console.log("hide " + this.info.selector);
+    console.log("hide " + this.raw);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -246,6 +246,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
  * @method show
  */
 Chatterbox.Channel.prototype.show = function( ) {
+    console.log( 'showing' );
     this.visible = true;
     this.el.m.css({'display': 'block'});
     this.el.t.o.addClass('active');
@@ -326,12 +327,15 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-Chatterbox.Channel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    var wh = this.manager.chatbook.height();
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height - 5;
     this.el.m.height(wh);
     // Width.
+    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -770,8 +774,15 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     }
     
-    if( tab.hasClass('active') )
+    if( tab.hasClass('active') ) {
+        if( !this.manager.viewing )
+            this.manager.pager.sound.click();
         return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.pager.sound.click();
+    }
     
     if( tab.hasClass('tabbed') )
         return;
@@ -791,12 +802,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     }
     
     toggles();
-    
-    if( this.hidden )
-        return;
-    
-    if( this.namespace[0] == '@' )
-        this.manager.pager.sound.click();
     
 };
 

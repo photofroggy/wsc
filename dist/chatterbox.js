@@ -25,6 +25,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
+    this.viewing = true;
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -235,15 +236,29 @@ Chatterbox.UI.prototype.clock = function( mode ) {
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     this.view.append( Chatterbox.render('ui', this.settings) );
+    
+    // UI Components.
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     this.pager = new Chatterbox.Pager( this );
+    
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
+    
     //this.control.setInput();
     this.control.focus();
+    
+    // Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
     
 };
 
@@ -258,7 +273,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 11 );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
 
 };
 
@@ -752,7 +767,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    //console.log("hide " + this.info.selector);
+    console.log("hide " + this.raw);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -764,6 +779,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
  * @method show
  */
 Chatterbox.Channel.prototype.show = function( ) {
+    console.log( 'showing' );
     this.visible = true;
     this.el.m.css({'display': 'block'});
     this.el.t.o.addClass('active');
@@ -844,12 +860,15 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-Chatterbox.Channel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    var wh = this.manager.chatbook.height();
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height - 5;
     this.el.m.height(wh);
     // Width.
+    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -1288,8 +1307,15 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     }
     
-    if( tab.hasClass('active') )
+    if( tab.hasClass('active') ) {
+        if( !this.manager.viewing )
+            this.manager.pager.sound.click();
         return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.pager.sound.click();
+    }
     
     if( tab.hasClass('tabbed') )
         return;
@@ -1309,12 +1335,6 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     }
     
     toggles();
-    
-    if( this.hidden )
-        return;
-    
-    if( this.namespace[0] == '@' )
-        this.manager.pager.sound.click();
     
 };
 
@@ -1523,6 +1543,15 @@ Chatterbox.Chatbook.prototype.height = function() {
 };
 
 /**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ */
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+/**
  * Resize the chatbook view pane.
  * 
  * @method resize
@@ -1531,10 +1560,11 @@ Chatterbox.Chatbook.prototype.height = function() {
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
     this.view.height(height);
+    var width = this.view.innerWidth();
     
     for( select in this.chan ) {
         var chan = this.chan[select];
-        chan.resize();
+        chan.resize( width, height );
     }
 };
 
@@ -1605,7 +1635,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     if( this.trail.indexOf(chan.namespace) == -1 ) {
         this.trail.push(chan.namespace);
     }
-    this.toggle_channel(ns);
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
     this.manager.resize();
     return chan;
 };
@@ -3018,6 +3051,7 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+    this.book.width( wrap.innerWidth() - 20 );
     this.config.resize();
 
 };

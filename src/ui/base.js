@@ -25,6 +25,7 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
+    this.viewing = true;
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -235,15 +236,29 @@ Chatterbox.UI.prototype.clock = function( mode ) {
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     this.view.append( Chatterbox.render('ui', this.settings) );
+    
+    // UI Components.
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     this.pager = new Chatterbox.Pager( this );
+    
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
+    
     //this.control.setInput();
     this.control.focus();
+    
+    // Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
     
 };
 
@@ -258,7 +273,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 11 );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
 
 };
 

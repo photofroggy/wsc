@@ -28,6 +28,15 @@ Chatterbox.Chatbook.prototype.height = function() {
 };
 
 /**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ */
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+/**
  * Resize the chatbook view pane.
  * 
  * @method resize
@@ -36,10 +45,11 @@ Chatterbox.Chatbook.prototype.height = function() {
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
     this.view.height(height);
+    var width = this.view.innerWidth();
     
     for( select in this.chan ) {
         var chan = this.chan[select];
-        chan.resize();
+        chan.resize( width, height );
     }
 };
 
@@ -110,7 +120,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     if( this.trail.indexOf(chan.namespace) == -1 ) {
         this.trail.push(chan.namespace);
     }
-    this.toggle_channel(ns);
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
     this.manager.resize();
     return chan;
 };

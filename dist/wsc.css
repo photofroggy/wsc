@@ -480,14 +480,15 @@ div.wsc * {
 }
 div.wsc nav.tabs {
   width: 100%;
-  overflow: hidden;
-  margin-bottom: -5px;
+  height: 30px;
+  margin-bottom: -1px;
 }
 div.wsc nav.tabs ul {
   list-style: none;
   margin: 0px;
   float: left;
-  padding: 10px 8px 0;
+  padding: 0px 8px 0;
+  height: 30px;
 }
 div.wsc nav.tabs ul#tabnav {
   padding: 4px 20px;
@@ -510,8 +511,7 @@ div.wsc nav.tabs ul li {
   margin-top: 2px;
 }
 div.wsc nav.tabs ul.tabs {
-  overflow: hidden;
-  height: 25px;
+  height: 30px;
 }
 div.wsc nav.tabs ul.tabs li {
   margin-right: 2px;
@@ -522,14 +522,13 @@ div.wsc nav.tabs ul.tabs li a.tab {
   border: 1px solid black;
   border-bottom: none;
   display: block;
-  margin-top: -9px;
 }
 div.wsc nav.tabs ul.tabs li a.tab:hover {
   text-decoration: none;
   border: 1px solid black;
   border-bottom: none;
   padding: 5px 5px 4px 5px;
-  margin-top: -11px;
+  margin-top: -2px;
 }
 div.wsc nav.tabs ul.tabs li.active {
   margin-top: 0px;
@@ -538,11 +537,10 @@ div.wsc nav.tabs ul.tabs li.active a.tab {
   padding: 5px 7px;
   border: 1px solid black;
   border-bottom: none;
-  margin-top: -9px;
 }
 div.wsc nav.tabs ul.tabs li.active a.tab:hover {
   padding: 5px 7px;
-  margin-top: -9px;
+  margin-top: 0px;
 }
 div.wsc nav.tabs ul.tabs#chattabs li.hidden {
   display: none;
@@ -875,8 +873,7 @@ div.wsc div.chatcontrol {
 }
 div.wsc div.chatcontrol div.brow {
   margin: 0px;
-  padding: 2px;
-  padding-left: 7px;
+  padding: 4px 2px 1px 7px;
 }
 div.wsc div.chatcontrol div.brow ul {
   display: inline-block;
@@ -913,7 +910,7 @@ div.wsc div.chatcontrol form.msg {
   clear: both;
   padding-left: 7px;
   margin: 0px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   width: 100%;
   overflow: hidden;
 }
