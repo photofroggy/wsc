@@ -625,6 +625,20 @@ div.wsc div.chatbook .logmsg span.cmsg.user, div.wsc div.chatbook .logmsg span.c
   word-wrap: normal;
   white-space: nowrap;
 }
+div.wsc div.chatbook .logmsg span.stashthumb {
+  display: inline-block;
+}
+div.wsc div.chatbook .logmsg span.stashthumb a[href="#toggle"] {
+  text-decoration: none !important;
+  padding: 0px 2px;
+  position: relative;
+  left: -25px;
+  display: none;
+}
+div.wsc div.chatbook .logmsg span.stashthumb:hover a[href="#toggle"] {
+  display: inline-block;
+  margin-right: -25px;
+}
 div.wsc div.chatbook .logmsg .caction {
   font-weight: normal;
   font-style: italic;

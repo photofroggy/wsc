@@ -11121,14 +11121,67 @@ wsc.dAmn.Stash.render = function( event, link, data ) {
         th = h;
     }
     
-    var dim = 'width="' + w + '" height="' + h + '"';
-    var shadow = !data.thumbnail_url.match(/.png$/i);
+    var dim = 'width="' + tw + '" height="' + th + '"';
+    var shadow = !data.thumbnail_url.match(/.png$/i) ? ' shadow' : '';
+    var id = lurl.split('/').pop();
     
-    var thumb = anchor + '<img class="thumb' + ( shadow ? ' shadow' : '' ) + '"' +
-        dim + ' " alt="' + lurl + '" src="' + data.thumbnail_url + '" /></a>';
+    var thumb = '<span class="stashthumb" id="'+id+'">' + anchor + '<img class="smaller thumb' + shadow + '"' +
+        dim + ' " alt="' + lurl + '" src="' + data.thumbnail_url_150 + '" />\
+        </a><a href="#toggle" class="button iconic plus" title="Larger"></a></span>';
     
     link.replaceWith(thumb);
-    link = event.item.find('a[href="' + lurl + '"]');
+    
+    var lw = event.item.find('span#' + id);
+    link = lw.find('a[href="' + lurl + '"]');
+    
+    var smaller = link.find('img.smaller');
+    var larger = null;
+    var zoomed = false;
+    
+    var toggle = lw.find('a[href="#toggle"]');
+    
+    toggle.click( function(  ) {
+    
+        if( !zoomed ) {
+            smaller.css('display', 'none');
+            
+            if( larger == null ) {
+                lw.prepend('<img class="larger thumb' + shadow + '" width="' + w + '"\
+                height="' + h + '" alt="' + lurl + '" src="' + data.thumbnail_url + '" />');
+                larger = lw.find('img.larger');
+            }
+            
+            larger.css('display', 'inline');
+            zoomed = true;
+            
+            toggle.removeClass('plus');
+            toggle.addClass('minus');
+            toggle.prop('title', 'Smaller');
+                    
+            event.chan.st+= event.item.height();
+            event.chan.el.l.w.scrollTop( event.chan.st );
+            event.chan.scroll();
+            
+            return false;
+        }
+        
+        larger.css('display', 'none');
+        smaller.css('display', 'inline');
+        
+        toggle.removeClass('minus');
+        toggle.addClass('plus');
+        toggle.prop('title', 'Larger');
+            
+        event.chan.st+= event.item.height();
+        event.chan.el.l.w.scrollTop( event.chan.st );
+        event.chan.scroll();
+        
+        zoomed = false;
+        
+        return false;
+    
+    } );
+    
     event.chan.st+= event.item.height();
     event.chan.el.l.w.scrollTop( event.chan.st );
     event.chan.scroll();
