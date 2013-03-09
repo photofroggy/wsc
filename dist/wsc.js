@@ -5434,7 +5434,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             
             // Add content.
             chan.el.l.w.append(Chatterbox.render('logitem', data));
-            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last() } );
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last(), 'chan': chan } );
             if( chan.visible ) {
                 chan.st+= chan.el.l.w.find('li.logmsg').last().height();
                 chan.el.l.w.scrollTop( chan.st );

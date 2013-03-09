@@ -33,6 +33,23 @@
                 }
             }
             
+            &.stashthumb {
+                display: inline-block;
+                a[href="#toggle"] {
+                    text-decoration: none !important;
+                    padding: 0px 2px;
+                    position: relative;
+                    left: -25px;
+                    display: none;
+                }
+                &:hover {
+                    a[href="#toggle"] {
+                        display: inline-block;
+                        margin-right: -25px;
+                    }
+                }
+            }
+            
         }
         
         .caction {
