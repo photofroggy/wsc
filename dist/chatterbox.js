@@ -787,7 +787,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    console.log("hide " + this.raw);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -799,7 +798,6 @@ Chatterbox.Channel.prototype.hide = function( ) {
  * @method show
  */
 Chatterbox.Channel.prototype.show = function( ) {
-    console.log( 'showing' );
     this.visible = true;
     this.el.m.css({'display': 'block'});
     this.el.t.o.addClass('active');
