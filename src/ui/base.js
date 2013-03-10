@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.73';
+Chatterbox.VERSION = '0.16.74';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -38,7 +38,22 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'media': '/static/'
     };
     
+    var ui = this;
     this.sound = {
+        play: function( sound ) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        },
+        toggle: function( state ) {
+            for( var s in ui.sound.bank ) {
+                if( !ui.sound.bank.hasOwnProperty( s ) )
+                    continue;
+                ui.sound.bank[s].muted = state;
+            }
+        },
+        mute: function(  ) { ui.sound.toggle( true ); },
+        unmute: function(  ) { ui.sound.toggle( false ); },
         bank: {
             m: null,
             c: null
@@ -263,12 +278,36 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
     this.sound.bank.c.load();
     
-    var bank = this.sound.bank;
+    var sound = this.sound;
+    
     this.sound.click = function(  ) {
-        bank.c.pause();
-        bank.c.currentTime = 0;
-        bank.c.play();
+        sound.play( sound.bank.c );
     };
+    
+    // Mute button.
+    var muted = false;
+    var mute = this.nav.add_button({
+        'label': '',
+        'icon': 'volume',
+        'href': '#mute',
+        'title': 'Mute the client',
+        'handler': function(  ) {
+            if( !muted ) {
+                sound.mute();
+                mute.removeClass( 'volume' );
+                mute.addClass('volume_mute' );
+                mute.prop('title', 'Unmute the client');
+                muted = true;
+                return false;
+            }
+            sound.unmute();
+            mute.removeClass( 'volume_mute' );
+            mute.addClass( 'volume' );
+            mute.prop('title', 'Mute the client');
+            muted = false;
+            return false;
+        }
+    });
     
     // Focusing stuff?
     var ui = this;

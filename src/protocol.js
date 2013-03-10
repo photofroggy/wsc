@@ -255,12 +255,13 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  */
 wsc.Protocol.prototype.render = function( event, format ) {
 
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
         return '';
     
-    msg = msgm[0];
+    var msg = msgm[0];
+    var d = '';
     
     for( key in event ) {
         if( !event.hasOwnProperty(key) || key == 'pkt' )

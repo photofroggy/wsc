@@ -151,7 +151,12 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan || chan.hidden ) {
+    if( !chan )
+        return;
+    
+    if( chan.hidden ) {
+        if( this.current && this.current == chan )
+            return;
         if( !this.manager.settings.developer ) {
             chan.hide();
             return;
