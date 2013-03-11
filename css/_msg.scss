@@ -35,8 +35,10 @@
             
             &.stashthumb {
                 display: inline-block;
-                a[href="#toggle"] {
+                a {
                     text-decoration: none !important;
+                }
+                a[href="#toggle"] {
                     padding: 0px 2px;
                     position: relative;
                     left: -25px;
