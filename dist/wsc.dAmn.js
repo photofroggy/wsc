@@ -3973,7 +3973,7 @@ wsc.Client.prototype.kick = function( namespace, user, reason ) {
  */
 wsc.Client.prototype.kill = function( user, reason ) {
 
-    this.send(wsc_packetstr('kill', user, {}, reason || null));
+    this.send(wsc_packetstr('kill', 'login:' + user, {}, reason || null));
 
 };
 
