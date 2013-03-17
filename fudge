@@ -58,13 +58,13 @@ def package():
                     subprocess.call([scr])
                 except Exception as e:
                     notice('    Failed running {0}...'.format(scr))
-                    print e
+                    notice(e)
         else:
             try:
                 subprocess.call([conf['post'] + ''])
             except Exception as e:
                 notice('    Failed running {0}...'.format(scr))
-                print e
+                notice(e)
     
     notice('Done!')
 

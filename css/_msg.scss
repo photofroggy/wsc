@@ -17,6 +17,7 @@
             &.ts {
                 font-weight: bold;
                 font-size: 11px;
+                white-space: nowrap;
             }
             
             &.servermsg {
@@ -30,25 +31,6 @@
                 &.user {
                     word-wrap: normal;
                     white-space: nowrap;
-                }
-            }
-            
-            &.stashthumb {
-                display: inline-block;
-                a {
-                    text-decoration: none !important;
-                }
-                a[href="#toggle"] {
-                    padding: 0px 2px;
-                    position: relative;
-                    left: -25px;
-                    display: none;
-                }
-                &:hover {
-                    a[href="#toggle"] {
-                        display: inline-block;
-                        margin-right: -25px;
-                    }
                 }
             }
             
