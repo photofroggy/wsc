@@ -120,7 +120,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.param[0].toLowerCase() != client.settings.username.toLowerCase() )
                 return;
             
-            client.part( event.ns );
+            if( client.channel( event.ns ).info.members[client.settings.username].pc == 'Visitors' )
+                client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
                 client.join( settings.bds.mns );
