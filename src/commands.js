@@ -403,8 +403,8 @@ wsc.defaults.Extension = function( client ) {
         client.ui.pager.notice({
             'ref': 'whois-' + usr,
             'heading': 'Whois Failed',
-            'content': 'Whois failed for ' + usr + '. No such user online.'
-        });
+            'content': 'Whois failed for ' + usr + '.\nNo such user online.'
+        }, false, 5000 );
     
     };
     

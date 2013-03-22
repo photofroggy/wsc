@@ -2499,8 +2499,8 @@ wsc.defaults.Extension = function( client ) {
         client.ui.pager.notice({
             'ref': 'whois-' + usr,
             'heading': 'Whois Failed',
-            'content': 'Whois failed for ' + usr + '. No such user online.'
-        });
+            'content': 'Whois failed for ' + usr + '.\nNo such user online.'
+        }, false, 5000 );
     
     };
     
@@ -4443,7 +4443,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.75';
+Chatterbox.VERSION = '0.16.76';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6990,14 +6990,6 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     };
     
     notice.options.ref+= '-' + (new Date()).valueOf();
-    
-    /*
-    var old = this.find_notice( notice.options.ref );
-    if( old != null ) {
-        this.remove_notice( old, false );
-    }
-    */
-    
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -7007,7 +6999,6 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     );
     
     notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
-    console.log(notice);
     notice.close = notice.frame.find('a.close_notice');
     notice.foot = notice.frame.find('footer.buttons');
     var bopt = {};

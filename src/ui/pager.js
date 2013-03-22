@@ -59,14 +59,6 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     };
     
     notice.options.ref+= '-' + (new Date()).valueOf();
-    
-    /*
-    var old = this.find_notice( notice.options.ref );
-    if( old != null ) {
-        this.remove_notice( old, false );
-    }
-    */
-    
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -76,7 +68,6 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
     );
     
     notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
-    console.log(notice);
     notice.close = notice.frame.find('a.close_notice');
     notice.foot = notice.frame.find('footer.buttons');
     var bopt = {};
