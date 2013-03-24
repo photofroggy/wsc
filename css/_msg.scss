@@ -24,16 +24,7 @@
                 font-weight: bold;
                 font-style: normal;
             }
-            
-            &.cmsg,
-            &.caction {
-                word-wrap: break-word;
-                &.user {
-                    word-wrap: normal;
-                    white-space: nowrap;
-                }
-            }
-            
+
             &.stashthumb {
                 display: inline-block;
                 a {
@@ -50,6 +41,15 @@
                         display: inline-block;
                         margin-right: -25px;
                     }
+                }
+            }
+             
+            &.cmsg,
+            &.caction {
+                word-wrap: break-word;
+                &.user {
+                    word-wrap: normal;
+                    white-space: nowrap;
                 }
             }
             
