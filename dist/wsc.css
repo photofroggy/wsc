@@ -613,6 +613,7 @@ div.wsc div.chatbook .logmsg span {
 div.wsc div.chatbook .logmsg span.ts {
   font-weight: bold;
   font-size: 11px;
+  white-space: nowrap;
 }
 div.wsc div.chatbook .logmsg span.servermsg {
   font-weight: bold;
