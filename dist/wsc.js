@@ -4406,19 +4406,19 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
     data = data.slice(1);
-    bits = data.split(' ');
-    cmdn = bits.shift().toLowerCase();
-    ens = this.client.cchannel.namespace;
-    etarget = ens;
+    var bits = data.split(' ');
+    var cmdn = bits.shift().toLowerCase();
+    var ens = this.client.cchannel.namespace;
+    var etarget = ens;
     
     if( !autocmd && bits[0] ) {
-        hash = bits[0][0];
+        var hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
         }
     }
     
-    arg = bits.join(' ');
+    var arg = bits.join(' ');
     
     var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
@@ -4429,7 +4429,11 @@ wsc.Control.prototype.handle = function( event, data ) {
     });
     
     if( fired == 0 ) {
-        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+        this.client.ui.pager.notice({
+            'ref': 'cmd-fail',
+            'heading': 'Command failed',
+            'content': '"' + cmdn + '" is not a command.'
+        }, false, 5000 );
     }
 
 };
