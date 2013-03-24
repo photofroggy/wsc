@@ -6,7 +6,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.74';
+Chatterbox.VERSION = '0.16.76';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -2552,6 +2552,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
         ondestroy: function(  ) {}
     };
     
+    notice.options.ref+= '-' + (new Date()).valueOf();
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -2560,7 +2561,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
-    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
     notice.close = notice.frame.find('a.close_notice');
     notice.foot = notice.frame.find('footer.buttons');
     var bopt = {};
@@ -2635,6 +2636,22 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
             } );
         } );
     }
+
+};
+
+/**
+ * Find a notice based on the reference.
+ *
+ */
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
 
 };
 /**

@@ -2499,8 +2499,8 @@ wsc.defaults.Extension = function( client ) {
         client.ui.pager.notice({
             'ref': 'whois-' + usr,
             'heading': 'Whois Failed',
-            'content': 'Whois failed for ' + usr + '. No such user online.'
-        });
+            'content': 'Whois failed for ' + usr + '.\nNo such user online.'
+        }, false, 5000 );
     
     };
     
@@ -4406,19 +4406,19 @@ wsc.Control.prototype.handle = function( event, data ) {
     
     data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
     data = data.slice(1);
-    bits = data.split(' ');
-    cmdn = bits.shift().toLowerCase();
-    ens = this.client.cchannel.namespace;
-    etarget = ens;
+    var bits = data.split(' ');
+    var cmdn = bits.shift().toLowerCase();
+    var ens = this.client.cchannel.namespace;
+    var etarget = ens;
     
     if( !autocmd && bits[0] ) {
-        hash = bits[0][0];
+        var hash = bits[0][0];
         if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
             etarget = this.client.format_ns(bits.shift());
         }
     }
     
-    arg = bits.join(' ');
+    var arg = bits.join(' ');
     
     var fired = this.client.trigger('cmd.' + cmdn, {
         name: 'cmd',
@@ -4429,7 +4429,11 @@ wsc.Control.prototype.handle = function( event, data ) {
     });
     
     if( fired == 0 ) {
-        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
+        this.client.ui.pager.notice({
+            'ref': 'cmd-fail',
+            'heading': 'Command failed',
+            'content': '"' + cmdn + '" is not a command.'
+        }, false, 5000 );
     }
 
 };
@@ -4443,7 +4447,7 @@ wsc.Control.prototype.handle = function( event, data ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.74';
+Chatterbox.VERSION = '0.16.76';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6989,6 +6993,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
         ondestroy: function(  ) {}
     };
     
+    notice.options.ref+= '-' + (new Date()).valueOf();
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -6997,7 +7002,7 @@ Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent 
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
-    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
     notice.close = notice.frame.find('a.close_notice');
     notice.foot = notice.frame.find('footer.buttons');
     var bopt = {};
@@ -7072,6 +7077,22 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
             } );
         } );
     }
+
+};
+
+/**
+ * Find a notice based on the reference.
+ *
+ */
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
 
 };
 /**

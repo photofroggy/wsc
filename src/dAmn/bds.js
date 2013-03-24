@@ -6,7 +6,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     
     settings.bds = {
         // Main DSP channel.
+        version: '0.4',
         mns: 'chat:datashare',
+        gate: 'chat:dsgateway',
         channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
@@ -17,16 +19,21 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
     settings.bds.channel.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.gate);
     
     var init = function(  ) {
         client.hidden.add(settings.bds.mns);
         client.exclude.add(settings.bds.mns);
+        client.hidden.add(settings.bds.gate);
+        client.exclude.add(settings.bds.gate);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
         // BOTCHECK
         client.bind('BDS.BOTCHECK.DIRECT', handle.botcheck);
         client.bind('BDS.BOTCHECK.ALL', handle.botcheck);
+        client.bind('BDS.BOTCHECK.OK', handle.checkresp);
+        client.bind('BDS.BOTCHECK.DENIED', handle.checkresp);
         // pchats
         client.bind('CDS.LINK.REQUEST', handle.clreq);
         client.bind('CDS.LINK.REJECT', handle.clrj);
@@ -39,10 +46,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         if( event.pkt.arg.e != 'ok' )
             return;
         
-        if( client.channel(settings.bds.mns) )
-            return;
-        
-        client.join('#datashare');
+        client.join(settings.bds.gate);
     };
     
     
@@ -60,7 +64,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'user': event.user,
             'name': '',
             'payload': '',
-            'head': ''
+            'head': [null, null, null],
+            'params': []
         };
         
         var msg = event.message.split(':');
@@ -77,6 +82,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
+        bdse.param = payload.split(',');
         
         client.trigger( head[0], bdse );
         client.trigger( head[0] + '.' + head[1], bdse );
@@ -101,9 +107,32 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
-            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION;
+            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
+        },
+        
+        // BDS:BOTCHECK:OK||DENIED
+        checkresp: function( event ) {
+            if( event.ns.toLowerCase() != settings.bds.gate )
+                return;
+            
+            if( event.param[0].toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            if( client.channel( event.ns ).info.members[client.settings.username].pc == 'Visitors' )
+                client.part( event.ns );
+            
+            if( event.head[2] == 'OK' ) {
+                client.join( settings.bds.mns );
+                return;
+            }
+            
+            client.ui.pager.notice({
+                'ref': 'botcheckdenied',
+                'heading': 'BDS Error',
+                'content': 'Denied entry to backend channel.\nReason provided: <code>' + event.param.slice(1).join(',') + '</code>'
+            });
         },
         
         // CDS:LINK:REQUEST
