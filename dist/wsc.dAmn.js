@@ -806,6 +806,7 @@ wsc.Packet = function( data, separator ) {
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
+        
         if( idx > -1 ) {
             pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
@@ -1885,12 +1886,13 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  */
 wsc.Flow.prototype.login = function( event, client ) {
     
-    if(event.pkt["arg"]["e"] == "ok") {
+    if(event.pkt.arg.e == "ok") {
         // Use the username returned by the server!
-        info = new wsc.Packet('info\n' + event.data);
+        var info = event.pkt.sub[0];
         client.settings["username"] = event.pkt["param"];
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
+        
         // Autojoin!
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
@@ -9724,7 +9726,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.24';
+wsc.dAmn.VERSION = '0.9.25';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -9769,6 +9771,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
+        client.bind('closed', handle.closed);
     };
     
     var pkt_login = function( event ) {
@@ -9819,6 +9822,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Connection closed.
+        closed: function( event ) {
+            client.remove_ns( settings.bds.mns );
+            client.remove_ns( settings.bds.gate );
+        },
+        
         // Provider
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
@@ -10254,12 +10263,20 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             return;
         }
         
-        var fec = -1;
-        for( var code in settings.emotes.emote ) {
+        var codes = data.input.match(/:([\S]+):/g);
+        var code = '';
+        var ci = -1;
+        
+        var fcs = function( em ) {
+            return em != codes[ci];
+        };
+        
+        for( ci in codes ) {
+            
+            code = codes[ci];
+            codes = codes.filter( fcs );
+            
             if( !settings.emotes.emote.hasOwnProperty(code) )
-                continue;
-            fec = data.input.indexOf(code);
-            if( fec == -1 )
                 continue;
             
             data.input = replaceAll(

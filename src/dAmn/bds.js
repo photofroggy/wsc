@@ -40,6 +40,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
+        client.bind('closed', handle.closed);
     };
     
     var pkt_login = function( event ) {
@@ -90,6 +91,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Connection closed.
+        closed: function( event ) {
+            client.remove_ns( settings.bds.mns );
+            client.remove_ns( settings.bds.gate );
+        },
+        
         // Provider
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )

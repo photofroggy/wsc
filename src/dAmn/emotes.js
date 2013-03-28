@@ -133,12 +133,20 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             return;
         }
         
-        var fec = -1;
-        for( var code in settings.emotes.emote ) {
+        var codes = data.input.match(/:([\S]+):/g);
+        var code = '';
+        var ci = -1;
+        
+        var fcs = function( em ) {
+            return em != codes[ci];
+        };
+        
+        for( ci in codes ) {
+            
+            code = codes[ci];
+            codes = codes.filter( fcs );
+            
             if( !settings.emotes.emote.hasOwnProperty(code) )
-                continue;
-            fec = data.input.indexOf(code);
-            if( fec == -1 )
                 continue;
             
             data.input = replaceAll(

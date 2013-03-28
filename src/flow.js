@@ -118,12 +118,13 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  */
 wsc.Flow.prototype.login = function( event, client ) {
     
-    if(event.pkt["arg"]["e"] == "ok") {
+    if(event.pkt.arg.e == "ok") {
         // Use the username returned by the server!
-        info = new wsc.Packet('info\n' + event.data);
+        var info = event.pkt.sub[0];
         client.settings["username"] = event.pkt["param"];
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
+        
         // Autojoin!
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
