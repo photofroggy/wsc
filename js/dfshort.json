@@ -1,0 +1,15 @@
+{
+    "complete": [
+        { "name": "Autojoin", "description": "automatically join channels when you connect", "ref": "autojoin" },
+        { "name": "Auto rejoin", "description": "automatically rejoin a channel when you get kicked", "ref": "arejoin" },
+        { "name": "Timestamps", "description": "messages can have 24 hour and 12 hour timestamps", "ref": "timestamps"},
+        { "name": "Custom emotes", "description": "the <cite>emote cloud</cite> is used for custom emoticons", "ref": "cemotes" },
+        { "name": "Away messages", "description": "have the client automatically respond to messages while you're away", "ref": "aways" },
+        { "name": "Ignores", "description": "ignore users whose messages you do not want to see", "ref": "ignores" },
+        { "name": "DataShare support", "description": "this allows extra features to be implemented", "ref": "dshare" },
+        { "name": "Private Chat Notices", "description": "get a notification whenever someone tries to join a private chat with you", "ref": "clink" },
+        { "name": "Noise notifications", "description": "makes a sound when you get tabbed in a channel you're not viewing", "ref": "noises" },
+        { "name": "Custom colours", "description": "colour messages using custom colours", "ref": "ccolour", "experimental": true }
+    ],
+    "planned": []
+}

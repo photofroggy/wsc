@@ -43,12 +43,20 @@ a:hover {
     color: #CA662E;
 }
 
+em a {
+    color: #E66611;
+}
+
 cite {
     color: #297AB9;
 }
 
-img {
+section img {
     box-shadow: 0 0 15px #616161;
+}
+
+img.full {
+    margin-left: -76px;
 }
 
 div.squeeze {
@@ -176,7 +184,6 @@ div.content h1 {
 section {
     padding: 30px 15px;
     margin: 0px 50px;
-    overflow: hidden;
     border-bottom: 1px solid #DDE2E6;
     font-size: 14px;
 }
