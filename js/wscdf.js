@@ -13,7 +13,7 @@
             var link = '';
             var desc = '';
             var clist = $('nav.contents ul');
-            var body = $('section.features');
+            var body = $('section.items');
             var count = 0;
             var exp = '';
             var title = '';
@@ -27,7 +27,7 @@
                 desc = '<section class="description">' + entry.description.join('') + '</section>';
                 
                 clist.append('<li>' + count + '. ' + link + '</li>');
-                body.append('<article id="' + entry.ref + '">' + title + desc + '</article>');
+                body.append('<article class="item" id="' + entry.ref + '">' + title + desc + '</article>');
             }
             
             if( !window.location.hash )

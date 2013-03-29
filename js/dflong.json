@@ -3,22 +3,41 @@
         "name": "Autojoin",
         "ref": "autojoin",
         "description": [
-            "automatically join channels when you connect foo.",
-            "</p><p>something \nbitches"
+            "<p>wsc can be set up to automatically join certain channels when ",
+            "you connect to the server, or on demand. Setting up your autojoin channels ",
+            "can be done through the settings window, or through commands typed into the ",
+            " client's input area.</p><article class='img'>",
+            "<p class='t l'>",
+            "If you have autojoin channels set up, but don't have them being joined ",
+            "automatically when you connect to the server, you can use the autojoin button ",
+            "in the top right corner of the client.",
+            "</p>",
+            "<span class='img r'><img src='/wsc/img/topbuttons.png' /></span>",
+            "</article>",
+            "<p>The autojoin button is the button with the two speech bubbles. Simply click ",
+            "the button and the client will attempt to make you join your autojoin channels.</p>"
         ]
     },
     {
         "name": "Auto rejoin",
         "ref": "arejoin",
+        "experimental": true,
         "description": [
-            "automatically rejoin a channel when you get kicked"
+            "<p>If you are kicked from a channel for any reason, then wsc will automatically ",
+            "make you rejoin the channel. This can be annoying for moderators who are ",
+            "actually trying to penalise you for something, so this feature is circumvented ",
+            "if the phrase <code>autokicked</code> is included in the kick reason.</p>",
+            "<p>In future this may be configurable so that it can be disabled globally or ",
+            "for specific channels.</p>"
         ]
     },
     {
-        "name": "Timestamps",
+        "name": "Time stamps",
         "ref": "timestamps",
         "description": [
-            "messages can have 24 hour and 12 hour timestamps"
+            "<p>Each message in every channel is preceded by a time stamp indicating when ",
+            "the message was received. These time stamps can be in either a 24 hour format ",
+            "or a 12 hour format. This can be configured in the settings window.</p>"
         ]
     },
     {
@@ -26,14 +45,70 @@
         "ref": "cemotes",
         "experimental": true,
         "description": [
-            "the <cite>emote cloud</cite> is used for custom emoticons"
+            "<p>wsc allows you to use custom emoticons which are retrieved from the ",
+            "<a href='http://emotecloud.net/'>emote cloud</a>. Custom emoticons are ",
+            "deviations uploaded to <a href=\"http://deviantart.com\">deviantART</a> ",
+            "by users of the website. To use them, you must enable custom emoticons either ",
+            "through the settings window or the emote picker.</p>"
         ]
     },
     {
         "name": "Away messages",
         "ref": "aways",
         "description": [
-            "have the client automatically respond to messages while you're away"
+            "<p>While you are away from your computer, or simply busy with other things, ",
+            "you can set an away message. When people try to talk to you, the client will ",
+            "automatically respond with your away message.</p>",
+            "<p>To set an away message, type <code>/setaway your reason for being away</code>. ",
+            "When you get back, simply type <code>/setback</code> to stop the automatic messages ",
+            "and let everyone know you're back!</p><p>Certain aspects of away messages can be ",
+            "configured in the settings window.</p>"
+        ]
+    },
+    {
+        "name": "Ignores",
+        "ref": "ignores",
+        "description": [
+            "<p>wsc allows you to ignore people who you find irritating. If you ignore ",
+            "someone, their messages will be hidden from view, and you will not get notifications ",
+            "when they try to start a private chat with you.</p><p>The users you ignore are ",
+            "kept on an <cite>ignore list</cite>. The ignore list can be managed through ",
+            "the settings window and through commands.</p><p>To ignore someone, you can ",
+            "type <code>/ignore username</code>. Similarly, <code>/unignore username</code> ",
+            "will remove a user from your ignore list.</p>"
+        ]
+    },
+    {
+        "name": "DataShare support",
+        "ref": "dshare",
+        "description": [
+            "<p><cite>#DataShare</cite> is a channel on <a href=\"http://chat.deviantart.com\">dAmn</a> ",
+            "which is used by clients to autonomously exchange information. Wsc uses this as it allows ",
+            "extra features to be implemented that usually are not possible on dAmn.</p><p>Channels related ",
+            "to this are usually hidden from view, to avoid cluttering up your client. You can reveal these ",
+            "channels by enabled developer mode in the settings window. It is recommended that you do ",
+            "not do this unless you are working making a feature that requires use of the ",
+            "<a href=\"http://botdom.com/documentation/Data_Sharing_Protocol\">Data Sharing Protocol</a>.</p>"
+        ]
+    },
+    {
+        "name": "Private chat notices",
+        "ref": "clink",
+        "description": [
+            "<p>Normally, when someone tries to join a private chat with you, or if you ",
+            "try to join a private chat with someone else, one person has to tell the other ",
+            "about the private chat.</p>",
+            "<img src=\"/wsc/img/clink.png\" />",
+            "<p>If someone ",
+            "tries to join a private chat with you, and their client has similar features ",
+            "implemented, then you will get a notification like the one shown above. ",
+            "These notices appear in the top right corner of the client, and do not go away ",
+            "until you have done something with them.</p>",
+            "<p>This feature is implemented using <a href=\"#dshare\">DataShare</a>. Other ",
+            "clients that are known to implement this feature include ",
+            "<a href=\"http://baronbeandip.deviantart.com/art/dAmnMessenger-359399317\">dAmnMessenger</a> ",
+            "and <a href=\"http://tristan128.deviantart.com/art/Behold-Narwhal-360794554\">Narwhal</a>.",
+            "</p><p>Typing <code>/chat username</code> will initiate a private chat.</p>"
         ]
     }
 ]

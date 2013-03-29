@@ -3,23 +3,33 @@ section {
     border: none;
 }
 
-section.features {
+section.items {
     font-size: 16px;
     padding: 10px 15px;
     margin: 0px 50px 20px 50px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.75);
     border: 1px dashed #ABC9DA;
 }
 
-section.features article {
+section.items a[href^="#"] {
+    color: #CA662E;
+    font-style: italic;
+    border-bottom: 1px dotted #6B747A;
+}
+
+section.items a[href^="#"]:hover {
+    color: #297AB9;
+}
+
+section.items article.item {
     padding: 10px;
 }
 
-section.features article h3 {
+section.items article.item h3 {
     padding: 0px;
 }
 
-section.features article h3 span {
+section.items article.item h3 span {
     margin-left: 20px;
     font-family: Georgia;
     font-style: italic;
@@ -27,7 +37,7 @@ section.features article h3 span {
     font-size: 12px;
 }
 
-section.features article section {
-    padding: 15px;
+section.items article.item section {
+    padding: 15px 30px;
     margin: 0px;
 }

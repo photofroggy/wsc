@@ -12,7 +12,7 @@ html, body {
 }
 
 html {
-    background-color: rgba(225, 250, 244, 0.25);
+    background-color: #D3EBF3; /*rgba(225, 250, 244, 0.25);*/
 }
 
 h1,h2,h3,h4 {
@@ -40,6 +40,16 @@ a {
 
 a:hover {
     text-decoration: none;
+    color: #CA662E;
+}
+
+a[href^=http] {
+    color: #297AB9;
+    font-style: italic;
+    border-bottom: 1px dotted #6B747A;
+}
+
+a[href^=http]:hover {
     color: #CA662E;
 }
 
@@ -157,7 +167,7 @@ nav.menu ul li {
 nav.menu ul li a {
     color: #86B4BD;
     padding: 15px 20px;
-    background-color: rgba(215, 238, 237, 0.9);
+    background-color: rgba(172, 224, 222, 0.9); /*rgba(215, 238, 237, 0.9);*/
     margin: 0px 5px;
 }
 
@@ -192,7 +202,7 @@ nav.contents ul {
 
 div.content {
     margin: 8em 1em;
-    height: 100%;
+    padding-bottom: 50px;
 }
 
 div.content h1 {

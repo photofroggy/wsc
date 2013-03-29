@@ -24,7 +24,7 @@
             var clist = $('ul.planned');
             
             for( var index in data.planned ) {
-                entry = data.complete[index];
+                entry = data.planned[index];
                 link = '<b>' + ( entry.experimental ? '<em>' : '' );
                 link+= entry.name + ( entry.experimental ? '</em>' : '' ) + ':</b>';
                 clist.append('<li>' + link + ' <i>' + entry.description + '<i></li>');

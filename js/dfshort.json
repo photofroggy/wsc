@@ -1,7 +1,7 @@
 {
     "complete": [
         { "name": "Autojoin", "description": "automatically join channels when you connect", "ref": "autojoin" },
-        { "name": "Auto rejoin", "description": "automatically rejoin a channel when you get kicked", "ref": "arejoin" },
+        { "name": "Auto rejoin", "description": "automatically rejoin a channel when you get kicked", "ref": "arejoin", "experimental": true },
         { "name": "Timestamps", "description": "messages can have 24 hour and 12 hour timestamps", "ref": "timestamps"},
         { "name": "Custom emotes", "description": "the <cite>emote cloud</cite> is used for custom emoticons", "ref": "cemotes", "experimental": true },
         { "name": "Away messages", "description": "have the client automatically respond to messages while you're away", "ref": "aways" },
@@ -12,6 +12,7 @@
         { "name": "Custom colours", "description": "colour messages using custom colours", "ref": "ccolour", "experimental": true }
     ],
     "planned": [
+        { "name": "Muro drawing", "description": "draw pictures with Muro while chatting", "ref": "muro" },
         { "name": "Multimedia Chat", "description": "video and voice calls right on dAmn", "ref": "mmcalls" },
         { "name": "Group Calls", "description": "kind of like google hangouts for dAmn", "ref": "gmmc" }
     ]
