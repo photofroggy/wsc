@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;chatbook.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Object for managing the chatbook portion of the UI.
+ *
+ * @class Chatbook
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ *&#x2F;
+Chatterbox.Chatbook = function( ui ) {
+    
+    this.manager = ui;
+    this.view = this.manager.view.find(&#x27;div.chatbook&#x27;);
+    this.chan = {};
+    this.trail = [];
+    this.current = null;
+    this.manager.on( &#x27;tab.close.clicked&#x27;, function( event, ui ) {
+        ui.chatbook.remove_channel(event.ns);
+    });
+    
+};
+
+&#x2F;**
+ * Return the height of the chatbook.
+ *
+ * @method height
+ *&#x2F;
+Chatterbox.Chatbook.prototype.height = function() {
+    return this.view.height();
+};
+
+&#x2F;**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ *&#x2F;
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+&#x2F;**
+ * Resize the chatbook view pane.
+ * 
+ * @method resize
+ * @param [height=600] {Integer} The height to set the view pane to.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.resize = function( height ) {
+    height = height || 600;
+    this.view.height(height);
+    var width = this.view.innerWidth();
+    
+    for( select in this.chan ) {
+        var chan = this.chan[select];
+        chan.resize( width, height );
+    }
+};
+
+&#x2F;**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ *&#x2F;
+Chatterbox.Chatbook.prototype.loop = function(  ) {
+
+    for( select in this.chan ) {
+        this.chan[select].loop();
+    }
+
+};
+
+&#x2F;**
+ * Get or set the channel object associated with the given namespace.
+ * 
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by &#x60;namespace&#x60;
+ *&#x2F;
+Chatterbox.Chatbook.prototype.channel = function( namespace, chan ) {
+    namespace = this.manager.format_ns(namespace).toLowerCase();
+    
+    if( !this.chan[namespace] &amp;&amp; chan )
+        this.chan[namespace] = chan;
+    
+    return this.chan[namespace];
+};
+
+&#x2F;**
+ * Determine how many channels the ui has open. Hidden channels are
+ * not included in this, and we don&#x27;t include the first channel because
+ * there should always be at least one non-hidden channel present in the
+ * ui.
+ * 
+ * @method channels
+ * @return [Integer] Number of channels open in the ui.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.channels = function( ) {
+    chans = -1;
+    for(ns in this.chan) {
+        if( this.chan[ns].hidden )
+            continue;
+        chans++;
+    }
+    return chans;
+};
+
+&#x2F;**
+ * Create a channel in the UI.
+ * 
+ * @method create_channel
+ * @param ns {String} Namespace of the channel to create.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @param monitor {Boolean} Is this channel the monitor?
+ * @return {Object} WscUIChannel object.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
+    var chan = this.channel(ns, this.channel_object(ns, hidden, monitor));
+    chan.build();
+    &#x2F;&#x2F; Update the paper trail.
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
+    this.manager.resize();
+    return chan;
+};
+
+&#x2F;**
+ * Create a new channel panel object.
+ * Override this method to use a different type of channel object.
+ * 
+ * @method channel_object
+ * @param ns {String} Namespace of the channel.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @return {Object} An object representing a channel UI.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.channel_object = function( ns, hidden ) {
+    return new Chatterbox.Channel( this.manager, ns, hidden );
+};
+
+&#x2F;**
+ * Select which channel is currently being viewed.
+ * 
+ * @method toggle_channel
+ * @param ns {String} Namespace of the channel to view.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
+    var chan = this.channel(ns);
+    var prev = chan;
+    
+    if( !chan )
+        return;
+    
+    if( chan.hidden ) {
+        if( this.current &amp;&amp; this.current == chan )
+            return;
+        if( !this.manager.settings.developer ) {
+            chan.hide();
+            return;
+        }
+    }
+    
+    if(this.current) {
+        if(this.current == chan)
+            return;
+        &#x2F;&#x2F; Hide previous channel, if any.
+        this.current.hide();
+        prev = this.current;
+    } else {
+        if( this.manager.monitoro !== null )
+            this.manager.monitoro.hide();
+    }
+    
+    &#x2F;&#x2F; Show clicked channel.
+    chan.show();
+    this.manager.control.focus();
+    this.current = chan;
+    this.manager.resize();
+    
+    this.manager.trigger( &#x27;channel.selected&#x27;, {
+        &#x27;ns&#x27;: chan.raw,
+        &#x27;chan&#x27;: chan,
+        &#x27;prev&#x27;: prev
+    } );
+};
+
+&#x2F;**
+ * Remove a channel from the UI.
+ * 
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
+    var chan = this.channel(ns);
+    
+    if( this.channels() == 0 &amp;&amp; !chan.hidden ) 
+        return;
+    
+    chan.remove();
+    delete this.chan[chan.raw.toLowerCase()];
+    
+    if( this.current == chan )
+        this.channel_left();
+    
+    var rpos = this.trail.indexOf(chan.namespace);
+    this.trail.splice(rpos, 1);
+};
+
+&#x2F;**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ *&#x2F;
+Chatterbox.Chatbook.prototype.channel_left = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index &lt; 0 )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[--index]);
+        } catch( err ) {
+            index = this.trail.length - 1;
+            nc = this.channel(this.trail[index]);
+        }
+        
+        if( !nc.hidden )
+            break;
+        
+        if( this.manager.settings.developer )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
+};
+
+&#x2F;**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ *&#x2F;
+Chatterbox.Chatbook.prototype.channel_right = function(  ) {
+
+    var ns = this.current.namespace;
+    var index = this.trail.indexOf(ns);
+    
+    if( index == -1 )
+        return;
+    
+    var nc = null;
+    while( true ) {
+        try {
+            nc = this.channel(this.trail[++index]);
+        } catch( err ) {
+            index = 0;
+            nc = this.channel(this.trail[0]);
+        }
+        if( !nc.hidden )
+            break;
+        
+        if( this.manager.settings.developer )
+            break;
+    }
+    
+    this.toggle_channel(nc.namespace);
+
+};
+
+&#x2F;**
+ * Iterate through the different channels.
+ * 
+ * @method each
+ * @param method {Function} Function to call for each channel.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.each = function( method ) {
+    
+    var chan = null;
+    
+    for( var ns in this.chan ) {
+        if( !this.chan.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.chan[ns];
+        
+        if( method( chan.namespace, chan ) === false )
+            break;
+    }
+    
+};
+
+&#x2F;**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.server_message = function( msg, info ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].server_message(msg, info);
+    }
+
+};
+
+&#x2F;**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.log_item = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log_item(msg);
+    }
+
+};
+
+&#x2F;**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param msg {String} Message to display.
+ *&#x2F;
+Chatterbox.Chatbook.prototype.log = function( msg ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].log(msg);
+    }
+
+};
+
+&#x2F;**
+ * Rewrite timestamps for all open channels.
+ * 
+ * @method retime
+ *&#x2F;
+Chatterbox.Chatbook.prototype.retime = function(  ) {
+
+    for( ns in this.chan ) {
+        this.chan[ns].retime();
+    }
+
+};
+
+&#x2F;**
+ * Toggle the developer mode of each channel.
+ *
+ * @method developer
+ *&#x2F;
+Chatterbox.Chatbook.prototype.developer = function(  ) {
+    this.each( function( ns, chan ) {
+        chan.developer();
+    } );
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

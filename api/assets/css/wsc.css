@@ -185,14 +185,12 @@ nav.contents {
     position: fixed;
     top: 0px;
     left: 0px;
-    bottom: 0px;
     background-color: rgba(184, 214, 231, 0.77);
     border-right: 1px solid #ABC9DA;
     height: 100%;
     min-width: 100px;
     width: 13%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     padding: 10px 0px 10px 10px;
 }
 

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;control.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * This object provides an interface for the chat input panel.
+ * 
+ * @class Control
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ *&#x2F;
+Chatterbox.Control = function( ui ) {
+
+    this.manager = ui;
+    this.manager.view.append( Chatterbox.template.control );
+    this.view = this.manager.view.find(&#x27;div.chatcontrol&#x27;);
+    this.ml = false;
+    
+    &#x2F;**
+     * UI elements
+     *&#x2F;
+    this.el = {
+        form: this.view.find(&#x27;form.msg&#x27;),                       &#x2F;&#x2F; Input form
+        i: {                                                    &#x2F;&#x2F; Input field
+            s: this.view.find(&#x27;form.msg input.msg&#x27;),            &#x2F;&#x2F;      Single line input
+            m: this.view.find(&#x27;form.msg textarea.msg&#x27;),         &#x2F;&#x2F;      Multi line input
+            c: null,                                            &#x2F;&#x2F;      Current input element
+            t: this.view.find(&#x27;ul.buttons a[href~=#multiline].button&#x27;)   &#x2F;&#x2F;      Toggle multiline button
+        },
+        brow: {
+            m: this.view.find(&#x27;div.brow&#x27;),                               &#x2F;&#x2F; Control brow
+            b: this.view.find(&#x27;div.brow ul.buttons&#x27;),
+            s: this.view.find(&#x27;div.brow ul.states&#x27;)
+        }
+    };
+    &#x2F;&#x2F; Default input mode is single line.
+    this.el.i.c = this.el.i.s;
+    
+    var ctrl = this;
+    this.el.i.t.click(function( event ) {
+        ctrl.multiline( !ctrl.multiline() );
+        return false;
+    });
+    
+    &#x2F;&#x2F; FORMATTING BUTTONS
+    
+    this.add_button({
+        &#x27;label&#x27;: &#x27;&lt;b&gt;b&lt;&#x2F;b&gt;&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#bold&#x27;,
+        &#x27;title&#x27;: &#x27;Bold text&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], &#x27;&lt;b&gt;&#x27;, &#x27;&lt;&#x2F;b&gt;&#x27;);
+        }
+    });
+    
+    this.add_button({
+        &#x27;label&#x27;: &#x27;&lt;i&gt;i&lt;&#x2F;i&gt;&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#italic&#x27;,
+        &#x27;title&#x27;: &#x27;Italic text&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], &#x27;&lt;i&gt;&#x27;, &#x27;&lt;&#x2F;i&gt;&#x27;);
+        }
+    });
+    
+    this.add_button({
+        &#x27;label&#x27;: &#x27;&lt;u&gt;u&lt;&#x2F;u&gt;&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#underline&#x27;,
+        &#x27;title&#x27;: &#x27;Underline text&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], &#x27;&lt;u&gt;&#x27;, &#x27;&lt;&#x2F;u&gt;&#x27;);
+        }
+    });
+    
+    this.add_button({
+        &#x27;label&#x27;: &#x27;&lt;sup&gt;sup&lt;&#x2F;sup&gt;&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#sup&#x27;,
+        &#x27;title&#x27;: &#x27;Superscript&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], &#x27;&lt;sup&gt;&#x27;, &#x27;&lt;&#x2F;sup&gt;&#x27;);
+        }
+    });
+    
+    this.add_button({
+        &#x27;label&#x27;: &#x27;&lt;sub&gt;sub&lt;&#x2F;sub&gt;&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#sub&#x27;,
+        &#x27;title&#x27;: &#x27;Subscript&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], &#x27;&lt;sub&gt;&#x27;, &#x27;&lt;&#x2F;sub&gt;&#x27;);
+        }
+    });
+
+};
+
+&#x2F;&#x2F; Lifted from superdAmn.
+&#x2F;&#x2F; SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+Chatterbox.Control.prototype.surroundtext = function(tf, left, right){
+    &#x2F;&#x2F; Thanks, Zikes
+    var tmpScroll     = tf.scrollTop;
+    var t             = tf.value, s = tf.selectionStart, e = tf.selectionEnd;
+    var selectedText  = tf.value.substring(s,e);
+    tf.value          = t.substring(0,s) + left + selectedText + right + t.substring(e);
+    tf.selectionStart = s + left.length;
+    tf.selectionEnd   = s + left.length + selectedText.length;
+    tf.scrollTop      = tmpScroll;
+    tf.focus();
+};
+
+
+&#x2F;**
+ * Steal the lime light. Brings the cursor to the input panel.
+ * 
+ * @method focus
+ *&#x2F;
+Chatterbox.Control.prototype.focus = function( ) {
+    this.el.i.c.focus();
+};
+
+&#x2F;**
+ * Resize the control panel.
+ *
+ * @method resize
+ *&#x2F;
+Chatterbox.Control.prototype.resize = function( ) {
+    w = this.manager.view.width();
+    this.view.css({
+        width: &#x27;100%&#x27;});
+    &#x2F;&#x2F; Form dimensionals.
+    this.el.form.css({&#x27;width&#x27;: this.manager.view.width() - 20});
+    this.el.i.s.css({&#x27;width&#x27;: this.manager.view.width() - 100});
+    this.el.i.m.css({&#x27;width&#x27;: this.manager.view.width() - 90});
+};
+
+
+&#x2F;**
+ * Get the height of the input panel.
+ * 
+ * @method height
+ *&#x2F;
+Chatterbox.Control.prototype.height = function( ) {
+    var h = this.view.outerHeight();
+    return h;
+};
+
+
+&#x2F;**
+ * Set the handlers for the UI input.
+ *
+ * @method set_handlers
+ * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
+ *   &#x60;keypress&#x60;.
+ * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
+ *   &#x60;submit&#x60;.
+ *&#x2F;
+Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
+    this.el.i.s.keydown( onkeypress || this._onkeypress );
+    this.el.i.m.keydown( onkeypress || this._onkeypress );
+    this.el.form.submit( onsubmit || this._onsubmit );
+};
+
+&#x2F;**
+ * Set or get multiline input mode.
+ * 
+ * @method multiline
+ * @param [on] {Boolean} Use multiline input?
+ * @return {Boolean} Current mode.
+ *&#x2F;
+Chatterbox.Control.prototype.multiline = function( on ) {
+
+    if( on == undefined || this.ml == on )
+        return this.ml;
+    
+    this.ml = on;
+    var off = ( this.ml ? &#x27;s&#x27; : &#x27;m&#x27; );
+    on = ( this.ml ? &#x27;m&#x27; : &#x27;s&#x27; );
+    
+    this.el.i[off].css(&#x27;display&#x27;, &#x27;none&#x27;);
+    this.el.i[on].css(&#x27;display&#x27;, &#x27;inline-block&#x27;);
+    this.el.i.c = this.el.i[on];
+    this.manager.resize();
+    return this.ml;
+
+};
+
+Chatterbox.Control.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        &#x27;label&#x27;: &#x27;New&#x27;,
+        &#x27;icon&#x27;: false,
+        &#x27;href&#x27;: &#x27;#button&#x27;,
+        &#x27;title&#x27;: &#x27;Button.&#x27;,
+        &#x27;handler&#x27;: function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = &#x27; iconic &#x27; + options.icon;
+    } else {
+        options.icon = &#x27; text&#x27;;
+    }
+    
+    this.el.brow.b.append(Chatterbox.render(&#x27;brow_button&#x27;, options));
+    var button = this.el.brow.b.find(&#x27;a[href=&#x27;+options.href+&#x27;].button&#x27;);
+    
+    button.click( function( event ) {
+        options[&#x27;handler&#x27;]();
+        return false;
+    } );
+    
+    return button;
+
+};
+
+Chatterbox.Control.prototype.add_state = function( options ) {
+
+    options = Object.extend( {
+        &#x27;ref&#x27;: &#x27;state&#x27;,
+        &#x27;label&#x27;: &#x27;some state&#x27;
+    }, ( options || {} ) );
+    
+    var state = this.el.brow.s.find( &#x27;li#&#x27; + options.ref );
+    
+    if( state.length == 0 ) {
+        this.el.brow.s.append(Chatterbox.render(&#x27;brow_state&#x27;, options));
+        return this.el.brow.s.find(&#x27;li#&#x27; + options.ref);
+    }
+    
+    state.html( options.label );
+    return state;
+
+};
+
+Chatterbox.Control.prototype.rem_state = function( ref ) {
+
+    return this.el.brow.s.find( &#x27;li#&#x27; + ref ).remove();
+
+};
+
+Chatterbox.Control.prototype._onkeypress = function( event ) {};
+Chatterbox.Control.prototype._onsubmit = function( event ) {};
+
+&#x2F;**
+ * Get the last word from the input box.
+ * 
+ * @method chomp
+ * @return {String} The last word in the input box.
+ *&#x2F;
+Chatterbox.Control.prototype.chomp = function( ) {
+    var d = this.el.i.c.val();
+    var i = d.lastIndexOf(&#x27; &#x27;);
+    
+    if( i == -1 ) {
+        this.el.i.c.val(&#x27;&#x27;);
+        return d;
+    }
+    
+    var chunk = d.slice(i + 1);
+    this.el.i.c.val( d.slice(0, i) );
+    
+    if( chunk.length == 0 )
+        return this.chomp();
+    
+    return chunk;
+};
+
+&#x2F;**
+ * Append text to the end of the input box.
+ * 
+ * @method unchomp
+ * @param data {String} Text to append.
+ *&#x2F;
+Chatterbox.Control.prototype.unchomp = function( data ) {
+    var d = this.el.i.c.val();
+    if( !d )
+        this.el.i.c.val(data);
+    else
+        this.el.i.c.val(d + &#x27; &#x27; + data);
+};
+
+&#x2F;**
+ * Get the text in the input box.
+ * 
+ * @method get_text
+ * @return {String} The text currently in the input box.
+ *&#x2F;
+Chatterbox.Control.prototype.get_text = function( text ) {
+
+    if( text == undefined )
+        return this.el.i.c.val();
+    this.el.i.c.val( text || &#x27;&#x27; );
+    return this.el.i.c.val();
+
+};
+
+&#x2F;**
+ * Set the text in the input box.
+ * 
+ * @method set_text
+ * @param text {String} The text to put in the input box.
+ *&#x2F;
+Chatterbox.Control.prototype.set_text = function( text ) {
+
+    this.el.i.c.val( text || &#x27;&#x27; );
+
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

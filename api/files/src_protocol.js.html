@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;protocol.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Parser for dAmn-like protocols.
+ * 
+ * @class Protocol
+ * @constructor
+ * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
+ *&#x2F;
+wsc.Protocol = function( mparser ) {
+
+    this.mparser = mparser || new wsc.MessageParser;
+    this.chains = [[&quot;recv&quot;, &quot;admin&quot;]];
+    
+    &#x2F;&#x2F; Mappings for every packet.
+    this.maps = {
+        &#x27;chatserver&#x27;: [&#x27;version&#x27;],
+        &#x27;login&#x27;: [&#x27;username&#x27;, [&#x27;e&#x27;], &#x27;data&#x27;],
+        &#x27;join&#x27;: [&#x27;ns&#x27;, [&#x27;e&#x27;] ],
+        &#x27;part&#x27;: [&#x27;ns&#x27;, [&#x27;e&#x27;, &#x27;*r&#x27;] ],
+        &#x27;property&#x27;: [&#x27;ns&#x27;, [&#x27;p&#x27;, &#x27;by&#x27;, &#x27;ts&#x27;], &#x27;*value&#x27; ],
+        &#x27;recv_msg&#x27;: [null, [[&#x27;from&#x27;, &#x27;user&#x27;]], &#x27;*message&#x27;],
+        &#x27;recv_npmsg&#x27;: [null, [[&#x27;from&#x27;, &#x27;user&#x27;]], &#x27;message&#x27;],
+        &#x27;recv_action&#x27;: [null, [&#x27;s&#x27;, [&#x27;from&#x27;, &#x27;user&#x27;]], &#x27;*message&#x27;],
+        &#x27;recv_join&#x27;: [&#x27;user&#x27;, [&#x27;s&#x27;], &#x27;*info&#x27;],
+        &#x27;recv_part&#x27;: [&#x27;user&#x27;, [&#x27;s&#x27;, &#x27;r&#x27;]],
+        &#x27;recv_privchg&#x27;: [&#x27;user&#x27;, [&#x27;s&#x27;, &#x27;by&#x27;, &#x27;pc&#x27;]],
+        &#x27;recv_kicked&#x27;: [&#x27;user&#x27;, [[&#x27;i&#x27;, &#x27;s&#x27;], &#x27;by&#x27;], &#x27;*r&#x27;],
+        &#x27;recv_admin_create&#x27;: [null, [&#x27;p&#x27;, [&#x27;by&#x27;, &#x27;user&#x27;], [&#x27;name&#x27;, &#x27;pc&#x27;], &#x27;privs&#x27;]],
+        &#x27;recv_admin_update&#x27;: [null, [&#x27;p&#x27;, [&#x27;by&#x27;, &#x27;user&#x27;], [&#x27;name&#x27;, &#x27;pc&#x27;], &#x27;privs&#x27;]],
+        &#x27;recv_admin_rename&#x27;: [null, [&#x27;p&#x27;, [&#x27;by&#x27;, &#x27;user&#x27;], &#x27;prev&#x27;, [&#x27;name&#x27;, &#x27;pc&#x27;]]],
+        &#x27;recv_admin_move&#x27;: [null, [&#x27;p&#x27;, [&#x27;by&#x27;, &#x27;user&#x27;], &#x27;prev&#x27;, [&#x27;name&#x27;, &#x27;pc&#x27;], [&#x27;n&#x27;, &#x27;affected&#x27;]]],
+        &#x27;recv_admin_remove&#x27;: [null, [&#x27;p&#x27;, [&#x27;by&#x27;, &#x27;user&#x27;], [&#x27;name&#x27;, &#x27;pc&#x27;], [&#x27;n&#x27;, &#x27;affected&#x27;]]],
+        &#x27;recv_admin_show&#x27;: [null, [&#x27;p&#x27;], &#x27;info&#x27;],
+        &#x27;recv_admin_showverbose&#x27;: [null, [&#x27;p&#x27;], &#x27;info&#x27;],
+        &#x27;recv_admin_privclass&#x27;: [null, [&#x27;p&#x27;, &#x27;e&#x27;], &#x27;command&#x27;],
+        &#x27;kicked&#x27;: [&#x27;ns&#x27;, [[&#x27;by&#x27;, &#x27;user&#x27;]], &#x27;*r&#x27;],
+        &#x27;ping&#x27;: [],
+        &#x27;disconnect&#x27;: [null, [&#x27;e&#x27;]],
+        &#x27;send&#x27;: [&#x27;ns&#x27;, [&#x27;e&#x27;]],
+        &#x27;kick&#x27;: [&#x27;ns&#x27;, [[&#x27;u&#x27;, &#x27;user&#x27;], &#x27;e&#x27;]],
+        &#x27;get&#x27;: [&#x27;ns&#x27;, [&#x27;p&#x27;, &#x27;e&#x27;]],
+        &#x27;set&#x27;: [&#x27;ns&#x27;, [&#x27;p&#x27;, &#x27;e&#x27;]],
+        &#x27;kill&#x27;: [&#x27;ns&#x27;, [&#x27;e&#x27;]],
+        &#x27;unknown&#x27;: [null, null, null, &#x27;packet&#x27;],
+    };
+    
+    &#x2F;&#x2F; Mapping callbacks!
+    var p = this;
+    this.mapper = {
+        &quot;recv&quot;: function( packet, args, mapping ) {
+            args.ns = packet.param;
+            return p.map(packet.sub[0], args, mapping);
+        }
+        
+    };
+    &#x2F;&#x2F;  &#x27;event&#x27;: [ template, monitor, global ]
+    this.messages = {
+        &#x27;chatserver&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Connected to llama {version} *&lt;&#x2F;span&gt;&#x27;, false, true ],
+        &#x27;login&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Login as {username}: &quot;{e}&quot; *&lt;&#x2F;span&gt;&#x27;, false, true],
+        &#x27;join&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Join {ns}: &quot;{e}&quot; *&lt;&#x2F;span&gt;&#x27;, true],
+        &#x27;part&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Part {ns}: &quot;{e}&quot; * &lt;em&gt;{r}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;, true],
+        &#x27;property&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Got {p} for {ns} *&lt;&#x2F;span&gt;&#x27;, true],
+        &#x27;recv_msg&#x27;: [&#x27;&lt;span class=&quot;cmsg user u-{user}&quot;&gt;&lt;strong&gt;&amp;lt;{user}&amp;gt;&lt;&#x2F;strong&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;cmsg u-{user}&quot;&gt;{message}&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_npmsg&#x27;: [&#x27;&lt;span class=&quot;cmsg user u-{user}&quot;&gt;&lt;strong&gt;&amp;lt;{user}&amp;gt;&lt;&#x2F;strong&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;cmsg u-{user}&quot;&gt;{message}&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_action&#x27;: [&#x27;&lt;span class=&quot;caction user u-{user}&quot;&gt;&lt;em&gt;* {user}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;caction u-{user}&quot;&gt;{message}&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_join&#x27;: [&#x27;&lt;span class=&quot;cevent bg&quot;&gt;** {user} has joined *&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_part&#x27;: [&#x27;&lt;span class=&quot;cevent bg&quot;&gt;** {user} has left * &lt;em&gt;{r}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_privchg&#x27;: [&#x27;&lt;span class=&quot;cevent&quot;&gt;** {user} has been made a member of {pc} by {by} *&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_kicked&#x27;: [&#x27;&lt;span class=&quot;cevent&quot;&gt;** {user} has been kicked by {by} * &lt;em&gt;{r}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_create&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** Privilege class {pc} has been created by {user} * &lt;em&gt;{privs}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_update&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** Privilege class {pc} has been updated by {user} * &lt;em&gt;{privs}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_rename&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** Privilege class {prev} has been renamed to {pc} by {user} *&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_move&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** All members of {prev} have been moved to {pc} by {user} * &lt;em&gt;{affected} affected user(s)&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_remove&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** Privilege class {pc} has been removed by {user} * &lt;em&gt;{affected} affected user(s)&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;recv_admin_show&#x27;: null,
+        &#x27;recv_admin_showverbose&#x27;: null,
+        &#x27;recv_admin_privclass&#x27;: [&#x27;&lt;span class=&quot;cevent admin&quot;&gt;** Admin command &quot;{command}&quot; failed * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;kicked&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** You have been kicked by {user} * &lt;em&gt;{r}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;ping&#x27;: null, &#x2F;&#x2F;[&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Ping...&lt;&#x2F;span&gt;&#x27;, true],
+        &#x27;disconnect&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** You have been disconnected * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;, false, true],
+        &#x2F;&#x2F; Stuff here is errors, yes?
+        &#x27;send&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Send error: &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;kick&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Could not kick {user} * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;get&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Could not get {p} info for {ns} * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;set&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Could not set {p} * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;kill&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Kill error * &lt;em&gt;{e}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;unknown&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Received unknown packet in {ns} * &lt;em&gt;{packet}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;, true],
+    };
+
+};
+
+&#x2F;**
+ * Extend the protocol maps.
+ * 
+ * @method extend_maps
+ * @param maps {Object} An object containing packet mappings.
+ *&#x2F;
+wsc.Protocol.prototype.extend_maps = function( maps ) {
+
+    for( key in maps ) {
+        this.maps[key] = maps[key];
+    }
+
+};
+
+&#x2F;**
+ * Extend the protocol message renderers.
+ * 
+ * @method extend_messages
+ * @param messages {Object} An object containing packet rendering methods.
+ *&#x2F;
+wsc.Protocol.prototype.extend_messages = function( messages ) {
+
+    for( key in messages ) {
+        this.messages[key] = messages[key];
+    }
+
+};
+
+&#x2F;**
+ * Parse a packet.
+ * 
+ * @method parse
+ * @param packet {Object} Packet object.
+ *&#x2F;
+wsc.Protocol.prototype.parse = function( packet ) {
+
+    name = this.event( packet );
+    
+    if( !(name in this.maps) ) {
+        console.log(&#x27;unknown: &#x27;,name);
+        console.log(this.maps);
+        mapping = this.maps.unknown;
+        name = &#x27;unknown&#x27;;
+    } else {
+        mapping = this.maps[name];
+    }
+    
+    var args = { &#x27;name&#x27;: name, &#x27;pkt&#x27;: packet, &#x27;ns&#x27;: null };
+    cmd = packet.cmd;
+    
+    if( this.mapper[cmd] )
+        this.mapper[cmd](packet, args, mapping);
+    else
+        this.map(packet, args, mapping);
+    
+    return args;
+
+};
+
+&#x2F;**
+ * Get the event name of a packet.
+ * 
+ * @method event
+ * @param pkt {Object} Packet object.
+ * @return {String} Packet event name.
+ *&#x2F;
+wsc.Protocol.prototype.event = function( pkt ) {
+
+    var name = pkt[&quot;cmd&quot;];
+    var cmds = null;
+    for(var index in this.chains) {
+        
+        cmds = this.chains[index];
+        
+        if(cmds[0] != name)
+            continue;
+        
+        var sub = pkt.sub[0];
+        name = name + &#x27;_&#x27; + sub[&quot;cmd&quot;];
+        
+        if(cmds.length &gt; 1 &amp;&amp; sub[&quot;param&quot;] != undefined) {
+            if(cmds[1] == sub[&quot;cmd&quot;])
+                return name + &#x27;_&#x27; + sub[&quot;param&quot;];
+        }
+    
+    }
+    
+    return name;
+
+};
+
+&#x2F;**
+ * Map a packet to an event object.
+ * 
+ * @method map
+ * @param packet {Object} Packet object.
+ * @param event {Object} Event data object.
+ * @param mapping {Object} Packet mapping data.
+ *&#x2F;
+wsc.Protocol.prototype.map = function( packet, event, mapping ) {
+
+    for(var i in mapping) {
+        if( mapping[i] == null)
+            continue;
+        
+        var key = mapping[i];
+        var skey = key;
+        switch(parseInt(i)) {
+            &#x2F;&#x2F; e.&lt;map[event][0]&gt; = packet.param
+            case 0:
+                event[key] = packet[&#x27;param&#x27;];
+                break;
+            &#x2F;&#x2F; for n in map[event][1]: e.&lt;map[event][1][n]&gt; = packet.arg.&lt;map[event][1][n]&gt;
+            case 1:
+                if( mapping[1] instanceof Array ) {
+                    for( var n in mapping[1] ) {
+                        key = mapping[1][n];
+                        if( key instanceof Array ) {
+                            event[key[1]] = packet[&#x27;arg&#x27;][key[0]];
+                            skey = key[1];
+                        } else {
+                            var k = key[0] == &#x27;*&#x27; ? key.slice(1) : key;
+                            event[key] = packet[&#x27;arg&#x27;][k] || &#x27;&#x27;;
+                            skey = key;
+                        }
+                    }
+                }
+                
+                if( typeof mapping[1] == &#x27;string&#x27; ) {
+                    &#x2F;&#x2F; Here we want to accept the packet args as they are. All of them.
+                    event[key] = packet.arg.slice(0);
+                }
+                break;
+            &#x2F;&#x2F; e.&lt;map[event][2]&gt; = packet.body
+            case 2:
+                if( key instanceof Array ) {
+                    packet.sub[0].sub = packet.sub.slice(1);
+                    this.map(packet.sub[0], event, key);
+                } else {
+                    event[key] = packet[&#x27;body&#x27;];
+                }
+                break;
+            case 3:
+                event[key] = packet.raw;
+                break;
+        }
+        
+        if( skey[0] != &#x27;*&#x27; )
+            continue;
+        
+        k = skey.slice(1);
+        val = this.mparser.parse( event[skey] );
+        event[k] = val;
+    }
+
+};
+
+&#x2F;**
+ * Render a protocol message in the given format.
+ * 
+ * @method render
+ * @param format {String} Format to render the event in.
+ * @param event {Object} Event data.
+ * @return {String} Rendered event.
+ *&#x2F;
+wsc.Protocol.prototype.render = function( event, format ) {
+
+    var msgm = this.messages[event.name];
+    
+    if( !msgm )
+        return &#x27;&#x27;;
+    
+    var msg = msgm[0];
+    var d = &#x27;&#x27;;
+    
+    for( key in event ) {
+        if( !event.hasOwnProperty(key) || key == &#x27;pkt&#x27; )
+            continue;
+        
+        d = event[key];
+        
+        if( key == &#x27;ns&#x27; || key == &#x27;sns&#x27; ) {
+            key = &#x27;ns&#x27;;
+            d = event[&#x27;sns&#x27;];
+        }
+        if( d.hasOwnProperty(&#x27;_parser&#x27;) ) {
+            switch(format) {
+                case &#x27;text&#x27;:
+                    d = d.text();
+                    break;
+                case &#x27;html&#x27;:
+                    d = d.html();
+                    break;
+                case &#x27;ansi&#x27;:
+                    d = d.ansi();
+                    break;
+                default:
+                    d = d.text();
+                    break;
+            }
+        }
+        msg = replaceAll(msg, &#x27;{&#x27;+key+&#x27;}&#x27;, d);
+    }
+    
+    return msg;
+
+};
+
+
+wsc.Protocol.prototype.log = function( client, event ) {
+
+    msgm = this.messages[event.name];
+    
+    if( !msgm )
+        return;
+    
+    if( event.s == &#x27;0&#x27; ) {
+        return;
+    }
+    
+    event.html = this.render(event, &#x27;html&#x27;);
+    
+    try {
+        if( !msgm[2] ) {
+            if( !msgm[1] ) {
+                client.ui.channel(event.ns).log_item(event);
+            } else {
+                client.ui.channel(client.mns).log_item(event);
+            }
+        } else {
+            client.ui.log_item(event);
+        }
+    } catch(err) {
+        try {
+            client.ui.channel(client.mns).server_message(&#x27;Failed to log for &#x27; + event.sns, event.html);
+        } catch( err ) {
+            console.log(&#x27;&gt;&gt; Failed to log message for &#x27; + event.sns + &#x27;::&#x27;);
+            console.log(&#x27;&gt;&gt; &#x27; + event.html);
+        }
+    }
+
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

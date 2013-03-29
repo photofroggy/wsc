@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;emotes.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+wsc.dAmn.Emotes = function( client, storage, settings ) {
+
+    settings.emotes.emote = {};
+    settings.emotes.page = null;
+    settings.emotes.fint = null;
+    settings.emotes.notice = null;
+    settings.emotes.fetching = false;
+    settings.emotes.loaded = false;
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
+        &#x27;event&#x27;: {
+            &#x27;select&#x27;: function( item ) { settings.emotes.select( item ); },
+            &#x27;reload&#x27;: function(  ) { settings.emotes.fetch(); }
+        }
+    }, settings );
+    settings.emotes.picker.build();
+    settings.emotes.picker.hide();
+    
+    client.ui.control.add_button( {
+        &#x27;label&#x27;: &#x27;&#x27;,
+        &#x27;icon&#x27;: &#x27;user&#x27;,
+        &#x27;href&#x27;: &#x27;#emotes&#x27;,
+        &#x27;title&#x27;: &#x27;Emote picker.&#x27;,
+        &#x27;handler&#x27;: function() {
+            if( settings.emotes.picker.window.css(&#x27;display&#x27;) == &#x27;none&#x27; ) {
+                settings.emotes.picker.show();
+            } else {
+                settings.emotes.picker.close();
+            }
+        }
+    });
+    
+    settings.emotes.configure_page = function( event, ui ) {
+    
+        var page = event.settings.page(&#x27;Emotes&#x27;);
+        settings.emotes.page = page;
+        
+        var orig = {};
+        orig.on = settings.emotes.on;
+        var stat = &#x27;&#x27;;
+        if( orig.on ) {
+            if( !settings.emotes.loaded || settings.emotes.fetching )
+                stat = &#x27;&lt;em&gt;Fetching emotes...&lt;&#x2F;em&gt;&#x27;;
+            else
+                stat = &#x27;&lt;em&gt;Emotes loaded.&lt;&#x2F;em&gt;&#x27;;
+        }
+        
+        page.item(&#x27;Form&#x27;, {
+            &#x27;ref&#x27;: &#x27;switch&#x27;,
+            &#x27;title&#x27;: &#x27;Enable Emotes&#x27;,
+            &#x27;text&#x27;: &#x27;Here you can turn custom emotes on and off.&#x27;,
+            &#x27;fields&#x27;: [
+                [&#x27;Checkbox&#x27;, {
+                    &#x27;ref&#x27;: &#x27;enabled&#x27;,
+                    &#x27;items&#x27;: [ { &#x27;value&#x27;: &#x27;yes&#x27;, &#x27;title&#x27;: &#x27;On&#x27;, &#x27;selected&#x27;: orig.on } ]
+                }]
+            ],
+            &#x27;event&#x27;: {
+                &#x27;change&#x27;: function( event ) {
+                    settings.emotes.on = (event.data.enabled.indexOf(&#x27;yes&#x27;) != -1);
+                    settings.emotes.picker.state( settings.emotes.on );
+                    if( settings.emotes.on ) {
+                        settings.emotes.fetch();
+                        return;
+                    }
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
+                },
+                &#x27;save&#x27;: function( event ) {
+                    orig.on = settings.emotes.on;
+                    if( !settings.emotes.on ) {
+                        settings.emotes.picker.loading(&#x27;Disabled&#x27;);
+                    } else {
+                        if( !settings.emotes.fetching ) {
+                            settings.emotes.picker.loaded();
+                        }
+                    }
+                },
+                &#x27;close&#x27;: function( event ) {
+                    settings.emotes.on = orig.on;
+                    settings.load();
+                    settings.emotes.page = null;
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
+                }
+            }
+        });
+    
+    };
+    
+    client.ui.on(&#x27;settings.open.ran&#x27;, settings.emotes.configure_page);
+    
+    settings.emotes.fetch = function(  ) {
+        if( settings.emotes.loaded ) {
+            settings.emotes.picker.loading(&#x27;Reloading...&#x27;);
+        } else {
+            settings.emotes.picker.loading();
+        }
+        settings.emotes.fetching = true;
+        jQuery.getJSON(&#x27;http:&#x2F;&#x2F;www.thezikes.org&#x2F;publicemotes.php?format=jsonp&amp;jsoncallback=?&amp;&#x27; + (new Date()).getDay(), function(data){
+            settings.emotes.fetching = false;
+            settings.emotes.emote = data;
+            
+            if( !settings.emotes.loaded ) {
+                if( settings.emotes.on ) {
+                    client.ui.pager.notice({
+                        &#x27;ref&#x27;: &#x27;emotes-loaded&#x27;,
+                        &#x27;heading&#x27;: &#x27;Emote CLOUD&#x27;,
+                        &#x27;content&#x27;: &#x27;Emoticons from zike\&#x27;s Emote CLOUD have been loaded.&#x27;
+                    }, false, 5000, true);
+                }
+            }
+            
+            settings.emotes.sort();
+            settings.emotes.loaded = true;
+            settings.emotes.picker.loaded();
+            settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        },
+        function(  ) {
+            settings.emotes.picker.loaded();
+            return false;
+        });
+    };
+    
+    settings.emotes.swap = function( data, done ) {
+    
+        if( !settings.emotes.on ) {
+            done( data );
+            return;
+        }
+        
+        var codes = data.input.match(&#x2F;:([\S]+):&#x2F;g);
+        var code = &#x27;&#x27;;
+        var ci = -1;
+        
+        var fcs = function( em ) {
+            return em != codes[ci];
+        };
+        
+        for( ci in codes ) {
+            
+            code = codes[ci];
+            codes = codes.filter( fcs );
+            
+            if( !settings.emotes.emote.hasOwnProperty(code) )
+                continue;
+            
+            data.input = replaceAll(
+                data.input, code,
+                &#x27;:thumb&#x27; + settings.emotes.emote[code][&#x27;devid&#x27;] + &#x27;:&#x27;
+            );
+        }
+        
+        data.input = replaceAll( data.input, &#x27;:B&#x27;, &#x27;:bucktooth:&#x27; );
+        done( data );
+    
+    };
+    
+    settings.emotes.prepare = function( item ) {
+    
+        item = replaceAll( item, &#x27;&amp;&#x27;, &#x27;&amp;amp;&#x27; );
+        item = replaceAll( item, &#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27; );
+        item = replaceAll( item, &#x27;&gt;&#x27;, &#x27;&amp;gt;&#x27; );
+        return replaceAll( item, &#x27;&quot;&#x27;, &#x27;&amp;quot;&#x27; );
+    
+    };
+    
+    settings.emotes.repair = function( item ) {
+    
+        item = replaceAll( item, &#x27;&amp;quot;&#x27;, &#x27;&quot;&#x27; );
+        item = replaceAll( item, &#x27;&amp;lt;&#x27;, &#x27;&lt;&#x27; );
+        item = replaceAll( item, &#x27;&amp;gt;&#x27;, &#x27;&gt;&#x27; );
+        return replaceAll( item, &#x27;&amp;amp;&#x27;, &#x27;&amp;&#x27; );
+    
+    };
+    
+    settings.emotes.sort = function(  ) {
+    
+        var map = [
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [],
+            [], [], [], [], [], [], 
+        ];
+        var alpha = &#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZ#&#x27;;
+        var emote = null;
+        var mitem = null;
+        var prted = false;
+        var idex = -1;
+        var debug = true;
+        
+        &#x2F;&#x2F; First part we create our maps for our page items.
+        for( var i in settings.emotes.emote ) {
+            if( !settings.emotes.emote.hasOwnProperty(i) )
+                continue;
+            
+            emote = settings.emotes.emote[i];
+            var t = replaceAll(emote.img.split(&#x27;&#x2F;&#x27;)
+                .pop().split(&#x27;.&#x27;).shift(),
+                &#x27;__&#x27;, &#x27; &#x27;);
+            t = replaceAll(t, &#x27;_&#x27;, &#x27; &#x27;);
+            
+            var eimg = wsc.dAmn.Emotes.Thumb( emote.devid, {
+                &#x27;user&#x27;: emote.by,
+                &#x27;title&#x27;: t,
+                &#x27;otitle&#x27;: &#x27;created by &#x27; + emote.by,
+                &#x27;aclose&#x27;: &#x27;&#x27;,
+                &#x27;anchor&#x27;: &#x27;&#x27;,
+                &#x27;thumb&#x27;: emote.img
+            } );
+            
+            mitem = {
+                &#x27;value&#x27;: &#x27;&lt;span class=&quot;thumb&quot;&gt;&#x27; + eimg +
+                    &#x27;&lt;&#x2F;span&gt;&lt;span class=&quot;value&quot;&gt;&#x27; +
+                    settings.emotes.prepare(emote.code) + &#x27;&lt;&#x2F;span&gt;&#x27;,
+                &#x27;title&#x27;: &#x27;created by &#x27; + emote.by,
+                &#x27;html&#x27;: true
+            };
+            
+            idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
+            
+            if( idex == -1 )
+                idex = alpha.indexOf( &#x27;#&#x27; );
+            
+            map[idex].push(mitem);
+        }
+        
+        var sorter = function( a, b ) {
+            return caseInsensitiveSort( a.value, b.value );
+        };
+        
+        var dp = settings.emotes.picker.page( &#x27;#&#x27; );
+        var page = null;
+        
+        &#x2F;&#x2F; Now we sort all of the emotes on each page.
+        for( var i = 0; i &lt; alpha.length; i++ ) {
+            map[i].sort( sorter );
+            page = settings.emotes.picker.page( alpha[i], dp );
+            page.options.items = map[i];
+        }
+        
+        &#x2F;&#x2F; Display the newly sorted emotes.
+        settings.emotes.picker.refresh();
+    
+    };
+    
+    settings.emotes.select = function( item ) {
+        client.ui.control.set_text(
+            client.ui.control.get_text( ) + settings.emotes.repair(item)
+        );
+    };
+    
+    client.middle(&#x27;send.msg&#x27;, settings.emotes.swap);
+    client.middle(&#x27;send.action&#x27;, settings.emotes.swap);
+    client.middle(&#x27;send.kick&#x27;, settings.emotes.swap);
+    client.middle(&#x27;send.set&#x27;, settings.emotes.swap);
+    
+    if( !settings.emotes.on )
+        return;
+    
+    settings.emotes.fetch();
+
+};
+
+wsc.dAmn.Emotes.Tablumps = function( data ) {
+
+    var d = {
+        &#x27;id&#x27;: data[0],
+        &#x27;user&#x27;: data[2],
+        &#x27;thumb&#x27;: data[5],
+        &#x27;server&#x27;: parseInt(data[4]),
+        &#x27;flags&#x27;: data[6].split(&#x27;:&#x27;),
+        &#x27;dimensions&#x27;: &#x27;&#x27;,
+        &#x27;title&#x27;: &#x27;&#x27;,
+        &#x27;anchor&#x27;: &#x27;&#x27;,
+        &#x27;otitle&#x27;: data[1]
+    };
+    
+    d.flags[0] = parseInt(d.flags[0]);
+    d.flags[1] = parseInt(d.flags[1]);
+    d.flags[2] = parseInt(d.flags[2]);
+    
+    var isgif = d.thumb.match( &#x2F;\.gif$&#x2F;i );
+    var dim = data[3].split(&#x27;x&#x27;); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
+    var tw, th;
+    var lu = d.user.substring(1).replace(&#x2F;^[^a-zA-Z0-9\-_]&#x2F;, &#x27;&#x27;);
+    &#x2F;&#x2F; Deviation title.
+    var ut = (d.otitle.replace(&#x2F;[^A-Za-z0-9]+&#x2F;g, &#x27;-&#x27;)
+        .replace(&#x2F;^-+&#x2F;, &#x27;&#x27;)
+        .replace(&#x2F;-+$&#x2F;, &#x27;&#x27;) || &#x27;-&#x27;) + &#x27;-&#x27; + d.id;
+    
+    &#x2F;&#x2F; Deviation link tag. First segment only.
+    d.title = d.otitle + &#x27; by &#x27; + d.user + &#x27;, &#x27; + w + &#x27;x&#x27; + h;
+    d.anchor = &#x27;&lt;a target=&quot;_blank&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + lu + &#x27;.deviantart.com&#x2F;art&#x2F;&#x27; + ut + &#x27;&quot; title=&quot;&#x27; + d.title + &#x27;&quot;&gt;&#x27;;
+    
+    if( w&#x2F;h &gt; 1) {
+        th = parseInt((h * 100) &#x2F; w);
+        tw = 100;
+    } else {
+        tw = parseInt((w * 100) &#x2F; h);
+        th = 100;
+    }
+    
+    if( tw &gt; w || th &gt; h ) {
+        tw = w;
+        th = h;
+    }
+    
+    d.dimensions = &#x27;width=&quot;&#x27; + tw + &#x27;&quot; height=&quot;&#x27; + th + &#x27;&quot;&#x27;;
+    d.flags.push(isgif &amp;&amp; ( w &gt; 200 || h &gt; 200 ));
+    
+    return wsc.dAmn.Emotes.Thumb( d.id, d );
+
+};
+
+wsc.dAmn.Emotes.Thumb = function( id, deviation ) {
+
+    deviation = Object.extend( {
+        &#x27;title&#x27;: &#x27;deviation by user&#x27;,
+        &#x27;anchor&#x27;: &#x27;&lt;a href=&quot;http:&#x2F;&#x2F;url.com&#x2F;devation__by_user.gif&quot; target=&quot;_blank&quot; title=&quot;deviation by user&quot;&gt;&#x27;,
+        &#x27;aclose&#x27;: &#x27;&lt;&#x2F;a&gt;&#x27;,
+        &#x27;thumb&#x27;: &#x27;fs26&#x2F;f&#x2F;2008&#x2F;160&#x2F;b&#x2F;2&#x2F;deviation_by_username.gif&#x27;,
+        &#x27;otitle&#x27;: &#x27;deviation&#x27;,
+        &#x27;flags&#x27;: false,
+        &#x27;dimensions&#x27;: &#x27;&#x27;,
+        &#x27;server&#x27;: &#x27;1&#x27;,
+    }, ( deviation || {} ) );
+    var shadow = false;
+    var isgif = deviation.thumb.match( &#x2F;\.gif$&#x2F;i );
+    
+    if( deviation.flags ) {
+        &#x2F;&#x2F; Time to go through the flags.
+        if( deviation.flags[1] &gt; 0 )
+            return deviation.anchor + &#x27;[mature deviation: &#x27; + deviation.otitle + &#x27;]&#x27; + deviation.aclose;
+        
+        if( deviation.flags[2] &gt; 0 )
+            return deviation.anchor + &#x27;[deviation: &#x27; + deviation.otitle + &#x27;]&#x27; + deviation.aclose;
+    
+        if( deviation.flags[3] )
+            return deviation.anchor + &#x27;[deviation: &#x27; + d.otitle + &#x27;]&#x27; + deviation.aclose;
+        
+        shadow = (deviation.flags[0] == 0);
+    }
+    
+    
+    var path = &#x27;&#x27;;
+    
+    if( isgif ) {
+        var f = deviation.thumb.replace(&#x2F;:&#x2F;, &#x27;&#x2F;&#x27;);
+        path = &#x27;http:&#x2F;&#x2F;fc0&#x27; + deviation.server + &#x27;.deviantart.net&#x2F;&#x27; + f;
+        var det = f.split(&#x27;&#x2F;&#x27;);
+        if( det.length &gt; 1 ) {
+            det = det[&#x27;.&#x27;];
+            if( det &amp;&amp; det.length &gt; 2 )
+                path = &#x27;http:&#x2F;&#x2F;&#x27; + deviation.thumb;
+        }
+        return deviation.anchor + &#x27;&lt;img class=&quot;thumb&quot; title=&quot;&#x27; + deviation.title +
+            &#x27;&quot;&#x27; + deviation.dimensions + &#x27; alt=&quot;:thumb&#x27;+id+&#x27;:&quot; src=&quot;&#x27; +
+            path +&#x27;&quot; &#x2F;&gt;&#x27; + deviation.aclose;
+    }
+    path = &#x27;http:&#x2F;&#x2F;backend.deviantart.com&#x2F;oembed?url=http:&#x2F;&#x2F;www.deviantart.com&#x2F;deviation&#x2F;&#x27;+id+&#x27;&amp;format=thumb150&#x27;;
+    
+    if( deviation.thumb.match(&#x2F;.png$&#x2F;i) )
+        shadow = false;
+    
+    return deviation.anchor + &#x27;&lt;img class=&quot;thumb&#x27; + ( shadow ? &#x27; shadow&#x27; : &#x27;&#x27; ) + &#x27;&quot;&#x27; +
+        deviation.dimensions + &#x27; &quot; alt=&quot;:thumb&#x27;+id+&#x27;:&quot; src=&quot;&#x27;+path+
+        &#x27;&quot; &#x2F;&gt;&#x27; + deviation.aclose;
+};
+
+&#x2F;**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ *&#x2F;
+wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
+
+    options = options || {};
+    options = Object.extend( {
+        &#x27;title&#x27;: &#x27;Emotes&#x27;,
+        &#x27;event&#x27;: {
+            &#x27;select&#x27;: function( item ) {  },
+            &#x27;reload&#x27;: function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.ItemPicker.call( this, ui, options );
+    this.settings = settings;
+    this.rbutton = null;
+    var alpha = &#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;;
+    var letter = &#x27;&#x27;;
+    var llow = &#x27;&#x27;;
+    
+    for( var i = 0; i &lt; alpha.length; i++ ) {
+        letter = alpha[i];
+        llow = letter.toLowerCase();
+        this.add_page( {
+            &#x27;ref&#x27;: llow,
+            &#x27;href&#x27;: &#x27;#&#x27; + llow,
+            &#x27;label&#x27;: letter,
+            &#x27;title&#x27;: &#x27;Emotes beginning with &#x27; + letter,
+            &#x27;items&#x27;: []
+        }, wsc.dAmn.Emotes.Page );
+    }
+    
+    this.add_page( {
+        &#x27;ref&#x27;: &#x27;misc&#x27;,
+        &#x27;href&#x27;: &#x27;#misc&#x27;,
+        &#x27;label&#x27;: &#x27;#&#x27;,
+        &#x27;title&#x27;: &#x27;Emotes not beginning with letters&#x27;,
+        &#x27;items&#x27;: []
+    }, wsc.dAmn.Emotes.Page);
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
+wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
+
+wsc.dAmn.Emotes.Picker.Disabled = &#x27;&lt;section class=&quot;pages&quot;&gt;\
+            &lt;section class=&quot;disabled&quot;&gt;\
+                &lt;p&gt;The emote cloud is currently disabled.&lt;&#x2F;p&gt;&lt;p&gt;To use emoticons from\
+                the cloud, click the button below to enable them.&lt;&#x2F;p&gt;&lt;p&gt;\
+                &lt;a href=&quot;#enable&quot; class=&quot;button text&quot;&gt;Enable&lt;&#x2F;a&gt;\
+                &lt;&#x2F;p&gt;\
+            &lt;&#x2F;section&gt;\
+            &lt;&#x2F;section&gt;\
+            &lt;section class=&quot;buttons&quot;&gt;&lt;&#x2F;section&gt;&#x27;;
+
+wsc.dAmn.Emotes.Picker.prototype.state = function( on ) {
+
+    this.settings.emotes.on = ( on || false );
+    this.rebuild();
+    this.refresh();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.hide = function(  ) {
+
+    this.window.css({&#x27;display&#x27;: &#x27;none&#x27;});
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.show = function(  ) {
+
+    this.window.css({&#x27;display&#x27;: &#x27;block&#x27;});
+    this.refresh();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.close = function(  ) {
+
+    this.hide();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.build = function( options ) {
+
+    Chatterbox.Popup.ItemPicker.prototype.build.call( this, options );
+    this.rebuild();
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.rebuild = function( options ) {
+
+    var picker = this;
+    this.window.find(&#x27;.inner .content&#x27;).html(&#x27;&#x27;);
+    
+    if( this.settings.emotes.on ) {
+        this.options.content = Chatterbox.render(&#x27;ip.main&#x27;);
+    } else {
+        this.options.content = wsc.dAmn.Emotes.Picker.Disabled;
+    }
+    
+    this.window.find(&#x27;.inner .content&#x27;).html(this.options.content);
+    this.pbook = this.window.find(&#x27;section.pages&#x27;);
+    this.buttons = this.window.find(&#x27;section.buttons&#x27;);
+    this.rbutton = this.add_button( {
+        &#x27;href&#x27;: &#x27;#reload&#x27;,
+        &#x27;title&#x27;: &#x27;Reload emoticons&#x27;,
+        &#x27;label&#x27;: &#x27;Reload&#x27;
+    } );
+    
+    if( this.settings.emotes.fetching ) {
+        this.loading(&#x27;Loading...&#x27;);
+    }
+    
+    if( !this.settings.emotes.on ) {
+        this.loading(&#x27;Disabled&#x27;);
+    }
+    
+    this.rbutton.click( function(  ) {
+        if( !picker.settings.emotes.on )
+            return false;
+        if( picker.settings.emotes.fetching )
+            return false;
+        if( picker.rbutton.hasClass(&#x27;evented&#x27;) )
+            return false;
+        picker.reload();
+        return false;
+    } );
+    
+    if( this.settings.emotes.on ) {
+        this.tabs = this.window.find(&#x27;section.tabs ul&#x27;);
+        &#x2F;* *&#x2F;
+        var ip = this;
+        var page = null;
+        
+        for( var i in this.pages ) {
+            if( !this.pages.hasOwnProperty(i) )
+                continue;
+            page = this.pages[i];
+            page.build();
+            if( i == 0 )
+                this.select_page(page);
+        }
+        &#x2F;* *&#x2F;
+    } else {
+        this.dis = this.pbook.find(&#x27;.disabled&#x27;);
+        this.dis.css( {
+            &#x27;max-width&#x27;: 330
+        } );
+        
+        this.dis.find(&#x27;p&#x27;).css( {
+            &#x27;margin&#x27;: &#x27;5px 10px 5px 10px&#x27;,
+        } );
+        
+        this.dis.find(&#x27;p&#x27;).last().css( {
+            &#x27;text-align&#x27;: &#x27;center&#x27;,
+            &#x27;margin-top&#x27;: 25,
+            &#x27;margin-bottom&#x27;: 25
+        });
+        
+        this.dis.find(&#x27;p&#x27;).first().css( {
+            &#x27;margin-top&#x27;: 25
+        });
+        
+        this.window.find(&#x27;a[href=#enable].button&#x27;).click( function(  ) {
+            picker.state(true);
+            picker.settings.emotes.fetch();
+            picker.settings.save();
+            return false;
+        } );
+    }
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loaded = function(  ) {
+
+    this.rbutton.html( &#x27;Reload&#x27; );
+    this.rbutton.removeClass(&#x27;evented&#x27;);
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.loading = function( text ) {
+
+    text = text || &#x27;Reloading...&#x27;;
+    this.rbutton.addClass(&#x27;evented&#x27;);
+    this.rbutton.html(text);
+
+};
+
+wsc.dAmn.Emotes.Picker.prototype.reload = function(  ) {
+
+    this.loading();
+    this.options.event.reload();
+
+};
+
+wsc.dAmn.Emotes.Page = function(  ) {
+    Chatterbox.Popup.ItemPicker.Page.apply(this, arguments);
+};
+
+wsc.dAmn.Emotes.Page.prototype = new Chatterbox.Popup.ItemPicker.Page();
+wsc.dAmn.Emotes.Page.prototype.constructor = wsc.dAmn.Emotes.Page;
+
+wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
+
+    if( !this.picker.settings.emotes.on )
+        return;
+    
+    Chatterbox.Popup.ItemPicker.Page.prototype.refresh.call(this);
+    var page = this;
+    
+    page.view.find(&#x27;span.thumb img&#x27;).error( function(  ) {
+        var el = page.view.find(this);
+        var em = el.parent().parent();
+        var val = page.picker.settings.emotes.repair(em.find(&#x27;.value&#x27;).html());
+        delete page.picker.settings.emotes.emote[val];
+        em.remove();
+        return false;
+    } );
+    
+    page.view.find(&#x27;span.thumb img&#x27;).load( function(  ) {
+        var el = page.view.find(this);
+        var w = el.width();
+        var h = el.height();
+        var th, tw;
+        
+        if( w&#x2F;h &gt; 1) {
+            th = parseInt((h * 100) &#x2F; w);
+            tw = 100;
+        } else {
+            tw = parseInt((w * 100) &#x2F; h);
+            th = 100;
+        }
+        
+        if( tw &gt; w || th &gt; h ) {
+            tw = w;
+            th = h;
+        }
+        
+        el.css({
+            &#x27;height&#x27;: th,
+            &#x27;width&#x27;: tw
+        });
+        
+        el.parent().css( {
+            &#x27;float&#x27;: &#x27;right&#x27;,
+            &#x27;display&#x27;: &#x27;block&#x27;
+        } );
+    } );
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

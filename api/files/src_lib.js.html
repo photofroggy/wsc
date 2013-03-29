@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;lib.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* wsc lib - photofroggy
+ * Generic useful functions or something.
+ *&#x2F;
+
+
+&#x2F;&#x2F; Fetch url GET variable. 
+function $_GET( q, s ) {
+    s = s || window.location.search;
+    var re = new RegExp(&#x27;&amp;&#x27;+q+&#x27;(?:=([^&amp;]*))?(?=&amp;|$)&#x27;,&#x27;i&#x27;); 
+    s = s.replace(&#x2F;^\?&#x2F;,&#x27;&amp;&#x27;).match(re); 
+    if(s) 
+        return typeof s[1] != &#x27;undefined&#x27; ? decodeURIComponent(s[1].replace(&#x2F;\+&#x2F;g, &#x27;%20&#x27;)) : &#x27;&#x27;; 
+}
+
+&#x2F;&#x2F;This returns the unix time stamp as a JS Date object in the local timezone.
+function UnixTimestamp(ts) {
+    ret = new Date(ts * 1000)
+    return ret;
+}
+
+var Months = [
+    &#x27;January&#x27;, &#x27;February&#x27;, &#x27;March&#x27;, &#x27;April&#x27;, &#x27;May&#x27;, &#x27;June&#x27;, &#x27;July&#x27;, &#x27;August&#x27;, &#x27;September&#x27;, &#x27;October&#x27;, &#x27;November&#x27;, &#x27;December&#x27;
+];
+
+function PosEnd( end ) {
+    return end == &#x27;1&#x27; ? &#x27;st&#x27; : ( end == &#x27;2&#x27; ? &#x27;nd&#x27; : ( end == &#x27;3&#x27; ? &#x27;rd&#x27; : &#x27;th&#x27; ) );
+}
+
+&#x2F;&#x2F; Date stamp
+function DateStamp(ts) {
+    ts = UnixTimestamp(ts);
+    date = String(ts.getDate()); month = ts.getMonth();
+    df = date[date.length-1];
+    return date + PosEnd( df ) + &#x27; of &#x27; + Months[month] + &#x27;, &#x27; + ts.getFullYear();
+}
+
+&#x2F;&#x2F; Case insensitive sort function.
+function caseInsensitiveSort( a, b ) {
+    a = a.toLowerCase(); b = b.toLowerCase();
+    return ( ( a &gt; b ) ? 1 : ( a &lt; b ? -1 : 0 ) );
+}
+
+&#x2F;&#x2F; Escape special characters for regexes.
+function EscapeRegExp( text ) {
+    return text.replace((new RegExp(&#x27;(\\&#x27; + [
+        &#x27;&#x2F;&#x27;, &#x27;.&#x27;, &#x27;*&#x27;, &#x27;+&#x27;, &#x27;?&#x27;, &#x27;|&#x27;,
+        &#x27;(&#x27;, &#x27;)&#x27;, &#x27;[&#x27;, &#x27;]&#x27;, &#x27;{&#x27;, &#x27;}&#x27;, &#x27;\\&#x27;
+    ].join(&#x27;|\\&#x27;) + &#x27;)&#x27;, &#x27;g&#x27;)), &#x27;\\$1&#x27;);
+}
+
+String.format = function() {
+  var args = Array.prototype.slice.call(arguments);
+  var content = args.shift();
+  args = args.shift();
+  if( args.length == 0 )
+    return content;
+  var argsl = args.length;
+  
+  return content.replace(&#x2F;{(\d+)}&#x2F;g, function(match, number) {
+    if(argsl &lt;= parseInt(number))
+        return match;
+    return typeof args[number] != &#x27;undefined&#x27;
+      ? args[number]
+      : match
+    ;
+  });
+};
+
+&#x2F;&#x2F; Replace all stuff with some shit idk.
+replaceAllRaw = function ( text, search, replace ) {
+    while( text.indexOf( search ) &gt; -1 ) {
+        text = text.replace( search, replace );
+    }
+    return text;
+};
+
+replaceAll = function( text, search, replace ) {
+    return text.split(search).join(replace);
+};
+
+&#x2F;&#x2F; Size of an associative array, wooo!
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+Object.steal = function( a, b ) {
+    for( var index in b ) {
+        if( !a.hasOwnProperty(index) &amp;&amp; !b.hasOwnProperty(index) )
+            continue;
+        if( typeof a[index] == &#x27;object&#x27; ) {
+            a[index] = Object.extend(a[index], b[index]);
+        } else {
+            a[index] = b[index];
+        }
+    }
+};
+
+Object.extend = function( a, b ) {
+    var obj = {};
+    Object.steal(obj, a);
+    Object.steal(obj, b);
+    return obj;
+};
+
+function zeroPad( number, width ) {
+    width = width || 2;
+    width -= number.toString().length;
+    if ( width &gt; 0 ) {
+        return new Array( width + (&#x2F;\.&#x2F;.test( number ) ? 2 : 1) ).join( &#x27;0&#x27; ) + number;
+    }
+    return number + &quot;&quot;;
+}
+
+function formatTime( format, date ) {
+    date = date || new Date();
+    
+    HH = date.getHours();
+    hh = HH;
+    format = replaceAll(format, &#x27;{mm}&#x27;, zeroPad(date.getMinutes(), 2));
+    format = replaceAll(format, &#x27;{ss}&#x27;, zeroPad(date.getSeconds(), 2));
+    mr = &#x27;am&#x27;;
+    
+    if( hh &gt; 11 ) {
+        mr = &#x27;pm&#x27;;
+        if( hh &gt; 12 )
+            hh = hh - 12;
+    } else if( hh == 0 ) {
+        hh = &#x27;12&#x27;;
+    }
+    
+    format = replaceAll(format, &#x27;{hh}&#x27;, zeroPad(hh, 2));
+    format = replaceAll(format, &#x27;{HH}&#x27;, zeroPad(HH, 2));
+    format = replaceAll(format, &#x27;{mr}&#x27;, mr);
+    return format;
+}
+
+function oxlist( sequence ) {
+    last = sequence.pop();
+    ret = sequence.join(&#x27;, &#x27;);
+    return ret + ( ret.length &gt; 0 ? &#x27;, and &#x27; : &#x27;&#x27; ) + last;
+}
+
+function pluralise( measure, num ) {
+    return measure + ( num == 1 ? &#x27;&#x27; : &#x27;s&#x27; );
+}
+
+function timeLengthString( length ) {
+    if ( length &lt;= 0 )
+        return &#x27;0 seconds.&#x27;;
+    
+    var elapsed = length;
+    var elarr = [];
+    elarr.unshift([ &#x27;second&#x27;, Math.round(elapsed % 60) ]);
+    elapsed &#x2F;= Math.round(60);
+    elarr.unshift([ &#x27;minute&#x27;, Math.round(elapsed % 60) ]);
+    elapsed &#x2F;= Math.round(60);
+    elarr.unshift([ &#x27;hour&#x27;, Math.round(elapsed % 24) ]);
+    elapsed &#x2F;= Math.round(24);
+    elarr.unshift([ &#x27;day&#x27;, elapsed ]);
+    
+    var ret = [];
+    for( i in elarr ) {
+        lapse = elarr[i];
+        if( lapse[1] &lt; 1 )
+            continue;
+        ret.push( lapse[1].toString() + &#x27; &#x27; + pluralise(lapse[0], lapse[1]) ); 
+    }
+    
+    return oxlist(ret);
+}
+
+&#x2F;**
+ * Sets. Yeah. Fun.
+ *&#x2F;
+function StringSet( items ) {
+
+    this.items = items || [];
+
+};
+
+&#x2F;**
+ * Add an item.
+ *&#x2F;
+StringSet.prototype.add = function( item, unshift ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( this.contains( item ) )
+        return true;
+    
+    if( unshift )
+        this.items.unshift( item );
+    else
+        this.items.push( item );
+    
+    return true;
+
+};
+
+&#x2F;**
+ * Remove an item.
+ *&#x2F;
+StringSet.prototype.remove = function( item ) {
+
+    if( !item )
+        return false;
+    
+    item = item.toLowerCase();
+    
+    if( !this.contains( item ) )
+        return true;
+    
+    this.items.splice( this.items.indexOf( item ), 1 );
+    return true;
+
+};
+
+&#x2F;**
+ * Contains an item?
+ *&#x2F;
+StringSet.prototype.contains = function( item ) {
+
+    if( !item )
+        return false;
+    
+    return this.items.indexOf( item.toLowerCase() ) != -1;
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

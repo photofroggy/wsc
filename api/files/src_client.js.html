@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;client.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Chat client.
+ *
+ * @class Client
+ * @constructor
+ * @param view {Object} The client&#x27;s container element.
+ * @param options {Object} Configuration options for the client.
+ * @param mozilla {Object} Is firefox being used?
+ *&#x2F;
+wsc.Client = function( view, options, mozilla ) {
+
+    this.mozilla = mozilla;
+    this.storage = new wsc.Storage;
+    this.storage.ui = this.storage.folder(&#x27;ui&#x27;);
+    this.storage.aj = this.storage.folder(&#x27;autojoin&#x27;);
+    this.storage.aj.channel = this.storage.aj.folder(&#x27;channel&#x27;);
+    this.fresh = true;
+    this.attempts = 0;
+    this.connected = false;
+    this.protocol = null;
+    this.flow = null;
+    this.ui = null;
+    this.events = new EventEmitter();
+    this.conn = null;
+    this.channelo = {};
+    this.cchannel = null;
+    this.cmds = [];
+    this.settings = {
+        &quot;domain&quot;: &quot;website.com&quot;,
+        &quot;server&quot;: &quot;ws:&#x2F;&#x2F;website.com&#x2F;wsendpoint&quot;,
+        &quot;symbol&quot;: &quot;&quot;,
+        &quot;username&quot;: &quot;&quot;,
+        &quot;userinfo&quot;: {},
+        &quot;pk&quot;: &quot;&quot;,
+        &#x2F;&#x2F; Monitor: &#x60;ns&#x60;
+        &quot;monitor&quot;: [&#x27;~Monitor&#x27;, true],
+        &quot;welcome&quot;: &quot;Welcome to the wsc web client!&quot;,
+        &quot;autojoin&quot;: &quot;chat:channel&quot;,
+        &quot;control&quot;: wsc.Control,
+        &quot;protocol&quot;: wsc.Protocol,
+        &quot;mparser&quot;: wsc.MessageParser,
+        &quot;flow&quot;: wsc.Flow,
+        &quot;ui_object&quot;: Chatterbox.UI,
+        &quot;extend&quot;: [wsc.defaults.Extension],
+        &quot;client&quot;: &#x27;chatclient&#x27;,
+        &quot;clientver&quot;: &#x27;0.3&#x27;,
+        &quot;ui&quot;: {
+            &quot;theme&quot;: wsc.defaults.theme,
+            &quot;themes&quot;: wsc.defaults.themes,
+            &quot;tabclose&quot;: true,
+            &quot;clock&quot;: true,
+            &quot;media&quot;: &quot;&#x2F;static&#x2F;&quot;
+        },
+        &quot;developer&quot;: false
+    };
+    this.autojoin = {
+        &#x27;on&#x27;: true,
+        &#x27;count&#x27;: 0,
+        &#x27;channel&#x27;: []
+    };
+    this.away = {};
+    
+    var cli = this;
+    &#x2F;&#x2F; Channels excluded from loops.
+    this.exclude = new StringSet();
+    &#x2F;&#x2F; Hidden channels
+    this.hidden = new StringSet();
+    this.settings = Object.extend( this.settings, options );
+    this.config_load();
+    this.config_save();
+    
+    this.mw = new wsc.Middleware();
+    
+    this.ui = new this.settings.ui_object( view, {
+        &#x27;themes&#x27;: this.settings.ui.themes,
+        &#x27;theme&#x27;: this.settings.ui.theme,
+        &#x27;monitor&#x27;: this.settings.monitor,
+        &#x27;username&#x27;: this.settings.username,
+        &#x27;domain&#x27;: this.settings.domain,
+        &#x27;clock&#x27;: this.settings.ui.clock,
+        &#x27;tabclose&#x27;: this.settings.ui.tabclose,
+        &#x27;developer&#x27;: this.settings.developer,
+        &#x27;media&#x27;: this.settings.ui.media
+    }, mozilla );
+    
+    this.settings.agent = this.ui.LIB + &#x27;&#x2F;&#x27; + this.ui.VERSION + &#x27; (&#x27; + navigator.appVersion.match(&#x2F;\(([^)]+)\)&#x2F;)[1] + &#x27;) wsc&#x2F;&#x27; + wsc.VERSION + &#x27;-r&#x27; + wsc.REVISION;
+    this.mns = this.format_ns(this.settings[&#x27;monitor&#x27;][0]);
+    this.lun = this.settings[&quot;username&quot;].toLowerCase();
+    this.protocol = new this.settings.protocol( new this.settings.mparser() );
+    this.flow = new this.settings.flow(this.protocol);
+    
+    this.build();
+    
+    for(var index in this.settings[&quot;extend&quot;]) {
+        this.settings[&quot;extend&quot;][index](this);
+    }
+    
+    &#x2F;&#x2F; Welcome!
+    this.monitor(this.settings[&quot;welcome&quot;]);
+
+};
+
+&#x2F;**
+ * Load configuration from localStorage.
+ *
+ * @method config_load
+ *&#x2F;
+wsc.Client.prototype.config_load = function(  ) {
+
+    this.settings.developer = ( this.storage.get(&#x27;developer&#x27;, this.settings.developer.toString()) == &#x27;true&#x27; );
+    this.settings.ui.theme = this.storage.ui.get(&#x27;theme&#x27;, this.settings.ui.theme);
+    this.settings.ui.clock = (this.storage.ui.get(&#x27;clock&#x27;, this.settings.ui.clock.toString()) == &#x27;true&#x27;);
+    this.settings.ui.tabclose = (this.storage.ui.get(&#x27;tabclose&#x27;, this.settings.ui.tabclose.toString()) == &#x27;true&#x27;);
+    
+    this.autojoin.on = (this.storage.aj.get(&#x27;on&#x27;, &#x27;true&#x27;) == &#x27;true&#x27;);
+    this.autojoin.count = parseInt(this.storage.aj.get(&#x27;count&#x27;, &#x27;0&#x27;));
+    this.autojoin.channel = [];
+    
+    var tc = null;
+    var c = 0;
+    for( var i = 0; i &lt; this.autojoin.count; i++ ) {
+        tc = this.storage.aj.channel.get( i, null );
+        if( tc == null )
+            continue;
+        c++;
+        this.autojoin.channel.push(tc);
+    }
+    
+    this.autojoin.count = c;
+
+};
+
+&#x2F;**
+ * Save configuration save localStorage.
+ *
+ * @method config_save
+ *&#x2F;
+wsc.Client.prototype.config_save = function(  ) {
+
+    this.storage.set(&#x27;developer&#x27;, this.settings.developer);
+    this.storage.ui.set(&#x27;theme&#x27;, this.settings.ui.theme);
+    this.storage.ui.set(&#x27;clock&#x27;, this.settings.ui.clock.toString());
+    this.storage.ui.set(&#x27;tabclose&#x27;, this.settings.ui.tabclose.toString());
+    
+    this.storage.aj.set(&#x27;on&#x27;, this.autojoin.on.toString());
+    this.storage.aj.set(&#x27;count&#x27;, this.autojoin.count);
+    
+    for( var i = 0; i &lt; this.autojoin.count; i++ ) {
+        this.storage.aj.channel.remove(i)
+    }
+    
+    if( this.autojoin.channel.length == 0 ) {
+        this.storage.aj.set(&#x27;count&#x27;, 0);
+    } else {
+        var c = -1;
+        for( var i in this.autojoin.channel ) {
+            if( !this.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            c++;
+            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
+        }
+        c++;
+        this.storage.aj.set(&#x27;count&#x27;, c);
+    }
+
+};
+
+&#x2F;**
+ * Build the client interface and hook up any required event handlers for the
+ * interface. In particular, event handlers are hooked for switching and
+ * closing channel tabs.
+ * 
+ * @method build
+ *&#x2F;
+wsc.Client.prototype.build = function(  ) {
+
+    this.ui.build();
+    this.control = new this.settings.control( this );
+    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
+    var client = this;
+    
+    this.ui.on( &#x27;channel.selected&#x27;, function( event, ui ) {
+        client.cchannel = client.channel(event.ns);
+        client.control.cache_input(event);
+    } );
+    
+    this.ui.on(&#x27;tab.close.clicked&#x27;, function( event, ui ) {
+        if( event.chan.monitor )
+            return false;
+        client.part(event.ns);
+        client.remove_ns(event.ns);
+        return false;
+    } );
+    
+    this.ui.on(&#x27;title.save&#x27;, function( event, ui ) {
+        client.set(event.ns, &#x27;title&#x27;, event.value);
+    } );
+    
+    this.ui.on(&#x27;topic.save&#x27;, function( event, ui ) {
+        client.set(event.ns, &#x27;topic&#x27;, event.value);
+    } );
+
+};
+
+&#x2F;**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ *&#x2F;
+wsc.Client.prototype.loop = function(  ) {
+
+    this.ui.loop();
+
+};
+
+&#x2F;**
+ * Add an extension to the client.
+ * 
+ * @method add_extension
+ * @param extension {Method} Extension constructor. Not called with &#x60;new&#x60;.
+ *&#x2F;
+wsc.Client.prototype.add_extension = function( extension ) {
+
+    this.settings[&#x27;extend&#x27;].push( extension );
+    extension( this );
+
+};
+
+&#x2F;**
+ * Bind a method to an event.
+ * 
+ * @method bind
+ * @param event {String} Name of the event to listen for.
+ * @param handler {Method} Method to call when the given event is triggered.
+ *&#x2F;
+wsc.Client.prototype.bind = function( event, handler ) {
+
+    this.events.addListener(event, handler);
+    
+    if( event.indexOf(&#x27;cmd.&#x27;) != 0 || event.length &lt;= 4 )
+        return;
+    
+    cmd = event.slice(4).toLowerCase();
+    this.cmds.push(cmd);
+
+};
+
+&#x2F;**
+ * Clear event listeners for a given event.
+ *
+ * @method clear_listeners
+ * @param event {String} Event to clear listeners for.
+ *&#x2F;
+wsc.Client.prototype.clear_listeners = function( event ) {
+
+    this.events.removeListeners(event);
+
+};
+
+&#x2F;**
+ * Trigger an event.
+ * 
+ * @method trigger
+ * @param event {String} Name of the event to trigger.
+ * @param data {Object} Event data.
+ *&#x2F;
+wsc.Client.prototype.trigger = function( event, data ) {
+
+    return this.events.emit( event, data, this );
+
+};
+
+&#x2F;**
+ * Add a middleware method.
+ * 
+ * @method middle
+ *&#x2F;
+wsc.Client.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+&#x2F;**
+ * Run a method with middleware.
+ *
+ * @method cascade
+ *&#x2F;
+wsc.Client.prototype.cascade = function( event, callback, data ) {
+
+    this.mw.run( event, callback, data );
+
+};
+
+&#x2F;**
+ * Open a connection to the chat server.
+ * If the client if already connected, nothing happens.
+ * 
+ * @method connect
+ *&#x2F;
+wsc.Client.prototype.connect = function(  ) {
+
+    if( this.connected )
+        return;
+    
+    this.attempts++;
+    
+    &#x2F;&#x2F; Start connecting!
+    try {
+        var client = this;
+        this.conn = wsc.Transport.Create(this.settings.server);
+        this.conn.open(function( evt, sock ) { client.flow.open( client, evt, sock ); });
+        this.conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
+        this.conn.message(function( evt ) { client.flow.message( client, evt ); });
+        this.conn.connect();
+        this.ui.server_message(&#x27;Opening connection&#x27;);
+        this.trigger(&#x27;start&#x27;, new wsc.Packet(&#x27;client connecting\ne=ok\n\n&#x27;));
+    } catch(err) {
+        console.log(err);
+        this.monitor(&quot;Your browser does not support WebSockets. Sorry.&quot;);
+        this.trigger(&#x27;start&#x27;, new wsc.Packet(&#x27;client connecting\ne=no websockets available\n\n&#x27;));
+    }
+
+};
+
+&#x2F;**
+ * Close the connection foo.
+ * 
+ * @method close
+ *&#x2F;
+wsc.Client.prototype.close = function(  ) {
+
+    console.log(this.conn);
+    this.conn.close();
+    &#x2F;&#x2F;this.conn = null;
+
+};
+
+&#x2F;**
+ * Get or set the channel object associated with the given namespace.
+ * 
+ * @method channel
+ * @param namespace {String} Channel namespace to get or set.
+ * @param [channel] {Object} Channel object to use for the given namespace.
+ * @return {Object} Channel object associated with the given namespace.
+ *&#x2F;
+wsc.Client.prototype.channel = function( namespace, channel ) {
+
+    namespace = this.format_ns(namespace).toLowerCase();
+    
+    if( !this.channelo[namespace] &amp;&amp; channel )
+        this.channelo[namespace] = channel;
+    
+    return this.channelo[namespace];
+
+};
+
+&#x2F;**
+ * Get a count of the number of channels the client has open.
+ * Channels with their tabs hidden are not counted.
+ * 
+ * @method channels
+ * @param names {Boolean} Return the names of the open channels?
+ * @return {Integer} Number of channels open.
+ *&#x2F;
+wsc.Client.prototype.channels = function( names ) {
+
+    var chann = [];
+    for(ns in this.channelo) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
+        if( this.channelo[ns].hidden )
+            continue;
+        chann.push(this.channelo[ns].namespace);
+    }
+    return names ? chann : chann.length;
+
+};
+
+&#x2F;**
+ * Iterate through the different channels.
+ * 
+ * @method each_channel
+ * @param method {Function} Function to call for each channel.
+ *&#x2F;
+wsc.Client.prototype.each_channel = function( method, include ) {
+    
+    var chan = null;
+    
+    for( var ns in this.channelo ) {
+        if( !this.channelo.hasOwnProperty(ns) )
+            continue;
+        
+        chan = this.channelo[ns];
+        
+        if( !include )
+            if( this.exclude.contains( chan.raw ) )
+                continue;
+        
+        if( method( chan.raw, chan ) === false )
+            break;
+    }
+    
+};
+
+&#x2F;**
+ * Deform a channel namespace to its shorthand form.
+ * 
+ * @method deform_ns
+ * @param namespace {String} Namespace to deform.
+ * @return {String} Shorthand channel namespace.
+ *&#x2F;
+wsc.Client.prototype.deform_ns = function( namespace ) {
+
+    if(namespace.indexOf(&quot;chat:&quot;) == 0)
+        return &#x27;#&#x27; + namespace.slice(5);
+    
+    if(namespace.indexOf(&quot;server:&quot;) == 0)
+        return &#x27;~&#x27; + namespace.slice(7);
+    
+    if(namespace.indexOf(&quot;pchat:&quot;) == 0) {
+        var names = namespace.split(&quot;:&quot;);
+        names.shift();
+        for(i in names) {
+            name = names[i];
+            if(name.toLowerCase() != this.lun) {
+                return &#x27;@&#x27; + name;
+            }
+        }
+    }
+    
+    if( namespace.indexOf(&#x27;login:&#x27;) == 0 )
+        return &#x27;@&#x27; + namespace.slice(6);
+    
+    if(namespace[0] != &#x27;#&#x27; &amp;&amp; namespace[0] != &#x27;@&#x27; &amp;&amp; namespace[0] != &#x27;~&#x27;)
+        return &#x27;#&#x27; + namespace;
+    
+    return namespace;
+
+};
+
+&#x2F;**
+ * Format a channel namespace in its longhand form.
+ * 
+ * @method format_ns
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} Formatted namespace.
+ *&#x2F;
+wsc.Client.prototype.format_ns = function( namespace ) {
+
+    if(namespace.indexOf(&#x27;#&#x27;) == 0) {
+        return &#x27;chat:&#x27; + namespace.slice(1);
+    }
+    if(namespace.indexOf(&#x27;@&#x27;) == 0) {
+        var names = [namespace.slice(1), this.lun];
+        names.sort(caseInsensitiveSort)
+        names.unshift(&quot;pchat&quot;);
+        return names.join(&#x27;:&#x27;);
+    }
+    if(namespace.indexOf(&#x27;~&#x27;) == 0) {
+        return &quot;server:&quot; + namespace.slice(1);
+    }
+    if(namespace.indexOf(&#x27;chat:&#x27;) != 0 &amp;&amp; namespace.indexOf(&#x27;server:&#x27;) != 0 &amp;&amp; namespace.indexOf(&#x27;pchat:&#x27;) != 0)
+        return &#x27;chat:&#x27; + namespace;
+    
+    return namespace;
+
+};
+
+&#x2F;**
+ * Create a channel object for the client.
+ * 
+ * @method create_ns
+ * @param namespace {String} Namespace to use for the channel.
+ * @param hidden {Boolean} Should the channel tab be hidden?
+ *&#x2F;
+wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
+
+    var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
+    chan.build();
+
+};
+
+&#x2F;**
+ * Remove a channel object from the client.
+ * 
+ * @method remove_ns
+ * @param namespace {String} Namespace of the channel to remove.
+ *&#x2F;
+wsc.Client.prototype.remove_ns = function( namespace ) {
+
+    if( !namespace )
+        return;
+    
+    var chan = this.channel(namespace);
+    if( !chan )
+        return;
+    
+    chan.remove();
+    delete this.channelo[chan.raw.toLowerCase()];
+
+};
+
+&#x2F;**
+ * Write a log message to a channel&#x27;s log view.
+ * 
+ * @method log
+ * @param namespace {String} Namespace of the channel to log to.
+ * @param data {String} Message to display.
+ *&#x2F;
+wsc.Client.prototype.log = function( namespace, data ) {
+
+    var chan = this.channel(namespace);
+    
+    if( !chan )
+        return;
+    
+    chan.log(data);
+
+};
+
+&#x2F;**
+ * Write a message to the client monitor.
+ * 
+ * @method monitor
+ * @param message {String} Message to display.
+ *&#x2F;
+wsc.Client.prototype.monitor = function( message ) {
+
+    this.ui.monitor(message);
+
+};
+
+&#x2F;**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ *&#x2F;
+wsc.Client.prototype.mute_user = function( user ) {
+
+    return this.ui.mute_user( user );
+
+};
+
+&#x2F;**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ *&#x2F;
+wsc.Client.prototype.unmute_user = function( user ) {
+
+    return this.ui.unmute_user( user );
+
+};
+
+&#x2F;&#x2F; Client packets
+
+&#x2F;**
+ * Send a packet to the server.
+ * 
+ * @method send
+ * @param data {String} Packet to send.
+ * @return {Integer} Number of characters written to the server.
+ *   -1 for failure.
+ *&#x2F;
+wsc.Client.prototype.send = function( data ) {
+
+    return this.conn.send(data);
+
+};
+
+&#x2F;**
+ * Send a handshake packet.
+ * 
+ * @method handshake
+ *&#x2F;
+wsc.Client.prototype.handshake = function(  ) {
+
+    this.send(wsc_packetstr(this.settings.client, this.settings.clientver, {
+        &quot;agent&quot;: this.settings.agent
+    }));
+
+};
+
+&#x2F;**
+ * Send a login packet.
+ * 
+ * @method login
+ *&#x2F;
+wsc.Client.prototype.login = function(  ) {
+
+    pkt = &#x27;login &#x27; + this.settings.username + &#x27;\npk=&#x27; + this.settings.pk + &#x27;\n&#x27;;
+    this.send( pkt );
+
+};
+
+&#x2F;**
+ * Send a pong packet to the server.
+ * 
+ * @method pong
+ *&#x2F;
+wsc.Client.prototype.pong = function(  ) {
+
+    this.send(wsc_packetstr(&quot;pong&quot;));
+
+};
+
+&#x2F;**
+ * Join a channel.
+ * 
+ * @method join
+ * @param namespace {String} Channel to join.
+ *&#x2F;
+wsc.Client.prototype.join = function( namespace ) {
+
+    this.send(wsc_packetstr(&quot;join&quot;, this.format_ns(namespace)));
+
+};
+
+&#x2F;**
+ * Leave a channel.
+ * 
+ * @method part
+ * @param namespace {String} Channel to leave.
+ *&#x2F;
+wsc.Client.prototype.part = function( namespace ) {
+
+    this.send(wsc_packetstr(&#x27;part&#x27;, this.format_ns(namespace)));
+
+};
+
+&#x2F;**
+ * Send a message to a channel.
+ * 
+ * @method say
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ *&#x2F;
+wsc.Client.prototype.say = function( namespace, message ) {
+
+    var c = this;
+    this.cascade( &#x27;send.msg&#x27;,
+        function( data ) {
+            c.send(wsc_packetstr(&#x27;send&#x27;, c.format_ns(data.ns), {},
+                wsc_packetstr(&#x27;msg&#x27;, &#x27;main&#x27;, {}, data.input)
+            ));
+        }, { &#x27;input&#x27;: message, &#x27;ns&#x27;: namespace }
+    );
+
+};
+
+&#x2F;**
+ * Send a non-parsed message to a channel.
+ * 
+ * @method npmsg
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ *&#x2F;
+wsc.Client.prototype.npmsg = function( namespace, message ) {
+
+    var c = this;
+    this.cascade( &#x27;send.npmsg&#x27;,
+        function( data ) {
+            c.send(wsc_packetstr(&#x27;send&#x27;, c.format_ns(data.ns), {},
+                wsc_packetstr(&#x27;npmsg&#x27;, &#x27;main&#x27;, {}, data.input)
+            ));
+        }, { &#x27;input&#x27;: message, &#x27;ns&#x27;: namespace }
+    );
+
+};
+
+&#x2F;**
+ * Send an action message to a channel.
+ * 
+ * @method action
+ * @param namespace {String} Channel to send a message to.
+ * @param message {String} Message to send.
+ *&#x2F;
+wsc.Client.prototype.action = function( namespace, action ) {
+
+    var c = this;
+    this.cascade( &#x27;send.action&#x27;,
+        function( data ) {
+            c.send(wsc_packetstr(&#x27;send&#x27;, c.format_ns(data.ns), {},
+                wsc_packetstr(&#x27;action&#x27;, &#x27;main&#x27;, {}, data.input)
+            ));
+        }, { &#x27;input&#x27;: action, &#x27;ns&#x27;: namespace }
+    );
+
+};
+
+&#x2F;**
+ * Promote a user in a channel.
+ * 
+ * @method promote
+ * @param namespace {String} Channel to promote someone in.
+ * @param user {String} User to promote.
+ * @param [pc] {String} Privclass to promote the user to.
+ *&#x2F;
+wsc.Client.prototype.promote = function( namespace, user, pc ) {
+
+    this.send(wsc_packetstr(&#x27;send&#x27;, this.format_ns(namespace), {},
+        wsc_packetstr(&#x27;promote&#x27;, user, {}, ( !pc ? &#x27;&#x27; : pc ))));
+
+};
+
+&#x2F;**
+ * Demote a user in a channel.
+ * 
+ * @method demote
+ * @param namespace {String} Channel to demote someone in.
+ * @param user {String} User to demote.
+ * @param [pc] {String} Privclass to demote the user to.
+ *&#x2F;
+wsc.Client.prototype.demote = function( namespace, user, pc ) {
+
+    this.send(wsc_packetstr(&#x27;send&#x27;, this.format_ns(namespace), {},
+        wsc_packetstr(&#x27;demote&#x27;, user, {}, ( !pc ? &#x27;&#x27; : pc ))));
+
+};
+
+&#x2F;**
+ * Ban a user from a channel.
+ * 
+ * @method ban
+ * @param namespace {String} Channel to ban someone from.
+ * @param user {String} User to ban.
+ *&#x2F;
+wsc.Client.prototype.ban = function( namespace, user ) {
+
+    this.send(wsc_packetstr(&#x27;send&#x27;, this.format_ns(namespace), {},
+        wsc_packetstr(&#x27;ban&#x27;, user)));
+
+};
+
+&#x2F;**
+ * Unban a user from a channel.
+ * 
+ * @method unban
+ * @param namespace {String} Channel to unban someone from.
+ * @param user {String} User to unban.
+ *&#x2F;
+wsc.Client.prototype.unban = function( namespace, user ) {
+
+    this.send(wsc_packetstr(&#x27;send&#x27;, this.format_ns(namespace), {},
+        wsc_packetstr(&#x27;unban&#x27;, user)));
+
+};
+
+&#x2F;**
+ * Kick a user from a channel.
+ * 
+ * @method kick
+ * @param namespace {String} Channel to kick someone from.
+ * @param user {String} User to kick.
+ * @param [reason] {String} Reason for the kick.
+ *&#x2F;
+wsc.Client.prototype.kick = function( namespace, user, reason ) {
+
+    var c = this;
+    this.cascade( &#x27;send.kick&#x27;,
+        function( data ) {
+            c.send(wsc_packetstr(&#x27;kick&#x27;, c.format_ns(data.ns), { &#x27;u&#x27;: data.user }, data.input || null));
+        }, { &#x27;input&#x27;: reason || &#x27;&#x27;, &#x27;ns&#x27;: namespace, &#x27;user&#x27;: user }
+    );
+
+};
+
+&#x2F;**
+ * Kill a user&#x27;s connection to the server.
+ * Only message network admins have access to this packet on the server.
+ * 
+ * @method kill
+ * @param user {String} User to kill.
+ * @param [reason] {String} Reason for the kill.
+ *&#x2F;
+wsc.Client.prototype.kill = function( user, reason ) {
+
+    this.send(wsc_packetstr(&#x27;kill&#x27;, &#x27;login:&#x27; + user, {}, reason || null));
+
+};
+
+&#x2F;**
+ * Send an admin comment to a channel.
+ * 
+ * @method admin
+ * @param namespace {String} Channel to use for the admin command.
+ * @param command {String} Command to run.
+ *&#x2F;
+wsc.Client.prototype.admin = function( namespace, command ) {
+
+    this.send(wsc_packetstr(&#x27;send&#x27;, this.format_ns(namespace), {},
+        wsc_packetstr(&#x27;admin&#x27;, &#x27;&#x27;, {}, command)
+    ));
+
+};
+
+&#x2F;**
+ * Request a channel property from the server.
+ * 
+ * @method property
+ * @param namespace {String} Namespace of the channel to get a property for.
+ * @param property {String} Name of the property to get.
+ *&#x2F;
+wsc.Client.prototype.property = function( namespace, property ) {
+
+    this.send(wsc_packetstr(&#x27;get&#x27;, this.format_ns(namespace), { &#x27;p&#x27;: property }));
+
+};
+
+&#x2F;**
+ * Set a channel property.
+ * 
+ * @method set
+ * @param namespace {String} Namespace of the channel to set a property for.
+ * @param property {String} Name of the property to set. Should be &#x27;title&#x27; or
+ *   &#x27;topic&#x27;.
+ * @param value {String} Value to set the property to.
+ *&#x2F;
+wsc.Client.prototype.set = function( namespace, property, value ) {
+
+    this.trigger( &#x27;send.set.before&#x27;, e );
+    var c = this;
+    this.cascade( &#x27;send.set&#x27;,
+        function( data ) {
+            c.send(wsc_packetstr(&#x27;set&#x27;, c.format_ns(data.ns), { &#x27;p&#x27;: data.property }, data.input));
+        }, { &#x27;input&#x27;: value, &#x27;ns&#x27;: namespace, &#x27;property&#x27;: property }
+    );
+
+};
+
+&#x2F;**
+ * Get whois information for a user.
+ * 
+ * @method whois
+ * @param user {String} User to get information for.
+ *&#x2F;
+wsc.Client.prototype.whois = function( user ) {
+
+    this.send(wsc_packetstr(&#x27;get&#x27;, &#x27;login:&#x27; + user, { &#x27;p&#x27;: &#x27;info&#x27; }));
+
+};
+
+&#x2F;**
+ * Send a disconnect packet.
+ * 
+ * @method disconnect
+ *&#x2F;
+wsc.Client.prototype.disconnect = function(  ) {
+
+    this.send(wsc_packetstr(&#x27;disconnect&#x27;));
+
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

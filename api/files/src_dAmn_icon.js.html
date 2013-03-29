@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;icon.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+wsc.dAmn.avatar = {};
+wsc.dAmn.avatar.ext = [ &#x27;gif&#x27;, &#x27;gif&#x27;, &#x27;jpg&#x27;, &#x27;png&#x27; ];
+
+&#x2F;**
+ * Produces an avatar link.
+ * 
+ * @class avatar_link
+ * @constructor
+ *&#x2F;
+wsc.dAmn.avatar.link = function( un, icon ) {
+    
+    var src = wsc.dAmn.avatar.src( un, icon );
+    
+    return &#x27;&lt;a target=&quot;_blank&quot; title=&quot;:icon&#x27;+un+&#x27;:&quot; href=&quot;http:&#x2F;&#x2F;&#x27;+un+&#x27;.deviantart.com&#x2F;&quot;&gt;&lt;img class=&quot;avatar&quot;\
+            alt=&quot;:icon&#x27;+un+&#x27;:&quot; src=&quot;&#x27; + src + &#x27;&quot; height=&quot;50&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&#x27;;
+};
+
+
+&#x2F;**
+ * Works out the src url for an avatar.
+ *
+ * @method src
+ *&#x2F;
+wsc.dAmn.avatar.src = function( un, icon ) {
+
+    icon = parseInt(icon);
+    var cachebuster = (icon &gt;&gt; 2) &amp; 15;
+    icon = icon &amp; 3;
+    var ext = wsc.dAmn.avatar.ext[icon] || &#x27;gif&#x27;;
+    var ico = &#x27;default&#x27;;
+    
+    if (cachebuster) {
+        cachebuster = &#x27;?&#x27; + cachebuster;
+    }
+    else {
+        cachebuster = &#x27;&#x27;;
+    }
+    
+    if( icon != 0 ) {
+        var ru = new RegExp(&#x27;\\$un(\\[([0-9]+)\\])&#x27;, &#x27;g&#x27;);
+        
+        var ico = &#x27;$un[0]&#x2F;$un[1]&#x2F;{un}&#x27;.replace(ru, function ( m, s, i ) {
+            return un[i] == &#x27;-&#x27; ? &#x27;_&#x27; : un[i].toLowerCase();
+        });
+        ico = replaceAll( ico, &#x27;{un}&#x27;, un.toLowerCase() );
+    }
+    
+    return &#x27;http:&#x2F;&#x2F;a.deviantart.net&#x2F;avatars&#x2F;&#x27; + ico + &#x27;.&#x27; + ext + cachebuster;
+};
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

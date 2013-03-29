@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;popup.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Popup window base class.
+ * Should allow people to easily create popups... or something.
+ * Subclasses of the popups should provide a way of closing the popup, or
+ * maybe I could change things around a bit so there&#x27;s always a close button in
+ * the top right corner. That said, the settings window looks good with the
+ * close button at the bottom. Maybe make that configurable. Use a flag to
+ * determine whether or not this class applies the close function or not?
+ * 
+ * @class Popup
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ *&#x2F;
+Chatterbox.Popup = function( ui, options ) {
+
+    this.manager = ui;
+    this.pview = ( this.manager || {view: {find: function(){}} } ).view;
+    this.window = null;
+    this.closeb = null;
+    this.options = Object.extend({
+        &#x27;ref&#x27;: &#x27;popup&#x27;,
+        &#x27;title&#x27;: &#x27;Popup&#x27;,
+        &#x27;close&#x27;: true,
+        &#x27;content&#x27;: &#x27;&#x27;
+    }, (options || {}));
+
+};
+
+&#x2F;**
+ * Build the popup window.
+ * This should be pretty easy.
+ *
+ * @method build
+ *&#x2F;
+Chatterbox.Popup.prototype.build = function(  ) {
+
+    var fill = this.options;
+    
+    if( this.options.close ) {
+        fill.title+= &#x27;&lt;a href=&quot;#close&quot; class=&quot;close iconic x&quot;&gt;&lt;&#x2F;a&gt;&#x27;;
+    }
+    
+    this.pview.append(Chatterbox.render( &#x27;popup&#x27;, fill ));
+    this.window = this.pview.find(&#x27;.floater.&#x27; + fill.ref);
+    
+    if( this.options.close ) {
+        this.closeb = this.window.find(&#x27;a.close&#x27;);
+        var popup = this;
+
+        this.closeb.click(
+            function( event ) {
+                popup.close();
+                return false;
+            }
+        );
+    }
+
+};
+
+&#x2F;**
+ * Close the popup.
+ * 
+ * @method close
+ *&#x2F;
+Chatterbox.Popup.prototype.close = function(  ) {
+    
+    this.window.remove();
+    
+};
+
+&#x2F;**
+ * Prompt popup.
+ * This should be used for retrieving input from the user.
+ *&#x2F;
+Chatterbox.Popup.Prompt = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        &#x27;position&#x27;: [0, 0],
+        &#x27;ref&#x27;: &#x27;prompt&#x27;,
+        &#x27;title&#x27;: &#x27;Input&#x27;,
+        &#x27;close&#x27;: false,
+        &#x27;label&#x27;: &#x27;&#x27;,
+        &#x27;default&#x27;: &#x27;&#x27;,
+        &#x27;submit-button&#x27;: &#x27;Submit&#x27;,
+        &#x27;event&#x27;: {
+            &#x27;submit&#x27;: function(  ) {},
+            &#x27;cancel&#x27;: function(  ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.data = this.options[&#x27;default&#x27;];
+
+};
+
+Chatterbox.Popup.Prompt.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.Prompt.prototype.constructor = Chatterbox.Popup.Prompt;
+
+&#x2F;**
+ * Build the prompt.
+ * 
+ * @method build
+ *&#x2F;
+Chatterbox.Popup.Prompt.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.template.prompt.main;
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        &#x27;left&#x27;: this.options.position[0],
+        &#x27;top&#x27;: this.options.position[1]
+    });
+    
+    var prompt = this;
+    
+    this.window.find(&#x27;.button.close&#x27;).click( function(  ) {
+        prompt.options.event.cancel( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find(&#x27;.button.submit&#x27;).click( function(  ) {
+        prompt.data = prompt.window.find(&#x27;input&#x27;).val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+    
+    this.window.find(&#x27;form&#x27;).submit( function(  ) {
+        prompt.data = prompt.window.find(&#x27;input&#x27;).val();
+        prompt.options.event.submit( prompt );
+        prompt.close();
+        return false;
+    } );
+
+};
+
+&#x2F;**
+ * Emote picker.
+ * This should be used for retrieving input from the user.
+ *&#x2F;
+Chatterbox.Popup.ItemPicker = function( ui, options ) {
+
+    options = options || {};
+    options = Object.extend( {
+        &#x27;position&#x27;: [100, 60],
+        &#x27;ref&#x27;: &#x27;item-picker&#x27;,
+        &#x27;title&#x27;: &#x27;Items&#x27;,
+        &#x27;event&#x27;: {
+            &#x27;select&#x27;: function( item ) {}
+        }
+    }, options );
+    
+    Chatterbox.Popup.call( this, ui, options );
+    this.pview = this.pview.find(&#x27;.chatbook&#x27;);
+    this.data = this.options[&#x27;default&#x27;];
+    this.pages = [];
+    this.cpage = null;
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype = new Chatterbox.Popup();
+Chatterbox.Popup.ItemPicker.prototype.constructor = Chatterbox.Popup.ItemPicker;
+
+Chatterbox.Popup.ItemPicker.prototype.build = function(  ) {
+
+    this.options.content = Chatterbox.render(&#x27;ip.main&#x27;, {});
+    Chatterbox.Popup.prototype.build.call(this);
+    this.window.css({
+        &#x27;right&#x27;: this.options.position[0],
+        &#x27;bottom&#x27;: this.options.position[1]
+    });
+    this.closeb.removeClass(&#x27;medium&#x27;);
+    this.pbook = this.window.find(&#x27;section.pages&#x27;);
+    this.tabs = this.window.find(&#x27;section.tabs ul&#x27;);
+    this.buttons = this.window.find(&#x27;section.buttons&#x27;);
+    
+    var ip = this;
+    var page = null;
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        page = this.pages[i];
+        page.build();
+        if( i == 0 )
+            this.select_page(page);
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.refresh = function(  ) {
+    
+    if( this.cpage == null ) {
+        return;
+    } else {
+        this.cpage.refresh();
+    }
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.page = function( name, dpage ) {
+
+    name = name.toLowerCase();
+    
+    for( var i in this.pages ) {
+        if( !this.pages.hasOwnProperty(i) )
+            continue;
+        if( this.pages[i].name.toLowerCase() == name )
+            return this.pages[i];
+    }
+    
+    return (dpage || null);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_page = function( options, pclass ) {
+
+    this.pages.push( new ( pclass || Chatterbox.Popup.ItemPicker.Page )( this, options ) );
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        &#x27;href&#x27;: &#x27;#button&#x27;,
+        &#x27;title&#x27;: &#x27;Button&#x27;,
+        &#x27;label&#x27;: &#x27;Button&#x27;
+    }, ( options || {} ) );
+    
+    this.buttons.append(Chatterbox.render( &#x27;ip.button&#x27;, options ));
+    return this.buttons.find(&#x27;a[href=&#x27;+options.href+&#x27;]&#x27;);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select = function( item ) {
+
+    this.options.event.select(item);
+
+};
+
+Chatterbox.Popup.ItemPicker.prototype.select_page = function( page ) {
+
+    if( !page )
+        return;
+    
+    if( this.cpage != null )
+        this.cpage.hide();
+    
+    this.cpage = page || null;
+    
+    if( this.cpage != null )
+        this.cpage.show();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page = function( picker, options ) {
+
+    this.picker = picker;
+    this.options = Object.extend( {
+        &#x27;ref&#x27;: &#x27;page&#x27;,
+        &#x27;href&#x27;: &#x27;#page&#x27;,
+        &#x27;label&#x27;: &#x27;Page&#x27;,
+        &#x27;title&#x27;: &#x27;page&#x27;,
+        &#x27;items&#x27;: [],
+        &#x27;content&#x27;: &#x27;&lt;em&gt;No items on this page.&lt;&#x2F;em&gt;&#x27;,
+    }, ( options || {} ));
+    this.name = this.options.label;
+    this.nrefresh = true;
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build = function(  ) {
+
+    this.picker.pbook.append( Chatterbox.render(&#x27;ip.page&#x27;, this.options) );
+    this.picker.tabs.append(Chatterbox.render(&#x27;ip.tab&#x27;, this.options));
+    this.view = this.picker.pbook.find(&#x27;div.page#&#x27;+this.options.ref);
+    this.items = this.view.find(&#x27;ul&#x27;);
+    this.tab = this.picker.tabs.find(&#x27;#&#x27;+this.options.ref);
+    
+    this.refresh();
+    
+    var page = this;
+    this.tab.find(&#x27;a&#x27;).click( function(  ) {
+        page.picker.select_page( page );
+        return false;
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.refresh = function(  ) {
+
+    var content = this.build_list();
+    if( content.length == 0 ) {
+        this.options.content = &#x27;&lt;em&gt;No items on this page.&lt;&#x2F;em&gt;&#x27;;
+    } else {
+        this.options.content = &#x27;&lt;ul&gt;&#x27; + content + &#x27;&lt;&#x2F;ul&gt;&#x27;;
+    }
+    this.view.html(this.options.content);
+    this.items = this.view.find(&#x27;ul&#x27;);
+    this.hook_events();
+    this.nrefresh = false;
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hook_events = function(  ) {
+
+    var page = this;
+    this.items.find(&#x27;li&#x27;).each( function( index, elem ) {
+        var obj = page.view.find(elem);
+        var item = obj.find(&#x27;.value&#x27;).html();
+        obj.click( function(  ) {
+            page.picker.select(item);
+        } );
+    } );
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.build_list = function(  ) {
+
+    var ul = [];
+    var item = null;
+    var title, val, html;
+    for( var i in this.options.items ) {
+        if( !this.options.items.hasOwnProperty(i) )
+            continue;
+        item = this.options.items[i];
+        val = item.value || item;
+        title = item.title || val;
+        html = item.html || false;
+        ul.push(
+            &#x27;&lt;li class=&quot;item&quot; title=&quot;&#x27;+title+&#x27;&quot;&gt;\
+            &lt;span class=&quot;hicon&quot;&gt;&lt;i class=&quot;iconic check&quot;&gt;&lt;&#x2F;i&gt;&lt;&#x2F;span&gt;\
+            &#x27;+ ( html ? val : &#x27;&lt;span class=&quot;value&quot;&gt;&#x27;+val+&#x27;&lt;&#x2F;span&gt;&#x27; ) + &#x27;\
+            &lt;&#x2F;li&gt;&#x27;
+        );
+    }
+    
+    return ul.join(&#x27;&#x27;);
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.show = function(  ) {
+
+    this.tab.addClass(&#x27;selected&#x27;);
+    this.view.css(&#x27;display&#x27;, &#x27;block&#x27;);
+    this.refresh();
+
+};
+
+Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
+
+    this.tab.removeClass(&#x27;selected&#x27;);
+    this.view.css(&#x27;display&#x27;, &#x27;none&#x27;);
+
+};
+
+
+
+
+
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

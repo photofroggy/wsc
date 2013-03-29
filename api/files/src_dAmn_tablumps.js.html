@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;tablumps.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Represents a string that possibly contains tablumps.
+ * Use different object methods to render the tablumps differently.
+ * 
+ * @example
+ *     &#x2F;&#x2F; Parse something.
+ *     var msg = new wsc.TablumpString(&#x27;hey, check &amp;b\t&amp;a\thttp:&#x2F;&#x2F;google.com\tgoogle.com\tgoogle&amp;&#x2F;a\t&amp;&#x2F;b\t for answers.&#x27;);
+ *     console.log(msg.raw); &#x2F;&#x2F; &#x27;hey, check &amp;b\t&amp;a\thttp:&#x2F;&#x2F;google.com\tgoogle.com\tgoogle&amp;&#x2F;a\t&amp;&#x2F;b\t for answers.&#x27;
+ *     console.log(msg.text()); &#x2F;&#x2F; &#x27;hey, check [link:http:&#x2F;&#x2F;google.com]google[&#x2F;link] for answers.&#x27;
+ *     console.log(msg.html()); &#x2F;&#x2F; &#x27;hey, check &lt;b&gt;&lt;a href=&quot;http:&#x2F;&#x2F;google.com&quot;&gt;google&lt;&#x2F;a&gt;&lt;&#x2F;b&gt; for answers.&#x27;
+ *     console.log(msg.ansi()); &#x2F;&#x2F; &#x27;hey, check \x1b[1m[link:http:&#x2F;&#x2F;google.com]google[&#x2F;link]\x1b[22m for answers.&#x27;
+ * 
+ * @class TablumpString
+ * @constructor
+ * @param data {String} String possibly containing tablumps.
+ * @param parser {Object} A reference to a tablumps parser. Not required.
+ *&#x2F;
+wsc.dAmn.TablumpString = function(data, parser) {
+    this._parser = parser || new wsc.dAmn.Tablumps();
+    this.tokens = this._parser.tokenise(data);
+    this.raw = data;
+    this._text = null;
+    this._html = null;
+    this._ansi = null;
+};
+
+wsc.dAmn.TablumpString.prototype = new wsc.MessageString;
+wsc.dAmn.TablumpString.prototype.constructor = wsc.dAmn.TablumpString;
+
+with(wsc.dAmn.TablumpString.prototype = new String) {
+    constructor = wsc.dAmn.TablumpString;
+    toString = valueOf = function() { return this.raw; };
+}
+
+&#x2F;**
+ * @function html
+ * 
+ * Render the tablumps as HTML entities.
+ *&#x2F;
+wsc.dAmn.TablumpString.prototype.html = function() {
+    if(this._html == null)
+        this._html = this._parser.render(1, this);
+    return this._html;
+};
+
+&#x2F;**
+ * @function text
+ *
+ * Render the tablumps in plain text where possible. Some tablumps appear as
+ * HTML entities even through this.
+ *&#x2F;
+wsc.dAmn.TablumpString.prototype.text = function() {
+    if(this._text == null)
+        this._text = this._parser.render(0, this);
+    return this._text;
+};
+
+&#x2F;**
+ * @function ansi
+ * 
+ * Render the tablumps with ANSI escape sequences.
+ * 
+ * For this rendering method to really be worth it, I&#x27;ll actually have to move
+ * away from the simple regex.
+ *&#x2F;
+wsc.dAmn.TablumpString.prototype.ansi = function() {
+    if(this._ansi == null)
+        this._ansi = this._parser.render(2, this);
+    return this._ansi;
+};
+
+
+&#x2F;**
+ * States for the parser.
+ *&#x2F;
+wsc.dAmn.PARSE = {
+    &#x27;RAW&#x27;: 0,
+    &#x27;TAG&#x27;: 1,
+    &#x27;ARG&#x27;: 2
+};
+
+
+&#x2F;**
+ * @object wsc.dAmn.TablumpParser
+ *
+ * Constructor for the tablumps parser.
+ *&#x2F;
+wsc.dAmn.TablumpParser = function(  ) {
+
+    this.lumps = this.defaultMap();
+
+};
+
+wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
+wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
+
+&#x2F;**
+ * @function registerMap
+ *
+ * I should probably deprecate this. Sets the rendering map to the given map.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
+    this.lumps = map;
+};
+
+&#x2F;**
+ * @function extend
+ *
+ * Add the given rendering items to the parser&#x27;s render map.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
+    for(index in map) {
+        this.lumps[index] = map[index];
+    }
+};
+
+&#x2F;**
+ * @function defaultMap
+ * 
+ * Get all the default nonsense.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
+    &#x2F;* Tablumps formatting rules.
+     * This object can be defined as follows:
+     *     lumps[tag] =&gt; [ arguments, render[, render[, ...]] ]
+     * &#x60;&#x60;tag&#x60;&#x60; is the tablumps-formatted tag to process.
+     * &#x60;&#x60;arguments&#x60;&#x60; is the number of arguments contained in the tablump.
+     * &#x60;&#x60;render&#x60;&#x60; defines a rendering for the tablump. The render argument
+     *            can be a formatting string or a function that returns a
+     *            string. The first render method should render plain text;
+     *            the second, html; the third, ansi escape sequences.
+     *&#x2F;
+    
+    return {
+        &#x2F;&#x2F; There are a lot of 0 arg things here...
+        &#x2F;&#x2F; Would use regex but that&#x27;d be less flexible.
+        &#x27;&amp;b\t&#x27;: [0, &#x27;&lt;b&gt;&#x27;, &#x27;&lt;b&gt;&#x27;, &#x27;\x1b[1m&#x27;],
+        &#x27;&amp;&#x2F;b\t&#x27;: [0, &#x27;&lt;&#x2F;b&gt;&#x27;, &#x27;&lt;&#x2F;b&gt;&#x27;, &#x27;\x1b[22m&#x27;],
+        &#x27;&amp;i\t&#x27;: [0, &#x27;&lt;i&gt;&#x27;, &#x27;&lt;i&gt;&#x27;, &#x27;\x1b[3m&#x27;],
+        &#x27;&amp;&#x2F;i\t&#x27;: [0, &#x27;&lt;&#x2F;i&gt;&#x27;, &#x27;&lt;&#x2F;i&gt;&#x27;, &#x27;\x1b[23m&#x27;],
+        &#x27;&amp;u\t&#x27;: [0, &#x27;&lt;u&gt;&#x27;, &#x27;&lt;u&gt;&#x27;, &#x27;\x1b[4m&#x27;],
+        &#x27;&amp;&#x2F;u\t&#x27;: [0, &#x27;&lt;&#x2F;u&gt;&#x27;, &#x27;&lt;&#x2F;u&gt;&#x27;, &#x27;\x1b[24m&#x27;],
+        &#x27;&amp;s\t&#x27;: [0, &#x27;&lt;s&gt;&#x27;, &#x27;&lt;s&gt;&#x27;, &#x27;\x1b[9m&#x27;],
+        &#x27;&amp;&#x2F;s\t&#x27;: [0, &#x27;&lt;&#x2F;s&gt;&#x27;, &#x27;&lt;&#x2F;s&gt;&#x27;, &#x27;\x1b[29m&#x27;],
+        &#x27;&amp;sup\t&#x27;: [0, &#x27;&lt;sup&gt;&#x27;],
+        &#x27;&amp;&#x2F;sup\t&#x27;: [0, &#x27;&lt;&#x2F;sup&gt;&#x27;],
+        &#x27;&amp;sub\t&#x27;: [0, &#x27;&lt;sub&gt;&#x27;],
+        &#x27;&amp;&#x2F;sub\t&#x27;: [0, &#x27;&lt;&#x2F;sub&gt;&#x27;],
+        &#x27;&amp;code\t&#x27;: [0, &#x27;&lt;code&gt;&#x27;],
+        &#x27;&amp;&#x2F;code\t&#x27;: [0, &#x27;&lt;&#x2F;code&gt;&#x27;],
+        &#x27;&amp;p\t&#x27;: [0, &#x27;&lt;p&gt;&#x27;],
+        &#x27;&amp;&#x2F;p\t&#x27;: [0, &#x27;&lt;&#x2F;p&gt;&#x27;],
+        &#x27;&amp;ul\t&#x27;: [0, &#x27;&lt;ul&gt;&#x27;],
+        &#x27;&amp;&#x2F;ul\t&#x27;: [0, &#x27;&lt;&#x2F;ul&gt;&#x27;],
+        &#x27;&amp;ol\t&#x27;: [0, &#x27;&lt;ol&gt;&#x27;],
+        &#x27;&amp;li\t&#x27;: [0, &#x27;&lt;li&gt;&#x27; ],
+        &#x27;&amp;&#x2F;li\t&#x27;: [0, &#x27;&lt;&#x2F;li&gt;&#x27;],
+        &#x27;&amp;&#x2F;ol\t&#x27;: [0, &#x27;&lt;&#x2F;ol&gt;&#x27;],
+        &#x27;&amp;link\t&#x27;: [ 3,
+            function( data ) {
+                return data[0] + ( data[1] ? (&#x27; (&#x27; + data[1] + &#x27;)&#x27;) : &#x27;&#x27;);
+            },
+            function( data ) {
+                t = data[1];
+                return &#x27;&lt;a target=&quot;_blank&quot; href=&quot;&#x27;+data[0]+&#x27;&quot; title=&quot;&#x27;+( t || data[0] )+&#x27;&quot;&gt;&#x27;+( t || &#x27;[link]&#x27; )+&#x27;&lt;&#x2F;a&gt;&#x27;;
+            }
+        ],
+        &#x27;&amp;acro\t&#x27;: [ 1, &#x27;&lt;acronym title=&quot;{0}&quot;&gt;&#x27; ],
+        &#x27;&amp;&#x2F;acro\t&#x27;: [0, &#x27;&lt;&#x2F;acronym&gt;&#x27;],
+        &#x27;&amp;abbr\t&#x27;: [ 1, &#x27;&lt;abbr title=&quot;{0}&quot;&gt;&#x27;],
+        &#x27;&amp;&#x2F;abbr\t&#x27;: [ 0, &#x27;&lt;&#x2F;abbr&gt;&#x27;],
+        &#x27;&amp;img\t&#x27;: [ 3, &#x27;&lt;img src=&quot;{0}&quot; alt=&quot;{1}&quot; title=&quot;{2}&quot; &#x2F;&gt;&#x27;],
+        &#x27;&amp;iframe\t&#x27;: [ 3, &#x27;&lt;iframe src=&quot;{0}&quot; width=&quot;{1}&quot; height=&quot;{2}&quot; &#x2F;&gt;&#x27;],
+        &#x27;&amp;&#x2F;iframe\t&#x27;: [ 0, &#x27;&lt;&#x2F;iframe&gt;&#x27;],
+        &#x27;&amp;a\t&#x27;: [ 2, &#x27;&lt;a href=&quot;{0}&quot; title=&quot;{1}&quot;&gt;&#x27; ],
+        &#x27;&amp;&#x2F;a\t&#x27;: [ 0, &#x27;&lt;&#x2F;a&gt;&#x27;],
+        &#x27;&amp;br\t&#x27;: [ 0, &#x27;&lt;br&#x2F;&gt;&#x27; ],
+        &#x27;&amp;bcode\t&#x27;: [0, &#x27;&lt;bcode&gt;&#x27;, &#x27;&lt;span&gt;&lt;pre&gt;&lt;code&gt;&#x27;],
+        &#x27;&amp;&#x2F;bcode\t&#x27;: [0, &#x27;&lt;&#x2F;bcode&gt;&#x27;, &#x27;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;span&gt;&#x27;],
+        &#x27;&amp;avatar\t&#x27;: [ 2,
+            &#x27;:icon{0}:&#x27;,
+            function( data ) { return wsc.dAmn.avatar.link( data[0], data[1] ); }
+        ],
+        &#x27;&amp;emote\t&#x27;: [ 5,
+            &#x27;{0}&#x27;,
+            &#x27;&lt;img alt=&quot;{0}&quot; width=&quot;{1}&quot; height=&quot;{2}&quot; title=&quot;{3}&quot; src=&quot;http:&#x2F;&#x2F;e.deviantart.com&#x2F;emoticons&#x2F;{4}&quot; &#x2F;&gt;&#x27;
+        ],
+        &#x27;&amp;dev\t&#x27;: [ 2,
+            &#x27;:dev{1}:&#x27;,
+            &#x27;{0}&lt;a target=&quot;_blank&quot; alt=&quot;:dev{1}:&quot; href=&quot;http:&#x2F;&#x2F;{1}.deviantart.com&#x2F;&quot;&gt;{1}&lt;&#x2F;a&gt;&#x27;,
+            &#x27;{0}\x1b[36m{1}\x1b[39m&#x27;
+        ],
+        &#x27;&amp;thumb\t&#x27;: [ 7,
+            &#x27;:thumb{0}:&#x27;,
+            wsc.dAmn.Emotes.Tablumps
+        ],
+        &#x27;EOF&#x27;: [0, &#x27;&#x27;, null, &#x27;\x1b[m&#x27;]
+    };
+
+};
+
+
+&#x2F;**
+ * @function parse
+ *
+ * Create a wsc.dAmn.TablumpString obejct and return it.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
+    data = replaceAll(data, &#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27;);
+    data = replaceAll(data, &#x27;&gt;&#x27;, &#x27;&amp;gt;&#x27;);
+    return new wsc.dAmn.TablumpString(data, this);
+};
+
+&#x2F;**
+ * @function tokenise
+ * 
+ * Parse a message possibly containing tablumps into tokens.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
+
+    if( !data )
+        return [];
+    
+    var state = wsc.dAmn.PARSE.RAW;
+    var result = [];
+    var argbuf = &#x27;&#x27;;
+    var argc = 0;
+    var item = [];
+    var buf = &#x27;&#x27;;
+    var tag = &#x27;&#x27;;
+    var c = &#x27;&#x27;;
+    
+    for( var i = 0; i &lt; data.length; i++ ) {
+    
+        c = data[i];
+        
+        switch(state) {
+        
+            case wsc.dAmn.PARSE.RAW:
+                if( c != &#x27;&amp;&#x27; ) {
+                    buf+= c;
+                    break;
+                }
+                argbuf = c;
+                state = wsc.dAmn.PARSE.TAG
+                break;
+            
+            case wsc.dAmn.PARSE.TAG:
+                argbuf+= c;
+                if( c == &#x27; &#x27; || c == &#x27;\t&#x27; || c == &#x27;&amp;&#x27; ) {
+                    if( c == &#x27; &#x27; || c == &#x27;&amp;&#x27; || !this.lumps.hasOwnProperty(argbuf) ) {
+                        buf+= argbuf;
+                        argbuf = &#x27;&#x27;;
+                        if( c == &#x27;&amp;&#x27; ) {
+                            i--;
+                            buf = buf.substr(0, buf.length-1);
+                        }
+                        state = wsc.dAmn.PARSE.RAW;
+                    } else {
+                        if( buf.length &gt; 0 ) {
+                            result.push([ &#x27;raw&#x27;, buf ]);
+                            buf = &#x27;&#x27;;
+                        }
+                        
+                        item = [argbuf, []];
+                        argc = this.lumps[argbuf][0];
+                        result.push(item);
+                        argbuf = &#x27;&#x27;;
+                        
+                        if( argc &gt; 0 ) {
+                            state = wsc.dAmn.PARSE.ARG;
+                        } else {
+                            state = wsc.dAmn.PARSE.RAW;
+                        }
+                    }
+                }
+                break;
+            
+            case wsc.dAmn.PARSE.ARG:
+                if( c == &#x27;\t&#x27; ) {
+                    argc--;
+                    
+                    if( argbuf == &#x27;&amp;&#x27; ) {
+                        state = wsc.dAmn.PARSE.RAW;
+                        argbuf = &#x27;&#x27;;
+                        break;
+                    }
+                    
+                    item[1].push(argbuf);
+                    argbuf = &#x27;&#x27;;
+                    
+                    if( argc == 0 )
+                        state = wsc.dAmn.PARSE.RAW;
+                    break;
+                }
+                
+                argbuf+= c;
+                break;
+        
+        }
+    
+    }
+    
+    if( buf.length &gt; 0 || argbuf.length &gt; 0 ) {
+        result.push([ &#x27;raw&#x27;, buf + argbuf ]);
+    }
+    
+    return result;
+
+};
+
+&#x2F;**
+ * @function render
+ *
+ * Render tablumps in a given format.
+ * 
+ * Here, the flag should be a number, and defines the index of the renderer
+ * to use when rendering a tablump. Setting &#x60;flag&#x60; to 0 will result in the
+ * first renderer being used. In the render map, the plain text renderers come
+ * first, and also act as a default.
+ * 
+ * Setting &#x60;flag&#x60; to 1 causes the parser to render tablumps as HTML elements
+ * where possible. Setting &#x60;flag&#x60; to 2 causes the parser to render tablumps as
+ * ANSI escape sequence formatted strings where possible.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
+    if( !data )
+        return &#x27;&#x27;;
+    
+    if( !data.hasOwnProperty(&#x27;tokens&#x27;) )
+        return &#x27;&#x27;;
+    
+    flag = flag + 1;
+    var rendered = &#x27;&#x27;;
+    var token = [];
+    
+    for( var i in data.tokens ) {
+        
+        if( !data.tokens.hasOwnProperty(i) )
+            continue;
+        
+        token = data.tokens[i];
+        
+        if( token[0] == &#x27;raw&#x27; ) {
+            rendered+= token[1];
+            continue;
+        }
+        
+        rendered+= this.renderOne( flag, token[0], token[1] );
+        
+    }
+    
+    return rendered + this.renderOne( flag, &#x27;EOF&#x27;, &#x27;&#x27; );
+};
+
+&#x2F;**
+ * @function renderOne
+ * Render a single tablump.
+ *&#x2F;
+wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
+    var lump = this.lumps[tag];
+    
+    &#x2F;&#x2F; If we don&#x27;t know how to parse the tag, leave it be!
+    if( lump === undefined ) {
+        return &#x27;&amp;&#x27; + tag + &#x27;\t&#x27; + tokens.join(&#x27;\t&#x27;);;
+    }
+    
+    &#x2F;&#x2F; Get our renderer.
+    var renderer = lump[type] || lump[1];
+    &#x2F;&#x2F; Parse the tablump if we can.
+    if( typeof(renderer) == &#x27;string&#x27; )
+        return String.format(renderer, tokens);
+    else
+        return renderer.call(this, tokens);
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

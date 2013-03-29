@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;autojoin.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Autojoin extension.
+ *&#x2F;
+wsc.defaults.Extension.Autojoin = function( client ) {
+
+    var settings = client.autojoin;
+    client.ui.nav.add_button( {
+        &#x27;icon&#x27;: &#x27;chat&#x27;,
+        &#x27;label&#x27;: &#x27;&#x27;,
+        &#x27;title&#x27;: &#x27;Join your autojoin channels&#x27;,
+        &#x27;href&#x27;: &#x27;#autojoin-do&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty(i) )
+                    continue;
+                client.join(client.autojoin.channel[i]);
+            }
+        }
+    });
+    
+    var init = function(  ) {
+    
+        client.bind(&#x27;cmd.autojoin&#x27;, cmd_autojoin);
+        client.ui.on(&#x27;settings.open&#x27;, settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page(&#x27;Autojoin&#x27;);
+        var ul = &#x27;&lt;ul&gt;&#x27;;
+        var orig = {};
+        orig.ajon = client.autojoin.on;
+        orig.chan = client.autojoin.channel;
+        
+        if( client.autojoin.channel.length == 0 ) {
+            ul+= &#x27;&lt;li&gt;&lt;i&gt;No autojoin channels set&lt;&#x2F;i&gt;&lt;&#x2F;li&gt;&lt;&#x2F;ul&gt;&#x27;;
+        } else {
+            for( var i in client.autojoin.channel ) {
+                if( !client.autojoin.channel.hasOwnProperty( i ) )
+                    continue;
+                ul+= &#x27;&lt;li&gt;&#x27; + client.autojoin.channel[i] + &#x27;&lt;&#x2F;li&gt;&#x27;;
+            }
+            ul+= &#x27;&lt;&#x2F;ul&gt;&#x27;;
+        }
+        
+        page.item(&#x27;Checkbox&#x27;, {
+            &#x27;ref&#x27;: &#x27;eaj&#x27;,
+            &#x27;title&#x27;: &#x27;Autojoin&#x27;,
+            &#x27;text&#x27;: &#x27;Turn on autojoin to automatically join selected channels\
+                    when you connect to the chat server.&#x27;,
+            &#x27;items&#x27;: [
+                { &#x27;value&#x27;: &#x27;yes&#x27;, &#x27;title&#x27;: &#x27;On&#x27;, &#x27;selected&#x27;: orig.ajon }
+            ],
+            &#x27;event&#x27;: {
+                &#x27;change&#x27;: function( event ) {
+                    if( event.target.value == &#x27;yes&#x27; )
+                        client.autojoin.on = event.target.checked;
+                },
+                &#x27;save&#x27;: function( event ) {
+                    orig.ajon = client.autojoin.on;
+                    client.config_save();
+                },
+                &#x27;close&#x27;: function( event ) {
+                    client.autojoin.on = orig.ajon;
+                }
+            }
+        });
+        
+        var imgr = page.item(&#x27;Items&#x27;, {
+            &#x27;ref&#x27;: &#x27;channelss&#x27;,
+            &#x27;title&#x27;: &#x27;Channels&#x27;,
+            &#x27;text&#x27;: &#x27;Add any channels you want to join automatically when you\
+                    connect to the chat server.&#x27;,
+            &#x27;items&#x27;: client.autojoin.channel,
+            &#x27;prompt&#x27;: {
+                &#x27;title&#x27;: &#x27;Add Channel&#x27;,
+                &#x27;label&#x27;: &#x27;Channel:&#x27;,
+            },
+            &#x27;event&#x27;: {
+                &#x27;up&#x27;: function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap[&#x27;this&#x27;].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap[&#x27;this&#x27;].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                &#x27;down&#x27;: function( event ) {
+                    var swap = event.args.swap;
+                    client.autojoin.channel[swap[&#x27;this&#x27;].index] = swap.that.item;
+                    client.autojoin.channel[swap.that.index] = swap[&#x27;this&#x27;].item;
+                    imgr.options.items = client.autojoin.channel;
+                },
+                &#x27;add&#x27;: function( event ) {
+                    var item = client.deform_ns(event.args.item).toLowerCase();
+                    var index = client.autojoin.channel.indexOf(item);
+                    
+                    if( index != -1 )
+                        return;
+                    
+                    client.autojoin.channel.push( item );
+                    imgr.options.items = client.autojoin.channel;
+                },
+                &#x27;remove&#x27;: function( event ) {
+                    client.autojoin.channel.splice( event.args.index, 1 );
+                    imgr.options.items = client.autojoin.channel;
+                },
+                &#x27;save&#x27;: function( event ) {
+                    orig.chan = client.autojoin.channel;
+                    client.config_save();
+                },
+                &#x27;close&#x27;: function( event ) {
+                    client.config_load();
+                }
+            }
+        });
+    
+    };
+    
+    var cmd_autojoin = function( cmd ) {
+    
+        var args = cmd.args.split(&#x27; &#x27;);
+        
+        if( !args )
+            return;
+        
+        var subcmd = args.shift().toLowerCase();
+        var meth = function( item ) {};
+        var mod = false;
+        var chan = client.channel(cmd.ns);
+        
+        switch( subcmd ) {
+        
+            case &#x27;add&#x27;:
+                meth = function( item ) {
+                    if( client.autojoin.channel.indexOf( item ) == -1 ) {
+                        mod = true;
+                        client.autojoin.channel.push( item );
+                        chan.server_message(&#x27;Added &#x27; + item + &#x27; to your autojoin.&#x27;);
+                    } else {
+                        chan.server_message(&#x27;Already have &#x27; + item + &#x27; on your autojoin.&#x27;);
+                    }
+                };
+                break;
+            case &#x27;rem&#x27;:
+            case &#x27;remove&#x27;:
+                meth = function( item ) {
+                    var ci = client.autojoin.channel.indexOf( item );
+                    if( ci != -1 ) {
+                        mod = true;
+                        client.autojoin.channel.splice( ci, 1 );
+                        chan.server_message(&#x27;Removed &#x27; + item + &#x27; from your autojoin.&#x27;);
+                    } else {
+                        chan.server_message(item + &#x27; is not on your autojoin list.&#x27;);
+                    }
+                };
+                break;
+            case &#x27;on&#x27;:
+                chan.server_message(&#x27;Autojoin on.&#x27;);
+                if( !client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = true;
+                }
+                break;
+            case &#x27;off&#x27;:
+                chan.server_message(&#x27;Autojoin off.&#x27;);
+                if( client.autojoin.on ) {
+                    mod = true;
+                    client.autojoin.on = false;
+                }
+                break;
+        
+        }
+        
+        var item = &#x27;&#x27;;
+        
+        for( var i in args ) {
+        
+            if( !args.hasOwnProperty(i) )
+                continue;
+            item = client.deform_ns(args[i]).toLowerCase();
+            meth( item );
+        
+        }
+        
+        if( mod )
+            client.config_save();
+    
+    };
+    
+    init();
+
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

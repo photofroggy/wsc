@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ignore.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Ignore extension.
+ * 
+ * Implements the ignore functionality.
+ *&#x2F;
+wsc.defaults.Extension.Ignore = function( client ) {
+
+    var settings = {};
+    var storage = client.storage.folder(&#x27;ignore&#x27;);
+    var istore = storage.folder(&#x27;ignored&#x27;);
+    
+    var init = function(  ) {
+    
+        load();
+        save(); &#x2F;&#x2F; Just in case we don&#x27;t have the stuff stored in the first place.
+        
+        &#x2F;&#x2F; Commands
+        client.bind(&#x27;cmd.ignore&#x27;, cmd_ignore);
+        client.bind(&#x27;cmd.unignore&#x27;, cmd_unignore);
+        
+        &#x2F;&#x2F; Settings window
+        client.ui.on(&#x27;settings.open&#x27;, settings.page);
+    
+    };
+    
+    settings.page = function( event, ui ) {
+    
+        var page = event.settings.page(&#x27;Ignores&#x27;);
+        var orig = {};
+        orig.im = settings.ignore;
+        orig.uim = settings.unignore;
+        orig.usr = client.ui.umuted;
+        
+        page.item(&#x27;Text&#x27;, {
+            &#x27;ref&#x27;: &#x27;intro&#x27;,
+            &#x27;title&#x27;: &#x27;Ignores&#x27;,
+            &#x27;text&#x27;: &#x27;Use &lt;code&gt;ignore&lt;&#x2F;code&gt; to ignore people.\n\n\
+                    You can &quot;ignore&quot; other users of the chat server using the\n\
+                    &lt;code&gt;&#x2F;ignore&lt;&#x2F;code&gt; command. Ignoring a user hides their\
+                    messages from you in the channel log.&#x27;,
+        });
+        
+        page.item(&#x27;Form&#x27;, {
+            &#x27;ref&#x27;: &#x27;msgs&#x27;,
+            &#x27;title&#x27;: &#x27;Messages&#x27;,
+            &#x27;text&#x27;: &#x27;Here you can set the messages displayed when you ignore or\
+                    unignore a user.\n\nThe text &lt;code&gt;{user}&lt;&#x2F;code&gt; is replaced\
+                    with the name of the user your are ignoring or unignoring.&#x27;,
+            &#x27;fields&#x27;: [
+                [&#x27;Textfield&#x27;, {
+                    &#x27;ref&#x27;: &#x27;ignore&#x27;,
+                    &#x27;label&#x27;: &#x27;Ignore&#x27;,
+                    &#x27;default&#x27;: orig.im
+                }],
+                [&#x27;Textfield&#x27;, {
+                    &#x27;ref&#x27;: &#x27;unignore&#x27;,
+                    &#x27;label&#x27;: &#x27;Unignore&#x27;,
+                    &#x27;default&#x27;: orig.uim
+                }]
+            ],
+            &#x27;event&#x27;: {
+                &#x27;save&#x27;: function( event ) {
+                    settings.ignore = event.data.ignore;
+                    settings.unignore = event.data.unignore;
+                    save();
+                }
+            }
+        });
+        
+        var imgr = page.item(&#x27;Items&#x27;, {
+            &#x27;ref&#x27;: &#x27;ignoreds&#x27;,
+            &#x27;title&#x27;: &#x27;Users&#x27;,
+            &#x27;text&#x27;: &#x27;This is the list of users that you have silenced.\n\nUse the\
+                    commands &lt;code&gt;&#x2F;ignore&lt;&#x2F;code&gt; and &lt;code&gt;&#x2F;unignore&lt;&#x2F;code&gt;\
+                    to edit the list.&#x27;,
+            &#x27;items&#x27;: orig.usr,
+            &#x27;prompt&#x27;: {
+                &#x27;title&#x27;: &#x27;Add User&#x27;,
+                &#x27;label&#x27;: &#x27;User:&#x27;,
+            },
+            &#x27;event&#x27;: {
+                &#x27;up&#x27;: function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap[&#x27;this&#x27;].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap[&#x27;this&#x27;].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                &#x27;down&#x27;: function( event ) {
+                    var swap = event.args.swap;
+                    client.ui.umuted[swap[&#x27;this&#x27;].index] = swap.that.item;
+                    client.ui.umuted[swap.that.index] = swap[&#x27;this&#x27;].item;
+                    imgr.options.items = client.ui.umuted;
+                },
+                &#x27;add&#x27;: function( event ) {
+                    client.mute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                &#x27;remove&#x27;: function( event ) {
+                    client.unmute_user( event.args.item );
+                    imgr.options.items = client.ui.umuted;
+                },
+                &#x27;save&#x27;: function( event ) {
+                    orig.usr = client.ui.umuted;
+                    save();
+                },
+                &#x27;close&#x27;: function( event ) {
+                    load();
+                }
+            }
+        });
+    
+    };
+    
+    var cmd_ignore = function( cmd ) {
+    
+        var users = cmd.args.split(&#x27; &#x27;);
+        var user = &#x27;&#x27;;
+        var msg = &#x27;&#x27;;
+        var mod = false;
+        
+        for( var i in users ) {
+            if( !users.hasOwnProperty( i ) )
+                continue;
+            
+            user = users[i];
+            tmod = client.mute_user( user );
+            if( !tmod )
+                continue;
+            
+            mod = tmod;
+            msg = replaceAll( settings.ignore, &#x27;{user}&#x27;, user );
+            if( msg.indexOf(&#x27;&#x2F;me &#x27;) == 0 ) {
+                msg = msg.substr(4);
+                client.action( cmd.target, msg );
+            } else {
+                client.say( cmd.target, msg );
+            }
+        }
+        
+        if( mod )
+            save();
+    
+    };
+    
+    var cmd_unignore = function( cmd ) {
+    
+        var users = cmd.args.split(&#x27; &#x27;);
+        var user = &#x27;&#x27;;
+        var msg = &#x27;&#x27;;
+        var mi = -1;
+        var mod = false;
+        var tmod = false;
+        
+        for( var i in users ) {
+            if( !users.hasOwnProperty( i ) )
+                continue;
+            
+            user = users[i];
+            tmod = client.unmute_user( user );
+            if( !tmod )
+                continue;
+            
+            mod = tmod;
+            msg = replaceAll( settings.unignore, &#x27;{user}&#x27;, user );
+            if( msg.indexOf(&#x27;&#x2F;me &#x27;) == 0 ) {
+                msg = msg.substr(4);
+                client.action( cmd.target, msg );
+            } else {
+                client.say( cmd.target, msg );
+            }
+        }
+        
+        if( mod )
+            save();
+    
+    };
+    
+    var load = function(  ) {
+        
+        settings.ignore = storage.get(&#x27;ignore&#x27;, &#x27;&#x2F;me is ignoring {user} now&#x27;);
+        settings.unignore = storage.get(&#x27;unignore&#x27;, &#x27;&#x2F;me is not ignoring {user} anymore&#x27;);
+        settings.count = parseInt( storage.get( &#x27;count&#x27;, 0 ) );
+        
+        var tu = null;
+        for( var i in client.ui.umuted ) {
+            if( !client.ui.umuted.hasOwnProperty(i) ) {
+                continue;
+            }
+            client.unmute_user( client.ui.umuted[i] );
+        }
+        
+        client.ui.umuted = [];
+        
+        if( settings.count &gt; 0 ) {
+            tu = null;
+            for( var i = 0; i &lt; settings.count; i++ ) {
+                client.mute_user( istore.get(i, null) );
+                &#x2F;&#x2F;client.ui.mute_user( tu );
+            }
+        }
+        
+    };
+    
+    var save = function(  ) {
+    
+        storage.set(&#x27;ignore&#x27;, settings.ignore);
+        storage.set(&#x27;unignore&#x27;, settings.unignore);
+        
+        for( var i = 0; i &lt; settings.count; i++ ) {
+            istore.remove(i)
+        }
+        
+        if( client.ui.umuted.length == 0 ) {
+            storage.set(&#x27;count&#x27;, 0);
+        } else {
+            var c = -1;
+            for( var i in client.ui.umuted ) {
+            
+                if( !client.ui.umuted.hasOwnProperty(i) )
+                    continue;
+                
+                c++;
+                istore.set( c.toString(), client.ui.umuted[i] );
+            
+            }
+            
+            c++;
+            settings.count = c;
+            storage.set(&#x27;count&#x27;, c);
+        }
+    
+    };
+    
+    init();
+
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

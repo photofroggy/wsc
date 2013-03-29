@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;templates.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Container object for HTML5 templates for the chat UI.
+ * 
+ * @class template
+ *&#x2F;
+Chatterbox.template = {};
+
+&#x2F;**
+ * Helper method to render templates.
+ * This method is actually a static method on the Chatterbox module.
+ * 
+ * @method render
+ * @param template {String} Name of the template to render.
+ * @param fill {Object} Variables to render the template with.
+ * @param use {Boolean} Use &#x60;template&#x60; as the actual template rather than the name.
+ *&#x2F;
+Chatterbox.render = function( template, fill, use, base ) {
+
+    var html = base || Chatterbox.template;
+    var renderer = {};
+    var tmpl = null;
+    var part = null;
+    
+    if( use !== undefined &amp;&amp; use === true ) {
+        html = template;
+    } else {
+        var tparts = template.split(&#x27;.&#x27;);
+        for( var ind in tparts ) {
+            part = tparts[ind];
+            if( !html.hasOwnProperty( part ) )
+                return &#x27;&#x27;;
+            html = html[part];
+        }
+    }
+    
+    if( html.hasOwnProperty(&#x27;frame&#x27;) ) {
+        tmpl = html;
+        renderer = html.render || {};
+        html = html.frame;
+        if( tmpl.hasOwnProperty(&#x27;pre&#x27;) ) {
+            if( typeof tmpl.pre == &#x27;function&#x27; ) {
+                html = tmpl.pre( html, fill );
+            } else {
+                for( i in tmpl.pre ) {
+                    html = tmpl.pre[i]( html, fill );
+                }
+            }
+        }
+    }
+    
+    for( key in fill ) {
+        html = replaceAll(html, &#x27;{&#x27;+key+&#x27;}&#x27;, ( renderer[key] || Chatterbox.template.render_stub )( fill[key] || &#x27;&#x27; ));
+    }
+    
+    if( tmpl != null ) {
+        if( tmpl.hasOwnProperty(&#x27;post&#x27;) ) {
+            if( typeof tmpl.post == &#x27;function&#x27; ) {
+                html = tmpl.post( html, fill );
+            } else {
+                for( i in tmpl.post ) {
+                    html = tmpl.post[i]( html, fill );
+                }
+            }
+        }
+    }
+    
+    return html;
+
+};
+
+Chatterbox.template.render_stub = function( data ) { return data; };
+Chatterbox.template.clean = function( keys ) {
+
+    return function( html, fill ) {
+        for( i in keys ) {
+            html = replaceAll( html, &#x27;{&#x27;+keys[i]+&#x27;}&#x27;, &#x27;&#x27; );
+        }
+        return html;
+    };
+
+};
+
+
+&#x2F;**
+ * This template provides the HTML for a chat client&#x27;s main view.
+ *
+ * @property ui
+ * @type String
+ *&#x2F;
+Chatterbox.template.ui = &#x27;&lt;div class=&quot;soundbank&quot;&gt;\
+            &lt;audio class=&quot;click&quot;&gt;\
+                &lt;source src=&quot;{media}click.ogg&quot; type=&quot;audio&#x2F;ogg&quot;&gt;\
+                &lt;source src=&quot;{media}click.mp3&quot; type=&quot;audio&#x2F;mpeg&quot;&gt;\
+            &lt;&#x2F;audio&gt;\
+        &lt;&#x2F;div&gt;\
+        &lt;div class=&quot;pager&quot;&gt;\
+        &lt;&#x2F;div&gt;\
+        &lt;nav class=&quot;tabs&quot;&gt;&lt;ul id=&quot;chattabs&quot; class=&quot;tabs&quot;&gt;&lt;&#x2F;ul&gt;\
+        &lt;ul id=&quot;tabnav&quot;&gt;\
+            &lt;li&gt;&lt;a href=&quot;#left&quot; class=&quot;button iconic arrow_left&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+            &lt;li&gt;&lt;a href=&quot;#right&quot; class=&quot;button iconic arrow_right&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+            &lt;li&gt;&lt;a href=&quot;#settings&quot; title=&quot;Change client settings&quot; class=&quot;button iconic cog&quot; id=&quot;settings-button&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+        &lt;&#x2F;ul&gt;\
+        &lt;&#x2F;nav&gt;\
+        &lt;div class=&quot;chatbook&quot;&gt;&lt;&#x2F;div&gt;&#x27;;
+
+&#x2F;**
+ * HTML for an input panel.
+ * 
+ * @property control
+ * @type String
+ *&#x2F;
+Chatterbox.template.control = &#x27;&lt;div class=&quot;chatcontrol&quot;&gt;\
+            &lt;div class=&quot;brow&quot;&gt;\
+                &lt;ul class=&quot;buttons&quot;&gt;\
+                    &lt;li&gt;&lt;a href=&quot;#multiline&quot; title=&quot;Toggle multiline input&quot; class=&quot;button iconic list&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+                &lt;&#x2F;ul&gt;\
+                &lt;ul class=&quot;states&quot;&gt;\
+                &lt;&#x2F;ul&gt;\
+            &lt;&#x2F;div&gt;\
+            &lt;form class=&quot;msg&quot;&gt;\
+                &lt;input type=&quot;text&quot; class=&quot;msg&quot; &#x2F;&gt;\
+                &lt;textarea class=&quot;msg&quot;&gt;&lt;&#x2F;textarea&gt;\
+                &lt;input type=&quot;submit&quot; value=&quot;Send&quot; class=&quot;sendmsg&quot; &#x2F;&gt;\
+            &lt;&#x2F;form&gt;\
+        &lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.brow_button = &#x27;&lt;li&gt;&lt;a href=&quot;{href}&quot; title=&quot;{title}&quot; class=&quot;button{icon}&quot;&gt;{label}&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27;;
+Chatterbox.template.brow_state = &#x27;&lt;li id=&quot;{ref}&quot;&gt;{label}&lt;&#x2F;li&gt;&#x27;;
+
+Chatterbox.template.nav_button = &#x27;&lt;li&gt;&lt;a href=&quot;{href}&quot; title=&quot;{title}&quot; class=&quot;button{icon}&quot;&gt;{label}&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27;;
+
+&#x2F;**
+ * HTML for a channel tab.
+ * 
+ * @property tab
+ * @type String
+ *&#x2F;
+Chatterbox.template.tab = &#x27;&lt;li id=&quot;{selector}-tab&quot;&gt;&lt;a href=&quot;#{selector}&quot; class=&quot;tab&quot;&gt;{ns}&lt;a href=&quot;#{selector}&quot; class=&quot;close iconic x&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27;;
+
+&#x2F;**
+ * HTML template for a channel view.
+ * 
+ * @property channel
+ * @type String
+ *&#x2F;
+Chatterbox.template.channel = &#x27;&lt;div class=&quot;chatwindow&quot; id=&quot;{selector}-window&quot;&gt;\
+                    &lt;header class=&quot;title&quot;&gt;\
+                        &lt;div class=&quot;title&quot;&gt;&lt;&#x2F;div&gt;\
+                        &lt;textarea&gt;&lt;&#x2F;textarea&gt;\
+                        &lt;a href=&quot;#edit&quot; class=&quot;button iconic pen&quot; title=&quot;Edit the title&quot;&gt;&lt;&#x2F;a&gt;\
+                        &lt;a href=&quot;#save&quot; class=&quot;button iconic check&quot; title=&quot;Save changes&quot;&gt;&lt;&#x2F;a&gt;\
+                        &lt;a href=&quot;#cancel&quot; class=&quot;button iconic x&quot; title=&quot;Cancel&quot;&gt;&lt;&#x2F;a&gt;\
+                    &lt;&#x2F;header&gt;\
+                    &lt;div class=&quot;chatlog&quot; id=&quot;{selector}-log&quot;&gt;\
+                        &lt;header class=&quot;topic&quot;&gt;\
+                            &lt;div class=&quot;topic&quot;&gt;&lt;&#x2F;div&gt;\
+                            &lt;textarea&gt;&lt;&#x2F;textarea&gt;\
+                            &lt;a href=&quot;#edit&quot; class=&quot;button iconic pen&quot; title=&quot;Edit the topic&quot;&gt;&lt;&#x2F;a&gt;\
+                            &lt;a href=&quot;#save&quot; class=&quot;button iconic check&quot; title=&quot;Save changes&quot;&gt;&lt;&#x2F;a&gt;\
+                            &lt;a href=&quot;#cancel&quot; class=&quot;button iconic x&quot; title=&quot;Cancel&quot;&gt;&lt;&#x2F;a&gt;\
+                        &lt;&#x2F;header&gt;\
+                        &lt;ul class=&quot;logwrap&quot;&gt;&lt;&#x2F;ul&gt;\
+                    &lt;&#x2F;div&gt;\
+                    &lt;div class=&quot;chatusers&quot; id=&quot;{selector}-users&quot;&gt;\
+                &lt;&#x2F;div&gt;\
+            &lt;&#x2F;div&gt;&#x27;;
+
+&#x2F;**
+ * Channel header HTML template.
+ * 
+ * @property header
+ * @type String
+ *&#x2F;
+Chatterbox.template.header = &#x27;&lt;div class=&quot;{head}&quot;&gt;{content}&lt;&#x2F;div&gt;&#x27;;
+
+&#x2F;**
+ * Log message template.
+ * 
+ * @property logmsg
+ * @type String
+ *&#x2F;
+Chatterbox.template.logmsg = &#x27;&lt;span class=&quot;message&quot;&gt;{message}&lt;&#x2F;span&gt;&#x27;;
+
+&#x2F;**
+ * Simple log template.
+ * 
+ * @property logitem
+ * @type String
+ *&#x2F;
+Chatterbox.template.logitem = &#x27;&lt;li class=&quot;logmsg u-{user}&quot;&gt;&lt;span class=&quot;ts&quot; id=&quot;{ms}&quot;&gt;{ts}&lt;&#x2F;span&gt; {message}&lt;&#x2F;li&gt;&#x27;;
+
+&#x2F;**
+ * Server message template.
+ * 
+ * @property servermsg
+ * @type String
+ *&#x2F;
+Chatterbox.template.servermsg = &#x27;&lt;span class=&quot;servermsg&quot;&gt;** {message} * &lt;em&gt;{info}&lt;&#x2F;em&gt;&lt;&#x2F;span&gt;&#x27;;
+
+&#x2F;**
+ * User message template.
+ * 
+ * @property usermsg
+ * @type String
+ *&#x2F;
+Chatterbox.template.usermsg = &#x27;&lt;strong class=&quot;user&quot;&gt;&amp;lt;{user}&amp;gt;&lt;&#x2F;strong&gt; {message}&#x27;;
+
+&#x2F;**
+ * User info box (userlist hover)
+ * 
+ * @property userinfo
+ * @type String
+ *&#x2F;
+Chatterbox.template.userinfo = &#x27;&lt;div class=&quot;userinfo&quot; id=&quot;{username}&quot;&gt;\
+                            &lt;div class=&quot;avatar&quot;&gt;\
+                                {avatar}\
+                            &lt;&#x2F;div&gt;&lt;div class=&quot;info&quot;&gt;\
+                            &lt;strong&gt;\
+                            {link}\
+                            &lt;&#x2F;strong&gt;\
+                            &lt;ul&gt;{info}&lt;&#x2F;ul&gt;&lt;&#x2F;div&gt;\
+                        &lt;&#x2F;div&gt;&#x27;;
+
+                        
+Chatterbox.template.loginfobox = &#x27;&lt;li class=&quot;loginfo {ref}&quot;&gt;&lt;a href=&quot;#{ref}&quot; class=&quot;close iconic x&quot;&gt;&lt;&#x2F;a&gt;{content}&lt;&#x2F;li&gt;&#x27;;
+Chatterbox.template.whois = {};
+Chatterbox.template.whoiswrap = &#x27;&lt;div class=&quot;whoiswrap&quot;&gt;\
+                                &lt;div class=&quot;avatar&quot;&gt;{avatar}&lt;&#x2F;div&gt;\
+                                &lt;div class=&quot;info&quot;&gt;{info}&lt;&#x2F;div&gt;\
+                                &lt;&#x2F;div&gt;&#x27;;
+Chatterbox.template.whoisinfo = &#x27;&lt;p&gt;{username}&lt;&#x2F;p&gt;&lt;ul&gt;{info}&lt;&#x2F;ul&gt;{connections}&#x27;;
+Chatterbox.template.pcinfo = &#x27;&lt;section class=&quot;pcinfo&quot;&gt;&lt;strong&gt;{title}&lt;&#x2F;strong&gt;{info}&lt;&#x2F;section&gt;&#x27;;
+
+&#x2F;**
+ * Container for popup shit.
+ * 
+ * @property popup
+ * @type String
+ *&#x2F;
+Chatterbox.template.popup = &#x27;&lt;div class=&quot;floater {ref}&quot;&gt;&lt;div class=&quot;inner&quot;&gt;&lt;h2&gt;{title}&lt;&#x2F;h2&gt;&lt;div class=&quot;content&quot;&gt;{content}&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.ip = {};
+Chatterbox.template.ip.main = {};
+Chatterbox.template.ip.main.frame = &#x27;&lt;section class=&quot;tabs&quot;&gt;&lt;ul&gt;&lt;&#x2F;ul&gt;&lt;&#x2F;section&gt;\
+        &lt;section class=&quot;pages&quot;&gt;&lt;&#x2F;section&gt;\
+        &lt;section class=&quot;buttons&quot;&gt;&lt;&#x2F;section&gt;&#x27;;
+
+Chatterbox.template.ip.page = { &#x27;frame&#x27;: &#x27;&lt;div class=&quot;page&quot; id=&quot;{ref}&quot;&gt;{content}&lt;&#x2F;div&gt;&#x27; };
+Chatterbox.template.ip.button = { &#x27;frame&#x27;: &#x27;&lt;a href=&quot;{href}&quot; title=&quot;{title}&quot; class=&quot;button text&quot;&gt;{label}&lt;&#x2F;a&gt;&#x27; };
+Chatterbox.template.ip.tab = {&#x27;frame&#x27;: &#x27;&lt;li class=&quot;tab&quot; id=&quot;{ref}&quot;&gt;&lt;a href=&quot;{href}&quot; title=&quot;{title}&quot;&gt;{label}&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27; };
+
+Chatterbox.template.prompt = {};
+Chatterbox.template.prompt.main = &#x27;&lt;span class=&quot;label&quot;&gt;{label}&lt;&#x2F;span&gt;\
+    &lt;span class=&quot;input&quot;&gt;&lt;form&gt;&lt;input type=&quot;text&quot; value=&quot;{default}&quot; &#x2F;&gt;&lt;&#x2F;form&gt;&lt;&#x2F;span&gt;\
+    &lt;span class=&quot;buttons&quot;&gt;\
+    &lt;a href=&quot;#submit&quot; class=&quot;button submit&quot;&gt;{submit-button}&lt;&#x2F;a&gt;\
+    &lt;a href=&quot;#remove&quot; class=&quot;button close big square iconic x&quot;&gt;&lt;&#x2F;a&gt;\
+    &lt;&#x2F;span&gt;&#x27;;
+
+&#x2F;**
+ * Pager notices and such.
+ *&#x2F;
+Chatterbox.template.pager = {
+    notice: {
+        frame: &#x27;&lt;div class=&quot;notice&quot; id=&quot;{ref}&quot;&gt;\
+            &lt;a href=&quot;#close&quot; class=&quot;close_notice iconic x&quot;&gt;&lt;&#x2F;a&gt;\
+            &lt;div class=&quot;icon&quot;&gt;{icon}&lt;&#x2F;div&gt;\
+            &lt;div class=&quot;content&quot;&gt;\
+                &lt;h3&gt;{heading}&lt;&#x2F;h3&gt;\
+                &lt;p&gt;{content}&lt;&#x2F;p&gt;\
+                &lt;footer class=&quot;buttons&quot;&gt;&lt;&#x2F;footer&gt;\
+            &lt;&#x2F;div&gt;\
+            &lt;&#x2F;div&gt;&#x27;
+    },
+    button: {
+        frame: &#x27;&lt;a href=&quot;#{target}&quot; title=&quot;{title}&quot; id=&quot;{ref}&quot; class=&quot;button text&quot;&gt;{label}&lt;&#x2F;a&gt;&#x27;
+    }
+};
+
+&#x2F;**
+ * Settings stuff.
+ *
+ * @class settings
+ *&#x2F;
+Chatterbox.template.settings = {};
+Chatterbox.template.settings.main = &#x27;&lt;div class=&quot;bookwrap&quot;&gt;\
+                                &lt;nav class=&quot;tabs&quot;&gt;\
+                                    &lt;ul class=&quot;tabs&quot;&gt;&lt;&#x2F;ul&gt;\
+                                &lt;&#x2F;nav&gt;\
+                                &lt;div class=&quot;book&quot;&gt;&lt;&#x2F;div&gt;\
+                            &lt;&#x2F;div&gt;\
+                            &lt;footer&gt;\
+                                &lt;a href=&quot;#save&quot; class=&quot;button save&quot;&gt;Save&lt;&#x2F;a&gt; &lt;a href=&quot;#saveclose&quot; class=&quot;button saveclose&quot;&gt;Save &amp; Close&lt;&#x2F;a&gt; &lt;a href=&quot;#close&quot; class=&quot;button close big square iconic x&quot;&gt;&lt;&#x2F;a&gt;\
+                            &lt;&#x2F;footer&gt;&#x27;;
+
+Chatterbox.template.settings.page = &#x27;&lt;div class=&quot;page&quot; id=&quot;{ref}-page&quot;&gt;&lt;&#x2F;div&gt;&#x27;;
+Chatterbox.template.settings.tab = &#x27;&lt;li id=&quot;{ref}-tab&quot;&gt;&lt;a href=&quot;#{ref}&quot; class=&quot;tab&quot; id=&quot;{ref}-tab&quot;&gt;{name}&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27;;
+
+&#x2F;&#x2F; Key renderers.
+Chatterbox.template.settings.krender = {};
+Chatterbox.template.settings.krender.title = function( title ) {
+    if( title.length == 0 )
+        return &#x27;&#x27;;
+    return &#x27;&lt;h3&gt;&#x27; + title + &#x27;&lt;&#x2F;h3&gt;&#x27;;
+};
+Chatterbox.template.settings.krender.text = function( text ) { return replaceAll(text, &#x27;\n\n&#x27;, &#x27;\n&lt;&#x2F;p&gt;&lt;p&gt;\n&#x27;); };
+Chatterbox.template.settings.krender.dditems = function( items ) {
+    if( items.length == 0 )
+        return &#x27;&#x27;;
+    render = &#x27;&#x27;;
+    
+    for( i in items ) {
+    
+        item = items[i];
+        render+= &#x27;&lt;option value=&quot;&#x27; + item.value + &#x27;&quot;&#x27;;
+        if( item.selected ) {
+            render+= &#x27; selected=&quot;yes&quot;&#x27;;
+        }
+        render+= &#x27;&gt;&#x27; + item.title + &#x27;&lt;&#x2F;option&gt;&#x27;;
+    
+    }
+    return render;
+};
+Chatterbox.template.settings.krender.radioitems = function( items ) {
+    if( items.length == 0 )
+        return &#x27;&#x27;;
+    render = &#x27;&#x27;;
+    labels = [];
+    fields = [];
+    
+    for( i in items ) {
+    
+        item = items[i];
+        labels.push(Chatterbox.render(&#x27;settings.item.form.label&#x27;, {
+            &#x27;ref&#x27;: item.value,
+            &#x27;label&#x27;: item.title
+        }));
+        
+        ritem = &#x27;&lt;div class=&quot;&#x27;+item.value+&#x27; field radio&quot;&gt;&lt;input class=&quot;&#x27;+item.value+&#x27;&quot; type=&quot;radio&quot; name=&quot;&#x27;+item.name+&#x27;&quot; value=&quot;&#x27; + item.value + &#x27;&quot;&#x27;
+        if( item.selected ) {
+            ritem+= &#x27; checked=&quot;yes&quot;&#x27;;
+        }
+        fields.push(ritem + &#x27; &#x2F;&gt;&lt;&#x2F;div&gt;&#x27;);
+    
+    }
+    
+    return &#x27;&lt;section class=&quot;labels&quot;&gt;&#x27; + labels.join(&#x27;&#x27;) + &#x27;&lt;&#x2F;section&gt;&lt;section class=&quot;fields&quot;&gt;&#x27; + fields.join(&#x27;&#x27;) + &#x27;&lt;&#x2F;section&gt;&#x27;;
+};
+Chatterbox.template.settings.krender.checkitems = function( items ) {
+    if( items.length == 0 )
+        return &#x27;&#x27;;
+    render = &#x27;&#x27;;
+    labels = [];
+    fields = [];
+    
+    for( i in items ) {
+    
+        item = items[i];
+        if( &#x27;title&#x27; in item ) {
+            labels.push(Chatterbox.render(&#x27;settings.item.form.label&#x27;, {
+                &#x27;ref&#x27;: item.value,
+                &#x27;label&#x27;: item.title
+            }));
+        }
+        
+        ritem = &#x27;&lt;div class=&quot;&#x27;+item.value+&#x27; field check&quot;&gt;&lt;input class=&quot;&#x27;+item.value+&#x27;&quot; type=&quot;checkbox&quot; name=&quot;&#x27;+item.name+&#x27;&quot; value=&quot;&#x27; + item.value + &#x27;&quot;&#x27;
+        if( item.selected ) {
+            ritem+= &#x27; checked=&quot;yes&quot;&#x27;;
+        }
+        fields.push(ritem + &#x27; &#x2F;&gt;&lt;&#x2F;div&gt;&#x27;);
+    
+    }
+    
+    if( labels.length &gt; 0 ) {
+        render+= &#x27;&lt;section class=&quot;labels&quot;&gt;&#x27; + labels.join(&#x27;&#x27;) + &#x27;&lt;&#x2F;section&gt;&#x27;;
+    }
+    
+    return render + &#x27;&lt;section class=&quot;fields&quot;&gt;&#x27; + fields.join(&#x27;&#x27;) + &#x27;&lt;&#x2F;section&gt;&#x27;;
+};
+
+Chatterbox.template.settings.krender.manageditems = function( items ) {
+    if( items.length == 0 )
+        return &#x27;&lt;i&gt;No items in this list&lt;&#x2F;i&gt;&#x27;;
+    
+    var render = &#x27;&lt;ul&gt;&#x27;;
+    var labels = [];
+    var fields = [];
+    var item;
+    
+    for( var i in items ) {
+    
+        if( !items.hasOwnProperty(i) )
+            continue;
+        
+        item = items[i];
+        render+= &#x27;&lt;li title=&quot;&#x27; + item.toLowerCase() + &#x27;&quot;&gt;\
+                  &lt;span class=&quot;remove&quot;&gt;&lt;a href=&quot;#remove&quot; title=&quot;Remove item&quot; class=&quot;close iconic x&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;span&gt;\
+                  &lt;span class=&quot;item&quot;&gt;&#x27; + item + &#x27;&lt;&#x2F;span&gt;\
+                  &lt;&#x2F;li&gt;&#x27;;
+    
+    }
+    
+    return render + &#x27;&lt;&#x2F;ul&gt;&#x27;;
+};
+
+Chatterbox.template.settings.item = {};
+Chatterbox.template.settings.item.get = function( type ) {
+
+    var tp = type.split(&#x27;.&#x27;);
+    var item = Chatterbox.template.settings.item;
+    
+    for( i in tp ) {
+        tc = tp[i];
+        if( item.hasOwnProperty(tc) ) {
+            item = item[tc];
+            continue;
+        }
+        return null;
+    }
+    
+    return item;
+
+};
+
+Chatterbox.template.settings.item.wrap = &#x27;&lt;section class=&quot;item {type} {ref}{class}&quot;&gt;\
+                                    {content}\
+                                &lt;&#x2F;section&gt;&#x27;;
+                                
+Chatterbox.template.settings.item.hint = {};
+Chatterbox.template.settings.item.hint.frame = &#x27;&lt;aside class=&quot;hint&quot;&gt;{hint}&lt;&#x2F;aside&gt;{content}&#x27;;
+Chatterbox.template.settings.item.hint.prep = function( html, data ) {
+
+    if( !data.hasOwnProperty(&#x27;hint&#x27;) )
+        return html;
+    
+    return Chatterbox.render(&#x27;settings.item.hint&#x27;, {
+        &#x27;hint&#x27;: data.hint,
+        &#x27;content&#x27;: html
+    });
+
+};
+
+Chatterbox.template.settings.item.twopane = {};
+Chatterbox.template.settings.item.twopane.frame = &#x27;{title}&lt;div class=&quot;twopane&quot;&gt;\
+                                        &lt;div class=&quot;text left&quot;&gt;\
+                                            &lt;p&gt;{text}&lt;&#x2F;p&gt;\
+                                        &lt;&#x2F;div&gt;\
+                                        &lt;div class=&quot;right&quot;&gt;\
+                                            {template}\
+                                        &lt;&#x2F;div&gt;\
+                                    &lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.twopane.wrap = function( html, data ) {
+
+    if( !data.hasOwnProperty(&#x27;text&#x27;) )
+        return html;
+    
+    html = replaceAll(
+        Chatterbox.template.settings.item.twopane.frame, 
+        &#x27;{template}&#x27;,
+        replaceAll(html, &#x27;{title}&#x27;, &#x27;&#x27;)
+    );
+    
+    return html;
+
+};
+
+Chatterbox.template.settings.item.text = {};
+Chatterbox.template.settings.item.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.text.post = Chatterbox.template.clean([&#x27;title&#x27;, &#x27;text&#x27;]);
+Chatterbox.template.settings.item.text.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.text.frame = &#x27;{title}&lt;p&gt;\
+                                        {text}\
+                                    &lt;&#x2F;p&gt;&#x27;;
+
+Chatterbox.template.settings.item.dropdown = {};
+Chatterbox.template.settings.item.dropdown.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.dropdown.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text,
+    &#x27;items&#x27;: Chatterbox.template.settings.krender.dditems
+};
+
+Chatterbox.template.settings.item.dropdown.post = Chatterbox.template.clean([&#x27;title&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.dropdown.events = [[&#x27;change&#x27;, &#x27;select&#x27;],[&#x27;inspect&#x27;, &#x27;select&#x27;]];
+Chatterbox.template.settings.item.dropdown.frame = &#x27;{title}&lt;form&gt;\
+                                                &lt;select&gt;\
+                                                    {items}\
+                                                &lt;&#x2F;select&gt;\
+                                            &lt;&#x2F;form&gt;&#x27;;
+
+Chatterbox.template.settings.item.radio = {};
+Chatterbox.template.settings.item.radio.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.radio.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text,
+    &#x27;items&#x27;: Chatterbox.template.settings.krender.radioitems
+};
+
+Chatterbox.template.settings.item.radio.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.radio.events = [[&#x27;change&#x27;, &#x27;input:radio&#x27;],[&#x27;inspect&#x27;, &#x27;input:radio&#x27;]];
+Chatterbox.template.settings.item.radio.frame = &#x27;{title}&lt;div class=&quot;{ref} radiobox&quot;&gt;&lt;form&gt;{items}&lt;&#x2F;form&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.checkbox = {};
+Chatterbox.template.settings.item.checkbox.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.checkbox.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text,
+    &#x27;items&#x27;: Chatterbox.template.settings.krender.checkitems
+};
+
+Chatterbox.template.settings.item.checkbox.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.checkbox.events = [[&#x27;change&#x27;, &#x27;input:checkbox&#x27;],[&#x27;inspect&#x27;, &#x27;input:checkbox&#x27;]];
+Chatterbox.template.settings.item.checkbox.frame = &#x27;{title}&lt;div class=&quot;{ref} checkbox&quot;&gt;&lt;form&gt;{items}&lt;&#x2F;form&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.textfield = {};
+Chatterbox.template.settings.item.textfield.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.textfield.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.textfield.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.textfield.events = [[&#x27;blur&#x27;, &#x27;input&#x27;],[&#x27;inspect&#x27;, &#x27;input&#x27;]];
+Chatterbox.template.settings.item.textfield.frame = &#x27;{title}&lt;div class=&quot;{ref} textfield&quot;&gt;&lt;form&gt;&lt;input type=&quot;text&quot; value=&quot;{default}&quot; &#x2F;&gt;&lt;&#x2F;form&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.textarea = {};
+Chatterbox.template.settings.item.textarea.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.textarea.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.textarea.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.textarea.events = [[&#x27;blur&#x27;, &#x27;textarea&#x27;],[&#x27;inspect&#x27;, &#x27;textarea&#x27;]];
+Chatterbox.template.settings.item.textarea.frame = &#x27;{title}&lt;div class=&quot;{ref} textarea&quot;&gt;&lt;form&gt;&lt;textarea rows=&quot;4&quot; cols=&quot;20&quot; value=&quot;{default}&quot;&gt;&lt;&#x2F;textarea&gt;&lt;&#x2F;form&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.items = {};
+Chatterbox.template.settings.item.items.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.items.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text,
+    &#x27;items&#x27;: Chatterbox.template.settings.krender.manageditems
+};
+
+Chatterbox.template.settings.item.items.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.items.events = [];
+Chatterbox.template.settings.item.items.frame = &#x27;{title}&lt;div class=&quot;{ref} items&quot;&gt;\
+    &lt;section class=&quot;buttons&quot;&gt;&lt;p&gt;&lt;a href=&quot;#up&quot; title=&quot;Move item up&quot; class=&quot;button up iconic arrow_up&quot;&gt;&lt;&#x2F;a&gt;\
+    &lt;a href=&quot;#down&quot; title=&quot;Move item down&quot; class=&quot;button down iconic arrow_down&quot;&gt;&lt;&#x2F;a&gt;\
+    &lt;a href=&quot;#add&quot; title=&quot;Add an item&quot; class=&quot;button add iconic plus&quot;&gt;&lt;&#x2F;a&gt;\
+    &lt;a href=&quot;#remove&quot; title=&quot;Remove item from list&quot; class=&quot;button close big square iconic x&quot;&gt;&lt;&#x2F;a&gt;\
+    &lt;&#x2F;p&gt;&lt;&#x2F;section&gt;\
+    &lt;section class=&quot;mitems&quot;&gt;{items}&lt;&#x2F;section&gt;\
+    &lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.colour = {};
+Chatterbox.template.settings.item.colour.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.colour.render = { &#x27;title&#x27;: Chatterbox.template.settings.krender.title };
+
+Chatterbox.template.settings.item.colour.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;title&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.colour.events = [[&#x27;blur&#x27;, &#x27;input&#x27;],[&#x27;inspect&#x27;, &#x27;input&#x27;]];
+Chatterbox.template.settings.item.colour.frame = &#x27;{title}&lt;div class=&quot;{ref} textfield&quot;&gt;&lt;form&gt;&lt;input type=&quot;color&quot; value=&quot;{default}&quot; &#x2F;&gt;&lt;&#x2F;form&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.form = {};
+Chatterbox.template.settings.item.form.pre = [
+    Chatterbox.template.settings.item.twopane.wrap,
+    Chatterbox.template.settings.item.hint.prep
+];
+
+Chatterbox.template.settings.item.form.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text,
+    &#x27;items&#x27;: Chatterbox.template.settings.krender.dditems
+};
+
+Chatterbox.template.settings.item.form.post = Chatterbox.template.clean([&#x27;title&#x27;, &#x27;text&#x27;, &#x27;items&#x27;]);
+&#x2F;&#x2F;Chatterbox.template.settings.item.form.events = [[&#x27;change&#x27;, &#x27;select&#x27;],[&#x27;inspect&#x27;, &#x27;select&#x27;]];
+Chatterbox.template.settings.item.form.frame = &#x27;{title}&lt;form&gt;\
+                                                &lt;section class=&quot;labels&quot;&gt;&lt;&#x2F;section&gt;\
+                                                &lt;section class=&quot;fields&quot;&gt;&lt;&#x2F;section&gt;\
+                                            &lt;&#x2F;form&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.label = {};
+Chatterbox.template.settings.item.form.label.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;label&#x27;, &#x27;class&#x27;]);
+Chatterbox.template.settings.item.form.label.frame = &#x27;&lt;div class=&quot;{ref} label{class}&quot;&gt;&lt;label for=&quot;{ref}&quot;&gt;{label}&lt;&#x2F;label&gt;&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field = {};
+Chatterbox.template.settings.item.form.field.wrap = {};
+Chatterbox.template.settings.item.form.field.wrap.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;field&#x27;]);
+Chatterbox.template.settings.item.form.field.wrap.frame = &#x27;&lt;div class=&quot;{ref} field&quot;&gt;{field}&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.dropdown = {};
+Chatterbox.template.settings.item.form.field.dropdown.render = { &#x27;items&#x27;: Chatterbox.template.settings.krender.dditems };
+Chatterbox.template.settings.item.form.field.dropdown.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.form.field.dropdown.frame = &#x27;&lt;select class=&quot;{ref}&quot;&gt;{items}&lt;&#x2F;select&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.textfield = {};
+Chatterbox.template.settings.item.form.field.textfield.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.form.field.textfield.frame = &#x27;&lt;input class=&quot;{ref}&quot; type=&quot;text&quot; value=&quot;{default}&quot; &#x2F;&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.textarea = {};
+Chatterbox.template.settings.item.form.field.textarea.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.form.field.textarea.frame = &#x27;&lt;textarea class=&quot;{ref}&quot; rows=&quot;4&quot; cols=&quot;20&quot; value=&quot;{default}&quot;&gt;&lt;&#x2F;textarea&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.radio = {};
+Chatterbox.template.settings.item.form.field.radio.render = { &#x27;items&#x27;: Chatterbox.template.settings.krender.radioitems };
+Chatterbox.template.settings.item.form.field.radio.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.form.field.radio.frame = &#x27;&lt;div class=&quot;{ref} radiobox&quot;&gt;{items}&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.checkbox = {};
+Chatterbox.template.settings.item.form.field.checkbox.render = { &#x27;items&#x27;: Chatterbox.template.settings.krender.checkitems };
+Chatterbox.template.settings.item.form.field.checkbox.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;items&#x27;]);
+Chatterbox.template.settings.item.form.field.checkbox.frame = &#x27;&lt;div class=&quot;{ref} checkbox&quot;&gt;{items}&lt;&#x2F;div&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.text = {};
+Chatterbox.template.settings.item.form.field.text.pre = Chatterbox.template.settings.item.hint.prep;
+Chatterbox.template.settings.item.form.field.text.post = Chatterbox.template.clean([&#x27;title&#x27;, &#x27;text&#x27;]);
+Chatterbox.template.settings.item.form.field.text.render = {
+    &#x27;title&#x27;: Chatterbox.template.settings.krender.title,
+    &#x27;text&#x27;: Chatterbox.template.settings.krender.text
+};
+
+Chatterbox.template.settings.item.form.field.text.frame = &#x27;{title}&lt;p&gt;\
+                                        {text}\
+                                    &lt;&#x2F;p&gt;&#x27;;
+
+Chatterbox.template.settings.item.form.field.colour = {};
+Chatterbox.template.settings.item.form.field.colour.post = Chatterbox.template.clean([&#x27;ref&#x27;, &#x27;default&#x27;]);
+Chatterbox.template.settings.item.form.field.colour.frame = &#x27;&lt;input class=&quot;{ref}&quot; type=&quot;color&quot; value=&quot;{default}&quot; &#x2F;&gt;&#x27;;
+
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;channel.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Object for managing channel interfaces.
+ * 
+ * @class Channel
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel&#x27;s tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ *&#x2F;
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+
+    this.manager = ui;
+    this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
+    this.built = false;
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == &#x27;pc&#x27; ? &#x27;pc&#x27; : &#x27;c&#x27;) + &#x27;-&#x27; + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
+    this.visible = false;
+    this.st = 0;
+    &#x2F;&#x2F; UI elements.
+    this.el = {
+        t: {                        &#x2F;&#x2F; Tab
+            o: null,                &#x2F;&#x2F;      Object..
+            l: null,                &#x2F;&#x2F;      Link
+            c: null,                &#x2F;&#x2F;      Close button
+        },                          &#x2F;&#x2F;
+        m: null,                    &#x2F;&#x2F; Main
+        l: {                        &#x2F;&#x2F; Channel log
+            p: null,                &#x2F;&#x2F;      Panel
+            w: null,                &#x2F;&#x2F;      Wrap
+        },                          &#x2F;&#x2F;
+        u: null,                    &#x2F;&#x2F; User panel
+        h: {                        &#x2F;&#x2F; Header
+            title: {                &#x2F;&#x2F;      Title
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            },
+            topic: {                &#x2F;&#x2F;      Topic
+                m: null,
+                t: null,
+                e: null,
+                s: null,
+                c: null,
+                editing: false
+            }
+        }
+    };
+    this.mulw = 0;
+    &#x2F;&#x2F; Dimensions...
+    this.d = {
+        u: [0, 0],                  &#x2F;&#x2F; User panel [ width, height ]
+        h: {                        &#x2F;&#x2F; Header
+            title: [0, 0],          &#x2F;&#x2F;      Title [ width, height ]
+            topic: [0, 0]           &#x2F;&#x2F;      Topic [ width, height ]
+        }
+    };
+    this.head = {
+        title: {
+            text: &#x27;&#x27;,
+            html: &#x27;&#x27;
+        },
+        topic: {
+            text: &#x27;&#x27;,
+            html: &#x27;&#x27;
+        }
+    };
+
+};
+
+&#x2F;**
+ * Draw channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ *&#x2F;
+Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    &#x2F;&#x2F; Tabs.
+    this.el.t.o = this.manager.nav.add_tab( selector, ns );
+    this.el.t.l = this.el.t.o.find(&#x27;.tab&#x27;);
+    this.el.t.c = this.el.t.o.find(&#x27;.close&#x27;);
+    &#x2F;&#x2F; Draw
+    this.manager.chatbook.view.append(Chatterbox.render(&#x27;channel&#x27;, {&#x27;selector&#x27;: selector, &#x27;ns&#x27;: ns}));
+    &#x2F;&#x2F; Store
+    this.el.m = this.window = this.manager.chatbook.view.find(&#x27;#&#x27; + selector + &#x27;-window&#x27;);
+    this.el.l.p = this.el.m.find(&#x27;#&#x27; + selector + &quot;-log&quot;);
+    this.el.l.w = this.el.l.p.find(&#x27;ul.logwrap&#x27;);
+    this.el.u = this.el.m.find(&#x27;#&#x27; + selector + &quot;-users&quot;);
+    &#x2F;&#x2F; Max user list width;
+    this.mulw = parseInt(this.el.u.css(&#x27;max-width&#x27;).slice(0,-2));
+    var chan = this;
+    
+    &#x2F;&#x2F; Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
+    
+    &#x2F;&#x2F; When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    &#x2F;&#x2F; When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( &#x27;tab.close.clicked&#x27;, {
+            &#x27;ns&#x27;: chan.raw,
+            &#x27;chan&#x27;: chan,
+            &#x27;e&#x27;: e
+        } );
+        return false;
+    });
+    
+    this.setup_header(&#x27;title&#x27;);
+    this.setup_header(&#x27;topic&#x27;);
+    
+    if( this.hidden &amp;&amp; !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass(&#x27;hidden&#x27;);
+    }
+    
+    this.built = true;
+};
+
+&#x2F;**
+ * Set up a header so it can be edited in the UI.
+ * 
+ * @method setup_header
+ *&#x2F;
+Chatterbox.Channel.prototype.setup_header = function( head ) {
+    
+    var chan = this;
+    this.el.h[head].m = this.el.m.find(&#x27;header.&#x27; + head + &#x27; div&#x27;);
+    this.el.h[head].e = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
+    this.el.h[head].t = this.el.m.find(&#x27;header.&#x27; + head + &#x27; textarea&#x27;);
+    this.el.h[head].s = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#save]&#x27;);
+    this.el.h[head].c = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#cancel]&#x27;);
+    
+    this.el.h[head].m.parent().mouseover( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;block&#x27;);
+            return;
+        }
+        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;block&#x27;);
+    } );
+    
+    this.el.h[head].m.parent().mouseout( function( e ) {
+        if( !chan.el.h[head].editing ) {
+            chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;none&#x27;);
+            return;
+        }
+        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;none&#x27;);
+    } );
+    
+    this.el.h[head].e.click( function( e ) {
+        chan.el.h[head].t.text(chan.head[head].text);
+        
+        chan.el.h[head].t.css({
+            &#x27;display&#x27;: &#x27;block&#x27;,
+            &#x27;width&#x27;: chan.el.h[head].m.innerWidth() - 10,
+        });
+        
+        chan.el.h[head].m.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].editing = true;
+        
+        chan.resize();
+        
+        return false;
+    } );
+    
+    var collapse = function(  ) {
+        var val = chan.el.h[head].t.val();
+        chan.el.h[head].t.text(&#x27;&#x27;);
+        chan.el.h[head].t.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].m.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].editing = false;
+        
+        &#x2F;&#x2F;setTimeout( function(  ) {
+            chan.resize();
+        &#x2F;&#x2F;}, 100 );
+        
+        return val;
+    };
+    
+    this.el.h[head].s.click( function( e ) {
+        var val = collapse();
+        
+        chan.manager.trigger( head + &#x27;.save&#x27;, {
+            ns: chan.raw,
+            value: val
+        } );
+        
+        chan.el.h[head].t.text(&#x27;&#x27;);
+        return false;
+    } );
+    
+    this.el.h[head].c.click( function( e ) {
+        collapse();
+        return false;
+    } );
+    
+};
+
+&#x2F;**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ *&#x2F;
+Chatterbox.Channel.prototype.hide = function( ) {
+    this.el.m.css({&#x27;display&#x27;: &#x27;none&#x27;});
+    this.el.t.o.removeClass(&#x27;active&#x27;);
+    this.visible = false;
+};
+
+&#x2F;**
+ * Display the channel.
+ * 
+ * @method show
+ *&#x2F;
+Chatterbox.Channel.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({&#x27;display&#x27;: &#x27;block&#x27;});
+    this.el.t.o.addClass(&#x27;active&#x27;);
+    this.el.t.o.removeClass(&#x27;noise chatting tabbed fill&#x27;);
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop(&#x27;scrollHeight&#x27;) - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop(&#x27;scrollHeight&#x27;) - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+&#x2F;**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ *&#x2F;
+Chatterbox.Channel.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass(&#x27;hidden&#x27;);
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass(&#x27;hidden&#x27;);
+    }
+};
+
+&#x2F;**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ *&#x2F;
+Chatterbox.Channel.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
+&#x2F;**
+ * Scroll the log panel downwards.
+ * 
+ * @method scroll
+ *&#x2F;
+Chatterbox.Channel.prototype.scroll = function( ) {
+    this.pad();
+    var ws = this.el.l.w.prop(&#x27;scrollWidth&#x27;) - this.el.l.w.innerWidth();
+    var hs = this.el.l.w.prop(&#x27;scrollHeight&#x27;) - this.el.l.w.innerHeight();
+    if( ws &gt; 0 )
+        hs += ws;
+    if( hs &lt; 0 || (hs - this.el.l.w.scrollTop()) &gt; 100 )
+        return;
+    this.el.l.w.scrollTop(hs);
+};
+
+&#x2F;**
+ * Add padding to the channel log&#x27;s wrapping ul.
+ * This is done to make sure messages always appear at the bottom first.
+ * 
+ * @method pad
+ *&#x2F;
+Chatterbox.Channel.prototype.pad = function ( ) {
+    &#x2F;&#x2F; Add padding.
+    this.el.l.w.css({&#x27;padding-top&#x27;: 0, &#x27;height&#x27;: &#x27;auto&#x27;});
+    var wh = this.el.l.w.innerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var pad = lh - wh;
+    
+    if( pad &gt; 0 )
+        this.el.l.w.css({&#x27;padding-top&#x27;: pad});
+    else
+        this.el.l.w.css({
+            &#x27;padding-top&#x27;: 0,
+            &#x27;height&#x27;: lh});
+    this.el.l.w.scrollTop(this.st);
+};
+
+&#x2F;**
+ * Fix the dimensions of the log window.
+ * 
+ * @method resize
+ *&#x2F;
+Chatterbox.Channel.prototype.resize = function( width, height ) {
+    this.el.l.w.css({&#x27;padding-top&#x27;: 0});
+    &#x2F;&#x2F; Height.
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height;
+    this.el.m.height(wh);
+    &#x2F;&#x2F; Width.
+    this.el.m.css(&#x27;width&#x27;, width - 10);
+    var cw = this.el.m.width();
+    
+    &#x2F;&#x2F; Userlist width.
+    this.el.u.width(1);
+    this.d.u[0] = this.el.u[0].scrollWidth + this.manager.swidth + 5;
+    
+    if( this.d.u[0] &gt; this.mulw ) {
+        this.d.u[0] = this.mulw;
+    }
+    
+    this.el.u.width(this.d.u[0]);
+    
+    &#x2F;&#x2F; Change log width based on userlist width.
+    cw = cw - this.d.u[0];
+    
+    &#x2F;&#x2F; Account for channel title in height.
+    wh = wh - this.el.h.title.m.parent().outerHeight();
+        
+    &#x2F;&#x2F; Log panel dimensions
+    this.el.l.p.css({
+        height: wh - 3,
+        width: cw - 10});
+    
+    &#x2F;&#x2F; Scroll again just to make sure.
+    this.scroll();
+    
+    &#x2F;&#x2F; User list dimensions
+    this.d.u[1] = this.el.l.p.innerHeight();
+    this.el.u.css({height: this.d.u[1]});
+    
+    &#x2F;&#x2F; Make sure edit buttons are in the right place.
+    for( var head in this.head ) {
+        if( !this.head.hasOwnProperty( head ) )
+            continue;
+        
+        if( this.head[head].text.length == 0 )
+            continue;
+        
+        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
+        this.el.h[head].e.css(&#x27;top&#x27;, tline);
+    }
+};
+
+&#x2F;**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ *&#x2F;
+Chatterbox.Channel.prototype.loop = function(  ) {
+
+    msgs = this.el.l.p.find( &#x27;.logmsg&#x27; );
+    
+    if( msgs.length &lt; 200 )
+        return;
+    
+    msgs.slice(0, msgs.length - 200).remove();
+    this.resize();
+
+};
+
+&#x2F;**
+ * Display a log message.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ *&#x2F;
+Chatterbox.Channel.prototype.log = function( msg ) {
+    
+    var chan = this;
+    
+    this.manager.cascade( &#x27;log&#x27;,
+        function( data ) {
+            chan.log_item({ &#x27;html&#x27;: Chatterbox.render(&#x27;logmsg&#x27;, {&#x27;message&#x27;: data.message}) });
+        }, {
+            &#x27;ns&#x27;: this.raw,
+            &#x27;sns&#x27;: this.namespace,
+            &#x27;message&#x27;: msg
+        }
+    );
+};
+
+&#x2F;**
+ * Send a message to the log window.
+ * 
+ * @method log_item
+ * @param item {Object} Message to send.
+ *&#x2F;
+Chatterbox.Channel.prototype.log_item = function( item ) {
+    var date = new Date();
+    var ts = &#x27;&#x27;;
+    
+    if( this.manager.settings.clock ) {
+        ts = formatTime(&#x27;{HH}:{mm}:{ss}&#x27;, date);
+    } else {
+        ts = formatTime(&#x27;{hh}:{mm}:{ss} {mr}&#x27;, date);
+    }
+    
+    var chan = this;;
+    
+    this.manager.cascade( &#x27;log_item&#x27;,
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            &#x2F;&#x2F; Add content.
+            chan.el.l.w.append(Chatterbox.render(&#x27;logitem&#x27;, data));
+            chan.manager.trigger( &#x27;log_item.after&#x27;, {&#x27;item&#x27;: chan.el.l.w.find(&#x27;li&#x27;).last(), &#x27;chan&#x27;: chan } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find(&#x27;li.logmsg&#x27;).last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            &#x2F;&#x2F; Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            &#x27;ts&#x27;: ts,
+            &#x27;ms&#x27;: date.getTime(),
+            &#x27;message&#x27;: item.html,
+            &#x27;user&#x27;: (item.user || &#x27;system&#x27; ).toLowerCase()
+        }
+    );
+};
+
+&#x2F;**
+ * Rewrite time signatures for all messages. Woo.
+ * 
+ * @method retime
+ *&#x2F;
+Chatterbox.Channel.prototype.retime = function(  ) {
+
+    var tsf = &#x27;&#x27;;
+    var wrap = this.el.l.w;
+
+    if( this.manager.settings.clock ) {
+        tsf = &#x27;{HH}:{mm}:{ss}&#x27;;
+    } else {
+        tsf = &#x27;{hh}:{mm}:{ss} {mr}&#x27;;
+    }
+
+    wrap.find(&#x27;span.ts&#x27;).each(function( index, span ) {
+    
+        el = wrap.find(span);
+        time = new Date(parseInt(el.prop(&#x27;id&#x27;)));
+        el.text(formatTime(tsf, time));
+    
+    });
+
+};
+
+&#x2F;**
+ * Send a server message to the log window.
+ * 
+ * @method server_message
+ * @param msg {String} Server message.
+ * @param [info] {String} Extra information for the message.
+ *&#x2F;
+Chatterbox.Channel.prototype.server_message = function( msg, info ) {
+    var chan = this;
+    
+    this.manager.cascade( &#x27;server_message&#x27;,
+        function( data ) {
+            chan.log_item({ &#x27;html&#x27;: Chatterbox.render(&#x27;servermsg&#x27;, {&#x27;message&#x27;: data.message, &#x27;info&#x27;: data.info}) });
+        }, {
+            &#x27;ns&#x27;: this.namespace,
+            &#x27;message&#x27;: msg,
+            &#x27;info&#x27;: info
+        }
+    );
+};
+
+&#x2F;**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ *&#x2F;
+Chatterbox.Channel.prototype.clear = function(  ) {
+    this.el.l.p.find(&#x27;li.logmsg&#x27;).remove();
+    this.el.l.p.find(&#x27;li.loginfo&#x27;).remove();
+    this.el.l.w.height(0);
+    this.resize();
+};
+
+&#x2F;**
+ * Display an info box in the channel log.
+ * 
+ * @method log_info
+ * @param content {String} Infobox contents.
+ *&#x2F;
+Chatterbox.Channel.prototype.log_info = function( ref, content ) {
+    var data = {
+        &#x27;ns&#x27;: this.namespace,
+        &#x27;ref&#x27;: ref,
+        &#x27;content&#x27;: content
+    };
+    this.manager.trigger( &#x27;log_info.before&#x27;, data );
+    delete data[&#x27;ns&#x27;];
+    var b = this.el.l.w.append(Chatterbox.render( &#x27;loginfobox&#x27;, data ));
+    this.scroll();
+    
+    var ui = this;
+    var box = this.el.l.w.find(&#x27;li.&#x27; + data.ref);
+    box.find(&#x27;a.close&#x27;).click(
+        function( e ) {
+            ui.el.l.w.find(this).parent().remove();
+            ui.resize();
+            return false;
+        }
+    );
+    
+    this.scroll();
+    
+    return box;
+};
+
+&#x2F;**
+ * Display a user&#x27;s whois info.
+ * 
+ * @method show_whois
+ * @param data {Object} Object containing a user&#x27;s information.
+ *&#x2F;
+Chatterbox.Channel.prototype.log_whois = function( data ) {
+    
+    var whois = {
+        &#x27;avatar&#x27;: &#x27;&lt;a href=&quot;#&quot;&gt;&lt;img height=&quot;50&quot; width=&quot;50&quot; alt=&quot;avatar&quot;&#x2F;&gt;&lt;&#x2F;a&gt;&#x27;,
+        &#x27;username&#x27;: &#x27;&lt;b&gt;&#x27; + data.symbol + data.username + &#x27;&lt;&#x2F;b&gt;&#x27;,
+        &#x27;info&#x27;: [],
+        &#x27;conns&#x27;: [],
+        &#x27;raw&#x27;: data,
+    };
+    
+    for( var i in data.connections ) {
+        var rcon = data.connections[i];
+        var mcon = [];
+        
+        if( rcon.online ) {
+            var stamp = (new Date - (rcon.online * 1000));
+            mcon.push([ &#x27;online&#x27;, DateStamp(stamp &#x2F; 1000) + formatTime(&#x27; [{HH}:{mm}:{ss}]&#x27;, new Date(stamp)) ]);
+        }
+        if( rcon.idle )
+            mcon.push([ &#x27;idle&#x27;, timeLengthString(rcon.idle) ]);
+        if( rcon.agent )
+            mcon.push([ &#x27;agent&#x27;, rcon.agent ]);
+        if( rcon.debug )
+            mcon.push([ &#x27;debug&#x27;, rcon.debug ]);
+        
+        mcon.push([ &#x27;chatrooms&#x27;, rcon.channels.join(&#x27; &#x27;) ]);
+        
+        whois.conns.push(mcon);
+    }
+    
+    this.manager.trigger( &#x27;log_whois.before&#x27;, whois );
+    
+    var conns = &#x27;&#x27;;
+    for( var i in whois.conns ) {
+        var conn = whois.conns[i];
+        var text = &#x27;&lt;section class=&quot;conn&quot;&gt;&lt;p&gt;&lt;em&gt;connection &#x27; + ((parseInt(i) + 1).toString()) + &#x27;:&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;&#x27;;
+        text+= &#x27;&lt;ul&gt;&#x27;;
+        for( var x in conn ) {
+            text+= &#x27;&lt;li&gt;&lt;strong&gt;&#x27; + conn[x][0] + &#x27;:&lt;&#x2F;strong&gt; &#x27; + conn[x][1] + &#x27;&lt;&#x2F;li&gt;&#x27;;
+        }
+        text+= &#x27;&lt;&#x2F;ul&gt;&#x27;
+        conns+= text + &#x27;&lt;&#x2F;section&gt;&#x27;;
+    }
+    
+    var info = &#x27;&#x27;;
+    for( var i in whois.info ) {
+        info+= &#x27;&lt;li&gt;&#x27; + whois.info[i] + &#x27;&lt;&#x2F;li&gt;&#x27;;
+    }
+    
+    var box = this.log_info(
+        &#x27;whois-&#x27;+data.username,
+        Chatterbox.render(&#x27;whoiswrap&#x27;, {
+            &#x27;avatar&#x27;: whois.avatar,
+            &#x27;info&#x27;: Chatterbox.render(&#x27;whoisinfo&#x27;, {
+                &#x27;username&#x27;: whois.username,
+                &#x27;info&#x27;: info,
+                &#x27;connections&#x27;: conns
+            })
+        })
+    );
+    
+    var av = box.find(&#x27;div.avatar&#x27;);
+    var inf = box.find(&#x27;div.info&#x27;);
+    inf.width( box.find(&#x27;.whoiswrap&#x27;).width() - 100 );
+    av.height( box.height() - 10 );
+    this.scroll();
+};
+
+&#x2F;**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ *&#x2F;
+Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
+
+    contents = &#x27;&#x27;;
+    for( var i in data ) {
+        if( !data.hasOwnProperty(i) )
+            continue;
+        var pc = data[i];
+        var pcc = &#x27;&#x27;;
+        if( pc[2].length == 0 ) {
+            pcc = &#x27;&lt;em&gt;&#x27; + ( privileges ? &#x27;default privileges&#x27; : &#x27;no members&#x27; ) + &#x27;&lt;&#x2F;em&gt;&#x27;;
+        } else {
+            pcc = pc[2];
+        }
+        contents+= String.format(&#x27;&lt;li&gt;&lt;em&gt;{0}&lt;&#x2F;em&gt; &lt;strong&gt;{1}&lt;&#x2F;strong&gt;:&lt;ul&gt;&lt;li&gt;{2}&lt;&#x2F;li&gt;&lt;&#x2F;ul&gt;&lt;&#x2F;li&gt;&#x27;, [pc[1], pc[0], pcc ]);
+    }
+    
+    var info = {
+        &#x27;title&#x27;: &#x27;Privilege class &#x27; + (privileges ? &#x27;permissions&#x27; : &#x27;members&#x27;),
+        &#x27;info&#x27;: &#x27;&lt;ul&gt;&#x27; + contents + &#x27;&lt;&#x2F;ul&gt;&#x27;
+    };
+    
+    this.log_info(
+        &#x27;pc-&#x27; + ( privileges ? &#x27;permissions&#x27; : &#x27;members&#x27; ),
+        Chatterbox.render( &#x27;pcinfo&#x27;, info )
+    );
+
+};
+
+&#x2F;**
+ * Set the channel header.
+ * This can be the title or topic, determined by &#x60;head&#x60;.
+ * 
+ * @method set_header
+ * @param head {String} Should be &#x27;title&#x27; or &#x27;topic&#x27;.
+ * @param content {String} HTML to use for the header.
+ *&#x2F;
+Chatterbox.Channel.prototype.set_header = function( head, content ) {
+    head = head.toLowerCase();
+    
+    this.head[head].text = content.text();
+    this.head[head].html = content.html();
+    
+    this.el.h[head].m.replaceWith(
+        Chatterbox.render(&#x27;header&#x27;, {&#x27;head&#x27;: head, &#x27;content&#x27;: this.head[head].html})
+    );
+    
+    this.el.h[head].m = this.el.m.find(&#x27;header div.&#x27; + head);
+    
+    var chan = this;
+    
+    setTimeout( function(  ) {
+        if( chan.head[head].text.length &gt; 0 ) {
+            chan.el.h[head].m.css( { display: &#x27;block&#x27; } );
+            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
+            chan.el.h[head].e.css(&#x27;top&#x27;, tline);
+        } else {
+            chan.el.h[head].m.css( { display: &#x27;none&#x27; } );
+        }
+            
+        chan.resize();
+    }, 100 );
+};
+
+&#x2F;**
+ * Get a channel header&#x27;s contents.
+ * 
+ * @method get_header
+ * @param head {String} Should be &#x27;title&#x27; or &#x27;topic&#x27;.
+ * @return {Object} Content of the header.
+ *&#x2F;
+Chatterbox.Channel.prototype.get_header = function( head ) {
+
+    return this.el.h[head.toLowerCase()];
+
+};
+
+&#x2F;**
+ * Set the channel user list.
+ * 
+ * @method set_user_list
+ * @param userlist {Array} Listing of users in the channel.
+ *&#x2F;
+Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+    
+    if( Object.size(userlist) == 0 )
+        return;
+    
+    var infoboxes = [];
+    var html = &#x27;&#x27;;
+    var pc = {};
+    var conn = &#x27;&#x27;;
+    var user = &#x27;&#x27;;
+    
+    for( var order in userlist ) {
+        pc = userlist[order];
+        html += &#x27;&lt;div class=&quot;pc&quot;&gt;&lt;h3&gt;&#x27; + pc.name + &#x27;&lt;&#x2F;h3&gt;&lt;ul&gt;&#x27;;
+        for( var un in pc.users ) {
+            user = pc.users[un];
+            conn = user.conn == 1 ? &#x27;&#x27; : &#x27;[&#x27; + user.conn + &#x27;]&#x27;;
+            html+= &#x27;&lt;li&gt;&lt;a target=&quot;_blank&quot; id=&quot;&#x27; + user.name + &#x27;&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + user.name + &#x27;.&#x27; + this.manager.settings[&#x27;domain&#x27;] + &#x27;&quot;&gt;&lt;em&gt;&#x27; + user.symbol + &#x27;&lt;&#x2F;em&gt;&#x27; + user.name + &#x27;&lt;&#x2F;a&gt;&#x27; + conn + &#x27;&lt;&#x2F;li&gt;&#x27;
+            if( user.hover )
+                infoboxes.push(user.hover);
+        }
+        html+= &#x27;&lt;&#x2F;ul&gt;&lt;&#x2F;div&gt;&#x27;;
+    }
+    
+    this.el.m.find(&#x27;div.chatusers&#x27;).html(html);
+    this.el.u = this.el.m.find(&#x27;div.chatusers&#x27;);
+    this.el.u.css({display: &#x27;block&#x27;});
+    this.d.u = [
+        this.el.u.outerWidth(),
+        this.el.u.outerHeight()
+    ];
+    
+    for( var index in infoboxes ) {
+        this.userinfo(infoboxes[index]);
+    }
+    this.resize();
+    
+};
+
+&#x2F;**
+ * The user has been highlighted in this channel.
+ * Highlights the last log message in the channel&#x27;s log and animates the
+ * channel tab if the channel is not visible.
+ * 
+ * @method highlight
+ * @param [message] {Object} jQuery object for an html element. If provided,
+ *   this element will be highlighted instead of the channel&#x27;s last log
+ *   message.
+ *&#x2F;
+Chatterbox.Channel.prototype.highlight = function( message ) {
+    
+    var tab = this.el.t.o;
+    
+    if( message !== false ) {
+        ( message || this.el.l.w.find(&#x27;.logmsg&#x27;).last() ).addClass(&#x27;highlight&#x27;);
+    }
+    
+    if( tab.hasClass(&#x27;active&#x27;) ) {
+        if( !this.manager.viewing )
+            this.manager.sound.click();
+        return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.sound.click();
+    }
+    
+    if( tab.hasClass(&#x27;tabbed&#x27;) )
+        return;
+    
+    if( tab.hasClass(&#x27;chatting&#x27;) )
+        tab.removeClass(&#x27;chatting&#x27;);
+    
+    var runs = 0;
+    tab.addClass(&#x27;tabbed&#x27;);
+    
+    function toggles() {
+        runs++;
+        tab.toggleClass(&#x27;fill&#x27;);
+        if( runs == 6 )
+            return;
+        setTimeout( toggles, 1000 );
+    }
+    
+    toggles();
+    
+};
+
+&#x2F;**
+ * There has been activity in this channel.
+ * Modifies the channel tab slightly, if the channel is not currently being
+ * viewed.
+ * 
+ * @method noise
+ *&#x2F;
+Chatterbox.Channel.prototype.noise = function(  ) {
+    
+    var u = &#x27;&#x27;;
+    var si = 0;
+    var msg = this.el.m.find(&#x27;.logmsg&#x27;).last();
+    
+    for( var i in this.manager.umuted ) {
+        if( !this.manager.umuted.hasOwnProperty(i) )
+            continue;
+        
+        if( msg.hasClass(&#x27;u-&#x27; + this.manager.umuted[i]) ) {
+            msg.css({&#x27;display&#x27;: &#x27;none&#x27;});
+            this.scroll();
+            return;
+        }
+    }
+    
+    if( !this.el.t.o.hasClass(&#x27;active&#x27;) ) {
+        this.el.t.o.addClass(&#x27;noise&#x27;);
+        if( !this.el.t.o.hasClass(&#x27;tabbed&#x27;) ) {
+            if( msg.find(&#x27;.cevent&#x27;).length == 0 ) {
+                this.el.t.o.addClass(&#x27;chatting&#x27;);
+            }
+        }
+    }
+    
+
+};
+
+&#x2F;**
+ * Display a user info hover box.
+ * 
+ * @method userinfo
+ * @param user {Object} Information about a user.
+ * @return {Object} jQuery object representing the information box.
+ *&#x2F;
+Chatterbox.Channel.prototype.userinfo = function( user ) {
+
+    var link = this.el.m.find( &#x27;a#&#x27; + user.name );
+    
+    if( link.length == 0 )
+        return;
+
+    var chan = this;
+    var box = null;
+    
+    link.hover(
+        function( e ) {
+            user.info = [];
+            var ed = { &#x27;ns&#x27;: chan.namespace, &#x27;user&#x27;: user };
+            chan.manager.trigger( &#x27;userinfo.before&#x27;, ed );
+            user = ed.user;
+            var infoli = &#x27;&#x27;;
+            
+            for( index in user.info ) {
+                infoli+= &#x27;&lt;li&gt;&#x27; + user.info[index] + &#x27;&lt;&#x2F;li&gt;&#x27;;
+            }
+            
+            chan.window.append(Chatterbox.render(&#x27;userinfo&#x27;, {
+                &#x27;username&#x27;: user.name,
+                &#x27;avatar&#x27;: user.avatar,
+                &#x27;link&#x27;: user.link,
+                &#x27;info&#x27;: infoli}));
+            
+            box = chan.window.find(&#x27;.userinfo#&#x27;+user.name);
+            chan.window.find(&#x27;div.userinfo:not(\&#x27;#&#x27; + user.name + &#x27;\&#x27;)&#x27;).remove();
+            var pos = link.offset();
+            box.css({ &#x27;top&#x27;: (pos.top - link.height()) + 10, &#x27;left&#x27;: (pos.left - (box.width())) - 6 });
+            box.find(&#x27;.info&#x27;).height(box.height());
+            
+            box.hover(
+                function(){ box.data(&#x27;hover&#x27;, 1); },
+                function( e ) {
+                    box.data(&#x27;hover&#x27;, 0);
+                    chan.unhover_user( box, e );
+                }
+            );
+            
+            box.data(&#x27;hover&#x27;, 0);
+        },
+        function( e ) {
+            link.data(&#x27;hover&#x27;, 0);
+            chan.unhover_user(box, e);
+        }
+    );
+
+};
+
+&#x2F;**
+ * This method tries to get rid of the given user information box.
+ * The information box can only be removed if the cursor is outside the
+ * bounds of the information box AND outside of the bounds of the user link in
+ * the user list.
+ * 
+ * @method unhover_user
+ * @param box {Object} A jQuery object representing the information box.
+ * @param event {Object} jQuery event object.
+ *&#x2F;
+Chatterbox.Channel.prototype.unhover_user = function( box, event ) {
+
+    var o = box.offset();
+    var eb = box.outerHeight(true) + o.top;
+    var er = box.outerWidth(true) + o.left;
+    var x = event.pageX;
+    var y = event.pageY;
+    
+    if( x &gt; o.left
+        &amp;&amp; x &lt; er
+        &amp;&amp; y &gt; o.top
+        &amp;&amp; y &lt; eb)
+        return;
+    
+    if( x &lt; (er + 15)
+        &amp;&amp; x &gt; o.left
+        &amp;&amp; y &gt; o.top
+        &amp;&amp; y &lt; (o.top + 15) )
+        return;
+    
+    box.remove();
+
+};
+
+&#x2F;**
+ * Hide messages from a given user.
+ * 
+ * @method mute_user
+ * @param user {String} User to hide messages for.
+ *&#x2F;
+Chatterbox.Channel.prototype.mute_user = function( user ) {
+
+    if( !user )
+        return;
+    this.el.l.w.find(&#x27;li.logmsg.u-&#x27; + user.toLowerCase()).css({&#x27;display&#x27;: &#x27;none&#x27;});
+    this.scroll();
+
+};
+
+&#x2F;**
+ * Reveal messages received from a given user.
+ *
+ * @method unmute_user
+ * @param user {String} Use to reveal messages for.
+ *&#x2F;
+Chatterbox.Channel.prototype.unmute_user = function( user ) {
+
+    if( !user )
+        return;
+    this.el.l.w.find(&#x27;li.logmsg.u-&#x27; + user.toLowerCase()).css({&#x27;display&#x27;: &#x27;list-item&#x27;});
+    this.scroll();
+
+};
+
+&#x2F;**
+ * Remove a user&#x27;s messages completely.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ *&#x2F;
+Chatterbox.Channel.prototype.clear_user = function( user ) {
+
+    if( !user )
+        return;
+    this.el.l.w.find(&#x27;li.logmsg.u-&#x27; + user.toLowerCase()).remove();
+    this.scroll();
+
+};
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;extension.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+&#x2F;**
+ * dAmn extension makes the client work with dAmn.
+ * 
+ * @class Extension
+ * @constructor
+ *&#x2F;
+wsc.dAmn.Extension = function( client ) {
+
+    client.settings.client = &#x27;dAmnClient&#x27;;
+    client.settings.clientver = &#x27;0.3&#x27;;
+    client.settings.domain = &#x27;deviantart.com&#x27;;
+    client.settings.agent+= &#x27; wsc&#x2F;dAmn&#x2F;&#x27; + wsc.dAmn.VERSION;
+    
+    var storage = client.storage.folder(&#x27;dAmn&#x27;);
+    storage.bds = storage.folder(&#x27;bds&#x27;);
+    storage.emotes = storage.folder(&#x27;emotes&#x27;);
+    storage.colours = storage.folder(&#x27;colours&#x27;);
+    var settings = {
+        &#x27;emotes&#x27;: {
+            &#x27;on&#x27;: false,
+            &#x27;emote&#x27;: []
+        },
+        &#x27;colours&#x27;: {
+            &#x27;on&#x27;: false,
+            &#x27;send&#x27;: false,
+            &#x27;msg&#x27;: &#x27;000000&#x27;,
+            &#x27;user&#x27;: &#x27;000000&#x27;
+        }
+    };
+    
+    settings.save = function(  ) {
+        
+        storage.emotes.set(&#x27;on&#x27;, settings.emotes.on);
+        storage.colours.set(&#x27;on&#x27;, settings.colours.on);
+        storage.colours.set(&#x27;send&#x27;, settings.colours.send);
+        storage.colours.set(&#x27;msg&#x27;, settings.colours.msg);
+        storage.colours.set(&#x27;user&#x27;, settings.colours.user);
+        
+    };
+    
+    settings.load = function(  ) {
+    
+        settings.emotes.on = (storage.emotes.get(&#x27;on&#x27;, &#x27;false&#x27;) == &#x27;true&#x27;);
+        settings.colours.on = (storage.colours.get(&#x27;on&#x27;, &#x27;false&#x27;) == &#x27;true&#x27;);
+        settings.colours.send = (storage.colours.get(&#x27;send&#x27;, &#x27;false&#x27;) == &#x27;true&#x27;);
+        settings.colours.msg = storage.colours.get(&#x27;msg&#x27;, &#x27;&#x27;);
+        settings.colours.user = storage.colours.get(&#x27;user&#x27;, &#x27;&#x27;);
+    
+    };
+    
+    settings.load();
+    settings.save();
+    
+    client.protocol.extend_maps({
+        &#x27;dAmnServer&#x27;: [&#x27;version&#x27;]
+    });
+    
+    client.protocol.extend_messages({
+        &#x27;dAmnServer&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Connected to dAmnServer {version} *&lt;&#x2F;span&gt;&#x27;, false, true ]
+    });
+    
+    client.protocol.mparser = new wsc.dAmn.TablumpParser;
+    
+    client.flow.dAmnServer = client.flow.chatserver;
+    
+    client.exclude.add( &#x27;chat:devart&#x27; );
+    client.exclude.add( &#x27;chat:damnidlers&#x27; );
+    
+    client.ui.on( &#x27;userinfo.before&#x27;, function( event, ui ) {
+        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+        
+        if( event.user.member.realname )
+            event.user.info.push(event.user.member.realname);
+        
+        if( event.user.member.typename )
+            event.user.info.push(event.user.member.typename);
+    });
+    
+    client.ui.on( &#x27;settings.save&#x27;, settings.save );
+    client.ui.on( &#x27;settings.close&#x27;, settings.load );
+    
+    client.ui.on( &#x27;log_whois.before&#x27;, function( event, ui ) {
+        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
+        event.username = event.raw.symbol + &#x27;&lt;b&gt;&lt;a href=&quot;http:&#x2F;&#x2F;&#x27; + event.raw.username + &#x27;.deviantart.com&#x2F;&quot;&gt;&#x27; + event.raw.username + &#x27;&lt;&#x2F;a&gt;&lt;&#x2F;b&gt;&#x27;;
+        
+        if( event.raw.realname )
+            event.info.push(event.raw.realname);
+        
+        if( event.raw.typename )
+            event.info.push(event.raw.typename);
+    } );
+    
+    wsc.dAmn.BDS( client, storage.bds, settings );
+    wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    wsc.dAmn.Colours( client, storage.colours, settings );
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.Stash( client, storage.emotes, settings );
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

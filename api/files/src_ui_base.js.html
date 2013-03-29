@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;base.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * This is an alternate thing for the UI module.
+ * Chatterbox is basically a thing.
+ * 
+ * @module Chatterbox
+ *&#x2F;
+var Chatterbox = {};
+
+Chatterbox.VERSION = &#x27;0.16.76&#x27;;
+Chatterbox.STATE = &#x27;beta&#x27;;
+
+&#x2F;**
+ * This object is the platform for the wsc UI. Everything can be used and
+ * loaded from here.
+ * 
+ * @class UI
+ * @constructor
+ * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
+ * @param options {Object} Custom settings to use for the UI.
+ * @param mozilla {Boolean} Is the browser in use made by Mozilla?
+ * @param [events] {Object} EventEmitter object.
+ **&#x2F;
+Chatterbox.UI = function( view, options, mozilla, events ) {
+    
+    this.events = events || new EventEmitter();
+    this.mozilla = mozilla;
+    this.umuted = [];
+    this.viewing = true;
+    this.settings = {
+        &#x27;themes&#x27;: [&#x27;wsct_default&#x27;, &#x27;wsct_dAmn&#x27;],
+        &#x27;theme&#x27;: &#x27;wsct_default&#x27;,
+        &#x27;monitor&#x27;: [&#x27;~Monitor&#x27;, true],
+        &#x27;username&#x27;: &#x27;&#x27;,
+        &#x27;domain&#x27;: &#x27;website.com&#x27;,
+        &#x27;clock&#x27;: true,
+        &#x27;tabclose&#x27;: true,
+        &#x27;developer&#x27;: false,
+        &#x27;media&#x27;: &#x27;&#x2F;static&#x2F;&#x27;
+    };
+    
+    var ui = this;
+    this.sound = {
+        play: function( sound ) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        },
+        toggle: function( state ) {
+            for( var s in ui.sound.bank ) {
+                if( !ui.sound.bank.hasOwnProperty( s ) )
+                    continue;
+                ui.sound.bank[s].muted = state;
+            }
+        },
+        mute: function(  ) { ui.sound.toggle( true ); },
+        unmute: function(  ) { ui.sound.toggle( false ); },
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
+    };
+    
+    view.extend( this.settings, options );
+    view.append(&#x27;&lt;div class=&quot;wsc &#x27;+this.settings[&#x27;theme&#x27;]+&#x27;&quot;&gt;&lt;&#x2F;div&gt;&#x27;);
+    
+    this.mw = new wsc.Middleware();
+    
+    this.view = view.find(&#x27;.wsc&#x27;);
+    this.mns = this.format_ns(this.settings[&#x27;monitor&#x27;][0]);
+    this.lun = this.settings[&quot;username&quot;].toLowerCase();
+    this.monitoro = null;
+    
+    this.swidth = ( function() { 
+        if ( $.browser.msie ) {
+            var $textarea1 = $(&#x27;&lt;textarea cols=&quot;10&quot; rows=&quot;2&quot;&gt;&lt;&#x2F;textarea&gt;&#x27;)
+                    .css({ position: &#x27;absolute&#x27;, top: -1000, left: -1000 }).appendTo(&#x27;body&#x27;),
+                $textarea2 = $(&#x27;&lt;textarea cols=&quot;10&quot; rows=&quot;2&quot; style=&quot;overflow: hidden;&quot;&gt;&lt;&#x2F;textarea&gt;&#x27;)
+                    .css({ position: &#x27;absolute&#x27;, top: -1000, left: -1000 }).appendTo(&#x27;body&#x27;);
+            scrollbarWidth = $textarea1.width() - $textarea2.width();
+            $textarea1.add($textarea2).remove();
+        } else {
+            var $div = $(&#x27;&lt;div &#x2F;&gt;&#x27;)
+                .css({ width: 100, height: 100, overflow: &#x27;auto&#x27;, position: &#x27;absolute&#x27;, top: -1000, left: -1000 })
+                .prependTo(&#x27;body&#x27;).append(&#x27;&lt;div &#x2F;&gt;&#x27;).find(&#x27;div&#x27;)
+                    .css({ width: &#x27;100%&#x27;, height: 200 });
+            scrollbarWidth = 100 - $div.width();
+            $div.parent().remove();
+        }
+        return scrollbarWidth;
+    } ) ();
+    
+    this.LIB = &#x27;Chatterbox&#x27;;
+    this.VERSION = Chatterbox.VERSION;
+    this.STATE = Chatterbox.STATE;
+    
+};
+
+wsc.defaults.UI = Chatterbox.UI;
+
+&#x2F;**
+ * Used to trigger events.
+ *
+ * @method trigger
+ * @param event {String} Name of the event to trigger.
+ * @param data {Object} Event data.
+ **&#x2F;
+Chatterbox.UI.prototype.trigger = function( event, data ) {
+
+    this.events.emit( event, data, this );
+
+};
+
+&#x2F;**
+ * Bind an event thingy.
+ * 
+ * @method on
+ * @param event {String} The event name to listen for.
+ * @param handler {Method} The event handler.
+ *&#x2F;
+Chatterbox.UI.prototype.on = function( event, handler ) {
+
+    this.events.addListener( event, handler );
+
+};
+
+&#x2F;**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ *&#x2F;
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+&#x2F;**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ *&#x2F;
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
+
+};
+
+&#x2F;**
+ * Remove all of the event bindings.
+ * 
+ * @method remove_listeners
+ *&#x2F;
+Chatterbox.UI.prototype.remove_listeners = function(  ) {
+    
+    this.events.removeListeners();
+    
+};
+
+&#x2F;**
+ * Deform a channel namespace.
+ *
+ * @method deform_ns
+ * @param ns {String} Channel namespace to deform.
+ * @return {String} The deformed namespace.
+ **&#x2F;
+Chatterbox.UI.prototype.deform_ns = function( ns ) {
+    if(ns.indexOf(&quot;chat:&quot;) == 0)
+        return &#x27;#&#x27; + ns.slice(5);
+    
+    if(ns.indexOf(&quot;server:&quot;) == 0)
+        return &#x27;~&#x27; + ns.slice(7);
+    
+    if(ns.indexOf(&quot;pchat:&quot;) == 0) {
+        var names = ns.split(&quot;:&quot;);
+        names.shift();
+        for(i in names) {
+            name = names[i];
+            if(name.toLowerCase() != this.lun) {
+                return &#x27;@&#x27; + name;
+            }
+        }
+    }
+    
+    if( ns.indexOf(&#x27;login:&#x27;) == 0 )
+        return &#x27;@&#x27; + ns.slice(6);
+    
+    if(ns[0] != &#x27;#&#x27; &amp;&amp; ns[0] != &#x27;@&#x27; &amp;&amp; ns[0] != &#x27;~&#x27;)
+        return &#x27;#&#x27; + ns;
+    
+    return ns;
+};
+
+&#x2F;**
+ * Format a channel namespace.
+ *
+ * @method format_ns
+ * @param ns {String} Channel namespace to format.
+ * @return {String} ns formatted as a channel namespace.
+ *&#x2F;
+Chatterbox.UI.prototype.format_ns = function( ns ) {
+    if(ns.indexOf(&#x27;#&#x27;) == 0) {
+        return &#x27;chat:&#x27; + ns.slice(1);
+    }
+    if(ns.indexOf(&#x27;@&#x27;) == 0) {
+        var names = [ns.slice(1), this.lun];
+        names.sort(caseInsensitiveSort)
+        names.unshift(&quot;pchat&quot;);
+        return names.join(&#x27;:&#x27;);
+    }
+    if(ns.indexOf(&#x27;~&#x27;) == 0) {
+        return &quot;server:&quot; + ns.slice(1);
+    }
+    if(ns.indexOf(&#x27;chat:&#x27;) != 0 &amp;&amp; ns.indexOf(&#x27;server:&#x27;) != 0 &amp;&amp; ns.indexOf(&#x27;pchat:&#x27;) != 0)
+        return &#x27;chat:&#x27; + ns;
+    
+    return ns;
+};
+
+&#x2F;**
+ * Set the event emitter object in use by the UI lib.
+ * 
+ * @method set_events
+ * @param events {Object} EventEmitter object.
+ *&#x2F;
+Chatterbox.UI.prototype.set_events = function( events ) {
+    this.events = events || this.events;
+};
+
+&#x2F;**
+ * Set the clock to 24 hour or 12 hour. Or get the current mode.
+ * True means 24 hour, false means 12 hour.
+ * 
+ * @method clock
+ * @param [mode] {Boolean} What mode to set the clock to.
+ * @return {Boolean} The mode of the clock.
+ *&#x2F;
+Chatterbox.UI.prototype.clock = function( mode ) {
+
+    if( mode === undefined || mode == this.settings.clock )
+        return this.settings.clock;
+    
+    this.settings.clock = mode;
+    this.chatbook.retime();
+    
+    return this.settings.clock;
+
+};
+
+&#x2F;**
+ * Build the GUI.
+ * 
+ * @method build
+ * @param [control=Chatterbox.Control] {Class} UI control panel class.
+ * @param [navigation=Chatterbox.Navigation] {Class} UI navigation panel
+ *   class.
+ * @param [chatbook=Chatterbox.Chatbook] {Class} Chatbook panel class.
+ *&#x2F;
+Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
+    
+    this.view.append( Chatterbox.render(&#x27;ui&#x27;, this.settings) );
+    
+    &#x2F;&#x2F; UI Components.
+    this.control = new ( control || Chatterbox.Control )( this );
+    this.nav = new ( navigation || Chatterbox.Navigation )( this );
+    this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
+    this.pager = new Chatterbox.Pager( this );
+    
+    &#x2F;&#x2F; The monitor channel is essentially our console for the chat.
+    this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
+    this.monitoro.show();
+    
+    &#x2F;&#x2F;this.control.setInput();
+    this.control.focus();
+    
+    &#x2F;&#x2F; Sound bank
+    this.sound.bank.m = this.view.find(&#x27;div.soundbank&#x27;);
+    this.sound.bank.c = this.sound.bank.m.find(&#x27;audio.click&#x27;)[0];
+    this.sound.bank.c.load();
+    
+    var sound = this.sound;
+    
+    this.sound.click = function(  ) {
+        sound.play( sound.bank.c );
+    };
+    
+    &#x2F;&#x2F; Mute button.
+    var muted = false;
+    var mute = this.nav.add_button({
+        &#x27;label&#x27;: &#x27;&#x27;,
+        &#x27;icon&#x27;: &#x27;volume&#x27;,
+        &#x27;href&#x27;: &#x27;#mute&#x27;,
+        &#x27;title&#x27;: &#x27;Mute the client&#x27;,
+        &#x27;handler&#x27;: function(  ) {
+            if( !muted ) {
+                sound.mute();
+                mute.removeClass( &#x27;volume&#x27; );
+                mute.addClass(&#x27;volume_mute&#x27; );
+                mute.prop(&#x27;title&#x27;, &#x27;Unmute the client&#x27;);
+                muted = true;
+                return false;
+            }
+            sound.unmute();
+            mute.removeClass( &#x27;volume_mute&#x27; );
+            mute.addClass( &#x27;volume&#x27; );
+            mute.prop(&#x27;title&#x27;, &#x27;Mute the client&#x27;);
+            muted = false;
+            return false;
+        }
+    });
+    
+    &#x2F;&#x2F; Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
+    
+};
+
+&#x2F;**
+ * Resize the UI to fit the containing element.
+ * 
+ * @method resize
+ *&#x2F;
+Chatterbox.UI.prototype.resize = function() {
+
+    this.control.resize();
+    this.view.height( this.view.parent().height() );
+    &#x2F;&#x2F;this.view.width( &#x27;100%&#x27; );
+    this.nav.resize(  );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
+
+};
+
+&#x2F;**
+ * Called every now and then.
+ * Does stuff like clear channels of excess log messages.
+ * Maybe this is something that the UI lib should handle.
+ * 
+ * @method loop
+ *&#x2F;
+Chatterbox.UI.prototype.loop = function(  ) {
+
+    this.chatbook.loop();
+
+};
+
+&#x2F;**
+ * Create a screen for channel &#x60;ns&#x60; in the UI, and initialise data
+ * structures or some shit idk.
+ * 
+ * @method create_channel
+ * @param ns {String} Short name for the channel.
+ * @param hidden {Boolean} Should this channel&#x27;s tab be hidden?
+ *&#x2F;
+Chatterbox.UI.prototype.create_channel = function( ns, toggle ) {
+    this.chatbook.create_channel( ns, toggle );
+};
+
+&#x2F;**
+ * Remove a channel from the GUI.
+ * We do this when we leave a channel for any reason.
+ * Note: last channel is never removed and when removing a channel
+ * we switch to the last channel in the list before doing so.
+ *
+ * @method remove_channel
+ * @param ns {String} Name of the channel to remove.
+ *&#x2F;
+Chatterbox.UI.prototype.remove_channel = function( ns ) {
+    this.chatbook.remove_channel(ns);
+};
+
+&#x2F;**
+ * Select which channel is currently being viewed.
+ * 
+ * @method toggle_channel
+ * @param ns {String} Name of the channel to select.
+ *&#x2F;
+Chatterbox.UI.prototype.toggle_channel = function( ns ) {
+    return this.chatbook.toggle_channel(ns);
+};
+
+&#x2F;**
+ * Get or set the channel object associated with the given namespace.
+ * 
+ * @method channel
+ * @param namespace {String} The namespace to set or get.
+ * @param [chan] {Object} A wsc channel object representing the channel specified.
+ * @return {Object} The channel object representing the channel defined by &#x60;namespace&#x60;
+ *&#x2F;
+Chatterbox.UI.prototype.channel = function( namespace, chan ) {
+    return this.chatbook.channel( namespace, chan );
+};
+
+&#x2F;**
+ * Determine how many channels the ui has open. Hidden channels are
+ * not included in this, and we don&#x27;t include the first channel because
+ * there should always be at least one non-hidden channel present in the
+ * ui.
+ * 
+ * @method channels
+ * @return {Integer} Number of channels open in the ui.
+ *&#x2F;
+Chatterbox.UI.prototype.channels = function( ) {
+    return this.chatbook.channels();
+};
+
+&#x2F;**
+ * Switch to the channel left of the current channel.
+ * 
+ * @method channel_left
+ *&#x2F;
+Chatterbox.UI.prototype.channel_left = function(  ) {
+
+    this.chatbook.channel_left();
+
+};
+
+&#x2F;**
+ * Switch to the channel right of the current channel.
+ * 
+ * @method channel_right
+ *&#x2F;
+Chatterbox.UI.prototype.channel_right = function(  ) {
+
+    this.chatbook.channel_right();
+
+};
+
+
+&#x2F;**
+ * Display a log message in the monitor channel.
+ * 
+ * @method monitor
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ *&#x2F;
+Chatterbox.UI.prototype.monitor = function( msg, info ) {
+
+    this.monitoro.server_message(msg, info);
+
+};
+
+&#x2F;**
+ * Display a server message across all open channels.
+ * 
+ * @method server_message
+ * @param msg {String} Message to display.
+ * @param [info] {String} Additional data to display.
+ *&#x2F;
+Chatterbox.UI.prototype.server_message = function( msg, info ) {
+
+    this.chatbook.server_message(msg, info);
+
+};
+
+&#x2F;**
+ * Display a log item across all open channels.
+ * 
+ * @method log_item
+ * @param item {Object} Item to display.
+ *&#x2F;
+Chatterbox.UI.prototype.log_item = function( item ) {
+
+    this.chatbook.log_item(item);
+
+};
+
+&#x2F;**
+ * Display a log message across all open channels.
+ * 
+ * @method log
+ * @param msg {String} Message to display.
+ *&#x2F;
+Chatterbox.UI.prototype.log = function( msg ) {
+
+    this.chatbook.log(msg);
+
+};
+
+&#x2F;**
+ * Mute a user.
+ * 
+ * @method mute_user
+ * @param user {String} User to mute.
+ *&#x2F;
+Chatterbox.UI.prototype.mute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    if( this.umuted.indexOf( user ) != -1 )
+        return false;
+    
+    this.umuted.push( user );
+    this.chatbook.each( function( ns, chan ) {
+        chan.mute_user( user );
+    } );
+    
+    return true;
+
+};
+
+&#x2F;**
+ * Unmute a user.
+ * 
+ * @method unmute_user
+ * @param user {String} User to unmute.
+ *&#x2F;
+Chatterbox.UI.prototype.unmute_user = function( user ) {
+
+    if( !user )
+        return false;
+    
+    user = user.toLowerCase();
+    var usri = this.umuted.indexOf( user );
+    if( usri == -1 )
+        return false;
+    
+    this.umuted.splice( usri, 1 );
+    this.chatbook.each( function( ns, chan ) {
+        chan.unmute_user( user );
+    } );
+    
+    return true;
+
+};
+
+&#x2F;**
+ * Clear a user&#x27;s messages from all channels.
+ * 
+ * @method clear_user
+ * @param user {String} User to remove messages for.
+ *&#x2F;
+Chatterbox.UI.prototype.clear_user = function( user ) {
+
+    this.chatbook.each( function( ns, chan ) {
+        chan.clear_user( user );
+    } );
+
+};
+
+&#x2F;**
+ * Set the theme for the UI.
+ * 
+ * @method theme
+ * @param theme {String} Name of the theme.
+ *&#x2F;
+Chatterbox.UI.prototype.theme = function( theme ) {
+    if( this.settings.theme == theme )
+        return this.settings.theme;
+    if( this.settings.themes.indexOf(theme) == -1 ) {
+        theme = &#x27;wsct_&#x27; + theme;
+        if( this.settings.themes.indexOf(theme) == -1 )
+            return this.settings.theme;
+    }
+    this.view.removeClass( this.settings.theme ).addClass( theme );
+    this.settings.theme = theme;
+    return this.settings.theme;
+};
+
+&#x2F;**
+ * Add a new theme to the client.
+ * 
+ * @method add_theme
+ * @param theme {String} Name of the theme to add.
+ *&#x2F;
+Chatterbox.UI.prototype.add_theme = function( theme ) {
+
+    if( this.settings.themes.indexOf(theme) &gt; -1 )
+        return;
+    
+    this.settings.themes.push(theme);
+
+};
+
+&#x2F;**
+ * Toggle developer mode for the UI.
+ *
+ * @method developer
+ *&#x2F;
+Chatterbox.UI.prototype.developer = function( mode ) {
+    this.settings.developer = mode;
+    this.chatbook.developer();
+};
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;commands.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+
+&#x2F;**
+ * This extension implements most of the default commands for wsc.
+ *&#x2F;
+wsc.defaults.Extension = function( client ) {
+
+    var ext = {};
+    ext.away = {
+        &#x27;on&#x27;: false,
+        &#x27;reason&#x27;: &#x27;&#x27;,
+        &#x27;last&#x27;: {},
+        &#x27;since&#x27;: 0,
+        &#x27;store&#x27;: client.storage.folder(&#x27;away&#x27;),
+        &#x27;format&#x27;: {
+            &#x27;setaway&#x27;: &#x27;&#x2F;me is away: {reason}&#x27;,
+            &#x27;setback&#x27;: &#x27;&#x2F;me is back&#x27;,
+            &#x27;away&#x27;: &#x27;{from}: I am away, reason: {reason}&#x27;
+        }
+    };
+    
+    var init = function(  ) {
+        &#x2F;&#x2F; Commands.
+        client.bind(&#x27;cmd.connect&#x27;, cmd_connection );
+        client.bind(&#x27;cmd.set&#x27;, cmd_setter );
+        
+        &#x2F;&#x2F; standard dAmn commands.
+        client.bind(&#x27;cmd.join&#x27;, cmd_join );
+        client.bind(&#x27;cmd.chat&#x27;, cmd_pjoin );
+        client.bind(&#x27;cmd.part&#x27;, cmd_part );
+        &#x2F;&#x2F; send ...
+        client.bind(&#x27;cmd.say&#x27;, cmd_say );
+        client.bind(&#x27;cmd.npmsg&#x27;, cmd_npmsg );
+        client.bind(&#x27;cmd.me&#x27;, cmd_action );
+        client.bind(&#x27;cmd.promote&#x27;, cmd_chgpriv );
+        client.bind(&#x27;cmd.demote&#x27;, cmd_chgpriv );
+        client.bind(&#x27;cmd.ban&#x27;, cmd_ban );
+        client.bind(&#x27;cmd.unban&#x27;, cmd_ban );
+        client.bind(&#x27;cmd.kick&#x27;, cmd_killk );
+        &#x2F;&#x2F;client.bind(&#x27;cmd.get&#x27;, cmd_get );
+        client.bind(&#x27;cmd.whois&#x27;, cmd_whois );
+        client.bind(&#x27;cmd.title&#x27;, cmd_title );
+        client.bind(&#x27;cmd.topic&#x27;, cmd_title );
+        client.bind(&#x27;cmd.admin&#x27;, cmd_admin );
+        client.bind(&#x27;cmd.disconnect&#x27;, cmd_connection );
+        client.bind(&#x27;cmd.kill&#x27;, cmd_killk );
+        client.bind(&#x27;cmd.raw&#x27;, cmd_raw );
+        
+        client.bind(&#x27;cmd.clear&#x27;, cmd_clear );
+        client.bind(&#x27;cmd.clearall&#x27;, cmd_clearall );
+        client.bind(&#x27;cmd.close&#x27;, cmd_close );
+        
+        client.bind(&#x27;pkt.property&#x27;, pkt_property );
+        client.bind(&#x27;pkt.recv_admin_show&#x27;, pkt_admin_show );
+        client.bind(&#x27;pkt.recv_admin_showverbose&#x27;, pkt_admin_show );
+        client.bind(&#x27;pkt.get&#x27;, pkt_get );
+        
+        
+        &#x2F;&#x2F; Non-standard commands.
+        client.bind(&#x27;cmd.gettitle&#x27;, cmd_gett);
+        client.bind(&#x27;cmd.gettopic&#x27;, cmd_gett);
+        
+        &#x2F;&#x2F; lol themes
+        client.bind(&#x27;cmd.theme&#x27;, cmd_theme);
+        &#x2F;&#x2F; some ui business.
+        client.ui.on(&#x27;settings.open&#x27;, settings_page);
+        client.ui.on(&#x27;settings.open.ran&#x27;, about_page);
+        client.ui.on(&#x27;settings.save.ui&#x27;, settings_save);
+        client.ui.on(&#x27;settings.save&#x27;, function(  ) { client.config_save(); } );
+    };
+    
+    var settings_save = function( e, ui ) {
+        client.settings.ui.theme = e.theme;
+        client.settings.ui.clock = e.clock;
+        client.settings.ui.tabclose = e.tabclose;
+    };
+    
+    var settings_page = function( e, ui ) {
+    
+        var page = e.settings.page(&#x27;Main&#x27;);
+        var orig = {};
+        orig.username = client.settings.username;
+        orig.pk = client.settings.pk;
+        orig.devel = client.settings.developer;
+        
+        page.item(&#x27;Form&#x27;, {
+            &#x27;ref&#x27;: &#x27;login&#x27;,
+            &#x27;title&#x27;: &#x27;Login&#x27;,
+            &#x27;text&#x27;: &#x27;Here you can change the username and token used to\
+                    log into the chat server.&#x27;,
+            &#x27;fields&#x27;: [
+                [&#x27;Textfield&#x27;, {
+                    &#x27;ref&#x27;: &#x27;username&#x27;,
+                    &#x27;label&#x27;: &#x27;Username&#x27;,
+                    &#x27;default&#x27;: orig.username
+                }],
+                [&#x27;Textfield&#x27;, {
+                    &#x27;ref&#x27;: &#x27;token&#x27;,
+                    &#x27;label&#x27;: &#x27;Token&#x27;,
+                    &#x27;default&#x27;: orig.pk
+                }]
+            ],
+            &#x27;event&#x27;: {
+                &#x27;save&#x27;: function( event ) {
+                    client.settings.username = event.data.username;
+                    client.settings.pk = event.data.token;
+                }
+            }
+        }, true);
+        
+        page.item(&#x27;Form&#x27;, {
+            &#x27;ref&#x27;: &#x27;developer&#x27;,
+            &#x27;title&#x27;: &#x27;Developer Mode&#x27;,
+            &#x27;text&#x27;: &#x27;Turn developer mode on or off.\n\nDeveloper mode will expose any hidden\
+                channel tabs, amongst other things. Keep this turned off unless you\&#x27;re working\
+                on implementing something.&#x27;,
+            &#x27;fields&#x27;: [
+                [&#x27;Checkbox&#x27;, {
+                    &#x27;ref&#x27;: &#x27;enabled&#x27;,
+                    &#x27;items&#x27;: [
+                        { &#x27;value&#x27;: &#x27;on&#x27;, &#x27;title&#x27;: &#x27;On&#x27;, &#x27;selected&#x27;: orig.devel }
+                    ]
+                }]
+            ],
+            &#x27;event&#x27;: {
+                &#x27;change&#x27;: function( event ) {
+                    client.settings.developer = (event.data.enabled.indexOf(&#x27;on&#x27;) != -1);
+                    client.ui.developer(client.settings.developer);
+                },
+                &#x27;save&#x27;: function( event ) {
+                    orig.devel = client.settings.developer;
+                },
+                &#x27;close&#x27;: function( event ) {
+                    client.settings.developer = orig.devel;
+                    client.ui.developer(client.settings.developer);
+                }
+            }
+        });
+        
+        page.item(&#x27;Text&#x27;, {
+            &#x27;ref&#x27;: &#x27;intro&#x27;,
+            &#x27;title&#x27;: &#x27;Main&#x27;,
+            &#x27;text&#x27;: &#x27;Use this window to view and change your settings.\n\nCheck\
+                    the different pages to see what settings can be changed.&#x27;,
+        }, true);
+        
+        page.item(&#x27;Text&#x27;, {
+            &#x27;ref&#x27;: &#x27;debug&#x27;,
+            &#x27;wclass&#x27;: &#x27;faint&#x27;,
+            &#x27;title&#x27;: &#x27;Debug Information&#x27;,
+            &#x27;text&#x27;: &#x27;Chat Agent: &lt;code&gt;&#x27; + client.settings.agent + &#x27;&lt;&#x2F;code&gt;\n\nUser\
+                    Agent: &lt;code&gt;&#x27; + navigator.userAgent + &#x27;&lt;&#x2F;code&gt;&#x27;
+        });
+    
+    };
+        
+    var about_page = function( e, ui ) {
+    
+        var page = e.settings.page(&#x27;About&#x27;, true);
+        page.item(&#x27;Text&#x27;, {
+            &#x27;ref&#x27;: &#x27;about-wsc&#x27;,
+            &#x27;title&#x27;: &#x27;Wsc&#x27;,
+            &#x27;text&#x27;: &#x27;Currently using &lt;a href=&quot;http:&#x2F;&#x2F;github.com&#x2F;photofroggy&#x2F;wsc&#x2F;&quot;&gt;wsc&lt;&#x2F;a&gt;\
+                    version &#x27; + wsc.VERSION + &#x27; &#x27; + wsc.STATE + &#x27;.\n\nWsc\
+                    works using HTML5, javascript, and CSS3. WebSocket is used for the connection\
+                    where possible. The source code for this client is pretty huge.\n\nWsc was created\
+                    by ~&lt;a href=&quot;http:&#x2F;&#x2F;photofroggy.deviantart.com&#x2F;&quot;&gt;photofroggy&lt;&#x2F;a&gt;&#x27;
+        });
+    
+    };
+    
+    var cmd_theme = function( e, client) {
+        client.ui.theme(e.args.split(&#x27; &#x27;).shift());
+    };
+        
+    &#x2F;**
+     * @function setter
+     * @cmd set set configuration options
+     * This command allows the user to change the settings for the client through
+     * the input box.
+     *&#x2F;
+    var cmd_setter = function( e ) {
+        var data = e.args.split(&#x27; &#x27;);
+        var setting = data.shift().toLowerCase();
+        var data = data.join(&#x27; &#x27;);
+        if( data.length == 0 ) {
+            client.cchannel.serverMessage(&#x27;Could not set &#x27; + setting, &#x27;No data supplied&#x27;);
+            return;
+        }
+        
+        if( !( setting in client.settings ) ) {
+            client.cchannel.serverMessage(&#x27;Unknown setting &quot;&#x27; + setting + &#x27;&quot;&#x27;);
+            return;
+        }
+        
+        client.settings[setting] = data;
+        client.cchannel.serverMessage(&#x27;Changed &#x27; + setting + &#x27; setting&#x27;, &#x27;value: &#x27; + data);
+        client.control.setLabel();
+        
+    };
+    
+    &#x2F;**
+     * @function connect
+     * This command allows the user to force the client to connect to the server.
+     *&#x2F;
+    var cmd_connection = function( e ) {
+        client[e.cmd]();
+    };
+    
+    &#x2F;&#x2F; Join a channel
+    var cmd_join = function( e ) {
+        var chans = e.args.split(&#x27; &#x27;);
+        var chans = chans.toString() == &#x27;&#x27; ? [] : chans;
+        
+        if( e.ns != e.target )
+            chans.unshift(e.target);
+        
+        if( chans.toString() == &#x27;&#x27; )
+            return;
+        
+        for( index in chans )
+            client.join(chans[index]);
+    };
+    
+    &#x2F;&#x2F; Join a channel
+    var cmd_pjoin = function( e ) {
+        var chans = e.args.split(&#x27; &#x27;);
+        var chans = chans.toString() == &#x27;&#x27; ? [] : chans;
+        
+        if( e.ns != e.target )
+            chans.unshift(e.target);
+        
+        if( chans.toString() == &#x27;&#x27; )
+            return;
+        
+        for( index in chans )
+            client.join(&#x27;@&#x27; + chans[index]);
+    };
+    
+    &#x2F;&#x2F; Leave a channel
+    var cmd_part = function( e ) {
+        var chans = e.args.split(&#x27; &#x27;);
+        if( e.ns != e.target )
+            chans.unshift(e.target);
+        
+        if( chans.toString() == &#x27;&#x27; ) {
+            client.part(e.ns);
+            return;
+        }
+        
+        for( index in chans )
+            client.part(chans[index]);
+    };
+    
+    &#x2F;&#x2F; Set the title
+    var cmd_title = function( e ) {
+        client.set(e.target, e.cmd, e.args);
+    };
+    
+    &#x2F;&#x2F; Promote or demote user
+    var cmd_chgpriv = function( e ) {
+        var bits = e.args.split(&#x27; &#x27;);
+        client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
+    };
+    
+    &#x2F;&#x2F; Ban user
+    var cmd_ban = function( e, client ) {
+        var args = e.args.split(&#x27; &#x27;);
+        var user = args.shift();
+        var cmd = e.cmd;
+        if( cmd == &#x27;ban&#x27; &amp;&amp; args.length &gt; 0 ) {
+            client.kick( e.target, user, args.join(&#x27; &#x27;) );
+        }
+        client[cmd](e.target, user);
+    };
+    
+    &#x2F;&#x2F; Send a &#x2F;me action thingy.
+    var cmd_action = function( e ) {
+        client.action(e.target, e.args);
+    };
+    
+    &#x2F;&#x2F; Send a raw packet.
+    var cmd_raw = function( e ) {
+        client.send( e.args.replace(&#x2F;\\n&#x2F;gm, &quot;\n&quot;) );
+    };
+    
+    &#x2F;&#x2F; Kick or kill someone.
+    var cmd_killk = function( e, client ) {
+        var d = e.args.split(&#x27; &#x27;);
+        var u = d.shift();
+        var r = d.length &gt; 0 ? d.join(&#x27; &#x27;) : null;
+        if( e.cmd == &#x27;kick&#x27; )
+            client.kick( e.target, u, r );
+        else
+            client.kill( u, r );
+    };
+    
+    &#x2F;&#x2F; Say something.
+    var cmd_say = function( e ) {
+        if( client.channel(e.target).monitor ) return;
+        client.say( e.target, e.args );
+    };
+    
+    &#x2F;&#x2F; Say something without emotes and shit. Zomg.
+    var cmd_npmsg = function( e ) {
+        client.npmsg( e.target, e.args );
+    };
+    
+    &#x2F;&#x2F; Clear the channel&#x27;s log.
+    var cmd_clear = function( e, client ) {
+        if( e.args.length &gt; 0 ) {
+            var users = e.args.split(&#x27; &#x27;);
+            for( var i in users ) {
+                if( !users.hasOwnProperty(i) )
+                    continue;
+                client.channel(e.target).clear(users[i]);
+            }
+        } else {
+            client.channel(e.target).clear();
+        }
+    };
+    
+    &#x2F;&#x2F; Clear all channel logs.
+    var cmd_clearall = function( e, client ) {
+        var method = null;
+        
+        if( e.args.length &gt; 0 ) {
+            var users = e.args.split(&#x27; &#x27;);
+            method = function( ns, channel ) {
+                for( var i in users ) {
+                    if( !users.hasOwnProperty(i) )
+                        continue;
+                    channel.clear( users[i] );
+                }
+            };
+        } else {
+            method = function( ns, channel ) {
+                channel.clear();
+            };
+        }
+        
+        client.each_channel( method, true );
+    };
+    
+    var cmd_close = function( cmd ) {
+        client.part(cmd.target);
+        client.remove_ns(cmd.target);
+    };
+    
+    &#x2F;&#x2F; Send a whois thingy.
+    var cmd_whois = function( event, client ) {
+        client.whois( event.args.split(&#x27; &#x27;)[0] );
+    };
+    
+    &#x2F;&#x2F; Send an admin packet.
+    var cmd_admin = function( event, client ) {
+        client.admin( event.target, event.args );
+    };
+    
+    &#x2F;&#x2F; Send an disconnect packet.
+    var cmd_disconnect = function( event, client ) {
+        client.disconnect(  );
+    };
+    
+    &#x2F;&#x2F; Get the title or topic.
+    var cmd_gett = function( event, client ) {
+        var which = event.cmd.indexOf(&#x27;title&#x27;) &gt; -1 ? &#x27;title&#x27; : &#x27;topic&#x27;;
+        client.control.ui.set_text(&#x27;&#x2F;&#x27; + which + &#x27; &#x27; + client.channel(event.target).info[which].content);
+    };
+    
+    &#x2F;&#x2F; Process a property packet, hopefully retreive whois info.
+    var pkt_property = function( event, client ) {
+        if(event.p != &#x27;info&#x27;)
+            return;
+        
+        var subs = event.pkt.sub;
+        var data = subs.shift().arg;
+        data.username = event.sns.substr(1);
+        data.connections = [];
+        var conn = {};
+        
+        while( subs.length &gt; 0 ) {
+            conn = subs.shift().arg;
+            conn.channels = [];
+            while( subs.length &gt; 0 ) {
+                if( subs[0].cmd != &#x27;ns&#x27; )
+                    break;
+                conn.channels.unshift( client.deform_ns(subs.shift().param) );
+            }
+            data.connections.push(conn);
+        }
+        
+        client.cchannel.log_whois(data);
+    };
+    
+    var pkt_get = function( event, client ) {
+    
+        if( event.ns.indexOf(&#x27;login:&#x27;) != 0 )
+            return;
+        
+        var usr = event.sns.substr(1);
+        
+        client.ui.pager.notice({
+            &#x27;ref&#x27;: &#x27;whois-&#x27; + usr,
+            &#x27;heading&#x27;: &#x27;Whois Failed&#x27;,
+            &#x27;content&#x27;: &#x27;Whois failed for &#x27; + usr + &#x27;.\nNo such user online.&#x27;
+        }, false, 5000 );
+    
+    };
+    
+    var pkt_admin_show = function( event, client ) {
+    
+        var chan = client.channel(event.ns);
+        var lines = event.info.split(&#x27;\n&#x27;);
+        var info = &#x27;&#x27;;
+        var pcs = [];
+        var pc = &#x27;&#x27;;
+        
+        for( var i in lines ) {
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            info = lines[i].split(&#x27; &#x27;);
+            
+            if( event.p == &#x27;privclass&#x27; ) {
+                pcs.push([ info.shift(), info.shift().split(&#x27;=&#x27;)[1], info.join(&#x27; &#x27;) ]);
+            } else if( event.p == &#x27;users&#x27; ) {
+                pc = info.shift().split(&#x27;:&#x27;, 1)[0];
+                pcs.push([ pc, chan.get_privclass_order( pc ), info.join(&#x27; &#x27;) ]);
+            }
+        }
+        
+        chan.log_pc(event.p == &#x27;privclass&#x27;, pcs);
+    
+    };
+    
+    init();
+    wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Autojoin(client);
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

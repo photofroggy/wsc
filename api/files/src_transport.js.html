@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;transport.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Client transport.
+ * Acts as a basic wrapper around a transport.
+ * 
+ * @class Transport
+ * @constructor
+ * @param server {String} Address for the server to connect to.
+ * @param [open=wsc.Transport.sopen] {Method} This method will be called when
+ *   a connection is established with the server.
+ * @param [message=wsc.Transport.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ * @param [disconnect=wsc.Transport.sdisconnect] {Method} The method to be
+ *   called when the connection has been closed.
+ *&#x2F;
+wsc.Transport = function( server, open, message, disconnect ) {
+
+    this.sock = null;
+    this.conn = null;
+    this.server = server;
+    this.open( open );
+    this.message( message );
+    this.disconnect( disconnect );
+
+};
+
+&#x2F;**
+ * Static class method.
+ * Create a new client transport object.
+ * 
+ * @method Create
+ *&#x2F;
+wsc.Transport.Create = function( server, open, message, disconnect ) {
+
+    if( typeof io !== &#x27;undefined&#x27; ) {
+        return new wsc.SocketIO( server, open, message, disconnect );
+    }
+    
+    if(!window[&quot;WebSocket&quot;]) {
+        throw &quot;This browser does not support websockets.&quot;;
+    }
+    
+    return new wsc.WebSocket( server, open, message, disconnect );
+
+};
+
+&#x2F;**
+ * Register open event callback.
+ * 
+ * @method open
+ * @param [callback=wsc.Transport.sopen] {Method} This method will be called
+ *   when a connection is established with the server.
+ *&#x2F;
+wsc.Transport.prototype.open = function( callback ) {
+
+    this._open = callback || this.sopen;
+
+};
+
+&#x2F;**
+ * Register message event callback.
+ * 
+ * @method message
+ * @param [callback=wsc.Transport.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ *&#x2F;
+wsc.Transport.prototype.message = function( callback ) {
+
+    this._message = callback || this.smessage;
+
+};
+
+&#x2F;**
+ * Register disconnect event callback.
+ * 
+ * @method disconnect
+ * @param [callback=wsc.Transport.sdisconnect] {Method} The method to be called
+ *   when the connection has been closed.
+ *&#x2F;
+wsc.Transport.prototype.disconnect = function( callback ) {
+
+    this._disconnect = callback || this.sdisconnect;
+
+};
+
+&#x2F;**
+ * Open connection event stub.
+ * 
+ * @method sopen
+ *&#x2F;
+wsc.Transport.prototype.sopen = function(  ) {};
+
+&#x2F;**
+ * Message event stub.
+ * 
+ * @method smessage
+ *&#x2F;
+wsc.Transport.prototype.smessage = function(  ) {};
+
+&#x2F;**
+ * Close connection event stub.
+ * 
+ * @method sdisconnect
+ *&#x2F;
+wsc.Transport.prototype.sdisconnect = function(  ) {};
+
+wsc.Transport.prototype._open = function( event, sock ) {};
+wsc.Transport.prototype._message = function( event ) {};
+wsc.Transport.prototype._disconnect = function( event ) {};
+
+&#x2F;**
+ * Connect to the server.
+ * 
+ * @method connect
+ *&#x2F;
+wsc.Transport.prototype.connect = function(  ) {};
+
+&#x2F;**
+ * Send a message to the server.
+ * 
+ * @method send
+ * @param message {String} message to send to the server.
+ *&#x2F;
+wsc.Transport.prototype.send = function( message ) {};
+
+&#x2F;**
+ * Close the connection.
+ * 
+ * @method close
+ *&#x2F;
+wsc.Transport.prototype.close = function(  ) {};
+
+
+&#x2F;**
+ * WebSocket transport object.
+ * 
+ * @class WebSocket
+ * @constructor
+ * @param server {String} Address for the server to connect to.
+ * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
+ *   a connection is established with the server.
+ * @param [message=wsc.WebSocket.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ * @param [disconnect=wsc.WebSocket.sdisconnect] {Method} The method to be
+ *   called when the connection has been closed.
+ *&#x2F;
+wsc.WebSocket = function( server, open, message, disconnect ) {
+
+    this.sock = null;
+    this.conn = null;
+    this.server = server;
+    this.open( open );
+    this.message( message );
+    this.disconnect( disconnect );
+
+};
+
+wsc.WebSocket.prototype = new wsc.Transport;
+wsc.WebSocket.prototype.constructor = wsc.WebSocket;
+
+&#x2F;**
+ * Called when the connection is opened.
+ * Sets the &#x60;sock&#x60; attribute.
+ * 
+ * @method onopen
+ * @param event {Object} WebSocket event object.
+ * @param sock {Object} Transport object.
+ *&#x2F;
+wsc.WebSocket.prototype.onopen = function( event, sock ) {
+
+    this.sock = sock || this.conn;
+    this._open( event, this );
+
+};
+
+&#x2F;**
+ * Called when the connection is closed.
+ * Resets &#x60;sock&#x60; and &#x60;conn&#x60; to null.
+ * 
+ * @method ondisconnect
+ * @param event {Object} WebSocket event object.
+ *&#x2F;
+wsc.WebSocket.prototype.ondisconnect = function( event ) {
+
+    this.sock = null;
+    this.conn = null;
+    this._disconnect( event );
+
+};
+
+&#x2F;**
+ * Connect to the server.
+ * 
+ * @method connect
+ *&#x2F;
+wsc.WebSocket.prototype.connect = function(  ) {
+
+    var tr = this;
+    this.conn = new WebSocket( this.server );
+    this.conn.onopen = function(event, sock) { tr.onopen( event, sock ) };
+    this.conn.onmessage = this._message;
+    this.conn.onclose = function(event) { tr.ondisconnect( event ); };
+
+};
+
+&#x2F;**
+ * Send a message to the server.
+ * 
+ * @method send
+ * @param message {String} message to send to the server.
+ *&#x2F;
+wsc.WebSocket.prototype.send = function( message ) {
+
+    if( this.sock == null )
+        return -1;
+    
+    return this.sock.send(
+        replaceAll(
+            escape(message).replace(&#x2F;\%u([\dA-F]{4})&#x2F;g, &quot;%26%23x$1%3B&quot;),
+            &#x27;+&#x27;, &#x27;%2B&#x27;
+        )
+    );
+
+};
+
+&#x2F;**
+ * Close the connection.
+ * 
+ * @method close
+ *&#x2F;
+wsc.WebSocket.prototype.close = function(  ) {
+
+    if( this.sock == null )
+        return;
+    
+    this.sock.close();
+
+};
+
+
+&#x2F;**
+ * SocketIO wrapper.
+ * 
+ * @class SocketIO
+ * @constructor
+ * @param server {String} Address for the server to connect to.
+ * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
+ *   a connection is established with the server.
+ * @param [message=wsc.SocketIO.smessage] {Method} When a message is received
+ *   on the transport, this method will be called.
+ * @param [disconnect=wsc.SocketIO.sdisconnect] {Method} The method to be
+ *   called when the connection has been closed.
+ *&#x2F;
+wsc.SocketIO = function( server, open, message, disconnect ) {
+
+    this.sock = null;
+    this.conn = null;
+    this.server = server;
+    this.open( open );
+    this.message( message );
+    this.disconnect( disconnect );
+
+};
+
+wsc.SocketIO.prototype = new wsc.Transport(&#x27;&#x27;);
+wsc.SocketIO.prototype.constructor = wsc.SocketIO;
+
+&#x2F;**
+ * Connect to the server.
+ * 
+ * @method connect
+ *&#x2F;
+wsc.SocketIO.prototype.connect = function(  ) {
+
+    var tr = this;
+    this.conn = io.connect( this.server );
+    this.conn.on(&#x27;connect&#x27;, function(event, sock) { tr.onopen( event, sock ) });
+    this.conn.on(&#x27;message&#x27;, function( message ) { tr._message( { &#x27;data&#x27;: message } ) } );
+    this.conn.on(&#x27;close&#x27;, function(event) { tr.ondisconnect( event ); });
+
+};
+
+&#x2F;**
+ * Called when the connection is opened.
+ * Sets the &#x60;sock&#x60; attribute.
+ * 
+ * @method onopen
+ * @param event {Object} SocketIO event object.
+ * @param sock {Object} Transport object.
+ *&#x2F;
+wsc.SocketIO.prototype.onopen = function( event, sock ) {
+
+    this.sock = sock || this.conn;
+    this._open( event, this );
+
+};
+
+&#x2F;**
+ * Called when the connection is closed.
+ * Resets &#x60;sock&#x60; and &#x60;conn&#x60; to null.
+ * 
+ * @method ondisconnect
+ * @param event {Object} SocketIO event object.
+ *&#x2F;
+wsc.SocketIO.prototype.ondisconnect = function( event ) {
+
+    this.sock = null;
+    this.conn = null;
+    this._disconnect( event );
+
+};
+
+&#x2F;**
+ * Send a message to the server.
+ * 
+ * @method send
+ * @param message {String} message to send to the server.
+ *&#x2F;
+wsc.SocketIO.prototype.send = function( message ) {
+
+    if( this.sock == null )
+        return -1;
+    
+    return this.sock.send(
+        replaceAll(
+            escape(message).replace(&#x2F;\%u([\dA-F]{4})&#x2F;g, &quot;%26%23x$1%3B&quot;),
+            &#x27;+&#x27;, &#x27;%2B&#x27;
+        )
+    );
+
+};
+
+&#x2F;**
+ * Close the connection.
+ * 
+ * @method close
+ *&#x2F;
+wsc.SocketIO.prototype.close = function(  ) {
+
+    if( this.sock == null )
+        return;
+    
+    this.sock.close();
+
+};
+
+
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

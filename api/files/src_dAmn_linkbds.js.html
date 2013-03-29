@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;linkbds.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+wsc.dAmn.BDS.Link = function( client, storage, settings ) {
+
+    var init = function(  ) {
+        &#x2F;&#x2F; BDS events.
+        client.bind(&#x27;BDS&#x27;, handler.cmd);
+        client.bind(&#x27;BDS.LINK.REQUEST&#x27;, handler.request);
+        client.bind(&#x27;BDS.LINK.REJECT&#x27;, handler.reject);
+        client.bind(&#x27;BDS.LINK.ACCEPT&#x27;, handler.accept);
+        client.bind(&#x27;BDS.LINK.CLOSE&#x27;, handler.close);
+        &#x2F;&#x2F; dAmn events.
+        client.bind(&#x27;pkt.join&#x27;, handler.join);
+        client.bind(&#x27;pkt.part&#x27;, handler.part);
+        client.bind(&#x27;pkt.recv_join&#x27;, handler.recv_join);
+        client.bind(&#x27;pkt.recv_part&#x27;, handler.recv_part);
+    };
+    
+    &#x2F;&#x2F; Putting helper functions in here means other extensions can use them.
+    settings.bds.link = {
+        &#x2F;&#x2F; White list of users who can open LINKs with this client.
+        white: ( new StringSet() ),
+        &#x2F;&#x2F; Collection of open LINKs
+        connections: {},
+        
+        &#x2F;&#x2F; Indicates the state of a connection.
+        &#x2F;&#x2F; Closed isn&#x27;t really needed as the connection will be destroyed when closed.
+        state: {
+            closed: 0,
+            opening: 1,
+            open: 2
+        },
+        
+        &#x2F;&#x2F; Get a link thing.
+        conn: function( user, oncmd, onopen, onclose ) {
+            user = user.toLowerCase();
+            
+            if( user in settings.bds.link.connections )
+                return settings.bds.link.connections[user];
+            
+            var uns = client.format_ns(&#x27;@&#x27; + user);
+            
+            var link = {
+                state: settings.bds.link.state.closed,
+                ns: uns,
+                un: user,
+                close: function(  ) {
+                    settings.bds.link.close( link.un );
+                },
+                
+                send: function( message ) {
+                    if( link.state != settings.bds.link.state.open )
+                        return false;
+                    client.npmsg( link.ns, message );
+                    return true;
+                },
+                
+                oncmd: ( oncmd || function( event, client ) {} ),
+                
+                onopen: ( onopen || function( event, client ) {} ),
+                
+                onclose: ( onclose || function( event, client ) {} )
+            };
+            
+            return link;
+        },
+        
+        request: function( user, suppress, oncmd, onopen, onclose ) {
+            var link = settings.bds.link.open( user, oncmd );
+            
+            if( link == null )
+                return null;
+            
+            if( suppress === true )
+                return link;
+            
+            client.npmsg( settings.bds.mns, &#x27;BDS:LINK:REQUEST:&#x27; + user );
+            return link;
+        },
+        
+        open: function( user, oncmd, onopen, onclose ) {
+            user = user.toLowerCase();
+            
+            if( user in settings.bds.link.connections ) {
+                return null;
+            }
+            
+            var link = settings.bds.link.conn( user, oncmd );
+            link.state = settings.bds.link.state.opening;
+            
+            settings.bds.link.connections[user] = link;
+            settings.bds.channel.add(link.ns);
+            client.hidden.add(link.ns);
+            client.exclude.add(link.ns);
+            client.join(link.ns);
+            
+            return link;
+        },
+        
+        close: function( user, suppress ) {
+            user = user.toLowerCase();
+            
+            if( !( user in settings.bds.link.connections ) ) {
+                return false;
+            }
+            
+            var link = settings.bds.link.conn( user );
+            
+            if( suppress !== true )
+                link.send( &#x27;BDS:LINK:CLOSE&#x27; );
+            
+            client.part(link.ns);
+            link.state = settings.bds.link.state.closed;
+            
+            return true;
+        }
+    };
+    
+    var handler = {
+        
+        &#x2F;**
+         * BDS Event handlers.
+         *&#x2F;
+        
+        cmd: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            if( event.sns[0] != &#x27;@&#x27; )
+                return;
+            settings.bds.link.conn( event.sns.substr(1) ).oncmd( event, client );
+        },
+        
+        request: function( event ) {
+            if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            var uinfo = client.channel(event.ns).info.members[event.user];
+            
+            if( parseInt(client.channel(event.ns).get_privclass_order( uinfo.pc ) ) &lt; 39 ) {
+                if( !settings.bds.link.white.contains( event.user ) ) {
+                    client.npmsg( event.ns, &#x27;BDS:LINK:REJECT:&#x27; + event.user );
+                    return;
+                }
+            }
+            
+            settings.bds.link.open( event.user );
+            client.npmsg( event.ns, &#x27;BDS:LINK:ACCEPT:&#x27; + event.user );
+        },
+        
+        reject: function( event ) {
+            &#x2F;&#x2F; Dealing with rejection is never nice.
+            var user = event.user.toLowerCase();
+            
+            if( !( user in settings.bds.link.connections ) )
+                return;
+            
+            settings.bds.link.connections[user].close();
+        },
+        
+        accept: function( event ) {
+            if( event.payload.toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            settings.bds.link.open( event.user );
+        },
+        
+        close: function( event ) {
+            settings.bds.link.close( event.user, true );
+        },
+        
+        &#x2F;**
+         * dAmn Event handlers
+         *&#x2F;
+        
+        join: function( event ) {
+            if( event.pkt.arg.e != &#x27;ok&#x27; )
+                return;
+            
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            if( client.channel(event.ns).get_usernames().length == 1 )
+                return;
+            
+            link.state = settings.bds.link.state.open;
+            
+            var e = {
+                name: &#x27;BDS.LINK.OPEN&#x27;,
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onopen( e, client );
+            client.trigger(&#x27;BDS.LINK.OPEN&#x27;, e);
+        },
+        
+        part: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            link.state = settings.bds.link.state.closed;
+            
+            var e = {
+                name: &#x27;BDS.LINK.CLOSED&#x27;,
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onclose( e, client );
+            client.trigger(&#x27;BDS.LINK.CLOSED&#x27;, e);
+            
+            delete settings.bds.link.connections[link.un];
+        },
+        
+        recv_join: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            
+            if( link.state != settings.bds.link.state.opening )
+                return;
+            
+            link.state = settings.bds.link.state.open;
+            
+            var e = {
+                name: &#x27;BDS.LINK.OPEN&#x27;,
+                link: link,
+                ns: link.ns
+            };
+            
+            link.onopen( e, client );
+            client.trigger(&#x27;BDS.LINK.OPEN&#x27;, e);
+        },
+        
+        recv_part: function( event ) {
+            if( !settings.bds.channel.contains(event.ns) )
+                return;
+            
+            var link = settings.bds.link.conn( event.sns.substr(1) );
+            link.close( true );
+        },
+        
+    };
+    
+    init();
+
+};
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;dAmn&#x2F;stash.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+&#x2F;**
+ * Extension to handle stash links posted in the chat.
+ *&#x2F;
+wsc.dAmn.Stash = function( client, storage, settings ) {
+
+    var init = function(  ) {
+    
+        client.ui.on(&#x27;log_item.after&#x27;, handle.log_item);
+    
+    };
+    
+    var handle = {
+    
+        log_item: function( event ) {
+        
+            var links = event.item.find(&#x27;a[href^=&quot;http:&#x2F;&#x2F;sta.sh&quot;]&#x27;);
+            
+            links.each( function( i, dlink ) {
+                var link = event.item.find(dlink);
+                wsc.dAmn.Stash.fetch( event, link );
+            } );
+        
+        }
+    
+    };
+    
+    init();
+
+};
+
+
+&#x2F;**
+ * Fetch stash data.
+ *&#x2F;
+wsc.dAmn.Stash.fetch = function( event, link ) {
+
+    $.getJSON(
+        &#x27;http:&#x2F;&#x2F;backend.deviantart.com&#x2F;oembed?url=&#x27; + link.prop(&#x27;href&#x27;) + &#x27;&amp;format=jsonp&amp;callback=?&#x27;,
+        function( data ) {
+            wsc.dAmn.Stash.render( event, link, data );
+        }
+    );
+
+};
+
+
+&#x2F;**
+ * Render a stash thumb.
+ *&#x2F;
+wsc.dAmn.Stash.render = function( event, link, data ) {
+
+    if( &#x27;error&#x27; in data )
+        return;
+    
+    if( data.type != &#x27;photo&#x27; )
+        return;
+    
+    var lurl = link.prop(&#x27;href&#x27;);
+    var w = data.thumbnail_width; var h = data.thumbnail_height;
+    var tw, th;
+    
+    &#x2F;&#x2F; Deviation link tag. First segment only.
+    var title = data.title + &#x27; by &#x27; + data.author_name;
+    var anchor = &#x27;&lt;a target=&quot;_blank&quot; href=&quot;&#x27; + lurl + &#x27;&quot; title=&quot;&#x27; + title + &#x27;&quot;&gt;&#x27;;
+    
+    if( w&#x2F;h &gt; 1) {
+        th = parseInt((h * 100) &#x2F; w);
+        tw = 100;
+    } else {
+        tw = parseInt((w * 100) &#x2F; h);
+        th = 100;
+    }
+    
+    if( tw &gt; w || th &gt; h ) {
+        tw = w;
+        th = h;
+    }
+    
+    var dim = &#x27;width=&quot;&#x27; + tw + &#x27;&quot; height=&quot;&#x27; + th + &#x27;&quot;&#x27;;
+    var shadow = !data.thumbnail_url.match(&#x2F;.png$&#x2F;i) ? &#x27; shadow&#x27; : &#x27;&#x27;;
+    var id = lurl.split(&#x27;&#x2F;&#x27;).pop();
+    
+    var thumb = &#x27;&lt;span class=&quot;stashthumb&quot; id=&quot;&#x27;+id+&#x27;&quot;&gt;&#x27; + anchor + &#x27;&lt;img class=&quot;smaller thumb&#x27; + shadow + &#x27;&quot;&#x27; +
+        dim + &#x27; &quot; alt=&quot;&#x27; + lurl + &#x27;&quot; src=&quot;&#x27; + data.thumbnail_url_150 + &#x27;&quot; &#x2F;&gt;\
+        &lt;&#x2F;a&gt;&lt;a href=&quot;#toggle&quot; class=&quot;button iconic plus&quot; title=&quot;Larger&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;span&gt;&#x27;;
+    
+    link.replaceWith(thumb);
+    
+    var lw = event.item.find(&#x27;span#&#x27; + id);
+    link = lw.find(&#x27;a[href=&quot;&#x27; + lurl + &#x27;&quot;]&#x27;);
+    
+    var smaller = link.find(&#x27;img.smaller&#x27;);
+    var larger = null;
+    var zoomed = false;
+    
+    var toggle = lw.find(&#x27;a[href=&quot;#toggle&quot;]&#x27;);
+    
+    toggle.click( function(  ) {
+    
+        if( !zoomed ) {
+            smaller.css(&#x27;display&#x27;, &#x27;none&#x27;);
+            
+            if( larger == null ) {
+                lw.prepend(&#x27;&lt;img class=&quot;larger thumb&#x27; + shadow + &#x27;&quot; width=&quot;&#x27; + w + &#x27;&quot;\
+                height=&quot;&#x27; + h + &#x27;&quot; alt=&quot;&#x27; + lurl + &#x27;&quot; src=&quot;&#x27; + data.thumbnail_url + &#x27;&quot; &#x2F;&gt;&#x27;);
+                larger = lw.find(&#x27;img.larger&#x27;);
+            }
+            
+            larger.css(&#x27;display&#x27;, &#x27;inline&#x27;);
+            zoomed = true;
+            
+            toggle.removeClass(&#x27;plus&#x27;);
+            toggle.addClass(&#x27;minus&#x27;);
+            toggle.prop(&#x27;title&#x27;, &#x27;Smaller&#x27;);
+                    
+            event.chan.st+= event.item.height();
+            event.chan.el.l.w.scrollTop( event.chan.st );
+            event.chan.scroll();
+            
+            return false;
+        }
+        
+        larger.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        smaller.css(&#x27;display&#x27;, &#x27;inline&#x27;);
+        
+        toggle.removeClass(&#x27;minus&#x27;);
+        toggle.addClass(&#x27;plus&#x27;);
+        toggle.prop(&#x27;title&#x27;, &#x27;Larger&#x27;);
+            
+        event.chan.st+= event.item.height();
+        event.chan.el.l.w.scrollTop( event.chan.st );
+        event.chan.scroll();
+        
+        zoomed = false;
+        
+        return false;
+    
+    } );
+    
+    event.chan.st+= event.item.height();
+    event.chan.el.l.w.scrollTop( event.chan.st );
+    event.chan.scroll();
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

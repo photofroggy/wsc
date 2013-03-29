@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;pager.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+&#x2F;**
+ * Pager
+ * 
+ * Used for giving the user notifications.
+ *&#x2F;
+Chatterbox.Pager = function( ui ) {
+
+    this.manager = ui;
+    this.lifespan = 20000;
+    this.halflife = 5000;
+    
+    this.el = {
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
+    };
+    
+    this.notices = [];
+    
+    this.build();
+
+};
+
+&#x2F;**
+ * Build the Pager interface...
+ * 
+ * @method build
+ *&#x2F;
+Chatterbox.Pager.prototype.build = function(  ) {
+
+    this.el.m = this.manager.view.find(&#x27;div.pager&#x27;);
+
+};
+
+&#x2F;**
+ * Page the user with a notice.
+ * 
+ * @method notice
+ *&#x2F;
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
+
+    var notice = {
+        frame: null,
+        close: null,
+        foot: null,
+        b: {},
+        options: Object.extend( {
+            &#x27;ref&#x27;: &#x27;notice&#x27;,
+            &#x27;icon&#x27;: &#x27;&#x27;,
+            &#x27;heading&#x27;: &#x27;Some notice&#x27;,
+            &#x27;content&#x27;: &#x27;Notice content goes here.&#x27;
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestroy: function(  ) {}
+    };
+    
+    notice.options.ref+= &#x27;-&#x27; + (new Date()).valueOf();
+    notice.options.content = notice.options.content.split(&#x27;\n&#x27;).join(&#x27;&lt;&#x2F;p&gt;&lt;p&gt;&#x27;);
+    
+    this.notices.push( notice );
+    
+    this.el.m.append(
+        Chatterbox.render( &#x27;pager.notice&#x27;, notice.options )
+    );
+    
+    notice.frame = this.el.m.find( &#x27;#&#x27; + notice.options.ref ).last();
+    notice.close = notice.frame.find(&#x27;a.close_notice&#x27;);
+    notice.foot = notice.frame.find(&#x27;footer.buttons&#x27;);
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render(&#x27;pager.button&#x27;, bopt) );
+        notice.b[b] = notice.foot.find(&#x27;a#&#x27; + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
+    
+    var p = this;
+    
+    notice.close.click( function(  ) {
+        notice.onclose();
+        p.remove_notice( notice );
+        return false;
+    } );
+    
+    if( !sticky ) {
+        if( !lifespan )
+            lifespan = p.lifespan;
+        
+        setTimeout( function(  ) {
+            p.remove_notice( notice, true );
+        }, lifespan );
+    }
+    
+    if( silent !== true )
+        this.manager.sound.click();
+    
+    return notice;
+
+};
+
+&#x2F;**
+ * Remove a given notice from the pager.
+ * 
+ * @remove_notice
+ *&#x2F;
+Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
+
+    var p = this;
+    
+    if( this.notices.indexOf( notice ) == -1 )
+        return false;
+    
+    notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
+        notice.frame.remove();
+        p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
+    } );
+    
+    if( interrupt ) {
+        notice.frame.mouseenter( function(  ) {
+            if( p.notices.indexOf( notice ) == -1 )
+                return;
+            
+            notice.frame.stop( true );
+            
+            notice.frame.slideDown( function(  ) {
+                notice.frame.fadeTo(300, 1);
+                
+                notice.frame.mouseleave( function(  ) {
+                    setTimeout( function(  ) {
+                        p.remove_notice( notice, true );
+                    }, p.lifespan );
+                } );
+            } );
+        } );
+    }
+
+};
+
+&#x2F;**
+ * Find a notice based on the reference.
+ *
+ *&#x2F;
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
+
+};
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

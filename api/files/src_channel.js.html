@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;channel.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Chat channel object.
+ * Manages channel events and data, and acts as a thin wrapper for the
+ * channel&#x27;s UI object.
+ * 
+ * @class Channel
+ * @constructor
+ * @param client {Object} Wsc chat client object.
+ * @param ns {String} Channel namespace.
+ * @param hidden {Boolean} Should the channel tab be hidden?
+ *&#x2F;
+wsc.Channel = function( client, ns, hidden, monitor ) {
+
+    this.info = {
+        &#x27;members&#x27;: {},
+        &#x27;pc&#x27;: {},
+        &#x27;pc_order&#x27;: [],
+        &#x27;title&#x27;: {
+            &#x27;content&#x27;: &#x27;&#x27;,
+            &#x27;by&#x27;: &#x27;&#x27;,
+            &#x27;ts&#x27;: &#x27;&#x27;
+        },
+        &#x27;topic&#x27;: {
+            &#x27;content&#x27;: &#x27;&#x27;,
+            &#x27;by&#x27;: &#x27;&#x27;,
+            &#x27;ts&#x27;: &#x27;&#x27;
+        },
+    };
+    
+    this.client = client;
+    this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
+    this.ui = null;
+    this.raw = client.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == &#x27;pc&#x27; ? &#x27;pc&#x27; : &#x27;c&#x27;) + &#x27;-&#x27; + client.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = client.deform_ns(ns);
+    this.monitor = Object.size(this.client.channelo) == 0;
+
+};
+
+&#x2F;**
+ * Create a UI view for this channel.
+ * 
+ * @method build
+ *&#x2F;
+wsc.Channel.prototype.build = function( ) {
+    this.info.members = {};
+    this.client.ui.create_channel(this.raw, this.hidden);
+    this.ui = this.client.ui.channel(this.raw);
+};
+
+&#x2F;**
+ * Remove this channel from the screen entirely.
+ * 
+ * @method remove
+ *&#x2F;
+wsc.Channel.prototype.remove = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.manager.remove_channel(this.raw);
+};
+
+&#x2F;**
+ * Hide the channel view in the UI.
+ * 
+ * @method hide
+ *&#x2F;
+wsc.Channel.prototype.hide = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.hide();
+};
+
+&#x2F;**
+ * Show the channel view in the UI.
+ * 
+ * @method show
+ *&#x2F;
+wsc.Channel.prototype.show = function( ) {
+    if( this.ui == null )
+        return;
+    this.ui.show();
+};
+
+&#x2F;**
+ * Display a log message.
+ * 
+ * @method log
+ * @param msg {String} Log message to display.
+ *&#x2F;
+wsc.Channel.prototype.log = function( msg ) {
+    if( this.ui == null )
+        return;
+    this.ui.log(msg);
+};
+
+&#x2F;**
+ * Send a message to the log window.
+ * 
+ * @method log_item
+ * @param msg {String} Message to send.
+ *&#x2F;
+wsc.Channel.prototype.logItem = function( msg ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_item(msg);
+};
+
+&#x2F;**
+ * Send a server message to the log window.
+ * 
+ * @method server_message
+ * @param msg {String} Server message.
+ * @param [info] {String} Extra information for the message.
+ *&#x2F;
+wsc.Channel.prototype.server_message = function( msg, info ) {
+    if( this.ui == null )
+        return;
+    this.ui.server_message(msg, info);
+};
+
+&#x2F;**
+ * Clear all log messages from the log window.
+ * 
+ * @method clear
+ *&#x2F;
+wsc.Channel.prototype.clear = function( user ) {
+    if( this.ui == null )
+        return;
+    if( !user ) {
+        this.ui.clear();
+    } else {
+        this.ui.clear_user( user );
+    }
+};
+
+&#x2F;**
+ * Display a user&#x27;s whois info.
+ * 
+ * @method log_whois
+ * @param data {Object} Object containing a user&#x27;s information.
+ *&#x2F;
+wsc.Channel.prototype.log_whois = function( data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_whois(data);
+};
+
+&#x2F;**
+ * Display some information relating to a privilege class.
+ * 
+ * @method log_pc
+ * @param privileges {Boolean} Are we showing privileges or users?
+ * @param data {Array} Array containing information.
+ *&#x2F;
+wsc.Channel.prototype.log_pc = function( privileges, data ) {
+    if( this.ui == null )
+        return;
+    this.ui.log_pc(privileges, data);
+};
+
+&#x2F;**
+ * Process a channel property packet.
+ * 
+ * @method property
+ * @param e {Object} Event data for the property packet.
+ *&#x2F;
+wsc.Channel.prototype.property = function( e ) {
+    var prop = e.pkt[&quot;arg&quot;][&quot;p&quot;];
+    
+    switch(prop) {
+        case &quot;title&quot;:
+        case &quot;topic&quot;:            
+            &#x2F;&#x2F; If we already had the title&#x2F;topic for this channel, then it was changed. Output a message.
+            if ( this.info[prop].content.length != 0 ) {
+                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
+                    this.server_message(prop + &quot; set by &quot; + e.pkt[&quot;arg&quot;][&quot;by&quot;]);
+                }
+            }
+                
+            this.set_header(prop, e);
+            break;
+        case &quot;privclasses&quot;:
+            this.set_privclasses(e);
+            break;
+        case &quot;members&quot;:
+            this.set_members(e);
+            break;
+        default:
+            this.server_message(&quot;Received unknown property &quot; + prop + &quot; received in &quot; + this.info[&quot;namespace&quot;] + &#x27;.&#x27;);
+            break;
+    }
+};
+
+&#x2F;**
+ * Set the channel header.
+ * This can be the title or topic, determined by &#x60;head&#x60;.
+ * 
+ * @method set_header
+ * @param e {Object} Event data for the property packet.
+ *&#x2F;
+wsc.Channel.prototype.set_header = function( head, e ) {
+    this.info[head][&quot;content&quot;] = e.value.text() || &#x27;&#x27;;
+    this.info[head][&quot;by&quot;] = e.by;
+    this.info[head][&quot;ts&quot;] = e.ts;
+    
+    if( this.ui == null )
+        return;
+    
+    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+};
+
+&#x2F;**
+ * Set the channel&#x27;s privclasses.
+ * 
+ * @method set_privclasses
+ * @param e {Object} Event data for the property packet.
+ *&#x2F;
+wsc.Channel.prototype.set_privclasses = function( e ) {
+    this.info[&quot;pc&quot;] = {};
+    this.info[&quot;pc_order&quot;] = [];
+    var lines = e.pkt[&quot;body&quot;].split(&#x27;\n&#x27;);
+    var bits = [];
+    for(var i in lines) {
+        if( !lines.hasOwnProperty(i) )
+            continue;
+        bits = lines[i].split(&quot;:&quot;);
+        if( bits.length == 1 )
+            continue;
+        this.info[&quot;pc_order&quot;].push(parseInt(bits[0]));
+        this.info[&quot;pc&quot;][parseInt(bits[0])] = bits[1];
+    }
+    this.info[&quot;pc_order&quot;].sort(function(a, b){ return b - a });
+};
+
+&#x2F;**
+ * Get the order of a given privilege class.
+ * 
+ * @method get_privclass_order
+ * @param name {String} Name of the privilege class to get the order of.
+ *&#x2F;
+wsc.Channel.prototype.get_privclass_order = function( name ) {
+    name = name.toLowerCase();
+    for( var i in this.info.pc ) {
+        if( !this.info.pc.hasOwnProperty(i) )
+            continue;
+        if( this.info.pc[i].toLowerCase() == name )
+            return i;
+    }
+};
+
+&#x2F;**
+ * Store each member of the this.
+ *
+ * @method set_members
+ * @param e {Object} Event data for the property packet.
+ *&#x2F;
+wsc.Channel.prototype.set_members = function( e ) {
+    this.info.members = {};
+    
+    for( var i in e.pkt.sub ) {
+        if( !e.pkt.sub.hasOwnProperty(i) )
+            continue;
+        this.register_user(e.pkt.sub[i]);
+    }
+    
+    this.set_user_list();
+};
+
+&#x2F;**
+ * Set the channel user list.
+ * 
+ * @method set_user_list
+ *&#x2F;
+wsc.Channel.prototype.set_user_list = function( ) {
+    if( Object.size(this.info.members) == 0 )
+        return;
+    
+    var names = this.get_usernames();
+    var pcs = {};
+    
+    for( var i in names ) {
+        if( !names.hasOwnProperty(i) )
+            continue;
+        var un = names[i];
+        var member = this.info.members[un];
+        
+        if( !(member[&#x27;pc&#x27;] in pcs) )
+            pcs[member[&#x27;pc&#x27;]] = {&#x27;name&#x27;: member[&#x27;pc&#x27;], &#x27;users&#x27;: []};
+        
+        var conn = member[&#x27;conn&#x27;] == 1 ? &#x27;&#x27; : &#x27;[&#x27; + member[&#x27;conn&#x27;] + &#x27;]&#x27;;
+        var s = member.symbol;
+        uinfo = {
+            &#x27;name&#x27;: un,
+            &#x27;symbol&#x27;: s,
+            &#x27;conn&#x27;: member.conn,
+            &#x27;hover&#x27;: {
+                &#x27;member&#x27;: member,
+                &#x27;name&#x27;: un,
+                &#x27;avatar&#x27;: &#x27;&lt;img class=&quot;avatar&quot; src=&quot;&quot; height=&quot;50&quot; width=&quot;50&quot; &#x2F;&gt;&#x27;,
+                &#x27;link&#x27;: s + &#x27;&lt;a target=&quot;_blank&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + un + &#x27;.&#x27;+ this.client.settings[&#x27;domain&#x27;] + &#x27;&#x2F;&quot;&gt;&#x27; + un + &#x27;&lt;&#x2F;a&gt;&#x27;,
+                &#x27;info&#x27;: []
+            }
+        };
+        
+        pcs[member[&#x27;pc&#x27;]].users.push(uinfo);
+    }
+    
+    var ulist = [];
+    
+    for(var index in this.info[&quot;pc_order&quot;]) {
+        var pc = this.info[&#x27;pc&#x27;][this.info[&quot;pc_order&quot;][index]];
+        
+        if( !( pc in pcs ) )
+            continue;
+        
+        ulist.push(pcs[pc]);
+    }
+    
+    if( &#x27;Room Members&#x27; in pcs )
+        ulist.push(pcs[&#x27;Room Members&#x27;]);
+    
+    if( this.ui != null ) {
+        this.ui.set_user_list(ulist);
+    }
+    
+    this.client.trigger(&#x27;set.userlist&#x27;, {
+        &#x27;name&#x27;: &#x27;set.userlist&#x27;,
+        &#x27;ns&#x27;: this.info[&#x27;namespace&#x27;]
+    });
+};
+
+&#x2F;**
+ * Register a user with the channel.
+ * 
+ * @method register_user
+ * @param pkt {Object} User data.
+ *&#x2F;
+wsc.Channel.prototype.register_user = function( pkt ) {
+    var un = pkt[&quot;param&quot;];
+    
+    if(this.info.members[un] == undefined) {
+        this.info.members[un] = pkt[&quot;arg&quot;];
+        this.info.members[un][&quot;username&quot;] = un;
+        this.info.members[un][&quot;conn&quot;] = 1;
+    } else {
+        for( i in pkt.arg ) {
+            this.info.members[un][i] = pkt.arg[i];
+        }
+        this.info.members[un][&quot;conn&quot;]++;
+    }
+    if( !(&#x27;pc&#x27; in this.info.members[un]) ) 
+        this.info.members[un][&#x27;pc&#x27;] = &#x27;Room Members&#x27;;
+};
+
+&#x2F;**
+ * Return a list of usernames, sorted alphabetically.
+ * 
+ * @method get_usernames
+ *&#x2F;
+wsc.Channel.prototype.get_usernames = function(  ) {
+
+    var names = [];
+    for( var name in this.info.members ) {
+        names.push(name);
+    }
+    names.sort( caseInsensitiveSort );
+    return names;
+
+};
+
+&#x2F;**
+ * Remove a user from the channel.
+ * 
+ * @method remove_user
+ * @param user {String} Name of the user to remove.
+ *&#x2F;
+wsc.Channel.prototype.remove_user = function( user, force ) {
+    force = force || false;
+    var member = this.info.members[user];
+    
+    if( member == undefined )
+        return;
+    
+    member[&#x27;conn&#x27;]--;
+    
+    if( member[&#x27;conn&#x27;] &gt; 0 &amp;&amp; !force)
+        return;
+    
+    delete this.info.members[user];
+};
+
+&#x2F;**
+ * Process a recv_join event.
+ * 
+ * @method recv_join
+ * @param e {Object} Event data for recv_join packet.
+ *&#x2F;
+wsc.Channel.prototype.recv_join = function( e ) {
+    var info = new wsc.Packet(&#x27;user &#x27; + e.user + &#x27;\n&#x27; + e[&#x27;info&#x27;]);
+    this.register_user( info );
+    this.set_user_list();
+};
+
+&#x2F;**
+ * Process a recv_part event.
+ * 
+ * @method recv_part
+ * @param e {Object} Event data for recv_part packet.
+ *&#x2F;
+wsc.Channel.prototype.recv_part = function( e ) {
+    
+    this.remove_user(e.user);
+    this.set_user_list();
+    
+};
+
+&#x2F;**
+ * Process a recv_msg event.
+ * 
+ * @method recv_msg
+ * @param e {Object} Event data for recv_msg packet.
+ *&#x2F;
+wsc.Channel.prototype.recv_msg = function( e ) {
+    
+    var u = this.client.settings[&#x27;username&#x27;].toLowerCase();
+    
+    if( u == e.user.toLowerCase() )
+        return;
+    
+    var msg = e[&#x27;message&#x27;].toLowerCase();
+    var hlight = msg.indexOf(u) != -1;
+    
+    if( !hlight &amp;&amp; e.sns[0] != &#x27;@&#x27; )
+        return;
+    
+    if( this.ui != null) {
+        if( hlight ) {
+            this.ui.highlight( );
+        } else {
+            this.ui.highlight( false );
+        }
+    }
+    
+    this.client.trigger( &#x27;pkt.recv_msg.highlighted&#x27;, e );
+
+};
+
+&#x2F;**
+ * Process a recv_privchg event.
+ * 
+ * @method recv_privchg
+ * @param e {Object} Event data for recv_privhcg packet.
+ *&#x2F;
+wsc.Channel.prototype.recv_privchg = function( e ) {
+    var member = this.info.members[e.user];
+    
+    if( !member )
+        return;
+    
+    member[&#x27;pc&#x27;] = e.pc;
+    this.set_user_list();
+};
+
+&#x2F;**
+ * Process a recv_kicked event.
+ * 
+ * @method recv_kicked
+ * @param e {Object} Event data for recv_kicked packet.
+ *&#x2F;
+wsc.Channel.prototype.recv_kicked = function( e ) {
+    
+    this.remove_user(e.user, true);
+    this.set_user_list();
+    
+};
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

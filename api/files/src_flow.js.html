@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;flow.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Control the client&#x27;s program flow in relation to the chat this.
+ * 
+ * @class Flow
+ * @constructor
+ * @param protocol {Object} Protocol object.
+ *&#x2F;
+wsc.Flow = function( protocol ) {
+
+    this.protocol = protocol || new wsc.Protocol();
+
+};
+
+&#x2F;&#x2F; Established a WebSocket connection.
+wsc.Flow.prototype.open = function( client, event, sock ) {
+    client.trigger(&#x27;connected&#x27;, {name: &#x27;connected&#x27;, pkt: new wsc.Packet(&#x27;connected\n\n&#x27;)});
+    client.connected = true;
+    client.handshake();
+    client.attempts = 0;
+};
+
+&#x2F;&#x2F; WebSocket connection closed!
+wsc.Flow.prototype.close = function( client, event ) {
+    client.trigger(&#x27;closed&#x27;, {name: &#x27;closed&#x27;, pkt: new wsc.Packet(&#x27;connection closed\n\n&#x27;)});
+    
+    if(client.connected) {
+        client.ui.server_message(&quot;Connection closed&quot;);
+        client.connected = false;
+        if( client.conn instanceof wsc.SocketIO ) {
+            client.ui.server_message(&quot;At the moment there is a problem with reconnecting under socket.io.&quot;);
+            client.ui.server_message(&quot;Refresh the page to connect.&quot;);
+            return;
+        }
+    } else {
+        client.ui.server_message(&quot;Connection failed&quot;);
+    }
+    
+    &#x2F;&#x2F; For now we want to automatically reconnect.
+    &#x2F;&#x2F; Should probably be more intelligent about this though.
+    if( client.attempts &gt; 2 ) {
+        client.ui.server_message(&quot;Can&#x27;t connect. Try again later.&quot;);
+        client.attempts = 0;
+        return;
+    }
+    
+    client.ui.server_message(&quot;Connecting in 2 seconds&quot;);
+    
+    setTimeout(function () {
+        client.connect();
+    }, 2000);
+
+}; 
+
+&#x2F;&#x2F; Received data from WebSocket connection.
+wsc.Flow.prototype.message = function( client, event ) {
+    var pack = new wsc.Packet(unescape(replaceAll(event.data, &#x27;+&#x27;, &#x27; &#x27;)));
+    
+    if(pack == null)
+        return;
+    
+    var pevt = this.protocol.parse(pack);
+    
+    if( pevt.ns == null )
+        pevt.ns = client.mns;
+    
+    pevt.sns = client.deform_ns(pevt.ns);
+    this.protocol.log(client, pevt);
+    this.handle(client, pevt);
+    
+    client.trigger(&#x27;pkt&#x27;, pevt);
+    client.trigger(&#x27;pkt.&#x27;+pevt.name, pevt);
+    &#x2F;&#x2F;this.monitor(data);
+};
+
+&#x2F;**
+ * Handle a packet event.
+ * 
+ * @method handle
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.handle = function( client, event ) {
+
+    try {
+        this[event.name](event, client);
+    } catch( err ) {}
+
+};
+
+&#x2F;**
+ * Respond to pings from the server.
+ * 
+ * @method ping
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.ping = function( event, client ) {
+    client.pong();
+};
+
+&#x2F;**
+ * Respond to a llama-style handshake.
+ * 
+ * @method chatserver
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.chatserver = function( event, client ) {
+    client.login();
+};
+
+&#x2F;**
+ * Process a login packet
+ * 
+ * @method login
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.login = function( event, client ) {
+    
+    if(event.pkt.arg.e == &quot;ok&quot;) {
+        &#x2F;&#x2F; Use the username returned by the server!
+        var info = event.pkt.sub[0];
+        client.settings[&quot;username&quot;] = event.pkt[&quot;param&quot;];
+        client.settings[&#x27;symbol&#x27;] = info.arg.symbol;
+        client.settings[&#x27;userinfo&#x27;] = info.arg;
+        
+        &#x2F;&#x2F; Autojoin!
+        if ( client.fresh ) {
+            client.join(client.settings[&quot;autojoin&quot;]);
+            if( client.autojoin.on ) {
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+            }
+        } else {
+            for( key in client.channelo ) {
+                if( client.channelo[key].namespace[0] != &#x27;~&#x27; )
+                    client.join(key);
+            }
+        }
+    } else {
+        &#x2F;&#x2F;client.close();
+    }
+    
+    if( client.fresh )
+        client.fresh = false;
+    
+    
+};
+
+&#x2F;**
+ * Received a join packet.
+ * 
+ * @method join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.join = function( event, client ) {
+    if(event.pkt[&quot;arg&quot;][&quot;e&quot;] == &quot;ok&quot;) {
+        var ns = client.deform_ns(event.pkt[&quot;param&quot;]);
+        &#x2F;&#x2F;client.monitor(&quot;You have joined &quot; + ns + &#x27;.&#x27;);
+        client.create_ns(ns, client.hidden.contains(event.pkt[&#x27;param&#x27;]));
+        client.ui.channel(ns).server_message(&quot;You have joined &quot; + ns);
+    } else {
+        client.ui.chatbook.current.server_message(&quot;Failed to join &quot; + client.deform_ns(event.pkt[&quot;param&quot;]), event.pkt[&quot;arg&quot;][&quot;e&quot;]);
+    }
+};
+
+&#x2F;**
+ * Received a part packet.
+ * 
+ * @method part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.part = function( event, client ) {
+    var ns = client.deform_ns(event.ns);
+    var c = client.channel(ns);
+    
+    if(event.e == &quot;ok&quot;) {
+        info = &#x27;&#x27;;
+        
+        if( event.r.length &gt; 0 )
+            info = &#x27;[&#x27; + event.r + &#x27;]&#x27;;
+        else
+            client.remove_ns(event.ns);
+        
+        msg = &#x27;You have left &#x27; + ns;
+        c.server_message(msg, info);
+        
+        if( client.channels() == 0 ) {
+            switch( event.r ) {
+                case &#x27;bad data&#x27;:
+                case &#x27;bad msg&#x27;:
+                case &#x27;msg too big&#x27;:
+                    break;
+                default:
+                    if( event.r.indexOf(&#x27;killed:&#x27;) &lt; 0 )
+                        return;
+                    break;
+            }
+            this.message( client, { data: &#x27;disconnect\ne=&#x27;+e.r+&#x27;\n&#x27; } );
+        }
+    } else {
+        client.monitor(&#x27;Couldn\&#x27;t leave &#x27; + ns, event.e);
+        c.server_message(&quot;Couldn&#x27;t leave &quot;+ns, event.e);
+    }
+    
+};
+
+&#x2F;**
+ * Client has been kicked from a channel.
+ * 
+ * @method kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.kicked = function( event, client ) {
+
+    if( event.r.toLowerCase().indexOf(&#x27;autokicked&#x27;) &gt; -1 )
+        return;
+    client.join(event.ns);
+
+};
+
+&#x2F;**
+ * Process a property packet.
+ * 
+ * @method property
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.property = function( event, client ) {
+    &#x2F;&#x2F;console.log(event.pkt[&quot;arg&quot;][&quot;p&quot;]);
+    chan = client.channel(event.pkt[&quot;param&quot;]);
+    
+    if( !chan )
+        return;
+    
+    chan.property( event );
+};
+
+&#x2F;**
+ * User join or part.
+ * 
+ * @method recv_joinpart
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_joinpart = function( event, client ) {
+    c = client.channel(event.ns);
+    if( event.name == &#x27;recv_join&#x27;)
+        c.recv_join( event );
+    else
+        c.recv_part( event );
+};
+
+&#x2F;**
+ * A user joined a channel.
+ * 
+ * @method recv_join
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_join = wsc.Flow.prototype.recv_joinpart;
+
+&#x2F;**
+ * A user left a channel.
+ * 
+ * @method recv_part
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_part = wsc.Flow.prototype.recv_joinpart;
+
+&#x2F;**
+ * A message was received in a channel.
+ * 
+ * @method recv_msg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_msg = function( event, client ) {
+    client.channel(event.ns).recv_msg( event );
+};
+
+&#x2F;**
+ * A different kind of message.
+ * 
+ * @method recv_action
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_action = wsc.Flow.prototype.recv_msg;
+
+&#x2F;**
+ * A non-parsed message.
+ * 
+ * @method recv_npmsg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_npmsg = wsc.Flow.prototype.recv_msg;
+
+&#x2F;**
+ * Someone was promoted or demoted.
+ * 
+ * @method recv_privchg
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_privchg = function( event, client ) {
+    client.channel(event.ns).recv_privchg( event );
+};
+
+&#x2F;**
+ * Some sucka got kicked foo.
+ * 
+ * @method recv_kicked
+ * @param event {Object} Packet event data.
+ * @param client {Object} Client object.
+ *&#x2F;
+wsc.Flow.prototype.recv_kicked = function( event, client ) {
+    client.channel(event.ns).recv_kicked( event );
+};
+
+
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

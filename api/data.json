@@ -1,0 +1,5797 @@
+{
+    "project": {},
+    "files": {
+        "src/dAmn/base.js": {
+            "name": "src/dAmn/base.js",
+            "modules": {
+                "dAmn": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/emotes.js": {
+            "name": "src/dAmn/emotes.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/extension.js": {
+            "name": "src/dAmn/extension.js",
+            "modules": {},
+            "classes": {
+                "Extension": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/icon.js": {
+            "name": "src/dAmn/icon.js",
+            "modules": {},
+            "classes": {
+                "avatar_link": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/linkbds.js": {
+            "name": "src/dAmn/linkbds.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/stash.js": {
+            "name": "src/dAmn/stash.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/dAmn/tablumps.js": {
+            "name": "src/dAmn/tablumps.js",
+            "modules": {},
+            "classes": {
+                "TablumpString": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/base.js": {
+            "name": "src/ui/base.js",
+            "modules": {
+                "Chatterbox": 1
+            },
+            "classes": {
+                "UI": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/channel.js": {
+            "name": "src/ui/channel.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/chatbook.js": {
+            "name": "src/ui/chatbook.js",
+            "modules": {},
+            "classes": {
+                "Chatbook": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/control.js": {
+            "name": "src/ui/control.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/nav.js": {
+            "name": "src/ui/nav.js",
+            "modules": {},
+            "classes": {
+                "Navigation": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/pager.js": {
+            "name": "src/ui/pager.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/popup.js": {
+            "name": "src/ui/popup.js",
+            "modules": {},
+            "classes": {
+                "Popup": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/settings.js": {
+            "name": "src/ui/settings.js",
+            "modules": {},
+            "classes": {
+                "Settings": 1,
+                "Settings.Config": 1,
+                "Settings.Page": 1,
+                "Settings.Item": 1,
+                "Form": 1,
+                "Field": 1,
+                "Radio": 1,
+                "Check": 1,
+                "Colour": 1,
+                "Items": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/templates.js": {
+            "name": "src/ui/templates.js",
+            "modules": {},
+            "classes": {
+                "template": 1,
+                "settings": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/autojoin.js": {
+            "name": "src/autojoin.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/away.js": {
+            "name": "src/away.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/base.js": {
+            "name": "src/base.js",
+            "modules": {
+                "wsc": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/channel.js": {
+            "name": "src/channel.js",
+            "modules": {},
+            "classes": {
+                "Channel": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/client.js": {
+            "name": "src/client.js",
+            "modules": {},
+            "classes": {
+                "Client": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/commands.js": {
+            "name": "src/commands.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/control.js": {
+            "name": "src/control.js",
+            "modules": {},
+            "classes": {
+                "Control": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/flow.js": {
+            "name": "src/flow.js",
+            "modules": {},
+            "classes": {
+                "Flow": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ignore.js": {
+            "name": "src/ignore.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/lib.js": {
+            "name": "src/lib.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/messages.js": {
+            "name": "src/messages.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/middleware.js": {
+            "name": "src/middleware.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/protocol.js": {
+            "name": "src/protocol.js",
+            "modules": {},
+            "classes": {
+                "Protocol": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/storage.js": {
+            "name": "src/storage.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/transport.js": {
+            "name": "src/transport.js",
+            "modules": {},
+            "classes": {
+                "Transport": 1,
+                "WebSocket": 1,
+                "SocketIO": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "wsc": {
+            "name": "wsc",
+            "submodules": {
+                "dAmn": 1
+            },
+            "classes": {
+                "Extension": 1,
+                "avatar_link": 1,
+                "TablumpString": 1,
+                "Channel": 1,
+                "Control": 1,
+                "Client": 1,
+                "Flow": 1,
+                "Protocol": 1,
+                "Transport": 1,
+                "WebSocket": 1,
+                "SocketIO": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/transport.js",
+            "line": 240,
+            "description": "WebSocket Chat client module."
+        },
+        "dAmn": {
+            "name": "dAmn",
+            "submodules": {},
+            "classes": {},
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/base.js",
+            "line": 1,
+            "description": "dAmn module lolol."
+        },
+        "Chatterbox": {
+            "name": "Chatterbox",
+            "submodules": {},
+            "classes": {
+                "UI": 1,
+                "Chatbook": 1,
+                "Navigation": 1,
+                "Popup": 1,
+                "Settings": 1,
+                "Settings.Config": 1,
+                "Settings.Page": 1,
+                "Settings.Item": 1,
+                "Form": 1,
+                "Field": 1,
+                "Radio": 1,
+                "Check": 1,
+                "Colour": 1,
+                "Items": 1,
+                "template": 1,
+                "settings": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/ui/templates.js",
+            "line": 281,
+            "description": "This is an alternate thing for the UI module.\nChatterbox is basically a thing."
+        }
+    },
+    "classes": {
+        "Extension": {
+            "name": "Extension",
+            "shortname": "Extension",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/extension.js",
+            "line": 2,
+            "description": "dAmn extension makes the client work with dAmn.",
+            "is_constructor": 1
+        },
+        "avatar_link": {
+            "name": "avatar_link",
+            "shortname": "avatar_link",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/icon.js",
+            "line": 5,
+            "description": "Produces an avatar link.",
+            "is_constructor": 1
+        },
+        "TablumpString": {
+            "name": "TablumpString",
+            "shortname": "TablumpString",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/tablumps.js",
+            "line": 1,
+            "description": "Represents a string that possibly contains tablumps.\nUse different object methods to render the tablumps differently.",
+            "example": [
+                "\n    // Parse something.\n    var msg = new wsc.TablumpString('hey, check &b\\t&a\\thttp://google.com\\tgoogle.com\\tgoogle&/a\\t&/b\\t for answers.');\n    console.log(msg.raw); // 'hey, check &b\\t&a\\thttp://google.com\\tgoogle.com\\tgoogle&/a\\t&/b\\t for answers.'\n    console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'\n    console.log(msg.html()); // 'hey, check <b><a href=\"http://google.com\">google</a></b> for answers.'\n    console.log(msg.ansi()); // 'hey, check \\x1b[1m[link:http://google.com]google[/link]\\x1b[22m for answers.'"
+            ],
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "data",
+                    "description": "String possibly containing tablumps.",
+                    "type": "String"
+                },
+                {
+                    "name": "parser",
+                    "description": "A reference to a tablumps parser. Not required.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "UI": {
+            "name": "UI",
+            "shortname": "UI",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/base.js",
+            "line": 12,
+            "description": "This object is the platform for the wsc UI. Everything can be used and\nloaded from here.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "view",
+                    "description": "Base jQuery object to use for the UI. Any empty div will do.",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "Custom settings to use for the UI.",
+                    "type": "Object"
+                },
+                {
+                    "name": "mozilla",
+                    "description": "Is the browser in use made by Mozilla?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "events",
+                    "description": "EventEmitter object.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ]
+        },
+        "Channel": {
+            "name": "Channel",
+            "shortname": "Channel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/channel.js",
+            "line": 1,
+            "description": "Chat channel object.\nManages channel events and data, and acts as a thin wrapper for the\nchannel's UI object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "ns",
+                    "description": "The name of the channel this object will represent.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the channel's tab be visible?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "monitor",
+                    "description": "Is this channel the monitor?",
+                    "type": "Boolean"
+                }
+            ]
+        },
+        "Chatbook": {
+            "name": "Chatbook",
+            "shortname": "Chatbook",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/chatbook.js",
+            "line": 1,
+            "description": "Object for managing the chatbook portion of the UI.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Control": {
+            "name": "Control",
+            "shortname": "Control",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/control.js",
+            "line": 1,
+            "description": "Controls the input panel of the client.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Navigation": {
+            "name": "Navigation",
+            "shortname": "Navigation",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/nav.js",
+            "line": 1,
+            "description": "Navigation UI element. Provides helpers for controlling the chat navigation.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Popup": {
+            "name": "Popup",
+            "shortname": "Popup",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/popup.js",
+            "line": 1,
+            "description": "Popup window base class.\nShould allow people to easily create popups... or something.\nSubclasses of the popups should provide a way of closing the popup, or\nmaybe I could change things around a bit so there's always a close button in\nthe top right corner. That said, the settings window looks good with the\nclose button at the bottom. Maybe make that configurable. Use a flag to\ndetermine whether or not this class applies the close function or not?",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Settings": {
+            "name": "Settings",
+            "shortname": "Settings",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 1,
+            "description": "Settings popup window.\nProvides stuff for doing things. Yay.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "config",
+                    "description": "Chatterbox.Settings.Config object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Settings.Config": {
+            "name": "Settings.Config",
+            "shortname": "Settings.Config",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 155,
+            "description": "Settings options object.\nExtensions can configure the settings window with this shit yo.",
+            "is_constructor": 1
+        },
+        "Settings.Page": {
+            "name": "Settings.Page",
+            "shortname": "Settings.Page",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 308,
+            "description": "Settings page config object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name of the page.",
+                    "type": "String"
+                }
+            ]
+        },
+        "Settings.Item": {
+            "name": "Settings.Item",
+            "shortname": "Settings.Item",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 510,
+            "description": "A base class for settings page items.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "Determines the type of the item.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Options for the item.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Form": {
+            "name": "Form",
+            "shortname": "Form",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 801,
+            "description": "HTML form as a single settings page item.\nThis item should be given settings items to use as form fields.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of item this item is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Item options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Field": {
+            "name": "Field",
+            "shortname": "Field",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 985,
+            "description": "Base class for form fields.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of field this field is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Field options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Radio": {
+            "name": "Radio",
+            "shortname": "Radio",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 1278,
+            "description": "Radio box item.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of field this field is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Field options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Check": {
+            "name": "Check",
+            "shortname": "Check",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 1323,
+            "description": "Check box item.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of field this field is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Field options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Colour": {
+            "name": "Colour",
+            "shortname": "Colour",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 1236,
+            "description": "Form colour field.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of field this field is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Field options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Items": {
+            "name": "Items",
+            "shortname": "Items",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/settings.js",
+            "line": 1374,
+            "description": "Check box item.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of field this field is.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Field options.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "template": {
+            "name": "template",
+            "shortname": "template",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/templates.js",
+            "line": 1,
+            "description": "Container object for HTML5 templates for the chat UI."
+        },
+        "settings": {
+            "name": "settings",
+            "shortname": "settings",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/templates.js",
+            "line": 281,
+            "description": "Settings stuff."
+        },
+        "Client": {
+            "name": "Client",
+            "shortname": "Client",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/client.js",
+            "line": 1,
+            "description": "Chat client.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "view",
+                    "description": "The client's container element.",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "Configuration options for the client.",
+                    "type": "Object"
+                },
+                {
+                    "name": "mozilla",
+                    "description": "Is firefox being used?",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Flow": {
+            "name": "Flow",
+            "shortname": "Flow",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/flow.js",
+            "line": 1,
+            "description": "Control the client's program flow in relation to the chat this.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "protocol",
+                    "description": "Protocol object.",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Protocol": {
+            "name": "Protocol",
+            "shortname": "Protocol",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/protocol.js",
+            "line": 1,
+            "description": "Parser for dAmn-like protocols.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "mparser",
+                    "description": "Message parser instance.",
+                    "type": "Object",
+                    "optional": true,
+                    "optdefault": "wsc.MessageParser"
+                }
+            ]
+        },
+        "Transport": {
+            "name": "Transport",
+            "shortname": "Transport",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/transport.js",
+            "line": 1,
+            "description": "Client transport.\nActs as a basic wrapper around a transport.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "server",
+                    "description": "Address for the server to connect to.",
+                    "type": "String"
+                },
+                {
+                    "name": "open",
+                    "description": "This method will be called when\n  a connection is established with the server.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.sopen"
+                },
+                {
+                    "name": "message",
+                    "description": "When a message is received\n  on the transport, this method will be called.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.smessage"
+                },
+                {
+                    "name": "disconnect",
+                    "description": "The method to be\n  called when the connection has been closed.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.sdisconnect"
+                }
+            ]
+        },
+        "WebSocket": {
+            "name": "WebSocket",
+            "shortname": "WebSocket",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/transport.js",
+            "line": 133,
+            "description": "WebSocket transport object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "server",
+                    "description": "Address for the server to connect to.",
+                    "type": "String"
+                },
+                {
+                    "name": "open",
+                    "description": "This method will be called when\n  a connection is established with the server.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.WebSocket.sopen"
+                },
+                {
+                    "name": "message",
+                    "description": "When a message is received\n  on the transport, this method will be called.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.WebSocket.smessage"
+                },
+                {
+                    "name": "disconnect",
+                    "description": "The method to be\n  called when the connection has been closed.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.WebSocket.sdisconnect"
+                }
+            ]
+        },
+        "SocketIO": {
+            "name": "SocketIO",
+            "shortname": "SocketIO",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/transport.js",
+            "line": 240,
+            "description": "SocketIO wrapper.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "server",
+                    "description": "Address for the server to connect to.",
+                    "type": "String"
+                },
+                {
+                    "name": "open",
+                    "description": "This method will be called when\n  a connection is established with the server.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.SocketIO.sopen"
+                },
+                {
+                    "name": "message",
+                    "description": "When a message is received\n  on the transport, this method will be called.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.SocketIO.smessage"
+                },
+                {
+                    "name": "disconnect",
+                    "description": "The method to be\n  called when the connection has been closed.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.SocketIO.sdisconnect"
+                }
+            ]
+        }
+    },
+    "classitems": [
+        {
+            "file": "src/dAmn/emotes.js",
+            "line": 375,
+            "description": "Emote picker.\nThis should be used for retrieving input from the user.",
+            "class": "Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/icon.js",
+            "line": 20,
+            "description": "Works out the src url for an avatar.",
+            "itemtype": "method",
+            "name": "src",
+            "class": "avatar_link",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/linkbds.js",
+            "line": 120,
+            "description": "BDS Event handlers.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/linkbds.js",
+            "line": 170,
+            "description": "dAmn Event handlers",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/stash.js",
+            "line": 2,
+            "description": "Extension to handle stash links posted in the chat.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/stash.js",
+            "line": 33,
+            "description": "Fetch stash data.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/stash.js",
+            "line": 48,
+            "description": "Render a stash thumb.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 35,
+            "itemtype": "method",
+            "name": "html\n\nRender the tablumps as HTML entities.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 46,
+            "itemtype": "method",
+            "name": "text\n\nRender the tablumps in plain text where possible. Some tablumps appear as\nHTML entities even through this.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 58,
+            "itemtype": "method",
+            "name": "ansi\n\nRender the tablumps with ANSI escape sequences.\n\nFor this rendering method to really be worth it, I'll actually have to move\naway from the simple regex.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 73,
+            "description": "States for the parser.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 83,
+            "object": "wsc.dAmn.TablumpParser\n\nConstructor for the tablumps parser.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 97,
+            "itemtype": "method",
+            "name": "registerMap\n\nI should probably deprecate this. Sets the rendering map to the given map.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 106,
+            "itemtype": "method",
+            "name": "extend\n\nAdd the given rendering items to the parser's render map.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 117,
+            "itemtype": "method",
+            "name": "defaultMap\n\nGet all the default nonsense.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 203,
+            "itemtype": "method",
+            "name": "parse\n\nCreate a wsc.dAmn.TablumpString obejct and return it.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 214,
+            "itemtype": "method",
+            "name": "tokenise\n\nParse a message possibly containing tablumps into tokens.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 312,
+            "itemtype": "method",
+            "name": "render\n\nRender tablumps in a given format.\n\nHere, the flag should be a number, and defines the index of the renderer\nto use when rendering a tablump. Setting `flag` to 0 will result in the\nfirst renderer being used. In the render map, the plain text renderers come\nfirst, and also act as a default.\n\nSetting `flag` to 1 causes the parser to render tablumps as HTML elements\nwhere possible. Setting `flag` to 2 causes the parser to render tablumps as\nANSI escape sequence formatted strings where possible.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/tablumps.js",
+            "line": 356,
+            "itemtype": "method",
+            "name": "renderOne\nRender a single tablump.",
+            "class": "TablumpString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 101,
+            "description": "Used to trigger events.",
+            "itemtype": "method",
+            "name": "trigger",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Name of the event to trigger.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 114,
+            "description": "Bind an event thingy.",
+            "itemtype": "method",
+            "name": "on",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "The event name to listen for.",
+                    "type": "String"
+                },
+                {
+                    "name": "handler",
+                    "description": "The event handler.",
+                    "type": "Method"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 127,
+            "description": "Add a piece of middleware for something.",
+            "itemtype": "method",
+            "name": "middle",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 138,
+            "description": "Run a method with middleware.",
+            "itemtype": "method",
+            "name": "cascade",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 149,
+            "description": "Remove all of the event bindings.",
+            "itemtype": "method",
+            "name": "remove_listeners",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 160,
+            "description": "Deform a channel namespace.",
+            "itemtype": "method",
+            "name": "deform_ns",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Channel namespace to deform.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The deformed namespace.",
+                "type": "String"
+            },
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 194,
+            "description": "Format a channel namespace.",
+            "itemtype": "method",
+            "name": "format_ns",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Channel namespace to format.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "ns formatted as a channel namespace.",
+                "type": "String"
+            },
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 220,
+            "description": "Set the event emitter object in use by the UI lib.",
+            "itemtype": "method",
+            "name": "set_events",
+            "params": [
+                {
+                    "name": "events",
+                    "description": "EventEmitter object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 230,
+            "description": "Set the clock to 24 hour or 12 hour. Or get the current mode.\nTrue means 24 hour, false means 12 hour.",
+            "itemtype": "method",
+            "name": "clock",
+            "params": [
+                {
+                    "name": "mode",
+                    "description": "What mode to set the clock to.",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "The mode of the clock.",
+                "type": "Boolean"
+            },
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 250,
+            "description": "Build the GUI.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "control",
+                    "description": "UI control panel class.",
+                    "type": "Class",
+                    "optional": true,
+                    "optdefault": "Chatterbox.Control"
+                },
+                {
+                    "name": "navigation",
+                    "description": "UI navigation panel\n  class.",
+                    "type": "Class",
+                    "optional": true,
+                    "optdefault": "Chatterbox.Navigation"
+                },
+                {
+                    "name": "chatbook",
+                    "description": "Chatbook panel class.",
+                    "type": "Class",
+                    "optional": true,
+                    "optdefault": "Chatterbox.Chatbook"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 324,
+            "description": "Resize the UI to fit the containing element.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 339,
+            "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
+            "itemtype": "method",
+            "name": "loop",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 352,
+            "description": "Create a screen for channel `ns` in the UI, and initialise data\nstructures or some shit idk.",
+            "itemtype": "method",
+            "name": "create_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Short name for the channel.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should this channel's tab be hidden?",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 364,
+            "description": "Remove a channel from the GUI.\nWe do this when we leave a channel for any reason.\nNote: last channel is never removed and when removing a channel\nwe switch to the last channel in the list before doing so.",
+            "itemtype": "method",
+            "name": "remove_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Name of the channel to remove.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 377,
+            "description": "Select which channel is currently being viewed.",
+            "itemtype": "method",
+            "name": "toggle_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Name of the channel to select.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 387,
+            "description": "Get or set the channel object associated with the given namespace.",
+            "itemtype": "method",
+            "name": "channel",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "The namespace to set or get.",
+                    "type": "String"
+                },
+                {
+                    "name": "chan",
+                    "description": "A wsc channel object representing the channel specified.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "The channel object representing the channel defined by `namespace`",
+                "type": "Object"
+            },
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 399,
+            "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
+            "itemtype": "method",
+            "name": "channels",
+            "return": {
+                "description": "Number of channels open in the ui.",
+                "type": "Integer"
+            },
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 412,
+            "description": "Switch to the channel left of the current channel.",
+            "itemtype": "method",
+            "name": "channel_left",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 423,
+            "description": "Switch to the channel right of the current channel.",
+            "itemtype": "method",
+            "name": "channel_right",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 435,
+            "description": "Display a log message in the monitor channel.",
+            "itemtype": "method",
+            "name": "monitor",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                },
+                {
+                    "name": "info",
+                    "description": "Additional data to display.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 448,
+            "description": "Display a server message across all open channels.",
+            "itemtype": "method",
+            "name": "server_message",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                },
+                {
+                    "name": "info",
+                    "description": "Additional data to display.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 461,
+            "description": "Display a log item across all open channels.",
+            "itemtype": "method",
+            "name": "log_item",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Item to display.",
+                    "type": "Object"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 473,
+            "description": "Display a log message across all open channels.",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 485,
+            "description": "Mute a user.",
+            "itemtype": "method",
+            "name": "mute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to mute.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 509,
+            "description": "Unmute a user.",
+            "itemtype": "method",
+            "name": "unmute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to unmute.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 534,
+            "description": "Clear a user's messages from all channels.",
+            "itemtype": "method",
+            "name": "clear_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to remove messages for.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 548,
+            "description": "Set the theme for the UI.",
+            "itemtype": "method",
+            "name": "theme",
+            "params": [
+                {
+                    "name": "theme",
+                    "description": "Name of the theme.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 567,
+            "description": "Add a new theme to the client.",
+            "itemtype": "method",
+            "name": "add_theme",
+            "params": [
+                {
+                    "name": "theme",
+                    "description": "Name of the theme to add.",
+                    "type": "String"
+                }
+            ],
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 582,
+            "description": "Toggle developer mode for the UI.",
+            "itemtype": "method",
+            "name": "developer",
+            "class": "UI",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 76,
+            "description": "Draw channel on screen and store the different elements in attributes.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 147,
+            "description": "Set up a header so it can be edited in the UI.",
+            "itemtype": "method",
+            "name": "setup_header",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 231,
+            "description": "Hide the channel from view.",
+            "itemtype": "method",
+            "name": "hide",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 242,
+            "description": "Display the channel.",
+            "itemtype": "method",
+            "name": "show",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 260,
+            "description": "Display or hide the tab based on whether we are in developer mode or not.",
+            "itemtype": "method",
+            "name": "developer",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 275,
+            "description": "Remove the channel from the UI.",
+            "itemtype": "method",
+            "name": "remove",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 285,
+            "description": "Scroll the log panel downwards.",
+            "itemtype": "method",
+            "name": "scroll",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 301,
+            "description": "Add padding to the channel log's wrapping ul.\nThis is done to make sure messages always appear at the bottom first.",
+            "itemtype": "method",
+            "name": "pad",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 323,
+            "description": "Fix the dimensions of the log window.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 380,
+            "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
+            "itemtype": "method",
+            "name": "loop",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 399,
+            "description": "Display a log message.",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 420,
+            "description": "Send a message to the log window.",
+            "itemtype": "method",
+            "name": "log_item",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Message to send.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 464,
+            "description": "Rewrite time signatures for all messages. Woo.",
+            "itemtype": "method",
+            "name": "retime",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 490,
+            "description": "Send a server message to the log window.",
+            "itemtype": "method",
+            "name": "server_message",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Server message.",
+                    "type": "String"
+                },
+                {
+                    "name": "info",
+                    "description": "Extra information for the message.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 511,
+            "description": "Clear all log messages from the log window.",
+            "itemtype": "method",
+            "name": "clear",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 523,
+            "description": "Display an info box in the channel log.",
+            "itemtype": "method",
+            "name": "log_info",
+            "params": [
+                {
+                    "name": "content",
+                    "description": "Infobox contents.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 555,
+            "description": "Display a user's whois info.",
+            "itemtype": "method",
+            "name": "show_whois",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Object containing a user's information.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 629,
+            "description": "Display some information relating to a privilege class.",
+            "itemtype": "method",
+            "name": "log_pc",
+            "params": [
+                {
+                    "name": "privileges",
+                    "description": "Are we showing privileges or users?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "data",
+                    "description": "Array containing information.",
+                    "type": "Array"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 664,
+            "description": "Set the channel header.\nThis can be the title or topic, determined by `head`.",
+            "itemtype": "method",
+            "name": "set_header",
+            "params": [
+                {
+                    "name": "head",
+                    "description": "Should be 'title' or 'topic'.",
+                    "type": "String"
+                },
+                {
+                    "name": "content",
+                    "description": "HTML to use for the header.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 699,
+            "description": "Get a channel header's contents.",
+            "itemtype": "method",
+            "name": "get_header",
+            "params": [
+                {
+                    "name": "head",
+                    "description": "Should be 'title' or 'topic'.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Content of the header.",
+                "type": "Object"
+            },
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 712,
+            "description": "Set the channel user list.",
+            "itemtype": "method",
+            "name": "set_user_list",
+            "params": [
+                {
+                    "name": "userlist",
+                    "description": "Listing of users in the channel.",
+                    "type": "Array"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 757,
+            "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
+            "itemtype": "method",
+            "name": "highlight",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "jQuery object for an html element. If provided,\n  this element will be highlighted instead of the channel's last log\n  message.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 806,
+            "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
+            "itemtype": "method",
+            "name": "noise",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 842,
+            "description": "Display a user info hover box.",
+            "itemtype": "method",
+            "name": "userinfo",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Information about a user.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "jQuery object representing the information box.",
+                "type": "Object"
+            },
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 901,
+            "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
+            "itemtype": "method",
+            "name": "unhover_user",
+            "params": [
+                {
+                    "name": "box",
+                    "description": "A jQuery object representing the information box.",
+                    "type": "Object"
+                },
+                {
+                    "name": "event",
+                    "description": "jQuery event object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 935,
+            "description": "Hide messages from a given user.",
+            "itemtype": "method",
+            "name": "mute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to hide messages for.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 950,
+            "description": "Reveal messages received from a given user.",
+            "itemtype": "method",
+            "name": "unmute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Use to reveal messages for.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 965,
+            "description": "Remove a user's messages completely.",
+            "itemtype": "method",
+            "name": "clear_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to remove messages for.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 21,
+            "description": "Return the height of the chatbook.",
+            "itemtype": "method",
+            "name": "height",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 30,
+            "description": "Return the width of the chatbook.",
+            "itemtype": "method",
+            "name": "height",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 39,
+            "description": "Resize the chatbook view pane.",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "height",
+                    "description": "The height to set the view pane to.",
+                    "type": "Integer",
+                    "optional": true,
+                    "optdefault": "600"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 56,
+            "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
+            "itemtype": "method",
+            "name": "loop",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 71,
+            "description": "Get or set the channel object associated with the given namespace.",
+            "itemtype": "method",
+            "name": "channel",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "The namespace to set or get.",
+                    "type": "String"
+                },
+                {
+                    "name": "chan",
+                    "description": "A wsc channel object representing the channel specified.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "The channel object representing the channel defined by `namespace`",
+                "type": "Object"
+            },
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 88,
+            "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
+            "itemtype": "method",
+            "name": "channels",
+            "return": {
+                "description": "[Integer] Number of channels open in the ui."
+            },
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 107,
+            "description": "Create a channel in the UI.",
+            "itemtype": "method",
+            "name": "create_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the channel to create.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the tab be hidden?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "monitor",
+                    "description": "Is this channel the monitor?",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "WscUIChannel object.",
+                "type": "Object"
+            },
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 131,
+            "description": "Create a new channel panel object.\nOverride this method to use a different type of channel object.",
+            "itemtype": "method",
+            "name": "channel_object",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the channel.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the tab be hidden?",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "An object representing a channel UI.",
+                "type": "Object"
+            },
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 144,
+            "description": "Select which channel is currently being viewed.",
+            "itemtype": "method",
+            "name": "toggle_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the channel to view.",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 190,
+            "description": "Remove a channel from the UI.",
+            "itemtype": "method",
+            "name": "remove_channel",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Name of the channel to remove.",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 212,
+            "description": "Switch to the channel left of the current channel.",
+            "itemtype": "method",
+            "name": "channel_left",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 245,
+            "description": "Switch to the channel right of the current channel.",
+            "itemtype": "method",
+            "name": "channel_right",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 277,
+            "description": "Iterate through the different channels.",
+            "itemtype": "method",
+            "name": "each",
+            "params": [
+                {
+                    "name": "method",
+                    "description": "Function to call for each channel.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 299,
+            "description": "Display a server message across all open channels.",
+            "itemtype": "method",
+            "name": "server_message",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                },
+                {
+                    "name": "info",
+                    "description": "Additional data to display.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 314,
+            "description": "Display a log item across all open channels.",
+            "itemtype": "method",
+            "name": "log_item",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 328,
+            "description": "Display a log item across all open channels.",
+            "itemtype": "method",
+            "name": "log_item",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 342,
+            "description": "Rewrite timestamps for all open channels.",
+            "itemtype": "method",
+            "name": "retime",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 355,
+            "description": "Toggle the developer mode of each channel.",
+            "itemtype": "method",
+            "name": "developer",
+            "class": "Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 15,
+            "description": "UI elements",
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 110,
+            "description": "Steal the lime light. Brings the cursor to the input panel.",
+            "itemtype": "method",
+            "name": "focus",
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 119,
+            "description": "Resize the control panel.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 135,
+            "description": "Get the height of the input panel.",
+            "itemtype": "method",
+            "name": "height",
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 146,
+            "description": "Set the handlers for the UI input.",
+            "itemtype": "method",
+            "name": "set_handlers",
+            "params": [
+                {
+                    "name": "onkeypress",
+                    "description": "Method to call on input event\n  `keypress`.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "this._onkeypress"
+                },
+                {
+                    "name": "onsubmite",
+                    "description": "Method to call on input even\n  `submit`.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "this._onsubmit"
+                }
+            ],
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 161,
+            "description": "Set or get multiline input mode.",
+            "itemtype": "method",
+            "name": "multiline",
+            "params": [
+                {
+                    "name": "on",
+                    "description": "Use multiline input?",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "Current mode.",
+                "type": "Boolean"
+            },
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 241,
+            "description": "Get the last word from the input box.",
+            "itemtype": "method",
+            "name": "chomp",
+            "return": {
+                "description": "The last word in the input box.",
+                "type": "String"
+            },
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 265,
+            "description": "Append text to the end of the input box.",
+            "itemtype": "method",
+            "name": "unchomp",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Text to append.",
+                    "type": "String"
+                }
+            ],
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 279,
+            "description": "Get the text in the input box.",
+            "itemtype": "method",
+            "name": "get_text",
+            "return": {
+                "description": "The text currently in the input box.",
+                "type": "String"
+            },
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/control.js",
+            "line": 294,
+            "description": "Set the text in the input box.",
+            "itemtype": "method",
+            "name": "set_text",
+            "params": [
+                {
+                    "name": "text",
+                    "description": "The text to put in the input box.",
+                    "type": "String"
+                }
+            ],
+            "class": "Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 77,
+            "description": "Configure the main settings page of the settings popup.",
+            "itemtype": "method",
+            "name": "configure_page",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 153,
+            "description": "Get the height of the navigation bar.",
+            "itemtype": "method",
+            "name": "height",
+            "return": {
+                "description": "The height of the navigation bar in pixels.",
+                "type": "Integer"
+            },
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 164,
+            "description": "Add a button to the top button row.",
+            "itemtype": "method",
+            "name": "add_button",
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 199,
+            "description": "Add a channel tab to the navigation bar.",
+            "itemtype": "method",
+            "name": "add_tab",
+            "params": [
+                {
+                    "name": "selector",
+                    "description": "Shorthand lower case name for the channel with no prefixes.",
+                    "type": "String"
+                },
+                {
+                    "name": "ns",
+                    "description": "Shorthand namespace for the channel. Used as the label\n  for the tab.",
+                    "type": "String"
+                }
+            ],
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 212,
+            "description": "Resize the tab bar.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/nav.js",
+            "line": 226,
+            "description": "Set or get the visibility of tab close buttons.",
+            "itemtype": "method",
+            "name": "closer",
+            "params": [
+                {
+                    "name": "visible",
+                    "description": "Should the close buttons be shown?",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "Whether or not the close buttons are visible.",
+                "type": "Boolean"
+            },
+            "class": "Navigation",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/pager.js",
+            "line": 2,
+            "description": "Pager\n\nUsed for giving the user notifications.",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/pager.js",
+            "line": 28,
+            "description": "Build the Pager interface...",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/pager.js",
+            "line": 39,
+            "description": "Page the user with a notice.",
+            "itemtype": "method",
+            "name": "notice",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/pager.js",
+            "line": 109,
+            "description": "Remove a given notice from the pager.",
+            "remove_notice": "",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/pager.js",
+            "line": 148,
+            "description": "Find a notice based on the reference.",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/popup.js",
+            "line": 29,
+            "description": "Build the popup window.\nThis should be pretty easy.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/popup.js",
+            "line": 60,
+            "description": "Close the popup.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/popup.js",
+            "line": 71,
+            "description": "Prompt popup.\nThis should be used for retrieving input from the user.",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/popup.js",
+            "line": 100,
+            "description": "Build the prompt.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/popup.js",
+            "line": 138,
+            "description": "Emote picker.\nThis should be used for retrieving input from the user.",
+            "class": "Popup",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 32,
+            "description": "Build the settings window.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Settings",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 92,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Settings",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 110,
+            "description": "Switch the window to view the given page.",
+            "itemtype": "method",
+            "name": "switch_page",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings window page object. This should be the page\n  that you want to bring into focus.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 127,
+            "description": "Save settings.",
+            "itemtype": "method",
+            "name": "save",
+            "class": "Settings",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 140,
+            "description": "Close settings.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "Settings",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 169,
+            "description": "Find a settings page that has the given name.",
+            "itemtype": "method",
+            "name": "find_page",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Settings page to search for.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Settings page object. Returns null if\n  no such page exists.",
+                "type": "Chatterbox.Settings.Page"
+            },
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 194,
+            "description": "Render and display the settings pages in the given settings window.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "Settings window object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 212,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 227,
+            "description": "Get a settings page.",
+            "itemtype": "method",
+            "name": "page",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name of the page to get or set.",
+                    "type": "String"
+                },
+                {
+                    "name": "push",
+                    "description": "When adding the page, should push be used in\n  place of unshift? Default is `false`, meaning use unshift.",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "false"
+                }
+            ],
+            "return": {
+                "description": "Settings page associated with `name`.",
+                "type": "Chatterbox.Settings.Page"
+            },
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 275,
+            "description": "Save settings.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 291,
+            "description": "Close settings.",
+            "itemtype": "method",
+            "name": "close",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Config",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 327,
+            "description": "Render and display the settings page in the given settings window.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "Settings window object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 359,
+            "description": "Display the page's contents.",
+            "itemtype": "method",
+            "name": "content",
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 374,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 389,
+            "description": "Bring the page into view.",
+            "itemtype": "method",
+            "name": "show",
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 406,
+            "description": "Hide the page from view.",
+            "itemtype": "method",
+            "name": "hide",
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 421,
+            "description": "Add an item to the page.",
+            "itemtype": "method",
+            "name": "item",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of item to add to the page.",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Item options.",
+                    "type": "Object"
+                },
+                {
+                    "name": "shift",
+                    "description": "Should unshift be used when adding the item?",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "false"
+                }
+            ],
+            "return": {
+                "description": "A settings page item object.",
+                "type": "Object"
+            },
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 477,
+            "description": "Save page data.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 493,
+            "description": "Window closed.",
+            "itemtype": "method",
+            "name": "close",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Page",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 532,
+            "description": "Render and display the settings page item.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings page object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 594,
+            "description": "Renders the contents of the settings page item.",
+            "itemtype": "method",
+            "name": "content",
+            "return": {
+                "description": "Returns an HTML string if there is content for this item.",
+                "type": "String"
+            },
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 607,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 622,
+            "description": "Apply event callbacks to the page item.",
+            "itemtype": "method",
+            "name": "hooks",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Page item jQuery object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 657,
+            "description": "Method stub for UI events.",
+            "itemtype": "method",
+            "name": "_event_stub",
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 664,
+            "description": "Get an item event callback.",
+            "itemtype": "method",
+            "name": "_get_cb",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Item event to get callbacks for.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Item event callback.",
+                "type": "Function"
+            },
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 680,
+            "description": "Get an item event pair.",
+            "itemtype": "method",
+            "name": "_get_ep",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Item event to get an event pair for.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Item event pair.",
+                "type": "Function"
+            },
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 710,
+            "description": "Save page item data.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                },
+                {
+                    "name": "page",
+                    "description": "The settings page this item belongs to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 740,
+            "description": "Called when the settings window is closed.",
+            "itemtype": "method",
+            "name": "close",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                },
+                {
+                    "name": "page",
+                    "description": "The settings page this item belongs to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Settings.Item",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 838,
+            "description": "Build the form.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings page object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Form",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 876,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Form",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 891,
+            "description": "Called when there is a change in the form.",
+            "itemtype": "method",
+            "name": "change",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                },
+                {
+                    "name": "page",
+                    "description": "The settings page this item belongs to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Form",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 922,
+            "description": "Save form data.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                },
+                {
+                    "name": "page",
+                    "description": "The settings page this form belongs to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Form",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 953,
+            "description": "Called when the settings window is closed.",
+            "itemtype": "method",
+            "name": "close",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "The settings window.",
+                    "type": "Object"
+                },
+                {
+                    "name": "page",
+                    "description": "The settings page this item belongs to.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Form",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1006,
+            "description": "Build the form field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "form",
+                    "description": "Settings page form.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Field",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1043,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Field",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1054,
+            "description": "Get field data.",
+            "itemtype": "method",
+            "name": "get",
+            "return": {
+                "description": "data.",
+                "type": "Object"
+            },
+            "class": "Field",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1088,
+            "description": "Build the radio field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "form",
+                    "description": "Settings page form.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Radio",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1132,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Radio",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1143,
+            "description": "Get field data.",
+            "itemtype": "method",
+            "name": "get",
+            "return": {
+                "description": "data.",
+                "type": "Object"
+            },
+            "class": "Radio",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1174,
+            "description": "Build the checkbox field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "form",
+                    "description": "Settings page form.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Check",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1224,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Check",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1253,
+            "description": "Build the colour field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "form",
+                    "description": "Settings page form.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Colour",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1266,
+            "description": "Resize the settings window boxes stuff.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Colour",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1296,
+            "description": "Build the radio field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings page object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Radio",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1341,
+            "description": "Build the checkbox field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings page object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Check",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/settings.js",
+            "line": 1399,
+            "description": "Build the Items field.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "page",
+                    "description": "Settings page object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Items",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 8,
+            "description": "Helper method to render templates.\nThis method is actually a static method on the Chatterbox module.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "template",
+                    "description": "Name of the template to render.",
+                    "type": "String"
+                },
+                {
+                    "name": "fill",
+                    "description": "Variables to render the template with.",
+                    "type": "Object"
+                },
+                {
+                    "name": "use",
+                    "description": "Use `template` as the actual template rather than the name.",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 84,
+            "description": "This template provides the HTML for a chat client's main view.",
+            "itemtype": "property",
+            "name": "ui",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 107,
+            "description": "HTML for an input panel.",
+            "itemtype": "property",
+            "name": "control",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 133,
+            "description": "HTML for a channel tab.",
+            "itemtype": "property",
+            "name": "tab",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 141,
+            "description": "HTML template for a channel view.",
+            "itemtype": "property",
+            "name": "channel",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 169,
+            "description": "Channel header HTML template.",
+            "itemtype": "property",
+            "name": "header",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 177,
+            "description": "Log message template.",
+            "itemtype": "property",
+            "name": "logmsg",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 185,
+            "description": "Simple log template.",
+            "itemtype": "property",
+            "name": "logitem",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 193,
+            "description": "Server message template.",
+            "itemtype": "property",
+            "name": "servermsg",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 201,
+            "description": "User message template.",
+            "itemtype": "property",
+            "name": "usermsg",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 209,
+            "description": "User info box (userlist hover)",
+            "itemtype": "property",
+            "name": "userinfo",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 235,
+            "description": "Container for popup shit.",
+            "itemtype": "property",
+            "name": "popup",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 261,
+            "description": "Pager notices and such.",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/autojoin.js",
+            "line": 1,
+            "description": "Autojoin extension.",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/away.js",
+            "line": 1,
+            "description": "Away extension.",
+            "class": "Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 41,
+            "description": "Create a UI view for this channel.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 52,
+            "description": "Remove this channel from the screen entirely.",
+            "itemtype": "method",
+            "name": "remove",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 63,
+            "description": "Hide the channel view in the UI.",
+            "itemtype": "method",
+            "name": "hide",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 74,
+            "description": "Show the channel view in the UI.",
+            "itemtype": "method",
+            "name": "show",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 85,
+            "description": "Display a log message.",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Log message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 97,
+            "description": "Send a message to the log window.",
+            "itemtype": "method",
+            "name": "log_item",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Message to send.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 109,
+            "description": "Send a server message to the log window.",
+            "itemtype": "method",
+            "name": "server_message",
+            "params": [
+                {
+                    "name": "msg",
+                    "description": "Server message.",
+                    "type": "String"
+                },
+                {
+                    "name": "info",
+                    "description": "Extra information for the message.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 122,
+            "description": "Clear all log messages from the log window.",
+            "itemtype": "method",
+            "name": "clear",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 137,
+            "description": "Display a user's whois info.",
+            "itemtype": "method",
+            "name": "log_whois",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Object containing a user's information.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 149,
+            "description": "Display some information relating to a privilege class.",
+            "itemtype": "method",
+            "name": "log_pc",
+            "params": [
+                {
+                    "name": "privileges",
+                    "description": "Are we showing privileges or users?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "data",
+                    "description": "Array containing information.",
+                    "type": "Array"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 162,
+            "description": "Process a channel property packet.",
+            "itemtype": "method",
+            "name": "property",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for the property packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 195,
+            "description": "Set the channel header.\nThis can be the title or topic, determined by `head`.",
+            "itemtype": "method",
+            "name": "set_header",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for the property packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 213,
+            "description": "Set the channel's privclasses.",
+            "itemtype": "method",
+            "name": "set_privclasses",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for the property packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 236,
+            "description": "Get the order of a given privilege class.",
+            "itemtype": "method",
+            "name": "get_privclass_order",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name of the privilege class to get the order of.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 252,
+            "description": "Store each member of the this.",
+            "itemtype": "method",
+            "name": "set_members",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for the property packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 270,
+            "description": "Set the channel user list.",
+            "itemtype": "method",
+            "name": "set_user_list",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 333,
+            "description": "Register a user with the channel.",
+            "itemtype": "method",
+            "name": "register_user",
+            "params": [
+                {
+                    "name": "pkt",
+                    "description": "User data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 356,
+            "description": "Return a list of usernames, sorted alphabetically.",
+            "itemtype": "method",
+            "name": "get_usernames",
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 372,
+            "description": "Remove a user from the channel.",
+            "itemtype": "method",
+            "name": "remove_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Name of the user to remove.",
+                    "type": "String"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 393,
+            "description": "Process a recv_join event.",
+            "itemtype": "method",
+            "name": "recv_join",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for recv_join packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 405,
+            "description": "Process a recv_part event.",
+            "itemtype": "method",
+            "name": "recv_part",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for recv_part packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 418,
+            "description": "Process a recv_msg event.",
+            "itemtype": "method",
+            "name": "recv_msg",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for recv_msg packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 449,
+            "description": "Process a recv_privchg event.",
+            "itemtype": "method",
+            "name": "recv_privchg",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for recv_privhcg packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 465,
+            "description": "Process a recv_kicked event.",
+            "itemtype": "method",
+            "name": "recv_kicked",
+            "params": [
+                {
+                    "name": "e",
+                    "description": "Event data for recv_kicked packet.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 103,
+            "description": "Load configuration from localStorage.",
+            "itemtype": "method",
+            "name": "config_load",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 133,
+            "description": "Save configuration save localStorage.",
+            "itemtype": "method",
+            "name": "config_save",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 168,
+            "description": "Build the client interface and hook up any required event handlers for the\ninterface. In particular, event handlers are hooked for switching and\nclosing channel tabs.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 205,
+            "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
+            "itemtype": "method",
+            "name": "loop",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 218,
+            "description": "Add an extension to the client.",
+            "itemtype": "method",
+            "name": "add_extension",
+            "params": [
+                {
+                    "name": "extension",
+                    "description": "Extension constructor. Not called with `new`.",
+                    "type": "Method"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 231,
+            "description": "Bind a method to an event.",
+            "itemtype": "method",
+            "name": "bind",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Name of the event to listen for.",
+                    "type": "String"
+                },
+                {
+                    "name": "handler",
+                    "description": "Method to call when the given event is triggered.",
+                    "type": "Method"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 250,
+            "description": "Clear event listeners for a given event.",
+            "itemtype": "method",
+            "name": "clear_listeners",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event to clear listeners for.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 262,
+            "description": "Trigger an event.",
+            "itemtype": "method",
+            "name": "trigger",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Name of the event to trigger.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 275,
+            "description": "Add a middleware method.",
+            "itemtype": "method",
+            "name": "middle",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 286,
+            "description": "Run a method with middleware.",
+            "itemtype": "method",
+            "name": "cascade",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 297,
+            "description": "Open a connection to the chat server.\nIf the client if already connected, nothing happens.",
+            "itemtype": "method",
+            "name": "connect",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 328,
+            "description": "Close the connection foo.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 341,
+            "description": "Get or set the channel object associated with the given namespace.",
+            "itemtype": "method",
+            "name": "channel",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel namespace to get or set.",
+                    "type": "String"
+                },
+                {
+                    "name": "channel",
+                    "description": "Channel object to use for the given namespace.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "Channel object associated with the given namespace.",
+                "type": "Object"
+            },
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 360,
+            "description": "Get a count of the number of channels the client has open.\nChannels with their tabs hidden are not counted.",
+            "itemtype": "method",
+            "name": "channels",
+            "params": [
+                {
+                    "name": "names",
+                    "description": "Return the names of the open channels?",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "Number of channels open.",
+                "type": "Integer"
+            },
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 382,
+            "description": "Iterate through the different channels.",
+            "itemtype": "method",
+            "name": "each_channel",
+            "params": [
+                {
+                    "name": "method",
+                    "description": "Function to call for each channel.",
+                    "type": "Function"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 408,
+            "description": "Deform a channel namespace to its shorthand form.",
+            "itemtype": "method",
+            "name": "deform_ns",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace to deform.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Shorthand channel namespace.",
+                "type": "String"
+            },
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 444,
+            "description": "Format a channel namespace in its longhand form.",
+            "itemtype": "method",
+            "name": "format_ns",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel namespace to format.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Formatted namespace.",
+                "type": "String"
+            },
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 472,
+            "description": "Create a channel object for the client.",
+            "itemtype": "method",
+            "name": "create_ns",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace to use for the channel.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the channel tab be hidden?",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 486,
+            "description": "Remove a channel object from the client.",
+            "itemtype": "method",
+            "name": "remove_ns",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace of the channel to remove.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 506,
+            "description": "Write a log message to a channel's log view.",
+            "itemtype": "method",
+            "name": "log",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace of the channel to log to.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 524,
+            "description": "Write a message to the client monitor.",
+            "itemtype": "method",
+            "name": "monitor",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "Message to display.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 536,
+            "description": "Mute a user.",
+            "itemtype": "method",
+            "name": "mute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to mute.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 548,
+            "description": "Unmute a user.",
+            "itemtype": "method",
+            "name": "unmute_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to unmute.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 562,
+            "description": "Send a packet to the server.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Packet to send.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Number of characters written to the server.\n  -1 for failure.",
+                "type": "Integer"
+            },
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 576,
+            "description": "Send a handshake packet.",
+            "itemtype": "method",
+            "name": "handshake",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 589,
+            "description": "Send a login packet.",
+            "itemtype": "method",
+            "name": "login",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 601,
+            "description": "Send a pong packet to the server.",
+            "itemtype": "method",
+            "name": "pong",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 612,
+            "description": "Join a channel.",
+            "itemtype": "method",
+            "name": "join",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to join.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 624,
+            "description": "Leave a channel.",
+            "itemtype": "method",
+            "name": "part",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to leave.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 636,
+            "description": "Send a message to a channel.",
+            "itemtype": "method",
+            "name": "say",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to send a message to.",
+                    "type": "String"
+                },
+                {
+                    "name": "message",
+                    "description": "Message to send.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 656,
+            "description": "Send a non-parsed message to a channel.",
+            "itemtype": "method",
+            "name": "npmsg",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to send a message to.",
+                    "type": "String"
+                },
+                {
+                    "name": "message",
+                    "description": "Message to send.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 676,
+            "description": "Send an action message to a channel.",
+            "itemtype": "method",
+            "name": "action",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to send a message to.",
+                    "type": "String"
+                },
+                {
+                    "name": "message",
+                    "description": "Message to send.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 696,
+            "description": "Promote a user in a channel.",
+            "itemtype": "method",
+            "name": "promote",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to promote someone in.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "User to promote.",
+                    "type": "String"
+                },
+                {
+                    "name": "pc",
+                    "description": "Privclass to promote the user to.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 711,
+            "description": "Demote a user in a channel.",
+            "itemtype": "method",
+            "name": "demote",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to demote someone in.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "User to demote.",
+                    "type": "String"
+                },
+                {
+                    "name": "pc",
+                    "description": "Privclass to demote the user to.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 726,
+            "description": "Ban a user from a channel.",
+            "itemtype": "method",
+            "name": "ban",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to ban someone from.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "User to ban.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 740,
+            "description": "Unban a user from a channel.",
+            "itemtype": "method",
+            "name": "unban",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to unban someone from.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "User to unban.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 754,
+            "description": "Kick a user from a channel.",
+            "itemtype": "method",
+            "name": "kick",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to kick someone from.",
+                    "type": "String"
+                },
+                {
+                    "name": "user",
+                    "description": "User to kick.",
+                    "type": "String"
+                },
+                {
+                    "name": "reason",
+                    "description": "Reason for the kick.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 773,
+            "description": "Kill a user's connection to the server.\nOnly message network admins have access to this packet on the server.",
+            "itemtype": "method",
+            "name": "kill",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to kill.",
+                    "type": "String"
+                },
+                {
+                    "name": "reason",
+                    "description": "Reason for the kill.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 787,
+            "description": "Send an admin comment to a channel.",
+            "itemtype": "method",
+            "name": "admin",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to use for the admin command.",
+                    "type": "String"
+                },
+                {
+                    "name": "command",
+                    "description": "Command to run.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 802,
+            "description": "Request a channel property from the server.",
+            "itemtype": "method",
+            "name": "property",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace of the channel to get a property for.",
+                    "type": "String"
+                },
+                {
+                    "name": "property",
+                    "description": "Name of the property to get.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 815,
+            "description": "Set a channel property.",
+            "itemtype": "method",
+            "name": "set",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Namespace of the channel to set a property for.",
+                    "type": "String"
+                },
+                {
+                    "name": "property",
+                    "description": "Name of the property to set. Should be 'title' or\n  'topic'.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "Value to set the property to.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 836,
+            "description": "Get whois information for a user.",
+            "itemtype": "method",
+            "name": "whois",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User to get information for.",
+                    "type": "String"
+                }
+            ],
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 848,
+            "description": "Send a disconnect packet.",
+            "itemtype": "method",
+            "name": "disconnect",
+            "class": "Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 3,
+            "description": "This extension implements most of the default commands for wsc.",
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 176,
+            "itemtype": "method",
+            "name": "setter",
+            "cmd": "set set configuration options\nThis command allows the user to change the settings for the client through\nthe input box.",
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 202,
+            "itemtype": "method",
+            "name": "connect\nThis command allows the user to force the client to connect to the server.",
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 26,
+            "description": "Steal the lime light. Brings the cursor to the input panel.",
+            "itemtype": "method",
+            "name": "focus",
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 37,
+            "description": "Set the input handlers for the input panel.",
+            "itemtype": "method",
+            "name": "set_input",
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 57,
+            "description": "Save current input in a cache.",
+            "itemtype": "method",
+            "name": "cache_input",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 75,
+            "description": "Get a channel's input history object.\nIf no history object exists for the given channel, a new object is created\nand stored.",
+            "itemtype": "method",
+            "name": "get_history",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Channel to get the history of. If not given, the\n  channel currently being viewed is used.",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "history  Channel's input history data.",
+                "type": "Object"
+            },
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 102,
+            "description": "Append an item to the current channel's input history.",
+            "itemtype": "method",
+            "name": "append_history",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Input string to store.",
+                    "type": "String"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 122,
+            "description": "Scroll through the current channel's input history.",
+            "itemtype": "method",
+            "name": "scroll_history",
+            "params": [
+                {
+                    "name": "up",
+                    "description": "Scroll up?",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 151,
+            "description": "Handle the tab character being pressed.",
+            "itemtype": "method",
+            "name": "tab_item",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 178,
+            "description": "Start tab complete capabilities by compiling a list of items that match the\ncurrent user input.",
+            "itemtype": "method",
+            "name": "start_tab",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 233,
+            "description": "Clear the tabbing cache.",
+            "itemtype": "method",
+            "name": "end_tab",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 248,
+            "description": "Handle the send button being pressed.",
+            "itemtype": "method",
+            "name": "submit",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 263,
+            "description": "A keypress happened. Process the keypress biatch.",
+            "itemtype": "method",
+            "name": "keypress",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/control.js",
+            "line": 335,
+            "description": "Handle some user input.",
+            "itemtype": "method",
+            "name": "handle",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "data",
+                    "description": "Input message given by the user.",
+                    "type": "String"
+                }
+            ],
+            "class": "Control",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 75,
+            "description": "Handle a packet event.",
+            "itemtype": "method",
+            "name": "handle",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 90,
+            "description": "Respond to pings from the server.",
+            "itemtype": "method",
+            "name": "ping",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 101,
+            "description": "Respond to a llama-style handshake.",
+            "itemtype": "method",
+            "name": "chatserver",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 112,
+            "description": "Process a login packet",
+            "itemtype": "method",
+            "name": "login",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 154,
+            "description": "Received a join packet.",
+            "itemtype": "method",
+            "name": "join",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 172,
+            "description": "Received a part packet.",
+            "itemtype": "method",
+            "name": "part",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 214,
+            "description": "Client has been kicked from a channel.",
+            "itemtype": "method",
+            "name": "kicked",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 229,
+            "description": "Process a property packet.",
+            "itemtype": "method",
+            "name": "property",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 246,
+            "description": "User join or part.",
+            "itemtype": "method",
+            "name": "recv_joinpart",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 261,
+            "description": "A user joined a channel.",
+            "itemtype": "method",
+            "name": "recv_join",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 270,
+            "description": "A user left a channel.",
+            "itemtype": "method",
+            "name": "recv_part",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 279,
+            "description": "A message was received in a channel.",
+            "itemtype": "method",
+            "name": "recv_msg",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 290,
+            "description": "A different kind of message.",
+            "itemtype": "method",
+            "name": "recv_action",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 299,
+            "description": "A non-parsed message.",
+            "itemtype": "method",
+            "name": "recv_npmsg",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 308,
+            "description": "Someone was promoted or demoted.",
+            "itemtype": "method",
+            "name": "recv_privchg",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/flow.js",
+            "line": 319,
+            "description": "Some sucka got kicked foo.",
+            "itemtype": "method",
+            "name": "recv_kicked",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Packet event data.",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Client object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Flow",
+            "module": "wsc"
+        },
+        {
+            "file": "src/ignore.js",
+            "line": 1,
+            "description": "Ignore extension.\n\nImplements the ignore functionality.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/lib.js",
+            "line": 176,
+            "description": "Sets. Yeah. Fun.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/lib.js",
+            "line": 185,
+            "description": "Add an item.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/lib.js",
+            "line": 207,
+            "description": "Remove an item.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/lib.js",
+            "line": 225,
+            "description": "Contains an item?",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 1,
+            "description": "Rendered message object.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 18,
+            "itemtype": "method",
+            "name": "text\n\nRender the tablumps in plain text where possible. Some tablumps appear as\nHTML entities even through this.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 28,
+            "itemtype": "method",
+            "name": "ansi\n\nRender the tablumps with ANSI escape sequences.\n\nFor this rendering method to really be worth it, I'll actually have to move\naway from the simple regex.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/middleware.js",
+            "line": 2,
+            "description": "Middleware management and execution.",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/middleware.js",
+            "line": 12,
+            "description": "Add a middleware callback for the given event.",
+            "itemtype": "method",
+            "name": "add",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/middleware.js",
+            "line": 29,
+            "description": "Call a method, invoking middleware according to the given event name.",
+            "itemtype": "method",
+            "name": "run",
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 91,
+            "description": "Extend the protocol maps.",
+            "itemtype": "method",
+            "name": "extend_maps",
+            "params": [
+                {
+                    "name": "maps",
+                    "description": "An object containing packet mappings.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 105,
+            "description": "Extend the protocol message renderers.",
+            "itemtype": "method",
+            "name": "extend_messages",
+            "params": [
+                {
+                    "name": "messages",
+                    "description": "An object containing packet rendering methods.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 119,
+            "description": "Parse a packet.",
+            "itemtype": "method",
+            "name": "parse",
+            "params": [
+                {
+                    "name": "packet",
+                    "description": "Packet object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 150,
+            "description": "Get the event name of a packet.",
+            "itemtype": "method",
+            "name": "event",
+            "params": [
+                {
+                    "name": "pkt",
+                    "description": "Packet object.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Packet event name.",
+                "type": "String"
+            },
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 182,
+            "description": "Map a packet to an event object.",
+            "itemtype": "method",
+            "name": "map",
+            "params": [
+                {
+                    "name": "packet",
+                    "description": "Packet object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "event",
+                    "description": "Event data object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "mapping",
+                    "description": "Packet mapping data.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 248,
+            "description": "Render a protocol message in the given format.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "format",
+                    "description": "Format to render the event in.",
+                    "type": "String"
+                },
+                {
+                    "name": "event",
+                    "description": "Event data.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Rendered event.",
+                "type": "String"
+            },
+            "class": "Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 1,
+            "description": "Storage object.\nAllows you to save stuffs yo.",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 12,
+            "description": "Get a \"folder\".",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 24,
+            "description": "Get an item from storage.",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 42,
+            "description": "Store an item.",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 56,
+            "description": "Remove an item.",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 26,
+            "description": "Static class method.\nCreate a new client transport object.",
+            "itemtype": "method",
+            "name": "Create",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 46,
+            "description": "Register open event callback.",
+            "itemtype": "method",
+            "name": "open",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "This method will be called\n  when a connection is established with the server.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.sopen"
+                }
+            ],
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 59,
+            "description": "Register message event callback.",
+            "itemtype": "method",
+            "name": "message",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "When a message is received\n  on the transport, this method will be called.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.smessage"
+                }
+            ],
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 72,
+            "description": "Register disconnect event callback.",
+            "itemtype": "method",
+            "name": "disconnect",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "The method to be called\n  when the connection has been closed.",
+                    "type": "Method",
+                    "optional": true,
+                    "optdefault": "wsc.Transport.sdisconnect"
+                }
+            ],
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 85,
+            "description": "Open connection event stub.",
+            "itemtype": "method",
+            "name": "sopen",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 92,
+            "description": "Message event stub.",
+            "itemtype": "method",
+            "name": "smessage",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 99,
+            "description": "Close connection event stub.",
+            "itemtype": "method",
+            "name": "sdisconnect",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 110,
+            "description": "Connect to the server.",
+            "itemtype": "method",
+            "name": "connect",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 117,
+            "description": "Send a message to the server.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "message to send to the server.",
+                    "type": "String"
+                }
+            ],
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 125,
+            "description": "Close the connection.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "Transport",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 160,
+            "description": "Called when the connection is opened.\nSets the `sock` attribute.",
+            "itemtype": "method",
+            "name": "onopen",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "WebSocket event object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "sock",
+                    "description": "Transport object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "WebSocket",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 175,
+            "description": "Called when the connection is closed.\nResets `sock` and `conn` to null.",
+            "itemtype": "method",
+            "name": "ondisconnect",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "WebSocket event object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "WebSocket",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 190,
+            "description": "Connect to the server.",
+            "itemtype": "method",
+            "name": "connect",
+            "class": "WebSocket",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 205,
+            "description": "Send a message to the server.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "message to send to the server.",
+                    "type": "String"
+                }
+            ],
+            "class": "WebSocket",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 225,
+            "description": "Close the connection.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "WebSocket",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 267,
+            "description": "Connect to the server.",
+            "itemtype": "method",
+            "name": "connect",
+            "class": "SocketIO",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 282,
+            "description": "Called when the connection is opened.\nSets the `sock` attribute.",
+            "itemtype": "method",
+            "name": "onopen",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "SocketIO event object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "sock",
+                    "description": "Transport object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "SocketIO",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 297,
+            "description": "Called when the connection is closed.\nResets `sock` and `conn` to null.",
+            "itemtype": "method",
+            "name": "ondisconnect",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "SocketIO event object.",
+                    "type": "Object"
+                }
+            ],
+            "class": "SocketIO",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 312,
+            "description": "Send a message to the server.",
+            "itemtype": "method",
+            "name": "send",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "message to send to the server.",
+                    "type": "String"
+                }
+            ],
+            "class": "SocketIO",
+            "module": "wsc"
+        },
+        {
+            "file": "src/transport.js",
+            "line": 332,
+            "description": "Close the connection.",
+            "itemtype": "method",
+            "name": "close",
+            "class": "SocketIO",
+            "module": "wsc"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:35"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:46"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:58"
+        },
+        {
+            "message": "unknown tag: object",
+            "line": " src/dAmn/tablumps.js:83"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:97"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:106"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:117"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:203"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:214"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:312"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/dAmn/tablumps.js:356"
+        },
+        {
+            "message": "unknown tag: remove_notice",
+            "line": " src/ui/pager.js:109"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/commands.js:176"
+        },
+        {
+            "message": "unknown tag: cmd",
+            "line": " src/commands.js:176"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/commands.js:202"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/messages.js:18"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src/messages.js:28"
+        },
+        {
+            "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",
+            "line": " src/dAmn/emotes.js:375"
+        },
+        {
+            "message": "Missing item type\nBDS Event handlers.",
+            "line": " src/dAmn/linkbds.js:120"
+        },
+        {
+            "message": "Missing item type\ndAmn Event handlers",
+            "line": " src/dAmn/linkbds.js:170"
+        },
+        {
+            "message": "Missing item type\nExtension to handle stash links posted in the chat.",
+            "line": " src/dAmn/stash.js:2"
+        },
+        {
+            "message": "Missing item type\nFetch stash data.",
+            "line": " src/dAmn/stash.js:33"
+        },
+        {
+            "message": "Missing item type\nRender a stash thumb.",
+            "line": " src/dAmn/stash.js:48"
+        },
+        {
+            "message": "Missing item type\nStates for the parser.",
+            "line": " src/dAmn/tablumps.js:73"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/dAmn/tablumps.js:83"
+        },
+        {
+            "message": "Missing item type\nUI elements",
+            "line": " src/ui/control.js:15"
+        },
+        {
+            "message": "Missing item type\nPager\n\nUsed for giving the user notifications.",
+            "line": " src/ui/pager.js:2"
+        },
+        {
+            "message": "Missing item type\nRemove a given notice from the pager.",
+            "line": " src/ui/pager.js:109"
+        },
+        {
+            "message": "Missing item type\nFind a notice based on the reference.",
+            "line": " src/ui/pager.js:148"
+        },
+        {
+            "message": "Missing item type\nPrompt popup.\nThis should be used for retrieving input from the user.",
+            "line": " src/ui/popup.js:71"
+        },
+        {
+            "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",
+            "line": " src/ui/popup.js:138"
+        },
+        {
+            "message": "Missing item type\nPager notices and such.",
+            "line": " src/ui/templates.js:261"
+        },
+        {
+            "message": "Missing item type\nAutojoin extension.",
+            "line": " src/autojoin.js:1"
+        },
+        {
+            "message": "Missing item type\nAway extension.",
+            "line": " src/away.js:1"
+        },
+        {
+            "message": "Missing item type\nThis extension implements most of the default commands for wsc.",
+            "line": " src/commands.js:3"
+        },
+        {
+            "message": "Missing item type\nIgnore extension.\n\nImplements the ignore functionality.",
+            "line": " src/ignore.js:1"
+        },
+        {
+            "message": "Missing item type\nSets. Yeah. Fun.",
+            "line": " src/lib.js:176"
+        },
+        {
+            "message": "Missing item type\nAdd an item.",
+            "line": " src/lib.js:185"
+        },
+        {
+            "message": "Missing item type\nRemove an item.",
+            "line": " src/lib.js:207"
+        },
+        {
+            "message": "Missing item type\nContains an item?",
+            "line": " src/lib.js:225"
+        },
+        {
+            "message": "Missing item type\nRendered message object.",
+            "line": " src/messages.js:1"
+        },
+        {
+            "message": "Missing item type\nMiddleware management and execution.",
+            "line": " src/middleware.js:2"
+        },
+        {
+            "message": "Missing item type\nStorage object.\nAllows you to save stuffs yo.",
+            "line": " src/storage.js:1"
+        },
+        {
+            "message": "Missing item type\nGet a \"folder\".",
+            "line": " src/storage.js:12"
+        },
+        {
+            "message": "Missing item type\nGet an item from storage.",
+            "line": " src/storage.js:24"
+        },
+        {
+            "message": "Missing item type\nStore an item.",
+            "line": " src/storage.js:42"
+        },
+        {
+            "message": "Missing item type\nRemove an item.",
+            "line": " src/storage.js:56"
+        }
+    ]
+}
