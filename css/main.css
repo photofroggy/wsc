@@ -292,17 +292,18 @@ article.min h3 {
 }
 
 article.min h3 span {
-    -webkit-transition: color, .5s;
-    transition: color, .5s;
+    -webkit-transition: opacity, .5s;
+    transition: opacity, .5s;
     display: inline;
     margin-left: 10px;
     font-family: Georgia;
     font-style: italic;
     font-size: 12px;
-    color: #C3CED8;
+    color: #86929B;
+    opacity: 0;
 }
 
-article.min .content {
+article.min .planned {
     opacity: 0;
 }
 
@@ -319,12 +320,12 @@ article.min:hover h3 {
 }
 
 article.min:hover h3 span {
-    -webkit-transition: color, 1s;
-    transition: color, 1s;
-    color: #86929B;
+    -webkit-transition: opacity, 1s;
+    transition: opacity, 1s;
+    opacity: 1;
 }
 
-article.min:hover .content {
+article.min:hover .planned {
     -webkit-transition: opacity, 1s;
     transition: opacity, 1s;
     opacity: 1;
