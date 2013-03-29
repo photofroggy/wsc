@@ -1,0 +1,33 @@
+
+section {
+    border: none;
+}
+
+section.features {
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 0px 50px 20px 50px;
+    background-color: white;
+    border: 1px dashed #ABC9DA;
+}
+
+section.features article {
+    padding: 10px;
+}
+
+section.features article h3 {
+    padding: 0px;
+}
+
+section.features article h3 span {
+    margin-left: 20px;
+    font-family: Georgia;
+    font-style: italic;
+    color: #E66611;
+    font-size: 12px;
+}
+
+section.features article section {
+    padding: 15px;
+    margin: 0px;
+}
