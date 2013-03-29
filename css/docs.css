@@ -1,0 +1,125 @@
+
+ul.inline {
+    display: inline;
+    padding: 0px 10px;
+}
+
+ul.inline li {
+    display: inline;
+}
+
+ul.commas li:after {
+    content: ',';
+}
+
+ul.commas li:last-child:after {
+    content: '';
+}
+
+ul.args li {
+    font-family: monospace;
+}
+
+ul.tabs {
+    list-style: none;
+    margin: 0 50px 0 50px;
+    overflow: none;
+    height: 40px;
+}
+
+ul.tabs li {
+    float: left;
+    border: 1px dashed #ABC9DA;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 2px 5px;
+    position: relative;
+    bottom: -10px;
+    margin-right: 5px;
+}
+
+ul.tabs li.active {
+    padding: 5px;
+    bottom: -5px;
+    border-bottom: none;
+}
+
+
+
+section.main section {
+    padding: 0px;
+    margin: 0px;
+}
+
+article.meta, div.item header .meta {
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px dashed #ABC9DA;
+    padding: 5px;
+    line-height: 1.5em;
+    font-size: 12px;
+    margin: 0 0 1em 0;
+}
+
+.items div.item header .meta {
+    background: none;
+    border: none;
+    margin: 0;
+}
+
+article.meta p, div.item header .meta p {
+    padding: 0px;
+    margin: 0px;
+}
+
+section.main section.intro {
+    margin: 0 30px 10px 30px;
+}
+
+section.main article.constructor {
+    margin: 0 30px 10px 30px;
+}
+
+.items div.index ul li {
+    display: inline;
+}
+
+.items div.index ul li:after {
+    content: ",";
+}
+
+.items div.index ul li:last-child:after {
+    content: "";
+}
+
+.items div.item {
+    padding: 30px 10px 30px 10px;
+    border-bottom: 1px dashed #ABC9DA;
+}
+
+.items div.item:first-child {
+    padding-top: 10px;
+}
+
+.items div.item:last-child {
+    border: none;
+    border-bottom: 10px;
+}
+
+div.item {}
+div.item header {}
+
+div.item header section.signature h3 {
+    display: inline;
+}
+
+div.item header section.signature section.args {
+    display: inline;
+}
+
+div.item section {
+    padding: 0px;
+    margin: 0px;
+}
+
+div.item section.description {
+    padding: 0px 5px;
+}
