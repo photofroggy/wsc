@@ -15,7 +15,7 @@
             
             for( var index in data.complete ) {
                 entry = data.complete[index];
-                link = '<b>' + ( entry.experimental ? '<em>' : '' ) + '<a href="features.html#' + entry.ref + '">';
+                link = '<b>' + ( entry.experimental ? '<em>' : '' ) + '<a href="features/#' + entry.ref + '">';
                 link+= entry.name + '</a>' + ( entry.experimental ? '</em>' : '' ) + ':</b>';
                 clist.append('<li>' + link + ' <i>' + entry.description + '<i></li>');
             }

@@ -140,7 +140,6 @@ nav.menu {
     position: absolute;
     top: 0px;
     height: 60px;
-    width: 800px;
     line-height: .6em;
 }
 
@@ -170,6 +169,25 @@ nav.menu ul li a:hover {
 nav.menu ul li a.active {
     color: #498794;
     background-color: rgba(159, 199, 197, 0.9);
+}
+
+nav.contents {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(184, 214, 231, 0.77);
+    border-right: 1px solid #ABC9DA;
+    height: 100%;
+    min-width: 100px;
+    width: 13%;
+    overflow: hidden;
+    padding: 10px 0px 10px 10px;
+}
+
+nav.contents ul {
+    list-style: none;
+    font-size: 14px;
+    padding-left: 10px;
 }
 
 div.content {
