@@ -11,14 +11,18 @@ section.items {
     border: 1px dashed #ABC9DA;
 }
 
-section.items a[href^="#"] {
+section.items a[href^="#"], nav.contents ul li.soon a {
     color: #CA662E;
     font-style: italic;
     border-bottom: 1px dotted #6B747A;
 }
 
-section.items a[href^="#"]:hover {
+section.items a[href^="#"]:hover, nav.contents ul li.soon a:hover {
     color: #297AB9;
+}
+
+nav.contents ul li.soon a {
+    border-bottom: none;
 }
 
 section.items article.item {

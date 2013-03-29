@@ -25,8 +25,8 @@
             
             for( var index in data.planned ) {
                 entry = data.planned[index];
-                link = '<b>' + ( entry.experimental ? '<em>' : '' );
-                link+= entry.name + ( entry.experimental ? '</em>' : '' ) + ':</b>';
+                link = '<b>' + ( entry.experimental ? '<em>' : '' ) + '<a href="features/#' + entry.ref + '">';
+                link+= entry.name + '</a>' + ( entry.experimental ? '</em>' : '' ) + ':</b>';
                 clist.append('<li>' + link + ' <i>' + entry.description + '<i></li>');
             }
         }

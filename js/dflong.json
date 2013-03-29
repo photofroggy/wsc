@@ -53,6 +53,19 @@
         ]
     },
     {
+        "name": "Custom colours",
+        "ref": "ccolour",
+        "experimental": true,
+        "description": [
+            "<p>wsc allows you to set custom colours for your username and messages. The client ",
+            "will also show you other people's custom colours. This feature has to be enabled, ",
+            "and can be configured using the settings window.</p>",
+            "<p>Custom colours can make it easier to follow conversations in the chats, as ",
+            "there is more of a visual cue for an individual's messages. If you use these feature, ",
+            "please be considerate and don't use colours that will hurt people's eyes.</p>"
+        ]
+    },
+    {
         "name": "Away messages",
         "ref": "aways",
         "description": [
@@ -76,6 +89,18 @@
             "the settings window and through commands.</p><p>To ignore someone, you can ",
             "type <code>/ignore username</code>. Similarly, <code>/unignore username</code> ",
             "will remove a user from your ignore list.</p>"
+        ]
+    },
+    {
+        "name": "Sta.sh thumbs",
+        "ref": "stashed",
+        "experimental": true,
+        "description": [
+            "<p>Currently, deviantART's <a href=\"http://sta.sh\">Sta.sh</a> does not provide ",
+            "thumbnail codes that can be used in the chats or in journals. So, where possible, ",
+            "wsc renders thumbnails in place of sta.sh links.</p><p>This feature uses oembed, ",
+            "which also makes it possible to view a bigger version of the thumbnail right inside ",
+            "the client.</p>"
         ]
     },
     {
@@ -109,6 +134,36 @@
             "<a href=\"http://baronbeandip.deviantart.com/art/dAmnMessenger-359399317\">dAmnMessenger</a> ",
             "and <a href=\"http://tristan128.deviantart.com/art/Behold-Narwhal-360794554\">Narwhal</a>.",
             "</p><p>Typing <code>/chat username</code> will initiate a private chat.</p>"
+        ]
+    },
+    {
+        "name": "Audible notices",
+        "ref": "noises",
+        "description": [
+            "<p>wsc is noisy! Most notifications make a sound, to help get your attention ",
+            "if you're not currently viewing the client. If someone talks to you in a channel ",
+            "you're not viewing, or when you're not viewing the client at all, the client ",
+            "makes a noise.</p><p>Audible notices are there to help you avoid missing anything ",
+            "in the event that you are distracted. If the notices get annoying, the client's sounds ",
+            "can be muted using the mute button in the top right corner of the client.</p>"
+        ]
+    },
+    {
+        "name": "Muro drawing",
+        "ref": "muro",
+        "soon": true,
+        "description": [
+            "<p>In future, you will be able to use <a href=\"http://sta.sh/muro/\">Muro</a> ",
+            "from inside the client! Hopefully...</p>"
+        ]
+    },
+    {
+        "name": "Multimedia calls",
+        "ref": "mmcalls",
+        "soon": true,
+        "description": [
+            "<p>Make video and voice calls from inside the client! You will be able to ",
+            "talk to other users face-to-face, and actually use your voice as well!</p>"
         ]
     }
 ]

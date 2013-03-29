@@ -21,12 +21,21 @@
             for( var index in data ) {
                 count++;
                 entry = data[index];
-                link = '<a href="#' + entry.ref + '">' + entry.name + '</a>';
-                exp = entry.experimental ? '<span>experimental feature</span>' : '';
-                title = '<h3>' + count + '. ' + entry.name + exp + '</h3>';
+                title = '<h3>' + count + '. ' + entry.name;
+                link = '';
+                
+                if( entry.soon ) {
+                    link = ' class="soon"';
+                    title+= '<span>coming soon</span>';
+                } else if( entry.experimental ) {
+                    title+= '<span>experimental feature</span>';
+                }
+                
+                title+= '</h3>';
+                link+= '>' + count + '. <a href="#' + entry.ref + '">' + entry.name + '</a>';
                 desc = '<section class="description">' + entry.description.join('') + '</section>';
                 
-                clist.append('<li>' + count + '. ' + link + '</li>');
+                clist.append('<li' + link + '</li>');
                 body.append('<article class="item" id="' + entry.ref + '">' + title + desc + '</article>');
             }
             
