@@ -3669,12 +3669,16 @@
                     "type": "String"
                 }
             ],
+            "return": {
+                "description": "The order of the privilege class.",
+                "type": "Integer"
+            },
             "class": "Channel",
             "module": "wsc"
         },
         {
             "file": "src/channel.js",
-            "line": 252,
+            "line": 253,
             "description": "Store each member of the this.",
             "itemtype": "method",
             "name": "set_members",
@@ -3690,7 +3694,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 270,
+            "line": 271,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
@@ -3699,7 +3703,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 333,
+            "line": 334,
             "description": "Register a user with the channel.",
             "itemtype": "method",
             "name": "register_user",
@@ -3715,7 +3719,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 356,
+            "line": 357,
             "description": "Return a list of usernames, sorted alphabetically.",
             "itemtype": "method",
             "name": "get_usernames",
@@ -3724,7 +3728,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 372,
+            "line": 373,
             "description": "Remove a user from the channel.",
             "itemtype": "method",
             "name": "remove_user",
@@ -3740,7 +3744,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 393,
+            "line": 394,
             "description": "Process a recv_join event.",
             "itemtype": "method",
             "name": "recv_join",
@@ -3756,7 +3760,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 405,
+            "line": 406,
             "description": "Process a recv_part event.",
             "itemtype": "method",
             "name": "recv_part",
@@ -3772,7 +3776,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 418,
+            "line": 419,
             "description": "Process a recv_msg event.",
             "itemtype": "method",
             "name": "recv_msg",
@@ -3788,7 +3792,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 449,
+            "line": 450,
             "description": "Process a recv_privchg event.",
             "itemtype": "method",
             "name": "recv_privchg",
@@ -3804,7 +3808,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 465,
+            "line": 466,
             "description": "Process a recv_kicked event.",
             "itemtype": "method",
             "name": "recv_kicked",
