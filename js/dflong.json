@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Autojoin",
+        "ref": "autojoin",
+        "description": [
+            "automatically join channels when you connect foo.",
+            "</p><p>something \nbitches"
+        ]
+    },
+    {
+        "name": "Auto rejoin",
+        "ref": "arejoin",
+        "description": [
+            "automatically rejoin a channel when you get kicked"
+        ]
+    },
+    {
+        "name": "Timestamps",
+        "ref": "timestamps",
+        "description": [
+            "messages can have 24 hour and 12 hour timestamps"
+        ]
+    },
+    {
+        "name": "Custom emotes",
+        "ref": "cemotes",
+        "experimental": true,
+        "description": [
+            "the <cite>emote cloud</cite> is used for custom emoticons"
+        ]
+    },
+    {
+        "name": "Away messages",
+        "ref": "aways",
+        "description": [
+            "have the client automatically respond to messages while you're away"
+        ]
+    }
+]
