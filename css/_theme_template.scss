@@ -372,14 +372,13 @@
             }
         }
         border: 1px solid $inner-border;
-        background-color: $userlist-bg;
     }
     
     div.chatwindow div.userinfo {
         border-color: $inner-border;
         background-color: $heading-bg;
         div.info {
-            background-color: $userlist-bg;
+            background-color: $chrome;
             border-color: $inner-border;
             color: $chrome-color;
             a {

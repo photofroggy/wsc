@@ -1641,7 +1641,6 @@ div.wsc.wsct_default div.chatcontrol div.brow ul.states li {
 }
 div.wsc.wsct_default div.chatusers {
   border: 1px solid #0d4d69;
-  background-color: #406d8b;
 }
 div.wsc.wsct_default div.chatusers div.pc h3, div.wsc.wsct_default div.chatusers div.pc h4 {
   background-color: #81aac5;
@@ -1977,12 +1976,12 @@ div.wsc.wsct_dAmn div.chatwindow header div.title a:hover {
 }
 div.wsc.wsct_dAmn div.chatwindow header div.topic {
   background-color: #e8eee6;
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog {
   background-color: #dce7dc;
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a {
   color: #2c3635;
@@ -2013,7 +2012,7 @@ div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
-  background-color: #c2ddbe;
+  background-color: #c9d3c9;
 }
 div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
   border-color: #858585;
@@ -2025,13 +2024,12 @@ div.wsc.wsct_dAmn div.chatcontrol div.brow ul.states li {
   color: #6a6f6a;
 }
 div.wsc.wsct_dAmn div.chatusers {
-  border: 1px solid #9eaea0;
-  background-color: #dae7d7;
+  border: 1px solid #b9c2ba;
 }
 div.wsc.wsct_dAmn div.chatusers div.pc h3, div.wsc.wsct_dAmn div.chatusers div.pc h4 {
-  background-color: #c2ddbe;
-  border-color: #9eaea0 !important;
-  color: #4f6457;
+  background-color: #c9d3c9;
+  border-color: #b9c2ba !important;
+  color: #69796f;
 }
 div.wsc.wsct_dAmn div.chatusers div.pc ul {
   color: #2c3635;
@@ -2048,12 +2046,12 @@ div.wsc.wsct_dAmn div.chatusers div.pc ul a em {
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.userinfo {
-  border-color: #9eaea0;
-  background-color: #c2ddbe;
+  border-color: #b9c2ba;
+  background-color: #c9d3c9;
 }
 div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info {
-  background-color: #dae7d7;
-  border-color: #9eaea0;
+  background-color: #d0dbd0;
+  border-color: #b9c2ba;
   color: #2c3635;
 }
 div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a {
@@ -2065,16 +2063,16 @@ div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner {
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li.selected a {
   background-color: rgba(145, 163, 173, 0.75);
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages {
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages ul li {
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.pages ul li span.value {
   color: #2c3635;
@@ -2095,7 +2093,7 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text
   text-decoration: underline;
   background-color: rgba(255, 255, 255, 0.75);
   text-shadow: none;
-  border-color: #9eaea0;
+  border-color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a:hover,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text:hover {
@@ -2105,12 +2103,12 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a.evented,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text.evented {
-  color: #9eaea0;
+  color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.tabs ul li a.evented:hover,
 div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text.evented:hover {
   background-color: rgba(255, 255, 255, 0.75);
-  color: #9eaea0;
+  color: #b9c2ba;
 }
 div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;
@@ -2131,7 +2129,7 @@ div.wsc.wsct_dAmn div.floater.settings {
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs a.tab {
   border-color: #9eaea0;
   border-radius: 0;
-  background-color: #c2ddbe;
+  background-color: #c9d3c9;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs .active .tab {
   background-color: #dce7dc;
@@ -2154,7 +2152,7 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item.fain
   color: #848684;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item h3 {
-  color: #4f6457;
+  color: #69796f;
 }
 div.wsc.wsct_dAmn div.pager div.notice {
   background-color: #e8eee6;
