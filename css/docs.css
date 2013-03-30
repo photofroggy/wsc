@@ -1,4 +1,8 @@
 
+pre {
+    overflow: auto;
+}
+
 ul.inline {
     display: inline;
     padding: 0px 10px;
@@ -190,4 +194,16 @@ ul.params li.param .description {
 
 .items .item section.body .returns p {
     padding: 0px 25px;
+}
+
+.items .item p + pre {
+    margin-top: 20px;
+}
+
+.items .item pre + p {
+    margin-top: 20px;
+}
+
+.items .item pre {
+    border-color: #BAD5D3;
 }

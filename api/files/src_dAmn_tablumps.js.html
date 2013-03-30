@@ -33,8 +33,6 @@
     
         <li><a href="/wsc/api/classes/Check.html">Check</a></li>
     
-        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
-    
         <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
     
         <li><a href="/wsc/api/classes/Control.html">Control</a></li>
@@ -43,9 +41,15 @@
     
         <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
     
-        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
     
-        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
     
         <li><a href="/wsc/api/classes/Form.html">Form</a></li>
     
@@ -54,8 +58,6 @@
         <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
     
         <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
-    
-        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
     
         <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
     
@@ -67,17 +69,33 @@
     
         <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
     
-        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
-    
-        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
-    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
-    
-        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
     
         <li><a href="/wsc/api/classes/UI.html">UI</a></li>
     
-        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
     
     </ul>
 </nav>
@@ -98,10 +116,11 @@
  *     console.log(msg.html()); &#x2F;&#x2F; &#x27;hey, check &lt;b&gt;&lt;a href=&quot;http:&#x2F;&#x2F;google.com&quot;&gt;google&lt;&#x2F;a&gt;&lt;&#x2F;b&gt; for answers.&#x27;
  *     console.log(msg.ansi()); &#x2F;&#x2F; &#x27;hey, check \x1b[1m[link:http:&#x2F;&#x2F;google.com]google[&#x2F;link]\x1b[22m for answers.&#x27;
  * 
- * @class TablumpString
+ * @class dAmn.TablumpString
+ * @extends wsc.MessageString
  * @constructor
  * @param data {String} String possibly containing tablumps.
- * @param parser {Object} A reference to a tablumps parser. Not required.
+ * @param [parser] {Object} A reference to a tablumps parser.
  *&#x2F;
 wsc.dAmn.TablumpString = function(data, parser) {
     this._parser = parser || new wsc.dAmn.Tablumps();
@@ -169,12 +188,32 @@ wsc.dAmn.PARSE = {
 
 
 &#x2F;**
- * @object wsc.dAmn.TablumpParser
- *
- * Constructor for the tablumps parser.
+ * Parser for dAmn Tablumps.
+ * 
+ * @class dAmn.TablumpParser
+ * @extends wsc.MessageParser
+ * @constructor
  *&#x2F;
 wsc.dAmn.TablumpParser = function(  ) {
 
+    &#x2F;**
+     * This object holds each tablump&#x27;s parsing and rendering rules. For each tablump,
+     * there is a key, which is the tablump&#x27;s head, or &quot;tag&quot;. The entry is an array
+     * with the number of arguments in the tablump, followed by different renderers.
+     * As a generalisation, it looks like this:
+     *
+     *      this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];
+     * 
+     * Renderers can be formatting strings or functions. All renderers other than the
+     * first one are optional. If a particular render is not available, the rendering step
+     * falls back to the first renderer in the Array. As a brief example, this is what the
+     * img tag&#x27;s entry looks like:
+     *      
+     *      this.lumps[&#x27;&amp;img\t&#x27;] = [ 3, &#x27;&lt;img src=&quot;{0}&quot; alt=&quot;{1}&quot; title=&quot;{2}&quot; &#x2F;&gt;&#x27;];
+     * 
+     * @property lumps
+     * @type Object
+     *&#x2F;
     this.lumps = this.defaultMap();
 
 };
@@ -183,18 +222,17 @@ wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
 wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
 
 &#x2F;**
- * @function registerMap
- *
  * I should probably deprecate this. Sets the rendering map to the given map.
+ * @method registerMap
+ * @deprecated
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
 &#x2F;**
- * @function extend
- *
  * Add the given rendering items to the parser&#x27;s render map.
+ * @method extend
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
@@ -203,9 +241,8 @@ wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
 };
 
 &#x2F;**
- * @function defaultMap
- * 
  * Get all the default nonsense.
+ * @method defaultMap
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     &#x2F;* Tablumps formatting rules.
@@ -289,9 +326,12 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
 
 
 &#x2F;**
- * @function parse
+ * Parse a message into tokens and return it as a
+ * {{#crossLink &quot;dAmn.TablumpString&quot;}}{{&#x2F;crossLink}} object.
  *
- * Create a wsc.dAmn.TablumpString obejct and return it.
+ * @method parse
+ * @param data {String} Message to parse
+ * @return {Object} Parsed tablump string
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
     data = replaceAll(data, &#x27;&lt;&#x27;, &#x27;&amp;lt;&#x27;);
@@ -300,9 +340,11 @@ wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
 };
 
 &#x2F;**
- * @function tokenise
- * 
  * Parse a message possibly containing tablumps into tokens.
+ * 
+ * @method tokenise
+ * @param data {String} Message to parse
+ * @return {Array} Tokens
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 
@@ -398,8 +440,6 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 };
 
 &#x2F;**
- * @function render
- *
  * Render tablumps in a given format.
  * 
  * Here, the flag should be a number, and defines the index of the renderer
@@ -410,6 +450,11 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
  * Setting &#x60;flag&#x60; to 1 causes the parser to render tablumps as HTML elements
  * where possible. Setting &#x60;flag&#x60; to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
+ * 
+ * @method render
+ * @param flag {Integer} Determines how the message should be rendered
+ * @param data {Object} TablumpString to be rendered
+ * @return {String} Rendered tablump string
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     if( !data )
@@ -442,8 +487,12 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
 };
 
 &#x2F;**
- * @function renderOne
  * Render a single tablump.
+ * @method renderOne
+ * @param type {Integer} Type of renderer to use
+ * @param tag {String} Name of the tablump tag
+ * @param tokens {Array} Tablump arguments
+ * @return {String} The rendered tablump
  *&#x2F;
 wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     var lump = this.lumps[tag];

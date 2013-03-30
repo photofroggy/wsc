@@ -33,8 +33,6 @@
     
         <li><a href="/wsc/api/classes/Check.html">Check</a></li>
     
-        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
-    
         <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
     
         <li><a href="/wsc/api/classes/Control.html">Control</a></li>
@@ -43,9 +41,15 @@
     
         <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
     
-        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
     
-        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
     
         <li><a href="/wsc/api/classes/Form.html">Form</a></li>
     
@@ -54,8 +58,6 @@
         <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
     
         <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
-    
-        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
     
         <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
     
@@ -67,17 +69,33 @@
     
         <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
     
-        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
-    
-        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
-    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
-    
-        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
     
         <li><a href="/wsc/api/classes/UI.html">UI</a></li>
     
-        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
     
     </ul>
 </nav>
@@ -89,7 +107,7 @@
 &#x2F;**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  *&#x2F;
@@ -98,7 +116,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [[&quot;recv&quot;, &quot;admin&quot;]];
     
-    &#x2F;&#x2F; Mappings for every packet.
+    &#x2F;**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a &#x60;packet object&#x60;
+     * to an &#x60;event object&#x60;. For each packet, there is an entry, where the key is the
+     * {{#crossLink &quot;wsc.Protocol&#x2F;event:method&quot;}}event name{{&#x2F;crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure &#x60;[ param, args, body ]&#x60;. All items are optional, but
+     * positional. To discard a particular piece of data, &#x60;null&#x60; can be used.
+     * 
+     * When &#x60;args&#x60; is present it must be an array. This array names the arguments to store.
+     * Each item in the &#x60;args&#x60; array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When &#x60;body&#x60; is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (&#x60;*&#x60;). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink &quot;wsc.MessageParser&quot;}}message parser{{&#x2F;crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps[&#x27;property&#x27;] = [&#x27;ns&#x27;, [&#x27;p&#x27;, &#x27;by&#x27;, &#x27;ts&#x27;], &#x27;*value&#x27; ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          &quot;name&quot;: &quot;property&quot;,
+     *          &quot;ns&quot;: pkt.param,
+     *          &quot;p&quot;: pkt.arg.p,
+     *          &quot;by&quot;: pkt.arg.by,
+     *          &quot;ts&quot;: pkt.arg.ts,
+     *          &quot;value&quot;: pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps[&#x27;kick&#x27;] = [&#x27;ns&#x27;, [[&#x27;u&#x27;, &#x27;user&#x27;], &#x27;e&#x27;]];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          &quot;name&quot;: &quot;kick&quot;,
+     *          &quot;ns&quot;: pkt.param,
+     *          &quot;user&quot;: pkt.arg.u,
+     *          &quot;e&quot;: pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     *&#x2F;
     this.maps = {
         &#x27;chatserver&#x27;: [&#x27;version&#x27;],
         &#x27;login&#x27;: [&#x27;username&#x27;, [&#x27;e&#x27;], &#x27;data&#x27;],

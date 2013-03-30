@@ -45,7 +45,9 @@
         "src/dAmn/stash.js": {
             "name": "src/dAmn/stash.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "dAmn.Stash": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -53,7 +55,8 @@
             "name": "src/dAmn/tablumps.js",
             "modules": {},
             "classes": {
-                "TablumpString": 1
+                "dAmn.TablumpString": 1,
+                "dAmn.TablumpParser": 1
             },
             "fors": {},
             "namespaces": {}
@@ -72,7 +75,9 @@
         "src/ui/channel.js": {
             "name": "src/ui/channel.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Channel": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -88,7 +93,9 @@
         "src/ui/control.js": {
             "name": "src/ui/control.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "Control": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -171,7 +178,7 @@
             "name": "src/channel.js",
             "modules": {},
             "classes": {
-                "Channel": 1
+                "wsc.Channel": 1
             },
             "fors": {},
             "namespaces": {}
@@ -180,7 +187,7 @@
             "name": "src/client.js",
             "modules": {},
             "classes": {
-                "Client": 1
+                "wsc.Client": 1
             },
             "fors": {},
             "namespaces": {}
@@ -188,7 +195,9 @@
         "src/commands.js": {
             "name": "src/commands.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "wsc.defaults.Extension": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -196,7 +205,16 @@
             "name": "src/control.js",
             "modules": {},
             "classes": {
-                "Control": 1
+                "wsc.Control": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/events.js": {
+            "name": "src/events.js",
+            "modules": {},
+            "classes": {
+                "EventEmitter": 1
             },
             "fors": {},
             "namespaces": {}
@@ -205,7 +223,7 @@
             "name": "src/flow.js",
             "modules": {},
             "classes": {
-                "Flow": 1
+                "wsc.Flow": 1
             },
             "fors": {},
             "namespaces": {}
@@ -227,14 +245,27 @@
         "src/messages.js": {
             "name": "src/messages.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "wsc.MessageString": 1
+            },
             "fors": {},
             "namespaces": {}
         },
         "src/middleware.js": {
             "name": "src/middleware.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "wsc.Middleware": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/packet.js": {
+            "name": "src/packet.js",
+            "modules": {},
+            "classes": {
+                "wsc.Packet": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -242,7 +273,7 @@
             "name": "src/protocol.js",
             "modules": {},
             "classes": {
-                "Protocol": 1
+                "wsc.Protocol": 1
             },
             "fors": {},
             "namespaces": {}
@@ -258,9 +289,9 @@
             "name": "src/transport.js",
             "modules": {},
             "classes": {
-                "Transport": 1,
-                "WebSocket": 1,
-                "SocketIO": 1
+                "wsc.Transport": 1,
+                "wsc.WebSocket": 1,
+                "wsc.SocketIO": 1
             },
             "fors": {},
             "namespaces": {}
@@ -275,15 +306,22 @@
             "classes": {
                 "dAmn.Extension": 1,
                 "dAmn.avatar": 1,
-                "TablumpString": 1,
-                "Channel": 1,
-                "Control": 1,
-                "Client": 1,
-                "Flow": 1,
-                "Protocol": 1,
-                "Transport": 1,
-                "WebSocket": 1,
-                "SocketIO": 1
+                "dAmn.Stash": 1,
+                "dAmn.TablumpString": 1,
+                "dAmn.TablumpParser": 1,
+                "wsc.Channel": 1,
+                "wsc.Client": 1,
+                "wsc.defaults.Extension": 1,
+                "wsc.Control": 1,
+                "EventEmitter": 1,
+                "wsc.Flow": 1,
+                "wsc.MessageString": 1,
+                "wsc.Middleware": 1,
+                "wsc.Packet": 1,
+                "wsc.Protocol": 1,
+                "wsc.Transport": 1,
+                "wsc.WebSocket": 1,
+                "wsc.SocketIO": 1
             },
             "fors": {},
             "namespaces": {},
@@ -310,7 +348,9 @@
             "submodules": {},
             "classes": {
                 "UI": 1,
+                "Channel": 1,
                 "Chatbook": 1,
+                "Control": 1,
                 "Navigation": 1,
                 "Popup": 1,
                 "Settings": 1,
@@ -363,9 +403,23 @@
             "line": 2,
             "description": "This object provides a few helper functions relating to deviantART avatars."
         },
-        "TablumpString": {
-            "name": "TablumpString",
-            "shortname": "TablumpString",
+        "dAmn.Stash": {
+            "name": "dAmn.Stash",
+            "shortname": "dAmn.Stash",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/stash.js",
+            "line": 2,
+            "description": "Extension to handle stash links posted in the chat. Provides some helper functions\nto meet this end as well."
+        },
+        "dAmn.TablumpString": {
+            "name": "dAmn.TablumpString",
+            "shortname": "dAmn.TablumpString",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -379,6 +433,7 @@
             "example": [
                 "\n    // Parse something.\n    var msg = new wsc.TablumpString('hey, check &b\\t&a\\thttp://google.com\\tgoogle.com\\tgoogle&/a\\t&/b\\t for answers.');\n    console.log(msg.raw); // 'hey, check &b\\t&a\\thttp://google.com\\tgoogle.com\\tgoogle&/a\\t&/b\\t for answers.'\n    console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'\n    console.log(msg.html()); // 'hey, check <b><a href=\"http://google.com\">google</a></b> for answers.'\n    console.log(msg.ansi()); // 'hey, check \\x1b[1m[link:http://google.com]google[/link]\\x1b[22m for answers.'"
             ],
+            "extends": "wsc.MessageString",
             "is_constructor": 1,
             "params": [
                 {
@@ -388,10 +443,27 @@
                 },
                 {
                     "name": "parser",
-                    "description": "A reference to a tablumps parser. Not required.",
-                    "type": "Object"
+                    "description": "A reference to a tablumps parser.",
+                    "type": "Object",
+                    "optional": true
                 }
             ]
+        },
+        "dAmn.TablumpParser": {
+            "name": "dAmn.TablumpParser",
+            "shortname": "dAmn.TablumpParser",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/dAmn/tablumps.js",
+            "line": 84,
+            "description": "Parser for dAmn Tablumps.",
+            "extends": "wsc.MessageParser",
+            "is_constructor": 1
         },
         "UI": {
             "name": "UI",
@@ -439,11 +511,11 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "module": "wsc",
+            "module": "Chatterbox",
             "namespace": "",
-            "file": "src/channel.js",
+            "file": "src/ui/channel.js",
             "line": 1,
-            "description": "Chat channel object.\nManages channel events and data, and acts as a thin wrapper for the\nchannel's UI object.",
+            "description": "Object for managing channel interfaces.",
             "is_constructor": 1,
             "params": [
                 {
@@ -498,11 +570,11 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "module": "wsc",
+            "module": "Chatterbox",
             "namespace": "",
-            "file": "src/control.js",
+            "file": "src/ui/control.js",
             "line": 1,
-            "description": "Controls the input panel of the client.",
+            "description": "This object provides an interface for the chat input panel.",
             "is_constructor": 1,
             "params": [
                 {
@@ -823,9 +895,41 @@
             "line": 1,
             "description": "Container object for HTML5 templates for the chat UI."
         },
-        "Client": {
-            "name": "Client",
-            "shortname": "Client",
+        "wsc.Channel": {
+            "name": "wsc.Channel",
+            "shortname": "wsc.Channel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/channel.js",
+            "line": 1,
+            "description": "Chat channel object.\nManages channel events and data, and acts as a thin wrapper for the\nchannel's UI object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "client",
+                    "description": "Wsc chat client object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "ns",
+                    "description": "Channel namespace.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the channel tab be hidden?",
+                    "type": "Boolean"
+                }
+            ]
+        },
+        "wsc.Client": {
+            "name": "wsc.Client",
+            "shortname": "wsc.Client",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -853,11 +957,64 @@
                     "description": "Is firefox being used?",
                     "type": "Object"
                 }
+            ],
+            "since": "0.0.1"
+        },
+        "wsc.defaults.Extension": {
+            "name": "wsc.defaults.Extension",
+            "shortname": "wsc.defaults.Extension",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/commands.js",
+            "line": 3,
+            "description": "This extension implements most of the default commands for wsc.",
+            "is_constructor": 1
+        },
+        "wsc.Control": {
+            "name": "wsc.Control",
+            "shortname": "wsc.Control",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/control.js",
+            "line": 1,
+            "description": "Controls the input panel of the client.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "client",
+                    "description": "wsc.Client object.",
+                    "type": "Object"
+                }
             ]
         },
-        "Flow": {
-            "name": "Flow",
-            "shortname": "Flow",
+        "EventEmitter": {
+            "name": "EventEmitter",
+            "shortname": "EventEmitter",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/events.js",
+            "line": 12,
+            "description": "Event emitter object emits events and stuff.",
+            "is_constructor": 1
+        },
+        "wsc.Flow": {
+            "name": "wsc.Flow",
+            "shortname": "wsc.Flow",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -867,7 +1024,7 @@
             "namespace": "",
             "file": "src/flow.js",
             "line": 1,
-            "description": "Control the client's program flow in relation to the chat this.",
+            "description": "Control the client's program flow. This object determines how the client responds to\ncertain events.",
             "is_constructor": 1,
             "params": [
                 {
@@ -877,9 +1034,82 @@
                 }
             ]
         },
-        "Protocol": {
-            "name": "Protocol",
-            "shortname": "Protocol",
+        "wsc.MessageString": {
+            "name": "wsc.MessageString",
+            "shortname": "wsc.MessageString",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/messages.js",
+            "line": 1,
+            "description": "Rendered message object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Unparsed message.",
+                    "type": "String"
+                },
+                {
+                    "name": "parser",
+                    "description": "Object used to parse messages.",
+                    "type": "Object",
+                    "optional": true,
+                    "optdefault": "wsc.MessageParser"
+                }
+            ]
+        },
+        "wsc.Middleware": {
+            "name": "wsc.Middleware",
+            "shortname": "wsc.Middleware",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/middleware.js",
+            "line": 2,
+            "description": "Middleware management and execution.",
+            "is_constructor": 1
+        },
+        "wsc.Packet": {
+            "name": "wsc.Packet",
+            "shortname": "wsc.Packet",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/packet.js",
+            "line": 7,
+            "description": "Parses a raw packet into a usable object.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Raw packet data",
+                    "type": "String"
+                },
+                {
+                    "name": "separator",
+                    "description": "Separator character used to delimit arguments",
+                    "type": "String",
+                    "optional": true,
+                    "optdefault": "'"
+                }
+            ]
+        },
+        "wsc.Protocol": {
+            "name": "wsc.Protocol",
+            "shortname": "wsc.Protocol",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -901,9 +1131,9 @@
                 }
             ]
         },
-        "Transport": {
-            "name": "Transport",
-            "shortname": "Transport",
+        "wsc.Transport": {
+            "name": "wsc.Transport",
+            "shortname": "wsc.Transport",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -944,9 +1174,9 @@
                 }
             ]
         },
-        "WebSocket": {
-            "name": "WebSocket",
-            "shortname": "WebSocket",
+        "wsc.WebSocket": {
+            "name": "wsc.WebSocket",
+            "shortname": "wsc.WebSocket",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -987,9 +1217,9 @@
                 }
             ]
         },
-        "SocketIO": {
-            "name": "SocketIO",
-            "shortname": "SocketIO",
+        "wsc.SocketIO": {
+            "name": "wsc.SocketIO",
+            "shortname": "wsc.SocketIO",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -1149,129 +1379,192 @@
             "file": "src/dAmn/linkbds.js",
             "line": 120,
             "description": "BDS Event handlers.",
-            "class": "TablumpString",
+            "class": "dAmn.Stash",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/linkbds.js",
             "line": 170,
             "description": "dAmn Event handlers",
-            "class": "TablumpString",
+            "class": "dAmn.Stash",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/stash.js",
-            "line": 2,
-            "description": "Extension to handle stash links posted in the chat.",
-            "class": "TablumpString",
-            "module": "wsc"
-        },
-        {
-            "file": "src/dAmn/stash.js",
-            "line": 33,
+            "line": 36,
             "description": "Fetch stash data.",
-            "class": "TablumpString",
+            "class": "dAmn.Stash",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/stash.js",
-            "line": 48,
+            "line": 51,
             "description": "Render a stash thumb.",
-            "class": "TablumpString",
+            "class": "dAmn.Stash",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 35,
+            "line": 36,
             "itemtype": "method",
             "name": "html\n\nRender the tablumps as HTML entities.",
-            "class": "TablumpString",
+            "class": "dAmn.TablumpString",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 46,
+            "line": 47,
             "itemtype": "method",
             "name": "text\n\nRender the tablumps in plain text where possible. Some tablumps appear as\nHTML entities even through this.",
-            "class": "TablumpString",
+            "class": "dAmn.TablumpString",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 58,
+            "line": 59,
             "itemtype": "method",
             "name": "ansi\n\nRender the tablumps with ANSI escape sequences.\n\nFor this rendering method to really be worth it, I'll actually have to move\naway from the simple regex.",
-            "class": "TablumpString",
+            "class": "dAmn.TablumpString",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 73,
+            "line": 74,
             "description": "States for the parser.",
-            "class": "TablumpString",
+            "class": "dAmn.TablumpString",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 83,
-            "object": "wsc.dAmn.TablumpParser\n\nConstructor for the tablumps parser.",
-            "class": "TablumpString",
+            "line": 93,
+            "description": "This object holds each tablump's parsing and rendering rules. For each tablump,\nthere is a key, which is the tablump's head, or \"tag\". The entry is an array\nwith the number of arguments in the tablump, followed by different renderers.\nAs a generalisation, it looks like this:\n\n     this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];\n\nRenderers can be formatting strings or functions. All renderers other than the\nfirst one are optional. If a particular render is not available, the rendering step\nfalls back to the first renderer in the Array. As a brief example, this is what the\nimg tag's entry looks like:\n     \n     this.lumps['&img\\t'] = [ 3, '<img src=\"{0}\" alt=\"{1}\" title=\"{2}\" />'];",
+            "itemtype": "property",
+            "name": "lumps",
+            "type": "Object",
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 97,
+            "line": 118,
+            "description": "I should probably deprecate this. Sets the rendering map to the given map.",
             "itemtype": "method",
-            "name": "registerMap\n\nI should probably deprecate this. Sets the rendering map to the given map.",
-            "class": "TablumpString",
+            "name": "registerMap",
+            "deprecated": true,
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 106,
+            "line": 127,
+            "description": "Add the given rendering items to the parser's render map.",
             "itemtype": "method",
-            "name": "extend\n\nAdd the given rendering items to the parser's render map.",
-            "class": "TablumpString",
+            "name": "extend",
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 117,
+            "line": 137,
+            "description": "Get all the default nonsense.",
             "itemtype": "method",
-            "name": "defaultMap\n\nGet all the default nonsense.",
-            "class": "TablumpString",
+            "name": "defaultMap",
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 203,
+            "line": 222,
+            "description": "Parse a message into tokens and return it as a\n{{#crossLink \"dAmn.TablumpString\"}}{{/crossLink}} object.",
             "itemtype": "method",
-            "name": "parse\n\nCreate a wsc.dAmn.TablumpString obejct and return it.",
-            "class": "TablumpString",
+            "name": "parse",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Message to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Parsed tablump string",
+                "type": "Object"
+            },
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 214,
+            "line": 236,
+            "description": "Parse a message possibly containing tablumps into tokens.",
             "itemtype": "method",
-            "name": "tokenise\n\nParse a message possibly containing tablumps into tokens.",
-            "class": "TablumpString",
+            "name": "tokenise",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Message to parse",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Tokens",
+                "type": "Array"
+            },
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 312,
+            "line": 336,
+            "description": "Render tablumps in a given format.\n\nHere, the flag should be a number, and defines the index of the renderer\nto use when rendering a tablump. Setting `flag` to 0 will result in the\nfirst renderer being used. In the render map, the plain text renderers come\nfirst, and also act as a default.\n\nSetting `flag` to 1 causes the parser to render tablumps as HTML elements\nwhere possible. Setting `flag` to 2 causes the parser to render tablumps as\nANSI escape sequence formatted strings where possible.",
             "itemtype": "method",
-            "name": "render\n\nRender tablumps in a given format.\n\nHere, the flag should be a number, and defines the index of the renderer\nto use when rendering a tablump. Setting `flag` to 0 will result in the\nfirst renderer being used. In the render map, the plain text renderers come\nfirst, and also act as a default.\n\nSetting `flag` to 1 causes the parser to render tablumps as HTML elements\nwhere possible. Setting `flag` to 2 causes the parser to render tablumps as\nANSI escape sequence formatted strings where possible.",
-            "class": "TablumpString",
+            "name": "render",
+            "params": [
+                {
+                    "name": "flag",
+                    "description": "Determines how the message should be rendered",
+                    "type": "Integer"
+                },
+                {
+                    "name": "data",
+                    "description": "TablumpString to be rendered",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Rendered tablump string",
+                "type": "String"
+            },
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
             "file": "src/dAmn/tablumps.js",
-            "line": 356,
+            "line": 383,
+            "description": "Render a single tablump.",
             "itemtype": "method",
-            "name": "renderOne\nRender a single tablump.",
-            "class": "TablumpString",
+            "name": "renderOne",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "Type of renderer to use",
+                    "type": "Integer"
+                },
+                {
+                    "name": "tag",
+                    "description": "Name of the tablump tag",
+                    "type": "String"
+                },
+                {
+                    "name": "tokens",
+                    "description": "Tablump arguments",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "The rendered tablump",
+                "type": "String"
+            },
+            "class": "dAmn.TablumpParser",
             "module": "wsc"
         },
         {
@@ -3549,14 +3842,14 @@
             "file": "src/autojoin.js",
             "line": 1,
             "description": "Autojoin extension.",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "Chatterbox"
         },
         {
             "file": "src/away.js",
             "line": 1,
             "description": "Away extension.",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "Chatterbox"
         },
         {
@@ -3565,7 +3858,7 @@
             "description": "Create a UI view for this channel.",
             "itemtype": "method",
             "name": "build",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3574,7 +3867,7 @@
             "description": "Remove this channel from the screen entirely.",
             "itemtype": "method",
             "name": "remove",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3583,7 +3876,7 @@
             "description": "Hide the channel view in the UI.",
             "itemtype": "method",
             "name": "hide",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3592,7 +3885,7 @@
             "description": "Show the channel view in the UI.",
             "itemtype": "method",
             "name": "show",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3608,7 +3901,7 @@
                     "type": "String"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3624,7 +3917,7 @@
                     "type": "String"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3646,7 +3939,7 @@
                     "optional": true
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3655,7 +3948,7 @@
             "description": "Clear all log messages from the log window.",
             "itemtype": "method",
             "name": "clear",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3671,7 +3964,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3692,7 +3985,7 @@
                     "type": "Array"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3708,7 +4001,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3724,7 +4017,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3740,7 +4033,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3760,7 +4053,7 @@
                 "description": "The order of the privilege class.",
                 "type": "Integer"
             },
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3776,7 +4069,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3785,7 +4078,7 @@
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3801,7 +4094,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3810,7 +4103,7 @@
             "description": "Return a list of usernames, sorted alphabetically.",
             "itemtype": "method",
             "name": "get_usernames",
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3826,7 +4119,7 @@
                     "type": "String"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3842,7 +4135,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3858,7 +4151,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3874,7 +4167,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3890,7 +4183,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
@@ -3906,59 +4199,59 @@
                     "type": "Object"
                 }
             ],
-            "class": "Channel",
+            "class": "wsc.Channel",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 24,
+            "line": 25,
             "description": "An instance of a protocol parser.",
             "itemtype": "property",
             "name": "protocol",
             "type": "{Object}",
             "default": "wsc.Protocol",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 115,
+            "line": 116,
             "description": "Load configuration from localStorage.",
             "itemtype": "method",
             "name": "config_load",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 145,
+            "line": 146,
             "description": "Save configuration save localStorage.",
             "itemtype": "method",
             "name": "config_save",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 180,
+            "line": 181,
             "description": "Build the client interface and hook up any required event handlers for the\ninterface. In particular, event handlers are hooked for switching and\nclosing channel tabs.",
             "itemtype": "method",
             "name": "build",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 217,
+            "line": 218,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 230,
+            "line": 231,
             "description": "Add an extension to the client.",
             "itemtype": "method",
             "name": "add_extension",
@@ -3969,12 +4262,12 @@
                     "type": "Method"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 243,
+            "line": 244,
             "description": "Bind a method to an event.",
             "itemtype": "method",
             "name": "bind",
@@ -3990,12 +4283,12 @@
                     "type": "Method"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 262,
+            "line": 263,
             "description": "Clear event listeners for a given event.",
             "itemtype": "method",
             "name": "clear_listeners",
@@ -4006,12 +4299,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 274,
+            "line": 275,
             "description": "Trigger an event.",
             "itemtype": "method",
             "name": "trigger",
@@ -4027,48 +4320,48 @@
                     "type": "Object"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 287,
+            "line": 288,
             "description": "Add a middleware method.",
             "itemtype": "method",
             "name": "middle",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 298,
+            "line": 299,
             "description": "Run a method with middleware.",
             "itemtype": "method",
             "name": "cascade",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 309,
+            "line": 310,
             "description": "Open a connection to the chat server.\nIf the client if already connected, nothing happens.",
             "itemtype": "method",
             "name": "connect",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 340,
+            "line": 341,
             "description": "Close the connection foo.",
             "itemtype": "method",
             "name": "close",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 353,
+            "line": 354,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -4089,12 +4382,12 @@
                 "description": "Channel object associated with the given namespace.",
                 "type": "Object"
             },
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 372,
+            "line": 373,
             "description": "Get a count of the number of channels the client has open.\nChannels with their tabs hidden are not counted.",
             "itemtype": "method",
             "name": "channels",
@@ -4109,12 +4402,12 @@
                 "description": "Number of channels open.",
                 "type": "Integer"
             },
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 394,
+            "line": 395,
             "description": "Iterate through the different channels.",
             "itemtype": "method",
             "name": "each_channel",
@@ -4125,12 +4418,12 @@
                     "type": "Function"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 420,
+            "line": 421,
             "description": "Deform a channel namespace to its shorthand form.",
             "itemtype": "method",
             "name": "deform_ns",
@@ -4145,12 +4438,12 @@
                 "description": "Shorthand channel namespace.",
                 "type": "String"
             },
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 456,
+            "line": 457,
             "description": "Format a channel namespace in its longhand form.",
             "itemtype": "method",
             "name": "format_ns",
@@ -4165,12 +4458,12 @@
                 "description": "Formatted namespace.",
                 "type": "String"
             },
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 484,
+            "line": 485,
             "description": "Create a channel object for the client.",
             "itemtype": "method",
             "name": "create_ns",
@@ -4186,12 +4479,12 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 498,
+            "line": 499,
             "description": "Remove a channel object from the client.",
             "itemtype": "method",
             "name": "remove_ns",
@@ -4202,12 +4495,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 518,
+            "line": 519,
             "description": "Write a log message to a channel's log view.",
             "itemtype": "method",
             "name": "log",
@@ -4223,12 +4516,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 536,
+            "line": 537,
             "description": "Write a message to the client monitor.",
             "itemtype": "method",
             "name": "monitor",
@@ -4239,12 +4532,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 548,
+            "line": 549,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -4255,12 +4548,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 560,
+            "line": 561,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -4271,12 +4564,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 574,
+            "line": 575,
             "description": "Send a packet to the server.",
             "itemtype": "method",
             "name": "send",
@@ -4291,39 +4584,39 @@
                 "description": "Number of characters written to the server.\n  -1 for failure.",
                 "type": "Integer"
             },
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 588,
+            "line": 589,
             "description": "Send a handshake packet.",
             "itemtype": "method",
             "name": "handshake",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 601,
+            "line": 602,
             "description": "Send a login packet.",
             "itemtype": "method",
             "name": "login",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 613,
+            "line": 614,
             "description": "Send a pong packet to the server.",
             "itemtype": "method",
             "name": "pong",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 624,
+            "line": 625,
             "description": "Join a channel.",
             "itemtype": "method",
             "name": "join",
@@ -4334,12 +4627,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 636,
+            "line": 637,
             "description": "Leave a channel.",
             "itemtype": "method",
             "name": "part",
@@ -4350,12 +4643,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 648,
+            "line": 649,
             "description": "Send a message to a channel.",
             "itemtype": "method",
             "name": "say",
@@ -4371,12 +4664,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 668,
+            "line": 669,
             "description": "Send a non-parsed message to a channel.",
             "itemtype": "method",
             "name": "npmsg",
@@ -4392,12 +4685,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 688,
+            "line": 689,
             "description": "Send an action message to a channel.",
             "itemtype": "method",
             "name": "action",
@@ -4413,12 +4706,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 708,
+            "line": 709,
             "description": "Promote a user in a channel.",
             "itemtype": "method",
             "name": "promote",
@@ -4440,12 +4733,12 @@
                     "optional": true
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 723,
+            "line": 724,
             "description": "Demote a user in a channel.",
             "itemtype": "method",
             "name": "demote",
@@ -4467,12 +4760,12 @@
                     "optional": true
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 738,
+            "line": 739,
             "description": "Ban a user from a channel.",
             "itemtype": "method",
             "name": "ban",
@@ -4488,12 +4781,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 752,
+            "line": 753,
             "description": "Unban a user from a channel.",
             "itemtype": "method",
             "name": "unban",
@@ -4509,12 +4802,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 766,
+            "line": 767,
             "description": "Kick a user from a channel.",
             "itemtype": "method",
             "name": "kick",
@@ -4536,12 +4829,12 @@
                     "optional": true
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 785,
+            "line": 786,
             "description": "Kill a user's connection to the server.\nOnly message network admins have access to this packet on the server.",
             "itemtype": "method",
             "name": "kill",
@@ -4558,12 +4851,12 @@
                     "optional": true
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 799,
+            "line": 800,
             "description": "Send an admin comment to a channel.",
             "itemtype": "method",
             "name": "admin",
@@ -4579,12 +4872,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 814,
+            "line": 815,
             "description": "Request a channel property from the server.",
             "itemtype": "method",
             "name": "property",
@@ -4600,12 +4893,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 827,
+            "line": 828,
             "description": "Set a channel property.",
             "itemtype": "method",
             "name": "set",
@@ -4626,12 +4919,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 848,
+            "line": 849,
             "description": "Get whois information for a user.",
             "itemtype": "method",
             "name": "whois",
@@ -4642,40 +4935,60 @@
                     "type": "String"
                 }
             ],
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/client.js",
-            "line": 860,
+            "line": 861,
             "description": "Send a disconnect packet.",
             "itemtype": "method",
             "name": "disconnect",
-            "class": "Client",
+            "class": "wsc.Client",
             "module": "wsc"
         },
         {
             "file": "src/commands.js",
-            "line": 3,
-            "description": "This extension implements most of the default commands for wsc.",
-            "class": "Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/commands.js",
-            "line": 176,
+            "line": 178,
             "itemtype": "method",
             "name": "setter",
             "cmd": "set set configuration options\nThis command allows the user to change the settings for the client through\nthe input box.",
-            "class": "Control",
+            "class": "wsc.defaults.Extension",
             "module": "wsc"
         },
         {
             "file": "src/commands.js",
-            "line": 202,
+            "line": 204,
             "itemtype": "method",
             "name": "connect\nThis command allows the user to force the client to connect to the server.",
-            "class": "Control",
+            "class": "wsc.defaults.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 441,
+            "description": "Implements the ignore feature.",
+            "itemtype": "method",
+            "name": "Ignore",
+            "class": "wsc.defaults.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 448,
+            "description": "Implements away messages.",
+            "itemtype": "method",
+            "name": "Away",
+            "class": "wsc.defaults.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 455,
+            "description": "Implements autojoin channels.",
+            "itemtype": "method",
+            "name": "Autojoin",
+            "class": "wsc.defaults.Extension",
             "module": "wsc"
         },
         {
@@ -4684,7 +4997,7 @@
             "description": "Steal the lime light. Brings the cursor to the input panel.",
             "itemtype": "method",
             "name": "focus",
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4693,7 +5006,7 @@
             "description": "Set the input handlers for the input panel.",
             "itemtype": "method",
             "name": "set_input",
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4709,7 +5022,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4730,7 +5043,7 @@
                 "description": "history  Channel's input history data.",
                 "type": "Object"
             },
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4746,7 +5059,7 @@
                     "type": "String"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4762,7 +5075,7 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4778,7 +5091,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4794,7 +5107,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4810,7 +5123,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4826,7 +5139,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4842,7 +5155,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
@@ -4863,12 +5176,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Control",
+            "class": "wsc.Control",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 75,
+            "line": 76,
             "description": "Handle a packet event.",
             "itemtype": "method",
             "name": "handle",
@@ -4884,12 +5197,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 90,
+            "line": 91,
             "description": "Respond to pings from the server.",
             "itemtype": "method",
             "name": "ping",
@@ -4905,12 +5218,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 101,
+            "line": 102,
             "description": "Respond to a llama-style handshake.",
             "itemtype": "method",
             "name": "chatserver",
@@ -4926,12 +5239,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 112,
+            "line": 113,
             "description": "Process a login packet",
             "itemtype": "method",
             "name": "login",
@@ -4947,12 +5260,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 154,
+            "line": 155,
             "description": "Received a join packet.",
             "itemtype": "method",
             "name": "join",
@@ -4968,12 +5281,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 172,
+            "line": 173,
             "description": "Received a part packet.",
             "itemtype": "method",
             "name": "part",
@@ -4989,12 +5302,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 214,
+            "line": 215,
             "description": "Client has been kicked from a channel.",
             "itemtype": "method",
             "name": "kicked",
@@ -5010,12 +5323,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 229,
+            "line": 230,
             "description": "Process a property packet.",
             "itemtype": "method",
             "name": "property",
@@ -5031,12 +5344,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 246,
+            "line": 247,
             "description": "User join or part.",
             "itemtype": "method",
             "name": "recv_joinpart",
@@ -5052,12 +5365,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 261,
+            "line": 262,
             "description": "A user joined a channel.",
             "itemtype": "method",
             "name": "recv_join",
@@ -5073,12 +5386,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 270,
+            "line": 271,
             "description": "A user left a channel.",
             "itemtype": "method",
             "name": "recv_part",
@@ -5094,12 +5407,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 279,
+            "line": 280,
             "description": "A message was received in a channel.",
             "itemtype": "method",
             "name": "recv_msg",
@@ -5115,12 +5428,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 290,
+            "line": 291,
             "description": "A different kind of message.",
             "itemtype": "method",
             "name": "recv_action",
@@ -5136,12 +5449,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 299,
+            "line": 300,
             "description": "A non-parsed message.",
             "itemtype": "method",
             "name": "recv_npmsg",
@@ -5157,12 +5470,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 308,
+            "line": 309,
             "description": "Someone was promoted or demoted.",
             "itemtype": "method",
             "name": "recv_privchg",
@@ -5178,12 +5491,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/flow.js",
-            "line": 319,
+            "line": 320,
             "description": "Some sucka got kicked foo.",
             "itemtype": "method",
             "name": "recv_kicked",
@@ -5199,95 +5512,91 @@
                     "type": "Object"
                 }
             ],
-            "class": "Flow",
+            "class": "wsc.Flow",
             "module": "wsc"
         },
         {
             "file": "src/ignore.js",
             "line": 1,
             "description": "Ignore extension.\n\nImplements the ignore functionality.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
             "line": 176,
             "description": "Sets. Yeah. Fun.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
             "line": 185,
             "description": "Add an item.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
             "line": 207,
             "description": "Remove an item.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
             "line": 225,
             "description": "Contains an item?",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/messages.js",
-            "line": 1,
-            "description": "Rendered message object.",
-            "class": "Protocol",
-            "module": "wsc"
-        },
-        {
-            "file": "src/messages.js",
-            "line": 18,
+            "line": 23,
             "itemtype": "method",
             "name": "text\n\nRender the tablumps in plain text where possible. Some tablumps appear as\nHTML entities even through this.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/messages.js",
-            "line": 28,
+            "line": 33,
             "itemtype": "method",
             "name": "ansi\n\nRender the tablumps with ANSI escape sequences.\n\nFor this rendering method to really be worth it, I'll actually have to move\naway from the simple regex.",
-            "class": "Protocol",
+            "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/middleware.js",
-            "line": 2,
-            "description": "Middleware management and execution.",
-            "class": "Protocol",
-            "module": "wsc"
-        },
-        {
-            "file": "src/middleware.js",
-            "line": 12,
+            "line": 14,
             "description": "Add a middleware callback for the given event.",
             "itemtype": "method",
             "name": "add",
-            "class": "Protocol",
+            "class": "wsc.Middleware",
             "module": "wsc"
         },
         {
             "file": "src/middleware.js",
-            "line": 29,
+            "line": 31,
             "description": "Call a method, invoking middleware according to the given event name.",
             "itemtype": "method",
             "name": "run",
-            "class": "Protocol",
+            "class": "wsc.Middleware",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 91,
+            "line": 13,
+            "description": "Mapping object.\n\nThis object determines how each protocol packet should be mapped from a `packet object`\nto an `event object`. For each packet, there is an entry, where the key is the\n{{#crossLink \"wsc.Protocol/event:method\"}}event name{{/crossLink}} of the packet.\n\nEach entry is an array. The array consists of names under which to store packet data.\nThe array is of the structure `[ param, args, body ]`. All items are optional, but\npositional. To discard a particular piece of data, `null` can be used.\n\nWhen `args` is present it must be an array. This array names the arguments to store.\nEach item in the `args` array can be a string or a pair of strings. For strings,\nthe corresponding packet argument is stored using its own name. For pairs, the packet\nargument named by the first string is stored using the second string as the key.\n\nWhen `body` is present, it can either be a string or an array. If a string is provided,\nthe entire body is stored using the string as the key. If an array is provided, it\ntreated as another mapping array. This is handled recursively.\n\nKeys in the mapping array can start with an asterisks (`*`). This indicates that the\nvalue is a formatted string and needs to be parsed using a\n{{#crossLink \"wsc.MessageParser\"}}message parser{{/crossLink}}. The asterisks is\nremoved from the key in the final object.\n\nAs an example, property packets use this mapping array:\n\n     this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];\n\nWhen mapping a property packet, the returned object looks like the following:\n     \n     {\n         \"name\": \"property\",\n         \"ns\": pkt.param,\n         \"p\": pkt.arg.p,\n         \"by\": pkt.arg.by,\n         \"ts\": pkt.arg.ts,\n         \"value\": pkt.body\n     }\n\nFor an example of arguments being mapped to different keys, kick\n(error) packets use this mapping array:\n\n     this.maps['kick'] = ['ns', [['u', 'user'], 'e']];\n\nFor this array, the returned object looks like the following:\n     \n     {\n         \"name\": \"kick\",\n         \"ns\": pkt.param,\n         \"user\": pkt.arg.u,\n         \"e\": pkt.body\n     }",
+            "itemtype": "property",
+            "name": "maps",
+            "type": "Object",
+            "class": "wsc.Protocol",
+            "module": "wsc"
+        },
+        {
+            "file": "src/protocol.js",
+            "line": 147,
             "description": "Extend the protocol maps.",
             "itemtype": "method",
             "name": "extend_maps",
@@ -5298,12 +5607,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 105,
+            "line": 161,
             "description": "Extend the protocol message renderers.",
             "itemtype": "method",
             "name": "extend_messages",
@@ -5314,12 +5623,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 119,
+            "line": 175,
             "description": "Parse a packet.",
             "itemtype": "method",
             "name": "parse",
@@ -5330,12 +5639,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 150,
+            "line": 206,
             "description": "Get the event name of a packet.",
             "itemtype": "method",
             "name": "event",
@@ -5350,12 +5659,12 @@
                 "description": "Packet event name.",
                 "type": "String"
             },
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 182,
+            "line": 238,
             "description": "Map a packet to an event object.",
             "itemtype": "method",
             "name": "map",
@@ -5376,12 +5685,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/protocol.js",
-            "line": 248,
+            "line": 304,
             "description": "Render a protocol message in the given format.",
             "itemtype": "method",
             "name": "render",
@@ -5401,42 +5710,42 @@
                 "description": "Rendered event.",
                 "type": "String"
             },
-            "class": "Protocol",
+            "class": "wsc.Protocol",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 1,
             "description": "Storage object.\nAllows you to save stuffs yo.",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 12,
             "description": "Get a \"folder\".",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 24,
             "description": "Get an item from storage.",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 42,
             "description": "Store an item.",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 56,
             "description": "Remove an item.",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5445,7 +5754,7 @@
             "description": "Static class method.\nCreate a new client transport object.",
             "itemtype": "method",
             "name": "Create",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5463,7 +5772,7 @@
                     "optdefault": "wsc.Transport.sopen"
                 }
             ],
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5481,7 +5790,7 @@
                     "optdefault": "wsc.Transport.smessage"
                 }
             ],
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5499,7 +5808,7 @@
                     "optdefault": "wsc.Transport.sdisconnect"
                 }
             ],
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5508,7 +5817,7 @@
             "description": "Open connection event stub.",
             "itemtype": "method",
             "name": "sopen",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5517,7 +5826,7 @@
             "description": "Message event stub.",
             "itemtype": "method",
             "name": "smessage",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5526,7 +5835,7 @@
             "description": "Close connection event stub.",
             "itemtype": "method",
             "name": "sdisconnect",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5535,7 +5844,7 @@
             "description": "Connect to the server.",
             "itemtype": "method",
             "name": "connect",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5551,7 +5860,7 @@
                     "type": "String"
                 }
             ],
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5560,7 +5869,7 @@
             "description": "Close the connection.",
             "itemtype": "method",
             "name": "close",
-            "class": "Transport",
+            "class": "wsc.Transport",
             "module": "wsc"
         },
         {
@@ -5581,7 +5890,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "WebSocket",
+            "class": "wsc.WebSocket",
             "module": "wsc"
         },
         {
@@ -5597,7 +5906,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "WebSocket",
+            "class": "wsc.WebSocket",
             "module": "wsc"
         },
         {
@@ -5606,7 +5915,7 @@
             "description": "Connect to the server.",
             "itemtype": "method",
             "name": "connect",
-            "class": "WebSocket",
+            "class": "wsc.WebSocket",
             "module": "wsc"
         },
         {
@@ -5622,7 +5931,7 @@
                     "type": "String"
                 }
             ],
-            "class": "WebSocket",
+            "class": "wsc.WebSocket",
             "module": "wsc"
         },
         {
@@ -5631,7 +5940,7 @@
             "description": "Close the connection.",
             "itemtype": "method",
             "name": "close",
-            "class": "WebSocket",
+            "class": "wsc.WebSocket",
             "module": "wsc"
         },
         {
@@ -5640,7 +5949,7 @@
             "description": "Connect to the server.",
             "itemtype": "method",
             "name": "connect",
-            "class": "SocketIO",
+            "class": "wsc.SocketIO",
             "module": "wsc"
         },
         {
@@ -5661,7 +5970,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "SocketIO",
+            "class": "wsc.SocketIO",
             "module": "wsc"
         },
         {
@@ -5677,7 +5986,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "SocketIO",
+            "class": "wsc.SocketIO",
             "module": "wsc"
         },
         {
@@ -5693,7 +6002,7 @@
                     "type": "String"
                 }
             ],
-            "class": "SocketIO",
+            "class": "wsc.SocketIO",
             "module": "wsc"
         },
         {
@@ -5702,54 +6011,22 @@
             "description": "Close the connection.",
             "itemtype": "method",
             "name": "close",
-            "class": "SocketIO",
+            "class": "wsc.SocketIO",
             "module": "wsc"
         }
     ],
     "warnings": [
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:35"
+            "line": " src/dAmn/tablumps.js:36"
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:46"
+            "line": " src/dAmn/tablumps.js:47"
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:58"
-        },
-        {
-            "message": "unknown tag: object",
-            "line": " src/dAmn/tablumps.js:83"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:97"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:106"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:117"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:203"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:214"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:312"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/dAmn/tablumps.js:356"
+            "line": " src/dAmn/tablumps.js:59"
         },
         {
             "message": "unknown tag: remove_notice",
@@ -5757,23 +6034,23 @@
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/commands.js:176"
+            "line": " src/commands.js:178"
         },
         {
             "message": "unknown tag: cmd",
-            "line": " src/commands.js:176"
+            "line": " src/commands.js:178"
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/commands.js:202"
+            "line": " src/commands.js:204"
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/messages.js:18"
+            "line": " src/messages.js:23"
         },
         {
             "message": "replacing incorrect tag: function with method",
-            "line": " src/messages.js:28"
+            "line": " src/messages.js:33"
         },
         {
             "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",
@@ -5788,24 +6065,16 @@
             "line": " src/dAmn/linkbds.js:170"
         },
         {
-            "message": "Missing item type\nExtension to handle stash links posted in the chat.",
-            "line": " src/dAmn/stash.js:2"
-        },
-        {
             "message": "Missing item type\nFetch stash data.",
-            "line": " src/dAmn/stash.js:33"
+            "line": " src/dAmn/stash.js:36"
         },
         {
             "message": "Missing item type\nRender a stash thumb.",
-            "line": " src/dAmn/stash.js:48"
+            "line": " src/dAmn/stash.js:51"
         },
         {
             "message": "Missing item type\nStates for the parser.",
-            "line": " src/dAmn/tablumps.js:73"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/dAmn/tablumps.js:83"
+            "line": " src/dAmn/tablumps.js:74"
         },
         {
             "message": "Missing item type\nUI elements",
@@ -5848,10 +6117,6 @@
             "line": " src/away.js:1"
         },
         {
-            "message": "Missing item type\nThis extension implements most of the default commands for wsc.",
-            "line": " src/commands.js:3"
-        },
-        {
             "message": "Missing item type\nIgnore extension.\n\nImplements the ignore functionality.",
             "line": " src/ignore.js:1"
         },
@@ -5870,14 +6135,6 @@
         {
             "message": "Missing item type\nContains an item?",
             "line": " src/lib.js:225"
-        },
-        {
-            "message": "Missing item type\nRendered message object.",
-            "line": " src/messages.js:1"
-        },
-        {
-            "message": "Missing item type\nMiddleware management and execution.",
-            "line": " src/middleware.js:2"
         },
         {
             "message": "Missing item type\nStorage object.\nAllows you to save stuffs yo.",

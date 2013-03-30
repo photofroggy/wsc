@@ -33,8 +33,6 @@
     
         <li><a href="/wsc/api/classes/Check.html">Check</a></li>
     
-        <li><a href="/wsc/api/classes/Client.html">Client</a></li>
-    
         <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
     
         <li><a href="/wsc/api/classes/Control.html">Control</a></li>
@@ -43,9 +41,15 @@
     
         <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
     
-        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
     
-        <li><a href="/wsc/api/classes/Flow.html">Flow</a></li>
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
     
         <li><a href="/wsc/api/classes/Form.html">Form</a></li>
     
@@ -54,8 +58,6 @@
         <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
     
         <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
-    
-        <li><a href="/wsc/api/classes/Protocol.html">Protocol</a></li>
     
         <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
     
@@ -67,17 +69,33 @@
     
         <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
     
-        <li><a href="/wsc/api/classes/SocketIO.html">SocketIO</a></li>
-    
-        <li><a href="/wsc/api/classes/TablumpString.html">TablumpString</a></li>
-    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
-    
-        <li><a href="/wsc/api/classes/Transport.html">Transport</a></li>
     
         <li><a href="/wsc/api/classes/UI.html">UI</a></li>
     
-        <li><a href="/wsc/api/classes/WebSocket.html">WebSocket</a></li>
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
     
     </ul>
 </nav>
@@ -91,11 +109,12 @@
  * the client. Other objects are loaded in to control different parts of the client. These
  * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client&#x27;s container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  *&#x2F;
 wsc.Client = function( view, options, mozilla ) {
 
