@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>dAmn.TablumpString Class</h1>
+
+    <article class="meta">
+        
+    
+        
+            <p>
+                Extends <a href="../classes/wsc.MessageString.html" class="crosslink">wsc.MessageString</a>
+            </p>
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l1"><code>src&#x2F;dAmn&#x2F;tablumps.js:1</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
+            
+        
+    
+        
+    </article>
+    <section class="main">
+    
+    
+    <section class="intro">
+        <p>Represents a string that possibly contains tablumps.
+Use different object methods to render the tablumps differently.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_dAmn.TablumpString" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>dAmn.TablumpString</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[parser]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l1"><code>src&#x2F;dAmn&#x2F;tablumps.js:1</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>String possibly containing tablumps.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[parser]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>A reference to a tablumps parser.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+        <section class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code prettyprint"><code>// Parse something.
+var msg = new wsc.TablumpString('hey, check &amp;b\t&amp;a\thttp://google.com\tgoogle.com\tgoogle&amp;/a\t&amp;/b\t for answers.');
+console.log(msg.raw); // 'hey, check &amp;b\t&amp;a\thttp://google.com\tgoogle.com\tgoogle&amp;/a\t&amp;/b\t for answers.'
+console.log(msg.text()); // 'hey, check [link:http://google.com]google[/link] for answers.'
+console.log(msg.html()); // 'hey, check &lt;b&gt;&lt;a href="http://google.com"&gt;google&lt;/a&gt;&lt;/b&gt; for answers.'
+console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
+</code></pre>
+            </div>
+        </section>
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method inherited">
+                                <a href="#method_ansi
+
+Render the tablumps with ANSI escape sequences.
+
+For this rendering method to really be worth it, I&#x27;ll actually have to move
+away from the simple regex.">ansi
+
+Render the tablumps with ANSI escape sequences.
+
+For this rendering method to really be worth it, I&#x27;ll actually have to move
+away from the simple regex.</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_html
+
+Render the tablumps as HTML entities.">html
+
+Render the tablumps as HTML entities.</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method inherited">
+                                <a href="#method_text
+
+Render the tablumps in plain text where possible. Some tablumps appear as
+HTML entities even through this.">text
+
+Render the tablumps in plain text where possible. Some tablumps appear as
+HTML entities even through this.</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_ansi
+
+Render the tablumps with ANSI escape sequences.
+
+For this rendering method to really be worth it, I&#x27;ll actually have to move
+away from the simple regex." class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>ansi
+
+Render the tablumps with ANSI escape sequences.
+
+For this rendering method to really be worth it, I&#x27;ll actually have to move
+away from the simple regex.</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            <p>Inherited from
+            <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_ansi
+
+Render the tablumps with ANSI escape sequences.
+
+For this rendering method to really be worth it, I&#x27;ll actually have to move
+away from the simple regex.">
+                wsc.MessageString
+            </a>
+            
+            but overwritten in
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l59"><code>src&#x2F;dAmn&#x2F;tablumps.js:59</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_html
+
+Render the tablumps as HTML entities." class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>html
+
+Render the tablumps as HTML entities.</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l36"><code>src&#x2F;dAmn&#x2F;tablumps.js:36</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_text
+
+Render the tablumps in plain text where possible. Some tablumps appear as
+HTML entities even through this." class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>text
+
+Render the tablumps in plain text where possible. Some tablumps appear as
+HTML entities even through this.</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            <p>Inherited from
+            <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_text
+
+Render the tablumps in plain text where possible. Some tablumps appear as
+HTML entities even through this.">
+                wsc.MessageString
+            </a>
+            
+            but overwritten in
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l47"><code>src&#x2F;dAmn&#x2F;tablumps.js:47</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

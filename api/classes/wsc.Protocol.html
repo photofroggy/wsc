@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>wsc.Protocol Class</h1>
+
+    <article class="meta">
+        
+    
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_protocol.js.html#l1"><code>src&#x2F;protocol.js:1</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
+            
+        
+    
+        
+    </article>
+    <section class="main">
+    
+    
+    <section class="intro">
+        <p>Parser for dAmn-like protocols.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_wsc.Protocol" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>wsc.Protocol</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[mparser=wsc.MessageParser]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l1"><code>src&#x2F;protocol.js:1</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name optional">[mparser=wsc.MessageParser]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message parser instance.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+            <li id="properties"><a href="#properties">Properties</a></li>
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_event">event</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_extend_maps">extend_maps</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_extend_messages">extend_messages</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_map">map</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_parse">parse</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_render">render</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+                <div class="index properties">
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_maps">maps</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_event" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>event</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>pkt</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l206"><code>src&#x2F;protocol.js:206</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Get the event name of a packet.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">pkt</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Packet object.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Packet event name.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_extend_maps" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>extend_maps</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>maps</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l147"><code>src&#x2F;protocol.js:147</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Extend the protocol maps.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">maps</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>An object containing packet mappings.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_extend_messages" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>extend_messages</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>messages</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l161"><code>src&#x2F;protocol.js:161</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Extend the protocol message renderers.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">messages</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>An object containing packet rendering methods.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_map" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>map</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>packet</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>event</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>mapping</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l238"><code>src&#x2F;protocol.js:238</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Map a packet to an event object.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">packet</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Packet object.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">event</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data object.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">mapping</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Packet mapping data.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_parse" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>parse</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>packet</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l175"><code>src&#x2F;protocol.js:175</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Parse a packet.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">packet</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Packet object.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_render" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>render</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>format</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>event</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l304"><code>src&#x2F;protocol.js:304</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render a protocol message in the given format.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">format</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Format to render the event in.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">event</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered event.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+            <div id="properties" class="listing">
+
+                
+                    
+<div id="property_maps" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>maps</code></h3>
+            <span class="type">Object</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_protocol.js.html#l13"><code>src&#x2F;protocol.js:13</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>Mapping object.</p>
+
+<p>This object determines how each protocol packet should be mapped from a <code>packet object</code>
+to an <code>event object</code>. For each packet, there is an entry, where the key is the
+<a href="../classes/wsc.Protocol.html#method_event" class="crosslink">event</a> of the packet.</p>
+
+<p>Each entry is an array. The array consists of names under which to store packet data.
+The array is of the structure <code>[ param, args, body ]</code>. All items are optional, but
+positional. To discard a particular piece of data, <code>null</code> can be used.</p>
+
+<p>When <code>args</code> is present it must be an array. This array names the arguments to store.
+Each item in the <code>args</code> array can be a string or a pair of strings. For strings,
+the corresponding packet argument is stored using its own name. For pairs, the packet
+argument named by the first string is stored using the second string as the key.</p>
+
+<p>When <code>body</code> is present, it can either be a string or an array. If a string is provided,
+the entire body is stored using the string as the key. If an array is provided, it
+treated as another mapping array. This is handled recursively.</p>
+
+<p>Keys in the mapping array can start with an asterisks (<code>*</code>). This indicates that the
+value is a formatted string and needs to be parsed using a
+wsc.MessageParser. The asterisks is
+removed from the key in the final object.</p>
+
+<p>As an example, property packets use this mapping array:</p>
+
+<pre class="code prettyprint"><code> this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+</code></pre>
+
+<p>When mapping a property packet, the returned object looks like the following:</p>
+
+<pre class="code prettyprint"><code> {
+     "name": "property",
+     "ns": pkt.param,
+     "p": pkt.arg.p,
+     "by": pkt.arg.by,
+     "ts": pkt.arg.ts,
+     "value": pkt.body
+ }
+</code></pre>
+
+<p>For an example of arguments being mapped to different keys, kick
+(error) packets use this mapping array:</p>
+
+<pre class="code prettyprint"><code> this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+</code></pre>
+
+<p>For this array, the returned object looks like the following:</p>
+
+<pre class="code prettyprint"><code> {
+     "name": "kick",
+     "ns": pkt.param,
+     "user": pkt.arg.u,
+     "e": pkt.body
+ }
+</code></pre>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section
+</div>
+
+                
+            </div>
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

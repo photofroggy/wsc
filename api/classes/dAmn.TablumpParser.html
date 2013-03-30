@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>dAmn.TablumpParser Class</h1>
+
+    <article class="meta">
+        
+    
+        
+            <p>
+                Extends wsc.MessageParser
+            </p>
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l84"><code>src&#x2F;dAmn&#x2F;tablumps.js:84</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
+            
+        
+    
+        
+    </article>
+    <section class="main">
+    
+    
+    <section class="intro">
+        <p>Parser for dAmn Tablumps.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_dAmn.TablumpParser" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>dAmn.TablumpParser</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l84"><code>src&#x2F;dAmn&#x2F;tablumps.js:84</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+            <li id="properties"><a href="#properties">Properties</a></li>
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_defaultMap">defaultMap</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_extend">extend</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_parse">parse</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method deprecated">
+                                <a href="#method_registerMap">registerMap</a>
+
+                                
+                                
+                                    <span class="flag deprecated">deprecated</span>
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_render">render</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_renderOne">renderOne</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_tokenise">tokenise</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+                <div class="index properties">
+
+                    <ul class="index-list properties extends">
+                        
+                            <li class="index-item property">
+                                <a href="#property_lumps">lumps</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_defaultMap" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>defaultMap</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l137"><code>src&#x2F;dAmn&#x2F;tablumps.js:137</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Get all the default nonsense.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_extend" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>extend</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l127"><code>src&#x2F;dAmn&#x2F;tablumps.js:127</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Add the given rendering items to the parser's render map.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_parse" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>parse</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l222"><code>src&#x2F;dAmn&#x2F;tablumps.js:222</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Parse a message into tokens and return it as a
+<a href="../classes/dAmn.TablumpString.html" class="crosslink">dAmn.TablumpString</a> object.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to parse</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    Parsed tablump string
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_registerMap" class="method item deprecated">
+    <header>
+        <section class="signature">
+            <h3><code>registerMap</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+            <span class="flag deprecated">deprecated</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l118"><code>src&#x2F;dAmn&#x2F;tablumps.js:118</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>I should probably deprecate this. Sets the rendering map to the given map.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_render" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>render</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>flag</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l336"><code>src&#x2F;dAmn&#x2F;tablumps.js:336</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render tablumps in a given format.</p>
+
+<p>Here, the flag should be a number, and defines the index of the renderer
+to use when rendering a tablump. Setting <code>flag</code> to 0 will result in the
+first renderer being used. In the render map, the plain text renderers come
+first, and also act as a default.</p>
+
+<p>Setting <code>flag</code> to 1 causes the parser to render tablumps as HTML elements
+where possible. Setting <code>flag</code> to 2 causes the parser to render tablumps as
+ANSI escape sequence formatted strings where possible.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">flag</code>
+                        <span class="type">Integer</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Determines how the message should be rendered</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>TablumpString to be rendered</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered tablump string
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_renderOne" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>renderOne</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>type</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>tag</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>tokens</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l383"><code>src&#x2F;dAmn&#x2F;tablumps.js:383</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render a single tablump.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">type</code>
+                        <span class="type">Integer</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Type of renderer to use</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">tag</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Name of the tablump tag</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">tokens</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Tablump arguments</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The rendered tablump
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_tokenise" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>tokenise</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Array</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l236"><code>src&#x2F;dAmn&#x2F;tablumps.js:236</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Parse a message possibly containing tablumps into tokens.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to parse</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                    Tokens
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+            <div id="properties" class="listing">
+
+                
+                    
+<div id="property_lumps" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>lumps</code></h3>
+            <span class="type">Object</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_dAmn_tablumps.js.html#l93"><code>src&#x2F;dAmn&#x2F;tablumps.js:93</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>This object holds each tablump's parsing and rendering rules. For each tablump,
+there is a key, which is the tablump's head, or "tag". The entry is an array
+with the number of arguments in the tablump, followed by different renderers.
+As a generalisation, it looks like this:</p>
+
+<pre class="code prettyprint"><code> this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];
+</code></pre>
+
+<p>Renderers can be formatting strings or functions. All renderers other than the
+first one are optional. If a particular render is not available, the rendering step
+falls back to the first renderer in the Array. As a brief example, this is what the
+img tag's entry looks like:</p>
+
+<pre class="code prettyprint"><code> this.lumps['&amp;img\t'] = [ 3, '&lt;img src="{0}" alt="{1}" title="{2}" /&gt;'];
+</code></pre>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section
+</div>
+
+                
+            </div>
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

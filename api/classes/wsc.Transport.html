@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>wsc.Transport Class</h1>
+
+    <article class="meta">
+        
+    
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_transport.js.html#l1"><code>src&#x2F;transport.js:1</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
+            
+        
+    
+        
+    </article>
+    <section class="main">
+    
+    
+    <section class="intro">
+        <p>Client transport.
+Acts as a basic wrapper around a transport.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_wsc.Transport" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>wsc.Transport</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>server</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[open=wsc.Transport.sopen]</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[message=wsc.Transport.smessage]</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[disconnect=wsc.Transport.sdisconnect]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l1"><code>src&#x2F;transport.js:1</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">server</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Address for the server to connect to.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[open=wsc.Transport.sopen]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>This method will be called when
+  a connection is established with the server.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[message=wsc.Transport.smessage]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>When a message is received
+  on the transport, this method will be called.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[disconnect=wsc.Transport.sdisconnect]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The method to be
+  called when the connection has been closed.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_close">close</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_connect">connect</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_Create">Create</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_disconnect">disconnect</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_message">message</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_open">open</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_sdisconnect">sdisconnect</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_send">send</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_smessage">smessage</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_sopen">sopen</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_close" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>close</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l125"><code>src&#x2F;transport.js:125</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Close the connection.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_connect" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>connect</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l110"><code>src&#x2F;transport.js:110</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Connect to the server.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_Create" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>Create</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l26"><code>src&#x2F;transport.js:26</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Static class method.
+Create a new client transport object.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_disconnect" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>disconnect</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[callback=wsc.Transport.sdisconnect]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l72"><code>src&#x2F;transport.js:72</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Register disconnect event callback.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name optional">[callback=wsc.Transport.sdisconnect]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The method to be called
+  when the connection has been closed.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_message" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>message</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[callback=wsc.Transport.smessage]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l59"><code>src&#x2F;transport.js:59</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Register message event callback.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name optional">[callback=wsc.Transport.smessage]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>When a message is received
+  on the transport, this method will be called.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_open" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>open</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[callback=wsc.Transport.sopen]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l46"><code>src&#x2F;transport.js:46</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Register open event callback.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name optional">[callback=wsc.Transport.sopen]</code>
+                        <span class="type">Method</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>This method will be called
+  when a connection is established with the server.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_sdisconnect" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>sdisconnect</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l99"><code>src&#x2F;transport.js:99</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Close connection event stub.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_send" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>send</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>message</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l117"><code>src&#x2F;transport.js:117</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Send a message to the server.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">message</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>message to send to the server.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_smessage" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>smessage</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l92"><code>src&#x2F;transport.js:92</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Message event stub.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_sopen" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>sopen</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_transport.js.html#l85"><code>src&#x2F;transport.js:85</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Open connection event stub.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1 class="file-heading">File: src&#x2F;packet.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;* wsc packets - photofroggy
+ * Methods to parse and create packets for the chat protocol.
+ *&#x2F;
+
+var chains = [[&quot;recv&quot;, &quot;admin&quot;]];
+
+&#x2F;**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator=&#x27;=&#x27;] {String} Separator character used to delimit arguments
+ *&#x2F;
+wsc.Packet = function( data, separator ) {
+
+    if(!( data )) {
+        return null;
+    }
+    
+    separator = separator || &#x27;=&#x27;;
+    var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
+    var args = null;
+    var idx = -1;
+    
+    try {
+        &#x2F;&#x2F; Crop the body.
+        idx = data.indexOf(&#x27;\n\n&#x27;);
+        
+        if( idx &gt; -1 ) {
+            pkt.body = data.substr(idx + 2);
+            data = data.substr( 0, idx );
+        }
+        
+        args = data.split(&#x27;\n&#x27;);
+        
+        if( args[0].indexOf( separator ) == -1 ) {
+            cline = args.shift().split(&#x27; &#x27;);
+            pkt.cmd = cline.shift() || null;
+            pkt.param = cline.join(&#x27; &#x27;) || null;
+        }
+        
+        for( var n in args ) {
+            arg = args[n];
+            idx = arg.search(separator);
+            
+            if( idx == -1 )
+                continue;
+            
+            pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || &#x27;&#x27;;
+        }
+        
+        if( pkt.body != null ) {
+            subs = pkt.body.split(&#x27;\n\n&#x27;);
+            for(var i in subs) {
+                sub = wsc.Packet( subs[i], separator );
+                if( sub == null )
+                    break;
+                sub.body = subs.slice(i + 1).join(&#x27;\n\n&#x27;);
+                pkt.sub.push( sub );
+            }
+        }
+        
+    } catch(e) {
+        return null;
+    }
+    
+    pkt.toString = function() { return packetToString(pkt); };
+    pkt.name = packetEvtName(pkt);
+    
+    return pkt;
+
+};
+
+&#x2F;&#x2F; Make a packet string from some given data.
+function wsc_packetstr( cmd, param, args, body ) {
+    var ret = &#x27;&#x27;;
+    if(cmd) {
+        ret = cmd
+        if(param) {
+            ret = ret + &quot; &quot; + param;
+        }
+    }
+    if(args) {
+        for(var key in args) {
+            ret = ret + &quot;\n&quot; + key + &quot;=&quot; + args[key];
+        }
+    }
+    ret = ret + &quot;\n&quot;;
+    if(body) {
+        ret = ret + &quot;\n&quot; + body;
+    }
+    return ret;
+}
+
+function packetToString(pkt) {
+    return wsc_packetstr(pkt.cmd, pkt.param, pkt.arg, pkt.body);
+}
+
+&#x2F;&#x2F; Get the event name of a given packet.
+function packetEvtName( pkt ) {
+    
+    var name = pkt[&quot;cmd&quot;];
+    var cmds = null;
+    for(var index in chains) {
+        
+        cmds = chains[index];
+        
+        if(cmds[0] != name)
+            continue;
+        
+        var sub = pkt.sub[0];
+        name = name + &#x27;_&#x27; + sub[&quot;cmd&quot;];
+        
+        if(cmds.length &gt; 1 &amp;&amp; sub[&quot;param&quot;] != undefined) {
+            if(cmds[1] == sub[&quot;cmd&quot;])
+                return name + &#x27;_&#x27; + sub[&quot;param&quot;];
+        }
+    
+    }
+    
+    return name;
+}
+
+    </pre>
+</div>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

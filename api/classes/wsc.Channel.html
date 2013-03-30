@@ -1,0 +1,2679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Check.html">Check</a></li>
+    
+        <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/Field.html">Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Form.html">Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Items.html">Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Navigation.html">Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Popup.html">Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Item.html">Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Settings.Page.html">Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/UI.html">UI</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>wsc.Channel Class</h1>
+
+    <article class="meta">
+        
+    
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_channel.js.html#l1"><code>src&#x2F;channel.js:1</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
+            
+        
+    
+        
+    </article>
+    <section class="main">
+    
+    
+    <section class="intro">
+        <p>Chat channel object.
+Manages channel events and data, and acts as a thin wrapper for the
+channel's UI object.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_wsc.Channel" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>wsc.Channel</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>client</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>hidden</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l1"><code>src&#x2F;channel.js:1</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">client</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Wsc chat client object.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Channel namespace.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">hidden</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Should the channel tab be hidden?</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_build">build</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_clear">clear</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_get_privclass_order">get_privclass_order</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_get_usernames">get_usernames</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_hide">hide</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log">log</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log_item">log_item</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log_pc">log_pc</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log_whois">log_whois</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_property">property</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_recv_join">recv_join</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_recv_kicked">recv_kicked</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_recv_msg">recv_msg</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_recv_part">recv_part</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_recv_privchg">recv_privchg</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_register_user">register_user</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_remove">remove</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_remove_user">remove_user</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_server_message">server_message</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_set_header">set_header</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_set_members">set_members</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_set_privclasses">set_privclasses</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_set_user_list">set_user_list</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_show">show</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_build" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>build</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l41"><code>src&#x2F;channel.js:41</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Create a UI view for this channel.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_clear" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>clear</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l122"><code>src&#x2F;channel.js:122</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Clear all log messages from the log window.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_get_privclass_order" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>get_privclass_order</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>name</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Integer</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l236"><code>src&#x2F;channel.js:236</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Get the order of a given privilege class.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">name</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Name of the privilege class to get the order of.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Integer</span>:
+                    
+                    The order of the privilege class.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_get_usernames" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>get_usernames</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l357"><code>src&#x2F;channel.js:357</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Return a list of usernames, sorted alphabetically.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_hide" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>hide</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l63"><code>src&#x2F;channel.js:63</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Hide the channel view in the UI.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l85"><code>src&#x2F;channel.js:85</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display a log message.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Log message to display.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log_item" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log_item</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l97"><code>src&#x2F;channel.js:97</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Send a message to the log window.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to send.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log_pc" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log_pc</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>privileges</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l149"><code>src&#x2F;channel.js:149</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display some information relating to a privilege class.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">privileges</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Are we showing privileges or users?</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Array containing information.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log_whois" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log_whois</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l137"><code>src&#x2F;channel.js:137</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display a user's whois info.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Object containing a user's information.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_property" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>property</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l162"><code>src&#x2F;channel.js:162</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a channel property packet.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for the property packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_recv_join" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>recv_join</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l394"><code>src&#x2F;channel.js:394</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a recv_join event.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for recv_join packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_recv_kicked" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>recv_kicked</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l466"><code>src&#x2F;channel.js:466</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a recv_kicked event.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for recv_kicked packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_recv_msg" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>recv_msg</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l419"><code>src&#x2F;channel.js:419</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a recv_msg event.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for recv_msg packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_recv_part" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>recv_part</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l406"><code>src&#x2F;channel.js:406</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a recv_part event.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for recv_part packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_recv_privchg" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>recv_privchg</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l450"><code>src&#x2F;channel.js:450</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Process a recv_privchg event.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for recv_privhcg packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_register_user" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>register_user</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>pkt</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l334"><code>src&#x2F;channel.js:334</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Register a user with the channel.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">pkt</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>User data.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_remove" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>remove</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l52"><code>src&#x2F;channel.js:52</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Remove this channel from the screen entirely.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_remove_user" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>remove_user</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>user</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l373"><code>src&#x2F;channel.js:373</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Remove a user from the channel.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">user</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Name of the user to remove.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_server_message" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>server_message</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[info]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l109"><code>src&#x2F;channel.js:109</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Send a server message to the log window.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Server message.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[info]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Extra information for the message.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_set_header" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>set_header</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l195"><code>src&#x2F;channel.js:195</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Set the channel header.
+This can be the title or topic, determined by <code>head</code>.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for the property packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_set_members" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>set_members</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l253"><code>src&#x2F;channel.js:253</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Store each member of the this.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for the property packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_set_privclasses" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>set_privclasses</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>e</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l213"><code>src&#x2F;channel.js:213</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Set the channel's privclasses.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">e</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event data for the property packet.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_set_user_list" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>set_user_list</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l271"><code>src&#x2F;channel.js:271</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Set the channel user list.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_show" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>show</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_channel.js.html#l74"><code>src&#x2F;channel.js:74</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Show the channel view in the UI.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>
