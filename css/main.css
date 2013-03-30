@@ -194,12 +194,21 @@ nav.contents {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px 0px 10px 10px;
+    font-family: Lucida, Helvetica, Arial, sans-serif;
 }
 
 nav.contents ul {
     list-style: none;
     font-size: 14px;
     padding-left: 10px;
+}
+
+nav.contents a {
+    color: #9B2020;
+}
+
+nav.contents a:hover {
+    color: #136B9C;
 }
 
 div.content {
