@@ -7,7 +7,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "Client",
         "Colour",
         "Control",
-        "Extension",
         "Field",
         "Flow",
         "Form",
@@ -26,7 +25,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "UI",
         "WebSocket",
         "avatar_link",
-        "settings",
+        "dAmn.Extension",
         "template"
     ],
     "modules": [

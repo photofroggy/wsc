@@ -41,7 +41,7 @@
     
         <li><a href="/wsc/api/classes/Control.html">Control</a></li>
     
-        <li><a href="/wsc/api/classes/Extension.html">Extension</a></li>
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
     
         <li><a href="/wsc/api/classes/Field.html">Field</a></li>
     
@@ -60,8 +60,6 @@
         <li><a href="/wsc/api/classes/Radio.html">Radio</a></li>
     
         <li><a href="/wsc/api/classes/Settings.html">Settings</a></li>
-    
-        <li><a href="/wsc/api/classes/settings.html">settings</a></li>
     
         <li><a href="/wsc/api/classes/Settings.Config.html">Settings.Config</a></li>
     
@@ -92,7 +90,7 @@
 &#x2F;**
  * dAmn extension makes the client work with dAmn.
  * 
- * @class Extension
+ * @class dAmn.Extension
  * @constructor
  *&#x2F;
 wsc.dAmn.Extension = function( client ) {
@@ -181,10 +179,40 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    &#x2F;**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     *&#x2F;
     wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    &#x2F;**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     *&#x2F;
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    &#x2F;**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     *&#x2F;
     wsc.dAmn.Colours( client, storage.colours, settings );
+    
+    &#x2F;**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     *&#x2F;
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    &#x2F;**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     *&#x2F;
     wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };

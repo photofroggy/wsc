@@ -21,7 +21,7 @@
             "name": "src/dAmn/extension.js",
             "modules": {},
             "classes": {
-                "Extension": 1
+                "dAmn.Extension": 1
             },
             "fors": {},
             "namespaces": {}
@@ -139,8 +139,7 @@
             "name": "src/ui/templates.js",
             "modules": {},
             "classes": {
-                "template": 1,
-                "settings": 1
+                "template": 1
             },
             "fors": {},
             "namespaces": {}
@@ -274,7 +273,7 @@
                 "dAmn": 1
             },
             "classes": {
-                "Extension": 1,
+                "dAmn.Extension": 1,
                 "avatar_link": 1,
                 "TablumpString": 1,
                 "Channel": 1,
@@ -324,21 +323,20 @@
                 "Check": 1,
                 "Colour": 1,
                 "Items": 1,
-                "template": 1,
-                "settings": 1
+                "template": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
             "file": "src/ui/templates.js",
-            "line": 281,
+            "line": 1,
             "description": "This is an alternate thing for the UI module.\nChatterbox is basically a thing."
         }
     },
     "classes": {
-        "Extension": {
-            "name": "Extension",
-            "shortname": "Extension",
+        "dAmn.Extension": {
+            "name": "dAmn.Extension",
+            "shortname": "dAmn.Extension",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -826,20 +824,6 @@
             "line": 1,
             "description": "Container object for HTML5 templates for the chat UI."
         },
-        "settings": {
-            "name": "settings",
-            "shortname": "settings",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "module": "Chatterbox",
-            "namespace": "",
-            "file": "src/ui/templates.js",
-            "line": 281,
-            "description": "Settings stuff."
-        },
         "Client": {
             "name": "Client",
             "shortname": "Client",
@@ -1053,7 +1037,52 @@
             "file": "src/dAmn/emotes.js",
             "line": 375,
             "description": "Emote picker.\nThis should be used for retrieving input from the user.",
-            "class": "Extension",
+            "class": "dAmn.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/extension.js",
+            "line": 94,
+            "description": "Implements the Data Sharing Protocol.",
+            "itemtype": "method",
+            "name": "BDS",
+            "class": "dAmn.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/extension.js",
+            "line": 101,
+            "description": "Implements Data Sharing Links. Links are private chats between two clients that\nare used for exchanging information autonomously.",
+            "itemtype": "method",
+            "name": "BDS.Link",
+            "class": "dAmn.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/extension.js",
+            "line": 109,
+            "description": "Implements custom colours.",
+            "itemtype": "method",
+            "name": "Colours",
+            "class": "dAmn.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/extension.js",
+            "line": 116,
+            "description": "Implements custom emoticons.",
+            "itemtype": "method",
+            "name": "Emotes",
+            "class": "dAmn.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/extension.js",
+            "line": 123,
+            "description": "Implements Sta.sh thumbnails.",
+            "itemtype": "method",
+            "name": "Stash",
+            "class": "dAmn.Extension",
             "module": "wsc"
         },
         {
@@ -3459,6 +3488,13 @@
             "module": "Chatterbox"
         },
         {
+            "file": "src/ui/templates.js",
+            "line": 281,
+            "description": "Settings stuff.",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
             "file": "src/autojoin.js",
             "line": 1,
             "description": "Autojoin extension.",
@@ -5747,6 +5783,10 @@
         {
             "message": "Missing item type\nPager notices and such.",
             "line": " src/ui/templates.js:261"
+        },
+        {
+            "message": "Missing item type\nSettings stuff.",
+            "line": " src/ui/templates.js:281"
         },
         {
             "message": "Missing item type\nAutojoin extension.",
