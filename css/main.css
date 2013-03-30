@@ -135,6 +135,7 @@ div.rbtn.wsc a {
 div.rbtn.wsc a:hover {
     background-color: #BB6240;
     text-shadow: 0 -1px #7E3519;
+    color: white;
 }
 
 div.rbtn.wsc a:hover:after {
