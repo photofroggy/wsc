@@ -1414,40 +1414,61 @@ with(wsc.MessageString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+/**
+ * Render the message in HTML where possible.
+ * @method html
+ * @return {String} The message rendered as an HTML string
+ */
 wsc.MessageString.prototype.html = function(  ) {
     return this.raw;
 };
 
 /**
- * @function text
- *
- * Render the tablumps in plain text where possible. Some tablumps appear as
- * HTML entities even through this.
+ * Render the message in plain text where possible.
+ * @method text
+ * @return {String} The message rendered as a plain text string
  */
 wsc.MessageString.prototype.text = function() {
     return this.raw;
 };
 
 /**
- * @function ansi
- * 
- * Render the tablumps with ANSI escape sequences.
- * 
- * For this rendering method to really be worth it, I'll actually have to move
- * away from the simple regex.
+ * Render the message with ANSI escape sequences.
+ * @method ansi
+ * @return {String} The message rendered as an ANSI-formatted string
  */
 wsc.MessageString.prototype.ansi = function() {
     return this.raw;
 };
 
+
+/**
+ * A parser for formatted messages.
+ * 
+ * @class wsc.MessageParser
+ * @constructor
+ */
 wsc.MessageParser = function(  ) {};
 
+/**
+ * Parse a given message.
+ * @method parse
+ * @param data {String} Raw message data
+ * @return {Object} Message string object.
+ */
 wsc.MessageParser.prototype.parse = function( data ) {
 
     return new wsc.MessageString(data, this);
 
 };
 
+/**
+ * Render a given message string.
+ * @method render
+ * @param mode {Integer} Determine how the message should be rendered
+ * @param data {Object} Message string to render
+ * @return {String} Rendered message
+ */
 wsc.MessageParser.prototype.render = function( mode, data ) {
 
     return data.raw;
