@@ -24,8 +24,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "Transport",
         "UI",
         "WebSocket",
-        "avatar_link",
         "dAmn.Extension",
+        "dAmn.avatar",
         "template"
     ],
     "modules": [

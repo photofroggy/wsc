@@ -27,8 +27,6 @@
     <h3>Classes</h3>
     <ul>
     
-        <li><a href="/wsc/api/classes/avatar_link.html">avatar_link</a></li>
-    
         <li><a href="/wsc/api/classes/Channel.html">Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatbook.html">Chatbook</a></li>
@@ -40,6 +38,8 @@
         <li><a href="/wsc/api/classes/Colour.html">Colour</a></li>
     
         <li><a href="/wsc/api/classes/Control.html">Control</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
     
         <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
     
@@ -87,14 +87,29 @@
 <div class="file">
     <pre class="code prettyprint linenums">
 
+&#x2F;**
+ * This object provides a few helper functions relating to deviantART avatars.
+ * 
+ * @class dAmn.avatar
+ *&#x2F;
 wsc.dAmn.avatar = {};
+
+&#x2F;**
+ * An array containing the different file types avatars can be.
+ *
+ * @property ext
+ * @type Array
+ * @default [ &#x27;gif&#x27;, &#x27;gif&#x27;, &#x27;jpg&#x27;, &#x27;png&#x27; ]
+ *&#x2F;
 wsc.dAmn.avatar.ext = [ &#x27;gif&#x27;, &#x27;gif&#x27;, &#x27;jpg&#x27;, &#x27;png&#x27; ];
 
 &#x2F;**
  * Produces an avatar link.
  * 
- * @class avatar_link
- * @constructor
+ * @method link
+ * @param un {String} Username to generate an avatar link for
+ * @param icon {String} Icon number as provided by dAmn&#x27;s protocol
+ * @return {String} Valid avatar link
  *&#x2F;
 wsc.dAmn.avatar.link = function( un, icon ) {
     
@@ -106,9 +121,12 @@ wsc.dAmn.avatar.link = function( un, icon ) {
 
 
 &#x2F;**
- * Works out the src url for an avatar.
+ * Works out the source url for an avatar.
  *
  * @method src
+ * @param un {String} Username to resolve the avatar source for
+ * @param icon {String} The user&#x27;s icon number
+ * @return {String} The source URL
  *&#x2F;
 wsc.dAmn.avatar.src = function( un, icon ) {
 

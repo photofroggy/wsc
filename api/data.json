@@ -30,7 +30,7 @@
             "name": "src/dAmn/icon.js",
             "modules": {},
             "classes": {
-                "avatar_link": 1
+                "dAmn.avatar": 1
             },
             "fors": {},
             "namespaces": {}
@@ -274,7 +274,7 @@
             },
             "classes": {
                 "dAmn.Extension": 1,
-                "avatar_link": 1,
+                "dAmn.avatar": 1,
                 "TablumpString": 1,
                 "Channel": 1,
                 "Control": 1,
@@ -349,9 +349,9 @@
             "description": "The dAmn extension makes the client work with dAmn. This extension also implements\nvarious other features to improve on the user experience.",
             "is_constructor": 1
         },
-        "avatar_link": {
-            "name": "avatar_link",
-            "shortname": "avatar_link",
+        "dAmn.avatar": {
+            "name": "dAmn.avatar",
+            "shortname": "dAmn.avatar",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -360,9 +360,8 @@
             "module": "wsc",
             "namespace": "",
             "file": "src/dAmn/icon.js",
-            "line": 5,
-            "description": "Produces an avatar link.",
-            "is_constructor": 1
+            "line": 2,
+            "description": "This object provides a few helper functions relating to deviantART avatars."
         },
         "TablumpString": {
             "name": "TablumpString",
@@ -1087,11 +1086,63 @@
         },
         {
             "file": "src/dAmn/icon.js",
-            "line": 20,
-            "description": "Works out the src url for an avatar.",
+            "line": 9,
+            "description": "An array containing the different file types avatars can be.",
+            "itemtype": "property",
+            "name": "ext",
+            "type": "Array",
+            "default": "[ 'gif', 'gif', 'jpg', 'png' ]",
+            "class": "dAmn.avatar",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/icon.js",
+            "line": 18,
+            "description": "Produces an avatar link.",
+            "itemtype": "method",
+            "name": "link",
+            "params": [
+                {
+                    "name": "un",
+                    "description": "Username to generate an avatar link for",
+                    "type": "String"
+                },
+                {
+                    "name": "icon",
+                    "description": "Icon number as provided by dAmn's protocol",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Valid avatar link",
+                "type": "String"
+            },
+            "class": "dAmn.avatar",
+            "module": "wsc"
+        },
+        {
+            "file": "src/dAmn/icon.js",
+            "line": 35,
+            "description": "Works out the source url for an avatar.",
             "itemtype": "method",
             "name": "src",
-            "class": "avatar_link",
+            "params": [
+                {
+                    "name": "un",
+                    "description": "Username to resolve the avatar source for",
+                    "type": "String"
+                },
+                {
+                    "name": "icon",
+                    "description": "The user's icon number",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The source URL",
+                "type": "String"
+            },
+            "class": "dAmn.avatar",
             "module": "wsc"
         },
         {
