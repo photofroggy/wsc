@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -170,24 +171,24 @@
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ui</code>
+                        <code class="name">ui</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Chatterbox.UI object.</p>
                     </div>
 
@@ -195,12 +196,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -219,11 +221,11 @@
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -293,7 +295,7 @@
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -342,7 +344,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Add a button to the top button row.</p>
@@ -354,6 +356,7 @@
     
 
     
+    </section>
 </div>
 
 
@@ -420,7 +423,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Add a channel tab to the navigation bar.</p>
@@ -428,20 +431,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">selector</code>
+                        <code class="name">selector</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Shorthand lower case name for the channel with no prefixes.</p>
                     </div>
 
@@ -450,13 +453,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Shorthand namespace for the channel. Used as the label
   for the tab.</p>
                     </div>
@@ -465,12 +468,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -535,7 +539,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set or get the visibility of tab close buttons.</p>
@@ -543,21 +547,21 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name optional">[visible]</code>
+                        <code class="name optional">[visible]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Should the close buttons be shown?</p>
                     </div>
 
@@ -565,25 +569,26 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Boolean</span>:
                     
                     Whether or not the close buttons are visible.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -644,7 +649,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Configure the main settings page of the settings popup.</p>
@@ -652,20 +657,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event object.</p>
                     </div>
 
@@ -673,12 +678,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -733,7 +739,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get the height of the navigation bar.</p>
@@ -743,21 +749,22 @@
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Integer</span>:
                     
                     The height of the navigation bar in pixels.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -808,7 +815,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Resize the tab bar.</p>
@@ -820,6 +827,7 @@
     
 
     
+    </section>
 </div>
 
 
@@ -844,5 +852,6 @@
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

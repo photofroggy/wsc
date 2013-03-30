@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -189,24 +190,24 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">view</code>
+                        <code class="name">view</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Base jQuery object to use for the UI. Any empty div will do.</p>
                     </div>
 
@@ -215,13 +216,13 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">options</code>
+                        <code class="name">options</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Custom settings to use for the UI.</p>
                     </div>
 
@@ -230,13 +231,13 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">mozilla</code>
+                        <code class="name">mozilla</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Is the browser in use made by Mozilla?</p>
                     </div>
 
@@ -245,14 +246,14 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[events]</code>
+                        <code class="name optional">[events]</code>
                         <span class="type">Object</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>EventEmitter object.</p>
                     </div>
 
@@ -260,12 +261,13 @@ loaded from here.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -284,11 +286,11 @@ loaded from here.</p>
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -565,7 +567,7 @@ loaded from here.</p>
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -624,7 +626,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Add a new theme to the client.</p>
@@ -632,20 +634,20 @@ loaded from here.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">theme</code>
+                        <code class="name">theme</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the theme to add.</p>
                     </div>
 
@@ -653,12 +655,13 @@ loaded from here.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -731,7 +734,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Build the GUI.</p>
@@ -739,21 +742,21 @@ loaded from here.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name optional">[control=Chatterbox.Control]</code>
+                        <code class="name optional">[control=Chatterbox.Control]</code>
                         <span class="type">Class</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>UI control panel class.</p>
                     </div>
 
@@ -762,14 +765,14 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[navigation=Chatterbox.Navigation]</code>
+                        <code class="name optional">[navigation=Chatterbox.Navigation]</code>
                         <span class="type">Class</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>UI navigation panel
   class.</p>
                     </div>
@@ -779,14 +782,14 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[chatbook=Chatterbox.Chatbook]</code>
+                        <code class="name optional">[chatbook=Chatterbox.Chatbook]</code>
                         <span class="type">Class</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Chatbook panel class.</p>
                     </div>
 
@@ -794,12 +797,13 @@ loaded from here.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -850,7 +854,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Run a method with middleware.</p>
@@ -862,6 +866,7 @@ loaded from here.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -932,7 +937,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get or set the channel object associated with the given namespace.</p>
@@ -940,20 +945,20 @@ loaded from here.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">namespace</code>
+                        <code class="name">namespace</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The namespace to set or get.</p>
                     </div>
 
@@ -962,14 +967,14 @@ loaded from here.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[chan]</code>
+                        <code class="name optional">[chan]</code>
                         <span class="type">Object</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>A wsc channel object representing the channel specified.</p>
                     </div>
 
@@ -977,25 +982,26 @@ loaded from here.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Object</span>:
                     
                     The channel object representing the channel defined by <code>namespace</code>
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1046,7 +1052,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Switch to the channel left of the current channel.</p>
@@ -1058,6 +1064,7 @@ loaded from here.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1108,7 +1115,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Switch to the channel right of the current channel.</p>
@@ -1120,6 +1127,7 @@ loaded from here.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1174,7 +1182,7 @@ loaded from here.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Determine how many channels the ui has open. Hidden channels are
@@ -1187,21 +1195,22 @@ ui.</p>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Integer</span>:
                     
                     Number of channels open in the ui.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1262,7 +1271,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Clear a user's messages from all channels.</p>
@@ -1270,20 +1279,20 @@ ui.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">user</code>
+                        <code class="name">user</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>User to remove messages for.</p>
                     </div>
 
@@ -1291,12 +1300,13 @@ ui.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1361,7 +1371,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the clock to 24 hour or 12 hour. Or get the current mode.
@@ -1370,21 +1380,21 @@ True means 24 hour, false means 12 hour.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name optional">[mode]</code>
+                        <code class="name optional">[mode]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>What mode to set the clock to.</p>
                     </div>
 
@@ -1392,25 +1402,26 @@ True means 24 hour, false means 12 hour.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Boolean</span>:
                     
                     The mode of the clock.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1477,7 +1488,7 @@ True means 24 hour, false means 12 hour.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Create a screen for channel <code>ns</code> in the UI, and initialise data
@@ -1486,20 +1497,20 @@ structures or some shit idk.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Short name for the channel.</p>
                     </div>
 
@@ -1508,13 +1519,13 @@ structures or some shit idk.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">hidden</code>
+                        <code class="name">hidden</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Should this channel's tab be hidden?</p>
                     </div>
 
@@ -1522,12 +1533,13 @@ structures or some shit idk.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1592,7 +1604,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Deform a channel namespace.</p>
@@ -1600,20 +1612,20 @@ structures or some shit idk.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Channel namespace to deform.</p>
                     </div>
 
@@ -1621,25 +1633,26 @@ structures or some shit idk.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">String</span>:
                     
                     The deformed namespace.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1690,7 +1703,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Toggle developer mode for the UI.</p>
@@ -1702,6 +1715,7 @@ structures or some shit idk.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1766,7 +1780,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Format a channel namespace.</p>
@@ -1774,20 +1788,20 @@ structures or some shit idk.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Channel namespace to format.</p>
                     </div>
 
@@ -1795,25 +1809,26 @@ structures or some shit idk.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">String</span>:
                     
                     ns formatted as a channel namespace.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1874,7 +1889,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log message across all open channels.</p>
@@ -1882,20 +1897,20 @@ structures or some shit idk.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -1903,12 +1918,13 @@ structures or some shit idk.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1969,7 +1985,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log item across all open channels.</p>
@@ -1977,20 +1993,20 @@ structures or some shit idk.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">item</code>
+                        <code class="name">item</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Item to display.</p>
                     </div>
 
@@ -1998,12 +2014,13 @@ structures or some shit idk.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2054,7 +2071,7 @@ structures or some shit idk.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Called every now and then.
@@ -2068,6 +2085,7 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2118,7 +2136,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Add a piece of middleware for something.</p>
@@ -2130,6 +2148,7 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2196,7 +2215,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log message in the monitor channel.</p>
@@ -2204,20 +2223,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -2226,14 +2245,14 @@ Maybe this is something that the UI lib should handle.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[info]</code>
+                        <code class="name optional">[info]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Additional data to display.</p>
                     </div>
 
@@ -2241,12 +2260,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2307,7 +2327,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Mute a user.</p>
@@ -2315,20 +2335,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">user</code>
+                        <code class="name">user</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>User to mute.</p>
                     </div>
 
@@ -2336,12 +2356,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2408,7 +2429,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Bind an event thingy.</p>
@@ -2416,20 +2437,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The event name to listen for.</p>
                     </div>
 
@@ -2438,13 +2459,13 @@ Maybe this is something that the UI lib should handle.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">handler</code>
+                        <code class="name">handler</code>
                         <span class="type">Method</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The event handler.</p>
                     </div>
 
@@ -2452,12 +2473,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2518,7 +2540,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Remove a channel from the GUI.
@@ -2529,20 +2551,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the channel to remove.</p>
                     </div>
 
@@ -2550,12 +2572,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2606,7 +2629,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Remove all of the event bindings.</p>
@@ -2618,6 +2641,7 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2668,7 +2692,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Resize the UI to fit the containing element.</p>
@@ -2680,6 +2704,7 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2746,7 +2771,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a server message across all open channels.</p>
@@ -2754,20 +2779,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -2776,14 +2801,14 @@ we switch to the last channel in the list before doing so.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[info]</code>
+                        <code class="name optional">[info]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Additional data to display.</p>
                     </div>
 
@@ -2791,12 +2816,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2857,7 +2883,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the event emitter object in use by the UI lib.</p>
@@ -2865,20 +2891,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">events</code>
+                        <code class="name">events</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>EventEmitter object.</p>
                     </div>
 
@@ -2886,12 +2912,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2952,7 +2979,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the theme for the UI.</p>
@@ -2960,20 +2987,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">theme</code>
+                        <code class="name">theme</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the theme.</p>
                     </div>
 
@@ -2981,12 +3008,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -3047,7 +3075,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Select which channel is currently being viewed.</p>
@@ -3055,20 +3083,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the channel to select.</p>
                     </div>
 
@@ -3076,12 +3104,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -3148,7 +3177,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Used to trigger events.</p>
@@ -3156,20 +3185,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the event to trigger.</p>
                     </div>
 
@@ -3178,13 +3207,13 @@ we switch to the last channel in the list before doing so.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">data</code>
+                        <code class="name">data</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data.</p>
                     </div>
 
@@ -3192,12 +3221,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -3258,7 +3288,7 @@ we switch to the last channel in the list before doing so.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Unmute a user.</p>
@@ -3266,20 +3296,20 @@ we switch to the last channel in the list before doing so.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">user</code>
+                        <code class="name">user</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>User to unmute.</p>
                     </div>
 
@@ -3287,12 +3317,13 @@ we switch to the last channel in the list before doing so.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -3317,5 +3348,6 @@ we switch to the last channel in the list before doing so.</p>
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

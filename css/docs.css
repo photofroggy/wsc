@@ -78,15 +78,39 @@ section.main article.constructor {
     margin: 0 30px 10px 30px;
 }
 
-.items div.index ul li {
+.items div.indexes h3 {
+    padding: 0px;
+}
+
+.items div.indexes div.index {
+    display: none;
+}
+
+.items div.listing {
+    display: none;
+}
+
+.items div.indexes div.index.methods {
+    display: block;
+}
+
+.items div.listing#methods {
+    display: block;
+}
+
+.items div.indexes ul {
+    padding: 10px 20px;
+}
+
+.items div.indexes ul li {
     display: inline;
 }
 
-.items div.index ul li:after {
+.items div.indexes ul li:after {
     content: ",";
 }
 
-.items div.index ul li:last-child:after {
+.items div.indexes ul li:last-child:after {
     content: "";
 }
 
@@ -120,6 +144,50 @@ div.item section {
     margin: 0px;
 }
 
-div.item section.description {
+div.item section.body {
     padding: 0px 5px;
+}
+
+div.item section.body section + section {
+    margin-top: 10px;
+}
+
+div.item section.body ul {
+    padding: 0px 20px;
+}
+
+ul.params li.param + li.param {
+    margin-top: 5px;
+}
+
+ul.params li.param .name {
+    font-weight: bold;
+}
+
+.param .name, .arg {
+    color: #2A97D5;
+}
+
+.param .name {
+    font-size: 15px;
+}
+
+.param .name.optional, .arg .optional {
+    color: gray;
+}
+
+/*ul.params li.param*/ .type {
+    color: #CC4D4D;
+}
+
+.flag {
+    color: gray;
+}
+
+ul.params li.param .description {
+    padding: 0px 10px;
+}
+
+.items .item section.body .returns p {
+    padding: 0px 25px;
 }

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -170,24 +171,24 @@
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">protocol</code>
+                        <code class="name">protocol</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Protocol object.</p>
                     </div>
 
@@ -195,12 +196,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -219,11 +221,11 @@
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -383,7 +385,7 @@
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -448,7 +450,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Respond to a llama-style handshake.</p>
@@ -456,20 +458,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -478,13 +480,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -492,12 +494,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -564,7 +567,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Handle a packet event.</p>
@@ -572,20 +575,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -594,13 +597,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -608,12 +611,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -680,7 +684,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Received a join packet.</p>
@@ -688,20 +692,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -710,13 +714,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -724,12 +728,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -796,7 +801,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Client has been kicked from a channel.</p>
@@ -804,20 +809,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -826,13 +831,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -840,12 +845,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -912,7 +918,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a login packet</p>
@@ -920,20 +926,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -942,13 +948,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -956,12 +962,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1028,7 +1035,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Received a part packet.</p>
@@ -1036,20 +1043,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1058,13 +1065,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1072,12 +1079,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1144,7 +1152,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Respond to pings from the server.</p>
@@ -1152,20 +1160,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1174,13 +1182,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1188,12 +1196,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1260,7 +1269,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a property packet.</p>
@@ -1268,20 +1277,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1290,13 +1299,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1304,12 +1313,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1376,7 +1386,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>A different kind of message.</p>
@@ -1384,20 +1394,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1406,13 +1416,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1420,12 +1430,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1492,7 +1503,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>A user joined a channel.</p>
@@ -1500,20 +1511,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1522,13 +1533,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1536,12 +1547,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1608,7 +1620,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>User join or part.</p>
@@ -1616,20 +1628,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1638,13 +1650,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1652,12 +1664,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1724,7 +1737,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Some sucka got kicked foo.</p>
@@ -1732,20 +1745,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1754,13 +1767,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1768,12 +1781,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1840,7 +1854,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>A message was received in a channel.</p>
@@ -1848,20 +1862,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1870,13 +1884,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -1884,12 +1898,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1956,7 +1971,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>A non-parsed message.</p>
@@ -1964,20 +1979,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -1986,13 +2001,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -2000,12 +2015,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2072,7 +2088,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>A user left a channel.</p>
@@ -2080,20 +2096,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -2102,13 +2118,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -2116,12 +2132,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2188,7 +2205,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Someone was promoted or demoted.</p>
@@ -2196,20 +2213,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Packet event data.</p>
                     </div>
 
@@ -2218,13 +2235,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">client</code>
+                        <code class="name">client</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Client object.</p>
                     </div>
 
@@ -2232,12 +2249,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2262,5 +2280,6 @@
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

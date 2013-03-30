@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -176,24 +177,24 @@
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">type</code>
+                        <code class="name">type</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Determines the type of the item.</p>
                     </div>
 
@@ -202,13 +203,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">options</code>
+                        <code class="name">options</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Options for the item.</p>
                     </div>
 
@@ -216,12 +217,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -240,11 +242,11 @@
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -341,7 +343,7 @@
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -390,7 +392,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Method stub for UI events.</p>
@@ -402,6 +404,7 @@
     
 
     
+    </section>
 </div>
 
 
@@ -466,7 +469,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get an item event callback.</p>
@@ -474,20 +477,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Item event to get callbacks for.</p>
                     </div>
 
@@ -495,25 +498,26 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Function</span>:
                     
                     Item event callback.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -578,7 +582,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get an item event pair.</p>
@@ -586,20 +590,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
+                        <code class="name">event</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Item event to get an event pair for.</p>
                     </div>
 
@@ -607,25 +611,26 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Function</span>:
                     
                     Item event pair.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -686,7 +691,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Render and display the settings page item.</p>
@@ -694,20 +699,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">page</code>
+                        <code class="name">page</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Settings page object.</p>
                     </div>
 
@@ -715,12 +720,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -787,7 +793,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Called when the settings window is closed.</p>
@@ -795,20 +801,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">window</code>
+                        <code class="name">window</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The settings window.</p>
                     </div>
 
@@ -817,13 +823,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">page</code>
+                        <code class="name">page</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The settings page this item belongs to.</p>
                     </div>
 
@@ -831,12 +837,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -891,7 +898,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Renders the contents of the settings page item.</p>
@@ -901,21 +908,22 @@
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">String</span>:
                     
                     Returns an HTML string if there is content for this item.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -976,7 +984,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Apply event callbacks to the page item.</p>
@@ -984,20 +992,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">item</code>
+                        <code class="name">item</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Page item jQuery object.</p>
                     </div>
 
@@ -1005,12 +1013,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1061,7 +1070,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Resize the settings window boxes stuff.</p>
@@ -1073,6 +1082,7 @@
     
 
     
+    </section>
 </div>
 
 
@@ -1139,7 +1149,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Save page item data.</p>
@@ -1147,20 +1157,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">window</code>
+                        <code class="name">window</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The settings window.</p>
                     </div>
 
@@ -1169,13 +1179,13 @@
             
                 <li class="param">
                     
-                        <code class="param-name">page</code>
+                        <code class="name">page</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The settings page this item belongs to.</p>
                     </div>
 
@@ -1183,12 +1193,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1213,5 +1224,6 @@
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

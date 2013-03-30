@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -88,7 +89,9 @@
 <div class="file">
     <pre class="code prettyprint linenums">
 &#x2F;**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
  * @class Client
  * @constructor
@@ -103,14 +106,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder(&#x27;ui&#x27;);
     this.storage.aj = this.storage.folder(&#x27;autojoin&#x27;);
     this.storage.aj.channel = this.storage.aj.folder(&#x27;channel&#x27;);
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    &#x2F;**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     *&#x2F;
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -959,5 +972,6 @@ wsc.Client.prototype.disconnect = function(  ) {
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

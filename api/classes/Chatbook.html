@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -170,24 +171,24 @@
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ui</code>
+                        <code class="name">ui</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Chatterbox.UI object.</p>
                     </div>
 
@@ -195,12 +196,13 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -219,11 +221,11 @@
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -401,7 +403,7 @@
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -470,7 +472,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get or set the channel object associated with the given namespace.</p>
@@ -478,20 +480,20 @@
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">namespace</code>
+                        <code class="name">namespace</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The namespace to set or get.</p>
                     </div>
 
@@ -500,14 +502,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[chan]</code>
+                        <code class="name optional">[chan]</code>
                         <span class="type">Object</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>A wsc channel object representing the channel specified.</p>
                     </div>
 
@@ -515,25 +517,26 @@
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Object</span>:
                     
                     The channel object representing the channel defined by <code>namespace</code>
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -584,7 +587,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Switch to the channel left of the current channel.</p>
@@ -596,6 +599,7 @@
     
 
     
+    </section>
 </div>
 
 
@@ -666,7 +670,7 @@
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Create a new channel panel object.
@@ -675,20 +679,20 @@ Override this method to use a different type of channel object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Namespace of the channel.</p>
                     </div>
 
@@ -697,13 +701,13 @@ Override this method to use a different type of channel object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">hidden</code>
+                        <code class="name">hidden</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Should the tab be hidden?</p>
                     </div>
 
@@ -711,25 +715,26 @@ Override this method to use a different type of channel object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Object</span>:
                     
                     An object representing a channel UI.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -780,7 +785,7 @@ Override this method to use a different type of channel object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Switch to the channel right of the current channel.</p>
@@ -792,6 +797,7 @@ Override this method to use a different type of channel object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -846,7 +852,7 @@ Override this method to use a different type of channel object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Determine how many channels the ui has open. Hidden channels are
@@ -859,19 +865,20 @@ ui.</p>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                     [Integer] Number of channels open in the ui.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -948,7 +955,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Create a channel in the UI.</p>
@@ -956,20 +963,20 @@ ui.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Namespace of the channel to create.</p>
                     </div>
 
@@ -978,13 +985,13 @@ ui.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">hidden</code>
+                        <code class="name">hidden</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Should the tab be hidden?</p>
                     </div>
 
@@ -993,13 +1000,13 @@ ui.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">monitor</code>
+                        <code class="name">monitor</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Is this channel the monitor?</p>
                     </div>
 
@@ -1007,25 +1014,26 @@ ui.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Object</span>:
                     
                     WscUIChannel object.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -1076,7 +1084,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Toggle the developer mode of each channel.</p>
@@ -1088,6 +1096,7 @@ ui.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1148,7 +1157,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Iterate through the different channels.</p>
@@ -1156,20 +1165,20 @@ ui.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">method</code>
+                        <code class="name">method</code>
                         <span class="type">Function</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Function to call for each channel.</p>
                     </div>
 
@@ -1177,12 +1186,13 @@ ui.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1233,7 +1243,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Return the height of the chatbook.</p>
@@ -1245,6 +1255,7 @@ ui.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1295,7 +1306,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Return the width of the chatbook.</p>
@@ -1307,6 +1318,7 @@ ui.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1367,7 +1379,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log item across all open channels.</p>
@@ -1375,20 +1387,20 @@ ui.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -1396,12 +1408,13 @@ ui.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1462,7 +1475,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log item across all open channels.</p>
@@ -1470,20 +1483,20 @@ ui.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -1491,12 +1504,13 @@ ui.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1547,7 +1561,7 @@ ui.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Called every now and then.
@@ -1561,6 +1575,7 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1621,7 +1636,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Remove a channel from the UI.</p>
@@ -1629,20 +1644,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the channel to remove.</p>
                     </div>
 
@@ -1650,12 +1665,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1716,7 +1732,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Resize the chatbook view pane.</p>
@@ -1724,21 +1740,21 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name optional">[height=600]</code>
+                        <code class="name optional">[height=600]</code>
                         <span class="type">Integer</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The height to set the view pane to.</p>
                     </div>
 
@@ -1746,12 +1762,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1802,7 +1819,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Rewrite timestamps for all open channels.</p>
@@ -1814,6 +1831,7 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1880,7 +1898,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a server message across all open channels.</p>
@@ -1888,20 +1906,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to display.</p>
                     </div>
 
@@ -1910,14 +1928,14 @@ Maybe this is something that the UI lib should handle.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[info]</code>
+                        <code class="name optional">[info]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Additional data to display.</p>
                     </div>
 
@@ -1925,12 +1943,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1991,7 +2010,7 @@ Maybe this is something that the UI lib should handle.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Select which channel is currently being viewed.</p>
@@ -1999,20 +2018,20 @@ Maybe this is something that the UI lib should handle.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Namespace of the channel to view.</p>
                     </div>
 
@@ -2020,12 +2039,13 @@ Maybe this is something that the UI lib should handle.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2050,5 +2070,6 @@ Maybe this is something that the UI lib should handle.</p>
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

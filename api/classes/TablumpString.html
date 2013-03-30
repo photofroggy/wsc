@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -177,24 +178,24 @@ Use different object methods to render the tablumps differently.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">data</code>
+                        <code class="name">data</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>String possibly containing tablumps.</p>
                     </div>
 
@@ -203,13 +204,13 @@ Use different object methods to render the tablumps differently.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">parser</code>
+                        <code class="name">parser</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>A reference to a tablumps parser. Not required.</p>
                     </div>
 
@@ -217,13 +218,13 @@ Use different object methods to render the tablumps differently.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
-        <div class="example">
+        <section class="example">
             <h4>Example:</h4>
 
             <div class="example-content">
@@ -235,8 +236,9 @@ console.log(msg.html()); // 'hey, check &lt;b&gt;&lt;a href="http://google.com"&
 console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
 </code></pre>
             </div>
-        </div>
+        </section>
     
+    </section>
 </div>
 
 
@@ -255,11 +257,11 @@ console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/l
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -429,7 +431,7 @@ Parse a message possibly containing tablumps into tokens.</a>
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                     
@@ -488,7 +490,7 @@ away from the simple regex.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -496,6 +498,7 @@ away from the simple regex.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -550,7 +553,7 @@ Get all the default nonsense.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -558,6 +561,7 @@ Get all the default nonsense.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -612,7 +616,7 @@ Add the given rendering items to the parser&#x27;s render map.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -620,6 +624,7 @@ Add the given rendering items to the parser&#x27;s render map.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -674,7 +679,7 @@ Render the tablumps as HTML entities.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -682,6 +687,7 @@ Render the tablumps as HTML entities.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -736,7 +742,7 @@ Create a wsc.dAmn.TablumpString obejct and return it.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -744,6 +750,7 @@ Create a wsc.dAmn.TablumpString obejct and return it.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -798,7 +805,7 @@ I should probably deprecate this. Sets the rendering map to the given map.</code
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -806,6 +813,7 @@ I should probably deprecate this. Sets the rendering map to the given map.</code
     
 
     
+    </section>
 </div>
 
 
@@ -878,7 +886,7 @@ ANSI escape sequence formatted strings where possible.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -886,6 +894,7 @@ ANSI escape sequence formatted strings where possible.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -938,7 +947,7 @@ Render a single tablump.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -946,6 +955,7 @@ Render a single tablump.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -1002,7 +1012,7 @@ HTML entities even through this.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -1010,6 +1020,7 @@ HTML entities even through this.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -1064,7 +1075,7 @@ Parse a message possibly containing tablumps into tokens.</code></h3>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
@@ -1072,6 +1083,7 @@ Parse a message possibly containing tablumps into tokens.</code></h3>
     
 
     
+    </section>
 </div>
 
 
@@ -1096,5 +1108,6 @@ Parse a message possibly containing tablumps into tokens.</code></h3>
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
     <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
 </head>
 <body>
     <div class="squeeze">
@@ -190,24 +191,24 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">ui</code>
+                        <code class="name">ui</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Chatterbox.UI object.</p>
                     </div>
 
@@ -216,13 +217,13 @@ channel's UI object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">ns</code>
+                        <code class="name">ns</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>The name of the channel this object will represent.</p>
                     </div>
 
@@ -231,13 +232,13 @@ channel's UI object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">hidden</code>
+                        <code class="name">hidden</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Should the channel's tab be visible?</p>
                     </div>
 
@@ -246,13 +247,13 @@ channel's UI object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">monitor</code>
+                        <code class="name">monitor</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Is this channel the monitor?</p>
                     </div>
 
@@ -260,12 +261,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -284,11 +286,11 @@ channel's UI object.</p>
     </ul>
 
     <section class="items">
-        <div id="index" class="index">
-            <h2>Items</h2>
+        <div id="index" class="indexes">
+            <h3>Index</h3>
 
             
-                <div class="methods">
+                <div class="index methods">
 
                     <ul>
                         
@@ -576,7 +578,7 @@ channel's UI object.</p>
         </div>
 
         
-            <div id="methods">
+            <div id="methods" class="listing">
 
                 
                      
@@ -628,7 +630,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Create a UI view for this channel.</p>
@@ -640,6 +642,7 @@ channel's UI object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -693,7 +696,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Clear all log messages from the log window.</p>
@@ -705,6 +708,7 @@ channel's UI object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -778,7 +782,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Get the order of a given privilege class.</p>
@@ -786,20 +790,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">name</code>
+                        <code class="name">name</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the privilege class to get the order of.</p>
                     </div>
 
@@ -807,25 +811,26 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
-        <div class="returns">
+        <section class="returns">
             <h4>Returns:</h4>
 
-            <div class="returns-description">
+            <p>
                 
                     
                         <span class="type">Integer</span>:
                     
                     The order of the privilege class.
                 
-            </div>
-        </div>
+            </p>
+        </section>
     
 
     
+    </section>
 </div>
 
 
@@ -876,7 +881,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Return a list of usernames, sorted alphabetically.</p>
@@ -888,6 +893,7 @@ channel's UI object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -938,7 +944,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Hide the channel view in the UI.</p>
@@ -950,6 +956,7 @@ channel's UI object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -1019,7 +1026,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a log message.</p>
@@ -1027,20 +1034,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Log message to display.</p>
                     </div>
 
@@ -1048,12 +1055,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1120,7 +1128,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Send a message to the log window.</p>
@@ -1128,20 +1136,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Message to send.</p>
                     </div>
 
@@ -1149,12 +1157,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1221,7 +1230,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display some information relating to a privilege class.</p>
@@ -1229,20 +1238,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">privileges</code>
+                        <code class="name">privileges</code>
                         <span class="type">Boolean</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Are we showing privileges or users?</p>
                     </div>
 
@@ -1251,13 +1260,13 @@ channel's UI object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">data</code>
+                        <code class="name">data</code>
                         <span class="type">Array</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Array containing information.</p>
                     </div>
 
@@ -1265,12 +1274,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1334,7 +1344,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Display a user's whois info.</p>
@@ -1342,20 +1352,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">data</code>
+                        <code class="name">data</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Object containing a user's information.</p>
                     </div>
 
@@ -1363,12 +1373,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1441,7 +1452,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a channel property packet.</p>
@@ -1449,20 +1460,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for the property packet.</p>
                     </div>
 
@@ -1470,12 +1481,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1536,7 +1548,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a recv_join event.</p>
@@ -1544,20 +1556,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for recv_join packet.</p>
                     </div>
 
@@ -1565,12 +1577,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1631,7 +1644,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a recv_kicked event.</p>
@@ -1639,20 +1652,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for recv_kicked packet.</p>
                     </div>
 
@@ -1660,12 +1673,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1726,7 +1740,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a recv_msg event.</p>
@@ -1734,20 +1748,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for recv_msg packet.</p>
                     </div>
 
@@ -1755,12 +1769,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1821,7 +1836,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a recv_part event.</p>
@@ -1829,20 +1844,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for recv_part packet.</p>
                     </div>
 
@@ -1850,12 +1865,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -1916,7 +1932,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Process a recv_privchg event.</p>
@@ -1924,20 +1940,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for recv_privhcg packet.</p>
                     </div>
 
@@ -1945,12 +1961,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2011,7 +2028,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Register a user with the channel.</p>
@@ -2019,20 +2036,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">pkt</code>
+                        <code class="name">pkt</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>User data.</p>
                     </div>
 
@@ -2040,12 +2057,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2099,7 +2117,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Remove this channel from the screen entirely.</p>
@@ -2111,6 +2129,7 @@ channel's UI object.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2171,7 +2190,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Remove a user from the channel.</p>
@@ -2179,20 +2198,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">user</code>
+                        <code class="name">user</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Name of the user to remove.</p>
                     </div>
 
@@ -2200,12 +2219,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2284,7 +2304,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Send a server message to the log window.</p>
@@ -2292,20 +2312,20 @@ channel's UI object.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">msg</code>
+                        <code class="name">msg</code>
                         <span class="type">String</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Server message.</p>
                     </div>
 
@@ -2314,14 +2334,14 @@ channel's UI object.</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[info]</code>
+                        <code class="name optional">[info]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Extra information for the message.</p>
                     </div>
 
@@ -2329,12 +2349,13 @@ channel's UI object.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2398,7 +2419,7 @@ channel's UI object.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the channel header.
@@ -2407,20 +2428,20 @@ This can be the title or topic, determined by <code>head</code>.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for the property packet.</p>
                     </div>
 
@@ -2428,12 +2449,13 @@ This can be the title or topic, determined by <code>head</code>.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2494,7 +2516,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Store each member of the this.</p>
@@ -2502,20 +2524,20 @@ This can be the title or topic, determined by <code>head</code>.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for the property packet.</p>
                     </div>
 
@@ -2523,12 +2545,13 @@ This can be the title or topic, determined by <code>head</code>.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2589,7 +2612,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the channel's privclasses.</p>
@@ -2597,20 +2620,20 @@ This can be the title or topic, determined by <code>head</code>.</p>
     
 
     
-        <div class="params">
+        <section class="params">
             <h4>Parameters:</h4>
 
-            <ul class="params-list">
+            <ul class="params">
             
                 <li class="param">
                     
-                        <code class="param-name">e</code>
+                        <code class="name">e</code>
                         <span class="type">Object</span>
                     
 
                     
 
-                    <div class="param-description">
+                    <div class="description">
                         <p>Event data for the property packet.</p>
                     </div>
 
@@ -2618,12 +2641,13 @@ This can be the title or topic, determined by <code>head</code>.</p>
                 </li>
             
             </ul>
-        </div>
+        </section>
     
 
     
 
     
+    </section>
 </div>
 
 
@@ -2674,7 +2698,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Set the channel user list.</p>
@@ -2686,6 +2710,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2745,7 +2770,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
         
     </section>
     </header>
-
+    <section class="body">
     
     <section class="description">
         <p>Show the channel view in the UI.</p>
@@ -2757,6 +2782,7 @@ This can be the title or topic, determined by <code>head</code>.</p>
     
 
     
+    </section>
 </div>
 
 
@@ -2793,5 +2819,6 @@ This can be the title or topic, determined by <code>head</code>.</p>
 <script src="..&#x2F;assets/js/api-list.js"></script>
 <script src="..&#x2F;assets/js/api-search.js"></script>
 <script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
 </body>
 </html>
