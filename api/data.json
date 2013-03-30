@@ -346,7 +346,7 @@
             "namespace": "",
             "file": "src/dAmn/extension.js",
             "line": 2,
-            "description": "dAmn extension makes the client work with dAmn.",
+            "description": "The dAmn extension makes the client work with dAmn. This extension also implements\nvarious other features to improve on the user experience.",
             "is_constructor": 1
         },
         "avatar_link": {
@@ -1042,7 +1042,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 94,
+            "line": 95,
             "description": "Implements the Data Sharing Protocol.",
             "itemtype": "method",
             "name": "BDS",
@@ -1051,7 +1051,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 101,
+            "line": 102,
             "description": "Implements Data Sharing Links. Links are private chats between two clients that\nare used for exchanging information autonomously.",
             "itemtype": "method",
             "name": "BDS.Link",
@@ -1060,7 +1060,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 109,
+            "line": 110,
             "description": "Implements custom colours.",
             "itemtype": "method",
             "name": "Colours",
@@ -1069,7 +1069,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 116,
+            "line": 117,
             "description": "Implements custom emoticons.",
             "itemtype": "method",
             "name": "Emotes",
@@ -1078,7 +1078,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 123,
+            "line": 124,
             "description": "Implements Sta.sh thumbnails.",
             "itemtype": "method",
             "name": "Stash",
