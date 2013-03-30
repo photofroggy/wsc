@@ -246,7 +246,8 @@
             "name": "src/messages.js",
             "modules": {},
             "classes": {
-                "wsc.MessageString": 1
+                "wsc.MessageString": 1,
+                "wsc.MessageParser": 1
             },
             "fors": {},
             "namespaces": {}
@@ -316,6 +317,7 @@
                 "EventEmitter": 1,
                 "wsc.Flow": 1,
                 "wsc.MessageString": 1,
+                "wsc.MessageParser": 1,
                 "wsc.Middleware": 1,
                 "wsc.Packet": 1,
                 "wsc.Protocol": 1,
@@ -1062,6 +1064,21 @@
                     "optdefault": "wsc.MessageParser"
                 }
             ]
+        },
+        "wsc.MessageParser": {
+            "name": "wsc.MessageParser",
+            "shortname": "wsc.MessageParser",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/messages.js",
+            "line": 47,
+            "description": "A parser for formatted messages.",
+            "is_constructor": 1
         },
         "wsc.Middleware": {
             "name": "wsc.Middleware",
@@ -5552,18 +5569,86 @@
         },
         {
             "file": "src/messages.js",
-            "line": 23,
+            "line": 19,
+            "description": "Render the message in HTML where possible.",
             "itemtype": "method",
-            "name": "text\n\nRender the tablumps in plain text where possible. Some tablumps appear as\nHTML entities even through this.",
+            "name": "html",
+            "return": {
+                "description": "The message rendered as an HTML string",
+                "type": "String"
+            },
             "class": "wsc.MessageString",
             "module": "wsc"
         },
         {
             "file": "src/messages.js",
-            "line": 33,
+            "line": 28,
+            "description": "Render the message in plain text where possible.",
             "itemtype": "method",
-            "name": "ansi\n\nRender the tablumps with ANSI escape sequences.\n\nFor this rendering method to really be worth it, I'll actually have to move\naway from the simple regex.",
+            "name": "text",
+            "return": {
+                "description": "The message rendered as a plain text string",
+                "type": "String"
+            },
             "class": "wsc.MessageString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 37,
+            "description": "Render the message with ANSI escape sequences.",
+            "itemtype": "method",
+            "name": "ansi",
+            "return": {
+                "description": "The message rendered as an ANSI-formatted string",
+                "type": "String"
+            },
+            "class": "wsc.MessageString",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 55,
+            "description": "Parse a given message.",
+            "itemtype": "method",
+            "name": "parse",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "Raw message data",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Message string object.",
+                "type": "Object"
+            },
+            "class": "wsc.MessageParser",
+            "module": "wsc"
+        },
+        {
+            "file": "src/messages.js",
+            "line": 67,
+            "description": "Render a given message string.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "mode",
+                    "description": "Determine how the message should be rendered",
+                    "type": "Integer"
+                },
+                {
+                    "name": "data",
+                    "description": "Message string to render",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Rendered message",
+                "type": "String"
+            },
+            "class": "wsc.MessageParser",
             "module": "wsc"
         },
         {
@@ -6043,14 +6128,6 @@
         {
             "message": "replacing incorrect tag: function with method",
             "line": " src/commands.js:204"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/messages.js:23"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/messages.js:33"
         },
         {
             "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",

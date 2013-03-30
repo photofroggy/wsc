@@ -83,6 +83,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.MessageParser.html">wsc.MessageParser</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
@@ -122,40 +124,61 @@ with(wsc.MessageString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+&#x2F;**
+ * Render the message in HTML where possible.
+ * @method html
+ * @return {String} The message rendered as an HTML string
+ *&#x2F;
 wsc.MessageString.prototype.html = function(  ) {
     return this.raw;
 };
 
 &#x2F;**
- * @function text
- *
- * Render the tablumps in plain text where possible. Some tablumps appear as
- * HTML entities even through this.
+ * Render the message in plain text where possible.
+ * @method text
+ * @return {String} The message rendered as a plain text string
  *&#x2F;
 wsc.MessageString.prototype.text = function() {
     return this.raw;
 };
 
 &#x2F;**
- * @function ansi
- * 
- * Render the tablumps with ANSI escape sequences.
- * 
- * For this rendering method to really be worth it, I&#x27;ll actually have to move
- * away from the simple regex.
+ * Render the message with ANSI escape sequences.
+ * @method ansi
+ * @return {String} The message rendered as an ANSI-formatted string
  *&#x2F;
 wsc.MessageString.prototype.ansi = function() {
     return this.raw;
 };
 
+
+&#x2F;**
+ * A parser for formatted messages.
+ * 
+ * @class wsc.MessageParser
+ * @constructor
+ *&#x2F;
 wsc.MessageParser = function(  ) {};
 
+&#x2F;**
+ * Parse a given message.
+ * @method parse
+ * @param data {String} Raw message data
+ * @return {Object} Message string object.
+ *&#x2F;
 wsc.MessageParser.prototype.parse = function( data ) {
 
     return new wsc.MessageString(data, this);
 
 };
 
+&#x2F;**
+ * Render a given message string.
+ * @method render
+ * @param mode {Integer} Determine how the message should be rendered
+ * @param data {Object} Message string to render
+ * @return {String} Rendered message
+ *&#x2F;
 wsc.MessageParser.prototype.render = function( mode, data ) {
 
     return data.raw;

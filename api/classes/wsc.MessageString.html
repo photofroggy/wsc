@@ -83,6 +83,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.MessageParser.html">wsc.MessageParser</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
@@ -269,17 +271,7 @@
                         
                             
                             <li class="index-item method">
-                                <a href="#method_ansi
-
-Render the tablumps with ANSI escape sequences.
-
-For this rendering method to really be worth it, I&#x27;ll actually have to move
-away from the simple regex.">ansi
-
-Render the tablumps with ANSI escape sequences.
-
-For this rendering method to really be worth it, I&#x27;ll actually have to move
-away from the simple regex.</a>
+                                <a href="#method_ansi">ansi</a>
 
                                 
                                 
@@ -288,13 +280,16 @@ away from the simple regex.</a>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_text
+                                <a href="#method_html">html</a>
 
-Render the tablumps in plain text where possible. Some tablumps appear as
-HTML entities even through this.">text
-
-Render the tablumps in plain text where possible. Some tablumps appear as
-HTML entities even through this.</a>
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_text">text</a>
 
                                 
                                 
@@ -317,25 +312,19 @@ HTML entities even through this.</a>
 
                 
                     
-<div id="method_ansi
-
-Render the tablumps with ANSI escape sequences.
-
-For this rendering method to really be worth it, I&#x27;ll actually have to move
-away from the simple regex." class="method item">
+<div id="method_ansi" class="method item">
     <header>
         <section class="signature">
-            <h3><code>ansi
-
-Render the tablumps with ANSI escape sequences.
-
-For this rendering method to really be worth it, I&#x27;ll actually have to move
-away from the simple regex.</code></h3>
+            <h3><code>ansi</code></h3>
 
         
             <span class="paren">()</span>
         
     
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
         
     
         
@@ -362,7 +351,7 @@ away from the simple regex.</code></h3>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_messages.js.html#l33"><code>src&#x2F;messages.js:33</code></a>
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l37"><code>src&#x2F;messages.js:37</code></a>
         
         </p>
 
@@ -374,9 +363,26 @@ away from the simple regex.</code></h3>
     </header>
     <section class="body">
     
+    <section class="description">
+        <p>Render the message with ANSI escape sequences.</p>
+    </section>
+    
 
     
 
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as an ANSI-formatted string
+                
+            </p>
+        </section>
     
 
     
@@ -386,21 +392,19 @@ away from the simple regex.</code></h3>
 
                 
                     
-<div id="method_text
-
-Render the tablumps in plain text where possible. Some tablumps appear as
-HTML entities even through this." class="method item">
+<div id="method_html" class="method item">
     <header>
         <section class="signature">
-            <h3><code>text
-
-Render the tablumps in plain text where possible. Some tablumps appear as
-HTML entities even through this.</code></h3>
+            <h3><code>html</code></h3>
 
         
             <span class="paren">()</span>
         
     
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
         
     
         
@@ -427,7 +431,7 @@ HTML entities even through this.</code></h3>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_messages.js.html#l23"><code>src&#x2F;messages.js:23</code></a>
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l19"><code>src&#x2F;messages.js:19</code></a>
         
         </p>
 
@@ -439,9 +443,106 @@ HTML entities even through this.</code></h3>
     </header>
     <section class="body">
     
+    <section class="description">
+        <p>Render the message in HTML where possible.</p>
+    </section>
+    
 
     
 
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as an HTML string
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_text" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>text</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l28"><code>src&#x2F;messages.js:28</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render the message in plain text where possible.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as a plain text string
+                
+            </p>
+        </section>
     
 
     

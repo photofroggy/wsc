@@ -83,6 +83,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.MessageParser.html">wsc.MessageParser</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
@@ -288,6 +290,15 @@ console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/l
                         
                             
                             <li class="index-item method inherited">
+                                <a href="#method_ansi">ansi</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
                                 <a href="#method_ansi
 
 Render the tablumps with ANSI escape sequences.
@@ -299,6 +310,15 @@ Render the tablumps with ANSI escape sequences.
 
 For this rendering method to really be worth it, I&#x27;ll actually have to move
 away from the simple regex.</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method inherited">
+                                <a href="#method_html">html</a>
 
                                 
                                 
@@ -320,6 +340,15 @@ Render the tablumps as HTML entities.</a>
                         
                             
                             <li class="index-item method inherited">
+                                <a href="#method_text">text</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
                                 <a href="#method_text
 
 Render the tablumps in plain text where possible. Some tablumps appear as
@@ -346,6 +375,83 @@ HTML entities even through this.</a>
         <h3>Items</h3>
         
             <div id="methods" class="listing">
+
+                
+                    
+<div id="method_ansi" class="method item inherited">
+    <header>
+        <section class="signature">
+            <h3><code>ansi</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_ansi">wsc.MessageString</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l37"><code>src&#x2F;messages.js:37</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render the message with ANSI escape sequences.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as an ANSI-formatted string
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
 
                 
                     
@@ -385,17 +491,12 @@ away from the simple regex.</code></h3>
 
     <section class="meta">
         
-            <p>Inherited from
-            <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_ansi
-
-Render the tablumps with ANSI escape sequences.
-
-For this rendering method to really be worth it, I&#x27;ll actually have to move
-away from the simple regex.">
-                wsc.MessageString
-            </a>
             
-            but overwritten in
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -414,6 +515,83 @@ away from the simple regex.">
 
     
 
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_html" class="method item inherited">
+    <header>
+        <section class="signature">
+            <h3><code>html</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_html">wsc.MessageString</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l19"><code>src&#x2F;messages.js:19</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render the message in HTML where possible.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as an HTML string
+                
+            </p>
+        </section>
     
 
     
@@ -486,6 +664,83 @@ Render the tablumps as HTML entities.</code></h3>
 
                 
                     
+<div id="method_text" class="method item inherited">
+    <header>
+        <section class="signature">
+            <h3><code>text</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_text">wsc.MessageString</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_messages.js.html#l28"><code>src&#x2F;messages.js:28</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render the message in plain text where possible.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    The message rendered as a plain text string
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
 <div id="method_text
 
 Render the tablumps in plain text where possible. Some tablumps appear as
@@ -518,15 +773,12 @@ HTML entities even through this.</code></h3>
 
     <section class="meta">
         
-            <p>Inherited from
-            <a href="..&#x2F;classes&#x2F;wsc.MessageString.html#method_text
-
-Render the tablumps in plain text where possible. Some tablumps appear as
-HTML entities even through this.">
-                wsc.MessageString
-            </a>
             
-            but overwritten in
+                
+                <p>
+                
+                Defined in
+                
             
         
         
