@@ -98,6 +98,7 @@ div.rbtn a {
 
 div.rbtn a:hover {
     background-color: gray;
+    color: white;
 }
 
 div.rbtn.start {
