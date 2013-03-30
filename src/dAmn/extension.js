@@ -1,8 +1,9 @@
 
 /**
- * dAmn extension makes the client work with dAmn.
+ * The dAmn extension makes the client work with dAmn. This extension also implements
+ * various other features to improve on the user experience.
  * 
- * @class Extension
+ * @class dAmn.Extension
  * @constructor
  */
 wsc.dAmn.Extension = function( client ) {
@@ -91,10 +92,40 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    /**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     */
     wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     */
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    /**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     */
     wsc.dAmn.Colours( client, storage.colours, settings );
+    
+    /**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
     wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };

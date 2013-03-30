@@ -20,6 +20,13 @@ wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
  * @class EventEmitter
  * @constructor
  **/
+
+/**
+ * Event emitter object emits events and stuff.
+ * 
+ * @class EventEmitter
+ * @constructor
+ */
 function EventEmitter() {
     var events = {}, self = this;
 
@@ -88,7 +95,7 @@ C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
- * @class Transport
+ * @class wsc.Transport
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.Transport.sopen] {Method} This method will be called when
@@ -219,7 +226,7 @@ wsc.Transport.prototype.close = function(  ) {};
 /**
  * WebSocket transport object.
  * 
- * @class WebSocket
+ * @class wsc.WebSocket
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
@@ -326,7 +333,7 @@ wsc.WebSocket.prototype.close = function(  ) {
 /**
  * SocketIO wrapper.
  * 
- * @class SocketIO
+ * @class wsc.SocketIO
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
@@ -671,6 +678,8 @@ StringSet.prototype.contains = function( item ) {
 /**
  * Middleware management and execution.
  * 
+ * @class wsc.Middleware
+ * @constructor
  */
 wsc.Middleware = function(  ) {
 
@@ -792,6 +801,14 @@ wsc.Storage.prototype.remove = function( key ) {
 
 var chains = [["recv", "admin"]];
 
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ */
 wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
@@ -906,7 +923,7 @@ function packetEvtName( pkt ) {
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class Channel
+ * @class wsc.Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
@@ -1141,6 +1158,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * 
  * @method get_privclass_order
  * @param name {String} Name of the privilege class to get the order of.
+ * @return {Integer} The order of the privilege class.
  */
 wsc.Channel.prototype.get_privclass_order = function( name ) {
     name = name.toLowerCase();
@@ -1380,6 +1398,11 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 
 /**
  * Rendered message object.
+ * 
+ * @class wsc.MessageString
+ * @constructor
+ * @param data {String} Unparsed message.
+ * @param [parser=wsc.MessageParser] {Object} Object used to parse messages.
  */
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
@@ -1436,7 +1459,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 /**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
@@ -1445,7 +1468,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
-    // Mappings for every packet.
+    /**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a `packet object`
+     * to an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure `[ param, args, body ]`. All items are optional, but
+     * positional. To discard a particular piece of data, `null` can be used.
+     * 
+     * When `args` is present it must be an array. This array names the arguments to store.
+     * Each item in the `args` array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When `body` is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (`*`). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink "wsc.MessageParser"}}message parser{{/crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "property",
+     *          "ns": pkt.param,
+     *          "p": pkt.arg.p,
+     *          "by": pkt.arg.by,
+     *          "ts": pkt.arg.ts,
+     *          "value": pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "kick",
+     *          "ns": pkt.param,
+     *          "user": pkt.arg.u,
+     *          "e": pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     */
     this.maps = {
         'chatserver': ['version'],
         'login': ['username', ['e'], 'data'],
@@ -1767,9 +1846,10 @@ wsc.Protocol.prototype.log = function( client, event ) {
 };
 
 /**
- * Control the client's program flow in relation to the chat this.
+ * Control the client's program flow. This object determines how the client responds to
+ * certain events.
  * 
- * @class Flow
+ * @class wsc.Flow
  * @constructor
  * @param protocol {Object} Protocol object.
  */
@@ -2100,6 +2180,8 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 
 /**
  * This extension implements most of the default commands for wsc.
+ * @class wsc.defaults.Extension
+ * @constructor
  */
 wsc.defaults.Extension = function( client ) {
 
@@ -2533,8 +2615,26 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    
+    /**
+     * Implements the ignore feature.
+     * 
+     * @method Ignore
+     */
     wsc.defaults.Extension.Ignore(client);
+    
+    /**
+     * Implements away messages.
+     * 
+     * @method Away
+     */
     wsc.defaults.Extension.Away(client);
+    
+    /**
+     * Implements autojoin channels.
+     * 
+     * @method Autojoin
+     */
     wsc.defaults.Extension.Autojoin(client);
 
 };
@@ -3194,13 +3294,16 @@ wsc.defaults.Extension.Ignore = function( client ) {
 };
 
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -3209,14 +3312,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -4054,7 +4167,7 @@ wsc.Client.prototype.disconnect = function(  ) {
 /**
  * Controls the input panel of the client.
  * 
- * @class Control
+ * @class wsc.Control
  * @constructor
  * @param client {Object} wsc.Client object.
  */
@@ -9335,8 +9448,6 @@ Chatterbox.template.pager = {
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\
@@ -10756,9 +10867,10 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
 };
 
 /**
- * dAmn extension makes the client work with dAmn.
+ * The dAmn extension makes the client work with dAmn. This extension also implements
+ * various other features to improve on the user experience.
  * 
- * @class Extension
+ * @class dAmn.Extension
  * @constructor
  */
 wsc.dAmn.Extension = function( client ) {
@@ -10847,22 +10959,67 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    /**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     */
     wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     */
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    /**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     */
     wsc.dAmn.Colours( client, storage.colours, settings );
+    
+    /**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
     wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };
 
+/**
+ * This object provides a few helper functions relating to deviantART avatars.
+ * 
+ * @class dAmn.avatar
+ */
 wsc.dAmn.avatar = {};
+
+/**
+ * An array containing the different file types avatars can be.
+ *
+ * @property ext
+ * @type Array
+ * @default [ 'gif', 'gif', 'jpg', 'png' ]
+ */
 wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
 
 /**
  * Produces an avatar link.
  * 
- * @class avatar_link
- * @constructor
+ * @method link
+ * @param un {String} Username to generate an avatar link for
+ * @param icon {String} Icon number as provided by dAmn's protocol
+ * @return {String} Valid avatar link
  */
 wsc.dAmn.avatar.link = function( un, icon ) {
     
@@ -10874,9 +11031,12 @@ wsc.dAmn.avatar.link = function( un, icon ) {
 
 
 /**
- * Works out the src url for an avatar.
+ * Works out the source url for an avatar.
  *
  * @method src
+ * @param un {String} Username to resolve the avatar source for
+ * @param icon {String} The user's icon number
+ * @return {String} The source URL
  */
 wsc.dAmn.avatar.src = function( un, icon ) {
 
@@ -11155,7 +11315,10 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
 
 };
 /**
- * Extension to handle stash links posted in the chat.
+ * Extension to handle stash links posted in the chat. Provides some helper functions
+ * to meet this end as well.
+ *
+ * @class dAmn.Stash
  */
 wsc.dAmn.Stash = function( client, storage, settings ) {
 
@@ -11310,10 +11473,11 @@ wsc.dAmn.Stash.render = function( event, link, data ) {
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
  *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  * 
- * @class TablumpString
+ * @class dAmn.TablumpString
+ * @extends wsc.MessageString
  * @constructor
  * @param data {String} String possibly containing tablumps.
- * @param parser {Object} A reference to a tablumps parser. Not required.
+ * @param [parser] {Object} A reference to a tablumps parser.
  */
 wsc.dAmn.TablumpString = function(data, parser) {
     this._parser = parser || new wsc.dAmn.Tablumps();
@@ -11381,12 +11545,32 @@ wsc.dAmn.PARSE = {
 
 
 /**
- * @object wsc.dAmn.TablumpParser
- *
- * Constructor for the tablumps parser.
+ * Parser for dAmn Tablumps.
+ * 
+ * @class dAmn.TablumpParser
+ * @extends wsc.MessageParser
+ * @constructor
  */
 wsc.dAmn.TablumpParser = function(  ) {
 
+    /**
+     * This object holds each tablump's parsing and rendering rules. For each tablump,
+     * there is a key, which is the tablump's head, or "tag". The entry is an array
+     * with the number of arguments in the tablump, followed by different renderers.
+     * As a generalisation, it looks like this:
+     *
+     *      this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];
+     * 
+     * Renderers can be formatting strings or functions. All renderers other than the
+     * first one are optional. If a particular render is not available, the rendering step
+     * falls back to the first renderer in the Array. As a brief example, this is what the
+     * img tag's entry looks like:
+     *      
+     *      this.lumps['&img\t'] = [ 3, '<img src="{0}" alt="{1}" title="{2}" />'];
+     * 
+     * @property lumps
+     * @type Object
+     */
     this.lumps = this.defaultMap();
 
 };
@@ -11395,18 +11579,17 @@ wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
 wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
 
 /**
- * @function registerMap
- *
  * I should probably deprecate this. Sets the rendering map to the given map.
+ * @method registerMap
+ * @deprecated
  */
 wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
 /**
- * @function extend
- *
  * Add the given rendering items to the parser's render map.
+ * @method extend
  */
 wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
@@ -11415,9 +11598,8 @@ wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
 };
 
 /**
- * @function defaultMap
- * 
  * Get all the default nonsense.
+ * @method defaultMap
  */
 wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
@@ -11501,9 +11683,12 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
 
 
 /**
- * @function parse
+ * Parse a message into tokens and return it as a
+ * {{#crossLink "dAmn.TablumpString"}}{{/crossLink}} object.
  *
- * Create a wsc.dAmn.TablumpString obejct and return it.
+ * @method parse
+ * @param data {String} Message to parse
+ * @return {Object} Parsed tablump string
  */
 wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
     data = replaceAll(data, '<', '&lt;');
@@ -11512,9 +11697,11 @@ wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
 };
 
 /**
- * @function tokenise
- * 
  * Parse a message possibly containing tablumps into tokens.
+ * 
+ * @method tokenise
+ * @param data {String} Message to parse
+ * @return {Array} Tokens
  */
 wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 
@@ -11610,8 +11797,6 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 };
 
 /**
- * @function render
- *
  * Render tablumps in a given format.
  * 
  * Here, the flag should be a number, and defines the index of the renderer
@@ -11622,6 +11807,11 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
  * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
  * where possible. Setting `flag` to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
+ * 
+ * @method render
+ * @param flag {Integer} Determines how the message should be rendered
+ * @param data {Object} TablumpString to be rendered
+ * @return {String} Rendered tablump string
  */
 wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     if( !data )
@@ -11654,8 +11844,12 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
 };
 
 /**
- * @function renderOne
  * Render a single tablump.
+ * @method renderOne
+ * @param type {Integer} Type of renderer to use
+ * @param tag {String} Name of the tablump tag
+ * @param tokens {Array} Tablump arguments
+ * @return {String} The rendered tablump
  */
 wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     var lump = this.lumps[tag];

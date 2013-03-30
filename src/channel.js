@@ -3,7 +3,7 @@
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class Channel
+ * @class wsc.Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
@@ -238,6 +238,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * 
  * @method get_privclass_order
  * @param name {String} Name of the privilege class to get the order of.
+ * @return {Integer} The order of the privilege class.
  */
 wsc.Channel.prototype.get_privclass_order = function( name ) {
     name = name.toLowerCase();

@@ -81,5 +81,5 @@
             "files": "css/wsc.scss"
         }
     ],
-    "post": ["./mvlh"]
+    "post": ["./mvlh", "./doctq"]
 }

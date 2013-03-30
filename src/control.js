@@ -1,7 +1,7 @@
 /**
  * Controls the input panel of the client.
  * 
- * @class Control
+ * @class wsc.Control
  * @constructor
  * @param client {Object} wsc.Client object.
  */

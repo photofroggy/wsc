@@ -20,6 +20,13 @@ wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
  * @class EventEmitter
  * @constructor
  **/
+
+/**
+ * Event emitter object emits events and stuff.
+ * 
+ * @class EventEmitter
+ * @constructor
+ */
 function EventEmitter() {
     var events = {}, self = this;
 
@@ -88,7 +95,7 @@ C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
- * @class Transport
+ * @class wsc.Transport
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.Transport.sopen] {Method} This method will be called when
@@ -219,7 +226,7 @@ wsc.Transport.prototype.close = function(  ) {};
 /**
  * WebSocket transport object.
  * 
- * @class WebSocket
+ * @class wsc.WebSocket
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
@@ -326,7 +333,7 @@ wsc.WebSocket.prototype.close = function(  ) {
 /**
  * SocketIO wrapper.
  * 
- * @class SocketIO
+ * @class wsc.SocketIO
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
@@ -671,6 +678,8 @@ StringSet.prototype.contains = function( item ) {
 /**
  * Middleware management and execution.
  * 
+ * @class wsc.Middleware
+ * @constructor
  */
 wsc.Middleware = function(  ) {
 
@@ -792,6 +801,14 @@ wsc.Storage.prototype.remove = function( key ) {
 
 var chains = [["recv", "admin"]];
 
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ */
 wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
@@ -906,7 +923,7 @@ function packetEvtName( pkt ) {
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class Channel
+ * @class wsc.Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
@@ -1141,6 +1158,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * 
  * @method get_privclass_order
  * @param name {String} Name of the privilege class to get the order of.
+ * @return {Integer} The order of the privilege class.
  */
 wsc.Channel.prototype.get_privclass_order = function( name ) {
     name = name.toLowerCase();
@@ -1380,6 +1398,11 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 
 /**
  * Rendered message object.
+ * 
+ * @class wsc.MessageString
+ * @constructor
+ * @param data {String} Unparsed message.
+ * @param [parser=wsc.MessageParser] {Object} Object used to parse messages.
  */
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
@@ -1436,7 +1459,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 /**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
@@ -1445,7 +1468,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
-    // Mappings for every packet.
+    /**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a `packet object`
+     * to an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure `[ param, args, body ]`. All items are optional, but
+     * positional. To discard a particular piece of data, `null` can be used.
+     * 
+     * When `args` is present it must be an array. This array names the arguments to store.
+     * Each item in the `args` array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When `body` is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (`*`). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink "wsc.MessageParser"}}message parser{{/crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "property",
+     *          "ns": pkt.param,
+     *          "p": pkt.arg.p,
+     *          "by": pkt.arg.by,
+     *          "ts": pkt.arg.ts,
+     *          "value": pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "kick",
+     *          "ns": pkt.param,
+     *          "user": pkt.arg.u,
+     *          "e": pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     */
     this.maps = {
         'chatserver': ['version'],
         'login': ['username', ['e'], 'data'],
@@ -1767,9 +1846,10 @@ wsc.Protocol.prototype.log = function( client, event ) {
 };
 
 /**
- * Control the client's program flow in relation to the chat this.
+ * Control the client's program flow. This object determines how the client responds to
+ * certain events.
  * 
- * @class Flow
+ * @class wsc.Flow
  * @constructor
  * @param protocol {Object} Protocol object.
  */
@@ -2100,6 +2180,8 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 
 /**
  * This extension implements most of the default commands for wsc.
+ * @class wsc.defaults.Extension
+ * @constructor
  */
 wsc.defaults.Extension = function( client ) {
 
@@ -2533,8 +2615,26 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    
+    /**
+     * Implements the ignore feature.
+     * 
+     * @method Ignore
+     */
     wsc.defaults.Extension.Ignore(client);
+    
+    /**
+     * Implements away messages.
+     * 
+     * @method Away
+     */
     wsc.defaults.Extension.Away(client);
+    
+    /**
+     * Implements autojoin channels.
+     * 
+     * @method Autojoin
+     */
     wsc.defaults.Extension.Autojoin(client);
 
 };
@@ -3194,13 +3294,16 @@ wsc.defaults.Extension.Ignore = function( client ) {
 };
 
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -3209,14 +3312,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -4054,7 +4167,7 @@ wsc.Client.prototype.disconnect = function(  ) {
 /**
  * Controls the input panel of the client.
  * 
- * @class Control
+ * @class wsc.Control
  * @constructor
  * @param client {Object} wsc.Client object.
  */
@@ -9335,8 +9448,6 @@ Chatterbox.template.pager = {
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\

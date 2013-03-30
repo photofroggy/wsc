@@ -1,7 +1,8 @@
 /**
- * Control the client's program flow in relation to the chat this.
+ * Control the client's program flow. This object determines how the client responds to
+ * certain events.
  * 
- * @class Flow
+ * @class wsc.Flow
  * @constructor
  * @param protocol {Object} Protocol object.
  */

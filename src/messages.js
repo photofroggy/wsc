@@ -1,5 +1,10 @@
 /**
  * Rendered message object.
+ * 
+ * @class wsc.MessageString
+ * @constructor
+ * @param data {String} Unparsed message.
+ * @param [parser=wsc.MessageParser] {Object} Object used to parse messages.
  */
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
