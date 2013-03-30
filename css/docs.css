@@ -47,11 +47,17 @@ ul.tabs li.active {
     border-bottom: none;
 }
 
-
+section.main {
+    padding: 0px 15px 30px 15px;
+}
 
 section.main section {
     padding: 0px;
     margin: 0px;
+}
+
+section.main article.meta {
+    margin: 0 30px 10px 30px;
 }
 
 article.meta, div.item header .meta {
@@ -75,11 +81,15 @@ article.meta p, div.item header .meta p {
 }
 
 section.main section.intro {
-    margin: 0 30px 10px 30px;
+    margin: 0 35px 10px 35px;
 }
 
 section.main article.constructor {
-    margin: 0 30px 10px 30px;
+    margin: 0 35px 10px 35px;
+}
+
+section.main article.constructor div.item {
+    padding: 0 10px;
 }
 
 .items div.indexes h3 {
