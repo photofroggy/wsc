@@ -330,17 +330,18 @@ Chatterbox.Control.prototype.set_text = function( text ) {
  * Save current input in a cache.
  * 
  * @method cache_input
- * @param event {Object} Event data.
+ * @param previous {Object} Channel to cache input for.
+ * @param chan {Object} Newly selected channel
  */
-Chatterbox.Control.prototype.cache_input = function( event ) {
+Chatterbox.Control.prototype.cache_input = function( previous, chan ) {
 
-    var h = this.get_history( event.prev.namespace );
+    var h = this.get_history( previous.namespace );
     
     if( h.index > -1 )
         return;
     
     h.tmp = this.ui.get_text();
-    this.set_text(this.get_history( event.chan.namespace ).tmp);
+    this.set_text(this.get_history( chan.namespace ).tmp);
 
 };
 

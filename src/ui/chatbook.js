@@ -179,6 +179,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
