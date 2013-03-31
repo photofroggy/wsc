@@ -99,6 +99,8 @@
     
         <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.Storage.html">wsc.Storage</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
     
         <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
@@ -112,17 +114,46 @@
     <pre class="code prettyprint linenums">
 &#x2F;**
  * Storage object.
- * Allows you to save stuffs yo.
+ * 
+ * This class is a light wrapper around localStorage. Keys are given namespaces, to avoid
+ * interfering with the data of other applications. This feature also allows us to create
+ * &quot;folders&quot;.
+ * 
+ * @class wsc.Storage
+ * @constructor
+ * @param namespace {String} Storage namespace to apply to keys
+ * @param parent {Object} Parent storage object
  *&#x2F;
 wsc.Storage = function( namespace, parent ) {
 
+    &#x2F;**
+     * The namaespace for this storage object.
+     * 
+     * @property namespace
+     * @type String
+     * @default null
+     *&#x2F;
     this.ns = namespace || null;
+    
+    &#x2F;**
+     * Parent storage object. As if it is a containing folder.
+     * 
+     * @property parent
+     * @type Object
+     * @default null
+     *&#x2F;
     this.parent = parent || null;
 
 };
 
 &#x2F;**
- * Get a &quot;folder&quot;.
+ * Create a storage &quot;folder&quot;.
+ * 
+ * This method creates a storage object with a namespace &#x60;this.namespace + &#x27;.&#x27; + namespace&#x60;.
+ * 
+ * @method folder
+ * @param namespace
+ * @return {Object} A storage object.
  *&#x2F;
 wsc.Storage.prototype.folder = function( namespace ) {
 
@@ -135,6 +166,11 @@ wsc.Storage.prototype.folder = function( namespace ) {
 
 &#x2F;**
  * Get an item from storage.
+ * 
+ * @method get
+ * @param key {String} Key of the entry to retrieve
+ * @param default_val {String} Value to return if the entry is not found
+ * @return {String} The corresponding value
  *&#x2F;
 wsc.Storage.prototype.get = function( key, default_val ) {
 
@@ -153,6 +189,10 @@ wsc.Storage.prototype.get = function( key, default_val ) {
 
 &#x2F;**
  * Store an item.
+ * 
+ * @method set
+ * @param key {String} Key to store the value under
+ * @param value {Mixed} Item to store
  *&#x2F;
 wsc.Storage.prototype.set = function( key, value ) {
 
@@ -166,7 +206,11 @@ wsc.Storage.prototype.set = function( key, value ) {
 };
 
 &#x2F;**
- * Remove an item.
+ * Remove an item from localStorage.
+ * 
+ * @method remove
+ * @param key {String} Entry to remove
+ * @param {Boolean} Success or failure
  *&#x2F;
 wsc.Storage.prototype.remove = function( key ) {
 

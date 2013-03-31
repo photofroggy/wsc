@@ -277,7 +277,9 @@
         "src/storage.js": {
             "name": "src/storage.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "wsc.Storage": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -315,6 +317,7 @@
                 "wsc.Middleware": 1,
                 "wsc.Packet": 1,
                 "wsc.Protocol": 1,
+                "wsc.Storage": 1,
                 "wsc.Transport": 1,
                 "wsc.WebSocket": 1,
                 "wsc.SocketIO": 1
@@ -1201,6 +1204,33 @@
                     "type": "Object",
                     "optional": true,
                     "optdefault": "wsc.MessageParser"
+                }
+            ]
+        },
+        "wsc.Storage": {
+            "name": "wsc.Storage",
+            "shortname": "wsc.Storage",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/storage.js",
+            "line": 1,
+            "description": "Storage object.\n\nThis class is a light wrapper around localStorage. Keys are given namespaces, to avoid\ninterfering with the data of other applications. This feature also allows us to create\n\"folders\".",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": "Storage namespace to apply to keys",
+                    "type": "String"
+                },
+                {
+                    "name": "parent",
+                    "description": "Parent storage object",
+                    "type": "Object"
                 }
             ]
         },
@@ -5902,37 +5932,110 @@
         },
         {
             "file": "src/storage.js",
-            "line": 1,
-            "description": "Storage object.\nAllows you to save stuffs yo.",
-            "class": "wsc.Transport",
-            "module": "wsc"
-        },
-        {
-            "file": "src/storage.js",
-            "line": 12,
-            "description": "Get a \"folder\".",
-            "class": "wsc.Transport",
+            "line": 15,
+            "description": "The namaespace for this storage object.",
+            "itemtype": "property",
+            "name": "namespace",
+            "type": "String",
+            "default": "null",
+            "class": "wsc.Storage",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
             "line": 24,
+            "description": "Parent storage object. As if it is a containing folder.",
+            "itemtype": "property",
+            "name": "parent",
+            "type": "Object",
+            "default": "null",
+            "class": "wsc.Storage",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 35,
+            "description": "Create a storage \"folder\".\n\nThis method creates a storage object with a namespace `this.namespace + '.' + namespace`.",
+            "itemtype": "method",
+            "name": "folder",
+            "params": [
+                {
+                    "name": "namespace",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "A storage object.",
+                "type": "Object"
+            },
+            "class": "wsc.Storage",
+            "module": "wsc"
+        },
+        {
+            "file": "src/storage.js",
+            "line": 53,
             "description": "Get an item from storage.",
-            "class": "wsc.Transport",
+            "itemtype": "method",
+            "name": "get",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key of the entry to retrieve",
+                    "type": "String"
+                },
+                {
+                    "name": "default_val",
+                    "description": "Value to return if the entry is not found",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The corresponding value",
+                "type": "String"
+            },
+            "class": "wsc.Storage",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
-            "line": 42,
+            "line": 76,
             "description": "Store an item.",
-            "class": "wsc.Transport",
+            "itemtype": "method",
+            "name": "set",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Key to store the value under",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "Item to store",
+                    "type": "Mixed"
+                }
+            ],
+            "class": "wsc.Storage",
             "module": "wsc"
         },
         {
             "file": "src/storage.js",
-            "line": 56,
-            "description": "Remove an item.",
-            "class": "wsc.Transport",
+            "line": 94,
+            "description": "Remove an item from localStorage.",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "Entry to remove",
+                    "type": "String"
+                },
+                {
+                    "name": "Success",
+                    "description": "or failure",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "wsc.Storage",
             "module": "wsc"
         },
         {
@@ -6310,26 +6413,6 @@
         {
             "message": "Missing item type\nContains an item?",
             "line": " src/lib.js:225"
-        },
-        {
-            "message": "Missing item type\nStorage object.\nAllows you to save stuffs yo.",
-            "line": " src/storage.js:1"
-        },
-        {
-            "message": "Missing item type\nGet a \"folder\".",
-            "line": " src/storage.js:12"
-        },
-        {
-            "message": "Missing item type\nGet an item from storage.",
-            "line": " src/storage.js:24"
-        },
-        {
-            "message": "Missing item type\nStore an item.",
-            "line": " src/storage.js:42"
-        },
-        {
-            "message": "Missing item type\nRemove an item.",
-            "line": " src/storage.js:56"
         }
     ]
 }

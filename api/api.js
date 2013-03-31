@@ -36,6 +36,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "wsc.Packet",
         "wsc.Protocol",
         "wsc.SocketIO",
+        "wsc.Storage",
         "wsc.Transport",
         "wsc.WebSocket",
         "wsc.defaults.Extension"
