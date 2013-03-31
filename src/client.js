@@ -526,7 +526,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
  */
 wsc.Client.prototype.select_ns = function( ns ) {
 
-    this.cchannel = this.channel(event.ns) || this.cchannel;
+    this.cchannel = this.channel(ns) || this.cchannel;
 
 };
 

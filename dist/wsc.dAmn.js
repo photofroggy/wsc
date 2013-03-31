@@ -3842,7 +3842,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
  */
 wsc.Client.prototype.select_ns = function( ns ) {
 
-    this.cchannel = this.channel(event.ns) || this.cchannel;
+    this.cchannel = this.channel(ns) || this.cchannel;
 
 };
 
@@ -4203,7 +4203,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * Controls the input panel of the client.
  * 
  * @class wsc.Control
- * @deprecated
+ * @deprecated No need for this object. Merging functionality with the respective UI object.
  * @constructor
  * @param client {Object} wsc.Client object.
  */
@@ -6346,13 +6346,14 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.current = chan;
     this.manager.resize();
     this.manager.control.cache_input( prev, chan );
-    this.manager.client.select_ns( chan.raw );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**

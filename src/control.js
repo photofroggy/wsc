@@ -2,7 +2,7 @@
  * Controls the input panel of the client.
  * 
  * @class wsc.Control
- * @deprecated
+ * @deprecated No need for this object. Merging functionality with the respective UI object.
  * @constructor
  * @param client {Object} wsc.Client object.
  */
