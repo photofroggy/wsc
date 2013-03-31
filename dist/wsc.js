@@ -3504,14 +3504,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    //this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( 'channel.selected', function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        //client.control.cache_input(event);
-    } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
@@ -6352,6 +6346,7 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.current = chan;
     this.manager.resize();
     this.manager.control.cache_input( prev, chan );
+    this.manager.client.select_ns( chan.raw );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
