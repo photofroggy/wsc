@@ -3679,8 +3679,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] && channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -3829,6 +3834,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     
     chan.remove();
     delete this.channelo[chan.raw.toLowerCase()];
+
+};
+
+/**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ */
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(event.ns) || this.cchannel;
 
 };
 
