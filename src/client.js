@@ -84,7 +84,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
@@ -188,13 +188,13 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
+    //this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
     
     this.ui.on( 'channel.selected', function( event, ui ) {
         client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
+        //client.control.cache_input(event);
     } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
