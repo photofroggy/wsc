@@ -83,8 +83,6 @@
     
         <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
     
-        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
-    
         <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
@@ -607,7 +605,7 @@ Chatterbox.Control.prototype.start_tab = function( event ) {
         &#x2F;&#x2F; Matching with commands.
         var cmd = &#x27;&#x27;;
         for( var i in this.manager.client.cmds ) {
-            cmd = this.client.cmds[i];
+            cmd = this.manager.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }

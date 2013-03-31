@@ -205,15 +205,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/control.js": {
-            "name": "src/control.js",
-            "modules": {},
-            "classes": {
-                "wsc.Control": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
         "src/events.js": {
             "name": "src/events.js",
             "modules": {},
@@ -317,7 +308,6 @@
                 "wsc.Channel": 1,
                 "wsc.Client": 1,
                 "wsc.defaults.Extension": 1,
-                "wsc.Control": 1,
                 "EventEmitter": 1,
                 "wsc.Flow": 1,
                 "wsc.MessageString": 1,
@@ -1064,30 +1054,6 @@
             "line": 3,
             "description": "This extension implements most of the default commands for wsc.",
             "is_constructor": 1
-        },
-        "wsc.Control": {
-            "name": "wsc.Control",
-            "shortname": "wsc.Control",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "module": "wsc",
-            "namespace": "",
-            "file": "src/control.js",
-            "line": 1,
-            "description": "Controls the input panel of the client.",
-            "deprecated": true,
-            "deprecationMessage": "No need for this object. Merging functionality with the respective UI object.",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "client",
-                    "description": "wsc.Client object.",
-                    "type": "Object"
-                }
-            ]
         },
         "EventEmitter": {
             "name": "EventEmitter",
@@ -5330,194 +5296,6 @@
             "itemtype": "method",
             "name": "Autojoin",
             "class": "wsc.defaults.Extension",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 27,
-            "description": "Steal the lime light. Brings the cursor to the input panel.",
-            "itemtype": "method",
-            "name": "focus",
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 38,
-            "description": "Set the input handlers for the input panel.",
-            "itemtype": "method",
-            "name": "set_input",
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 58,
-            "description": "Save current input in a cache.",
-            "itemtype": "method",
-            "name": "cache_input",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 76,
-            "description": "Get a channel's input history object.\nIf no history object exists for the given channel, a new object is created\nand stored.",
-            "itemtype": "method",
-            "name": "get_history",
-            "params": [
-                {
-                    "name": "namespace",
-                    "description": "Channel to get the history of. If not given, the\n  channel currently being viewed is used.",
-                    "type": "String",
-                    "optional": true
-                }
-            ],
-            "return": {
-                "description": "history  Channel's input history data.",
-                "type": "Object"
-            },
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 103,
-            "description": "Append an item to the current channel's input history.",
-            "itemtype": "method",
-            "name": "append_history",
-            "params": [
-                {
-                    "name": "data",
-                    "description": "Input string to store.",
-                    "type": "String"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 123,
-            "description": "Scroll through the current channel's input history.",
-            "itemtype": "method",
-            "name": "scroll_history",
-            "params": [
-                {
-                    "name": "up",
-                    "description": "Scroll up?",
-                    "type": "Boolean"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 152,
-            "description": "Handle the tab character being pressed.",
-            "itemtype": "method",
-            "name": "tab_item",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 179,
-            "description": "Start tab complete capabilities by compiling a list of items that match the\ncurrent user input.",
-            "itemtype": "method",
-            "name": "start_tab",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 234,
-            "description": "Clear the tabbing cache.",
-            "itemtype": "method",
-            "name": "end_tab",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 249,
-            "description": "Handle the send button being pressed.",
-            "itemtype": "method",
-            "name": "submit",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 264,
-            "description": "A keypress happened. Process the keypress biatch.",
-            "itemtype": "method",
-            "name": "keypress",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Control",
-            "module": "wsc"
-        },
-        {
-            "file": "src/control.js",
-            "line": 336,
-            "description": "Handle some user input.",
-            "itemtype": "method",
-            "name": "handle",
-            "params": [
-                {
-                    "name": "event",
-                    "description": "Event data.",
-                    "type": "Object"
-                },
-                {
-                    "name": "data",
-                    "description": "Input message given by the user.",
-                    "type": "String"
-                }
-            ],
-            "class": "wsc.Control",
             "module": "wsc"
         },
         {

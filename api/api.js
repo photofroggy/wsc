@@ -29,7 +29,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "template",
         "wsc.Channel",
         "wsc.Client",
-        "wsc.Control",
         "wsc.Flow",
         "wsc.MessageParser",
         "wsc.MessageString",
