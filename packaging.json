@@ -38,7 +38,6 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "src/control.js",
                 "dist/chatterbox.js",
                 "src/wsc.js"
             ]
@@ -64,7 +63,6 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "src/control.js",
                 "dist/chatterbox.js",
                 "dist/dAmn.js",
                 "src/wsc.js"

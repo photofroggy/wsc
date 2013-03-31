@@ -49,7 +49,6 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
-        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
