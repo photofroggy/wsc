@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.5.28';
+wsc.VERSION = '1.6.29';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.19.113';
+wsc.REVISION = '0.20.114';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -4205,7 +4205,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.77';
+Chatterbox.VERSION = '0.17.78';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6634,7 +6634,7 @@ Chatterbox.Control.prototype.start_tab = function( event ) {
         // Matching with commands.
         var cmd = '';
         for( var i in this.manager.client.cmds ) {
-            cmd = this.client.cmds[i];
+            cmd = this.manager.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }

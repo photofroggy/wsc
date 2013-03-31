@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.77';
+Chatterbox.VERSION = '0.17.78';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -2434,7 +2434,7 @@ Chatterbox.Control.prototype.start_tab = function( event ) {
         // Matching with commands.
         var cmd = '';
         for( var i in this.manager.client.cmds ) {
-            cmd = this.client.cmds[i];
+            cmd = this.manager.client.cmds[i];
             if( cmd.indexOf(needle) == 0 )
                 this.tab.matched.push(cmd);
         }
