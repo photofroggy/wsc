@@ -340,7 +340,7 @@
             "namespace": "",
             "file": "src/dAmn/base.js",
             "line": 1,
-            "description": "dAmn module lolol."
+            "description": "This module holds the dAmn extension."
         },
         "Chatterbox": {
             "name": "Chatterbox",

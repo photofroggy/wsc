@@ -3,9 +3,14 @@ pre {
     overflow: auto;
 }
 
+section.items ul {
+    padding: 0px 15px;
+    list-style: none;
+    font-family: Lucida, Helvetica, Arial, sans-serif;
+}
+
 ul.inline {
     display: inline;
-    padding: 0px 10px;
 }
 
 ul.inline li {
@@ -90,6 +95,27 @@ section.main article.constructor {
 
 section.main article.constructor div.item {
     padding: 0 10px;
+}
+
+.items {
+    overflow: auto;
+}
+
+/**
+ * Two column layout sections
+ */
+
+.items .left {
+    margin: 0px;
+    float: left;
+    width: 40%;
+    padding: 15px;
+}
+
+.items .right {
+    margin: 0px;
+    float: right;
+    width: 40%;
 }
 
 .items div.indexes h3 {
@@ -198,7 +224,7 @@ ul.params li.param .name {
     color: gray;
 }
 
-ul.params li.param .description {
+ul li .description {
     padding: 0px 10px;
 }
 

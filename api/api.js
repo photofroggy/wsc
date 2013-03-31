@@ -55,7 +55,7 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "dAmn",
             "name": "dAmn",
-            "description": "dAmn module lolol."
+            "description": "This module holds the dAmn extension."
         },
         {
             "displayName": "wsc",
