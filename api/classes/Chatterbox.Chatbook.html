@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>wsc documentation</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <!--<link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">-->
+    <link rel="stylesheet" href="/wsc/css/main.css">
+    <link rel="stylesheet" href="/wsc/css/features.css">
+    <link rel="stylesheet" href="/wsc/css/docs.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.8.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+    <script type="text/javascript" src="/wsc/js/zepto.js"></script>
+</head>
+<body>
+    <div class="squeeze">
+        <nav class="menu">
+            <ul>
+                <li><a href="/wsc/">wsc</a></li>
+                <li><a href="/wsc/damn/">wsc.dAmn</a></li>
+                <li><a href="/wsc/extensions/">making extensions</a></li>
+                <li><a href="/wsc/api/" class="active">api documentation</a></li>
+            </ul>
+        </nav>
+        <nav class="contents">
+    <h3>Classes</h3>
+    <ul>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.html">Chatterbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Pager.html">Chatterbox.Pager</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Popup.html">Chatterbox.Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.html">Chatterbox.Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Config.html">Chatterbox.Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.html">Chatterbox.Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Checkbox.html">Chatterbox.Settings.Item.Checkbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.html">Chatterbox.Settings.Item.Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Checkbox.html">Chatterbox.Settings.Item.Form.Checkbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Colour.html">Chatterbox.Settings.Item.Form.Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Field.html">Chatterbox.Settings.Item.Form.Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Radio.html">Chatterbox.Settings.Item.Form.Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Items.html">Chatterbox.Settings.Item.Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Radio.html">Chatterbox.Settings.Item.Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Page.html">Chatterbox.Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.Stash.html">dAmn.Stash</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpParser.html">dAmn.TablumpParser</a></li>
+    
+        <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
+    
+        <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Client.html">wsc.Client</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Control.html">wsc.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.defaults.Extension.html">wsc.defaults.Extension</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Flow.html">wsc.Flow</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageParser.html">wsc.MessageParser</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.MessageString.html">wsc.MessageString</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Middleware.html">wsc.Middleware</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Packet.html">wsc.Packet</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.Transport.html">wsc.Transport</a></li>
+    
+        <li><a href="/wsc/api/classes/wsc.WebSocket.html">wsc.WebSocket</a></li>
+    
+    </ul>
+</nav>
+        <div class="content">
+            <h1>Chatterbox.Chatbook Class</h1>
+
+    <section class="main">
+    
+    <article class="meta">
+        
+    
+        
+    
+        
+            <p>
+                Defined in: <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l1"><code>src&#x2F;ui&#x2F;chatbook.js:1</code></a>
+            </p>
+        
+    
+        
+            
+                <p>Module: <a href="../modules/Chatterbox.html">Chatterbox</a></p>
+            
+        
+        
+        
+    
+        
+    </article>
+    
+    <section class="intro">
+        <p>Object for managing the chatbook portion of the UI.</p>
+    </section>
+    
+    
+        <article class="constructor">
+            <h2>Constructor</h2>
+            
+<div id="method_Chatterbox.Chatbook" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>Chatterbox.Chatbook</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ui</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l1"><code>src&#x2F;ui&#x2F;chatbook.js:1</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ui</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Chatterbox.UI object.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+        </article>
+    
+</section>
+
+    <ul class="tabs">
+
+        
+            <li id="methods" class="active"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <section class="items">
+        <div id="index" class="indexes">
+            <h3>Index</h3>
+
+            
+                <div class="index methods">
+
+                    <ul>
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_channel">channel</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_channel_left">channel_left</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_channel_object">channel_object</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_channel_right">channel_right</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_channels">channels</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_create_channel">create_channel</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_developer">developer</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_each">each</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_height">height</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_height">height</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log_item">log_item</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_log_item">log_item</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_loop">loop</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_remove_channel">remove_channel</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_resize">resize</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_retime">retime</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_server_message">server_message</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_toggle_channel">toggle_channel</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+        <h3>Items</h3>
+        
+            <div id="methods" class="listing">
+
+                
+                    
+<div id="method_channel" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>channel</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>namespace</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[chan]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l71"><code>src&#x2F;ui&#x2F;chatbook.js:71</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Get or set the channel object associated with the given namespace.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">namespace</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The namespace to set or get.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[chan]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>A wsc channel object representing the channel specified.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    The channel object representing the channel defined by <code>namespace</code>
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_channel_left" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>channel_left</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l215"><code>src&#x2F;ui&#x2F;chatbook.js:215</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Switch to the channel left of the current channel.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_channel_object" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>channel_object</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>hidden</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l131"><code>src&#x2F;ui&#x2F;chatbook.js:131</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Create a new channel panel object.
+Override this method to use a different type of channel object.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Namespace of the channel.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">hidden</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Should the tab be hidden?</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    An object representing a channel UI.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_channel_right" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>channel_right</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l248"><code>src&#x2F;ui&#x2F;chatbook.js:248</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Switch to the channel right of the current channel.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_channels" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>channels</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type"></span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l88"><code>src&#x2F;ui&#x2F;chatbook.js:88</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Determine how many channels the ui has open. Hidden channels are
+not included in this, and we don't include the first channel because
+there should always be at least one non-hidden channel present in the
+ui.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                    [Integer] Number of channels open in the ui.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_create_channel" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>create_channel</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>hidden</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>monitor</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l107"><code>src&#x2F;ui&#x2F;chatbook.js:107</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Create a channel in the UI.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Namespace of the channel to create.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">hidden</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Should the tab be hidden?</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">monitor</code>
+                        <span class="type">Boolean</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Is this channel the monitor?</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    WscUIChannel object.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_developer" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>developer</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l358"><code>src&#x2F;ui&#x2F;chatbook.js:358</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Toggle the developer mode of each channel.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_each" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>each</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>method</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l280"><code>src&#x2F;ui&#x2F;chatbook.js:280</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Iterate through the different channels.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">method</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Function to call for each channel.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_height" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>height</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l21"><code>src&#x2F;ui&#x2F;chatbook.js:21</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Return the height of the chatbook.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_height" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>height</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l30"><code>src&#x2F;ui&#x2F;chatbook.js:30</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Return the width of the chatbook.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log_item" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log_item</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l317"><code>src&#x2F;ui&#x2F;chatbook.js:317</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display a log item across all open channels.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to display.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_log_item" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>log_item</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l331"><code>src&#x2F;ui&#x2F;chatbook.js:331</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display a log item across all open channels.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to display.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_loop" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>loop</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l56"><code>src&#x2F;ui&#x2F;chatbook.js:56</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Called every now and then.
+Does stuff like clear channels of excess log messages.
+Maybe this is something that the UI lib should handle.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_remove_channel" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>remove_channel</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l193"><code>src&#x2F;ui&#x2F;chatbook.js:193</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Remove a channel from the UI.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Name of the channel to remove.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_resize" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>resize</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[height=600]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l39"><code>src&#x2F;ui&#x2F;chatbook.js:39</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Resize the chatbook view pane.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name optional">[height=600]</code>
+                        <span class="type">Integer</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The height to set the view pane to.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_retime" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>retime</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l345"><code>src&#x2F;ui&#x2F;chatbook.js:345</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Rewrite timestamps for all open channels.</p>
+    </section>
+    
+
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_server_message" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>server_message</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>msg</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[info]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l302"><code>src&#x2F;ui&#x2F;chatbook.js:302</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Display a server message across all open channels.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">msg</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Message to display.</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[info]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Additional data to display.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_toggle_channel" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>toggle_channel</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l144"><code>src&#x2F;ui&#x2F;chatbook.js:144</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Select which channel is currently being viewed.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Namespace of the channel to view.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </section>
+
+        </div>
+    </div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+<script src="/wsc/js/docs.js"></script>
+</body>
+</html>

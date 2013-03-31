@@ -27,6 +27,44 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.html">Chatterbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Pager.html">Chatterbox.Pager</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Popup.html">Chatterbox.Popup</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.html">Chatterbox.Settings</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Config.html">Chatterbox.Settings.Config</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.html">Chatterbox.Settings.Item</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Checkbox.html">Chatterbox.Settings.Item.Checkbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.html">Chatterbox.Settings.Item.Form</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Checkbox.html">Chatterbox.Settings.Item.Form.Checkbox</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Colour.html">Chatterbox.Settings.Item.Form.Colour</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Field.html">Chatterbox.Settings.Item.Form.Field</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Form.Radio.html">Chatterbox.Settings.Item.Form.Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Items.html">Chatterbox.Settings.Item.Items</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Radio.html">Chatterbox.Settings.Item.Radio</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Settings.Page.html">Chatterbox.Settings.Page</a></li>
+    
         <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
     
         <li><a href="/wsc/api/classes/dAmn.Extension.html">dAmn.Extension</a></li>
@@ -38,6 +76,8 @@
         <li><a href="/wsc/api/classes/dAmn.TablumpString.html">dAmn.TablumpString</a></li>
     
         <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
+    
+        <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
     
@@ -123,7 +163,6 @@ wsc.Client = function( view, options, mozilla ) {
         &quot;monitor&quot;: [&#x27;~Monitor&#x27;, true],
         &quot;welcome&quot;: &quot;Welcome to the wsc web client!&quot;,
         &quot;autojoin&quot;: &quot;chat:channel&quot;,
-        &quot;control&quot;: wsc.Control,
         &quot;protocol&quot;: wsc.Protocol,
         &quot;mparser&quot;: wsc.MessageParser,
         &quot;flow&quot;: wsc.Flow,
@@ -600,7 +639,7 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
  *&#x2F;
 wsc.Client.prototype.select_ns = function( ns ) {
 
-    this.cchannel = this.channel(event.ns) || this.cchannel;
+    this.cchannel = this.channel(ns) || this.cchannel;
 
 };
 
