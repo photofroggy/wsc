@@ -4213,7 +4213,7 @@ Chatterbox.STATE = 'beta';
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class wsc.UI
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -4795,7 +4795,7 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class wsc.UI.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -5775,7 +5775,7 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class wsc.UI.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6143,7 +6143,7 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class Control
+ * @class wsc.UI.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6306,23 +6306,6 @@ Chatterbox.Control.prototype.height = function( ) {
     return h;
 };
 
-
-/**
- * Set the handlers for the UI input.
- *
- * @method set_handlers
- * @deprecated
- * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
- *   `keypress`.
- * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
- *   `submit`.
- */
-Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    this.el.i.s.keydown( onkeypress || this._onkeypress );
-    this.el.i.m.keydown( onkeypress || this._onkeypress );
-    this.el.form.submit( onsubmit || this._onsubmit );
-};
-
 /**
  * Set or get multiline input mode.
  * 
@@ -6347,6 +6330,13 @@ Chatterbox.Control.prototype.multiline = function( on ) {
 
 };
 
+/**
+ * Add a button to the control panel button row.
+ * 
+ * @method add_button
+ * @param options {Object} Configuration options for the button.
+ * @return {Object} DOM element or something.
+ */
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -6375,6 +6365,12 @@ Chatterbox.Control.prototype.add_button = function( options ) {
 
 };
 
+/**
+ * Add status text to the control panel button row.
+ * 
+ * @method add_state
+ * @param options {Object} Status configuration options
+ */
 Chatterbox.Control.prototype.add_state = function( options ) {
 
     options = Object.extend( {
@@ -6394,14 +6390,17 @@ Chatterbox.Control.prototype.add_state = function( options ) {
 
 };
 
+/**
+ * Remove a status item from the control panel button row.
+ * 
+ * @method rem_state
+ * @param ref {String} Reference ID for the button
+ */
 Chatterbox.Control.prototype.rem_state = function( ref ) {
 
     return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
-
-Chatterbox.Control.prototype._onkeypress = function( event ) {};
-Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.
@@ -6811,7 +6810,7 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class Navigation
+ * @class wsc.UI.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -7224,6 +7223,7 @@ Chatterbox.Pager.prototype.find_notice = function( reference ) {
 };
 /**
  * Popup window base class.
+ *
  * Should allow people to easily create popups... or something.
  * Subclasses of the popups should provide a way of closing the popup, or
  * maybe I could change things around a bit so there's always a close button in
@@ -7231,7 +7231,7 @@ Chatterbox.Pager.prototype.find_notice = function( reference ) {
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class Popup
+ * @class wsc.UI.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -7589,7 +7589,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class Settings
+ * @class wsc.UI.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.

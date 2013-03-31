@@ -1,7 +1,7 @@
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class wsc.UI.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */

@@ -1,7 +1,7 @@
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class Control
+ * @class wsc.UI.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -164,23 +164,6 @@ Chatterbox.Control.prototype.height = function( ) {
     return h;
 };
 
-
-/**
- * Set the handlers for the UI input.
- *
- * @method set_handlers
- * @deprecated
- * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
- *   `keypress`.
- * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
- *   `submit`.
- */
-Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    this.el.i.s.keydown( onkeypress || this._onkeypress );
-    this.el.i.m.keydown( onkeypress || this._onkeypress );
-    this.el.form.submit( onsubmit || this._onsubmit );
-};
-
 /**
  * Set or get multiline input mode.
  * 
@@ -205,6 +188,13 @@ Chatterbox.Control.prototype.multiline = function( on ) {
 
 };
 
+/**
+ * Add a button to the control panel button row.
+ * 
+ * @method add_button
+ * @param options {Object} Configuration options for the button.
+ * @return {Object} DOM element or something.
+ */
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -233,6 +223,12 @@ Chatterbox.Control.prototype.add_button = function( options ) {
 
 };
 
+/**
+ * Add status text to the control panel button row.
+ * 
+ * @method add_state
+ * @param options {Object} Status configuration options
+ */
 Chatterbox.Control.prototype.add_state = function( options ) {
 
     options = Object.extend( {
@@ -252,14 +248,17 @@ Chatterbox.Control.prototype.add_state = function( options ) {
 
 };
 
+/**
+ * Remove a status item from the control panel button row.
+ * 
+ * @method rem_state
+ * @param ref {String} Reference ID for the button
+ */
 Chatterbox.Control.prototype.rem_state = function( ref ) {
 
     return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
-
-Chatterbox.Control.prototype._onkeypress = function( event ) {};
-Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.

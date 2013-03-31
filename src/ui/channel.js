@@ -1,7 +1,7 @@
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class wsc.UI.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
