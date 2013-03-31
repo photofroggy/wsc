@@ -2280,7 +2280,7 @@ Chatterbox.Control.prototype.cache_input = function( previous, chan ) {
     if( h.index > -1 )
         return;
     
-    h.tmp = this.ui.get_text();
+    h.tmp = this.get_text();
     this.set_text(this.get_history( chan.namespace ).tmp);
 
 };
