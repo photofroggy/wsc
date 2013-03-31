@@ -11,6 +11,7 @@ section.items ul {
 
 ul.inline {
     display: inline;
+    padding: 0px 10px;
 }
 
 ul.inline li {
