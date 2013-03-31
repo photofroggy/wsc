@@ -2,7 +2,7 @@
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class wsc.UI.Settings
+ * @class Chatterbox.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.
@@ -156,7 +156,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * Settings options object.
  * Extensions can configure the settings window with this shit yo.
  * 
- * @class Settings.Config
+ * @class Chatterbox.Settings.Config
  * @constructor
  */
 Chatterbox.Settings.Config = function( ui ) {
@@ -308,7 +308,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
 /**
  * Settings page config object.
  * 
- * @class Settings.Page
+ * @class Chatterbox.Settings.Page
  * @constructor
  * @param name {String} Name of the page.
  */
@@ -510,7 +510,7 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
 /**
  * A base class for settings page items.
  * 
- * @class Settings.Item
+ * @class Chatterbox.Settings.Item
  * @constructor
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
@@ -802,7 +802,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
  * HTML form as a single settings page item.
  * This item should be given settings items to use as form fields.
  * 
- * @class Form
+ * @class Chatterbox.Settings.Item.Form
  * @constructor
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
@@ -985,7 +985,7 @@ Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 /**
  * Base class for form fields.
  * 
- * @class Field
+ * @class Chatterbox.Settings.Item.Form.Field
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1067,7 +1067,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 /**
  * Form radio field.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Form.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1156,7 +1156,7 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 /**
  * Form checkbox field.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Form.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1236,7 +1236,7 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 /**
  * Form colour field.
  * 
- * @class Colour
+ * @class Chatterbox.Settings.Item.Form.Colour
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1278,7 +1278,7 @@ Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
 /**
  * Radio box item.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1323,7 +1323,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -1374,7 +1374,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Items
+ * @class Chatterbox.Settings.Item.Items
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.

@@ -1,6 +1,5 @@
 /**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
@@ -13,7 +12,7 @@ Chatterbox.STATE = 'beta';
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class wsc.UI
+ * @class Chatterbox
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -595,7 +594,7 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 /**
  * Object for managing channel interfaces.
  * 
- * @class wsc.UI.Channel
+ * @class Chatterbox.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -1575,7 +1574,7 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class wsc.UI.Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -1943,7 +1942,7 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class wsc.UI.Control
+ * @class Chatterbox.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -2610,7 +2609,7 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class wsc.UI.Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -2864,6 +2863,10 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 
@@ -3031,7 +3034,7 @@ Chatterbox.Pager.prototype.find_notice = function( reference ) {
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class wsc.UI.Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -3389,7 +3392,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class wsc.UI.Settings
+ * @class Chatterbox.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.
@@ -3543,7 +3546,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * Settings options object.
  * Extensions can configure the settings window with this shit yo.
  * 
- * @class Settings.Config
+ * @class Chatterbox.Settings.Config
  * @constructor
  */
 Chatterbox.Settings.Config = function( ui ) {
@@ -3695,7 +3698,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
 /**
  * Settings page config object.
  * 
- * @class Settings.Page
+ * @class Chatterbox.Settings.Page
  * @constructor
  * @param name {String} Name of the page.
  */
@@ -3897,7 +3900,7 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
 /**
  * A base class for settings page items.
  * 
- * @class Settings.Item
+ * @class Chatterbox.Settings.Item
  * @constructor
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
@@ -4189,7 +4192,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
  * HTML form as a single settings page item.
  * This item should be given settings items to use as form fields.
  * 
- * @class Form
+ * @class Chatterbox.Settings.Item.Form
  * @constructor
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
@@ -4372,7 +4375,7 @@ Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 /**
  * Base class for form fields.
  * 
- * @class Field
+ * @class Chatterbox.Settings.Item.Form.Field
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4454,7 +4457,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 /**
  * Form radio field.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Form.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4543,7 +4546,7 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 /**
  * Form checkbox field.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Form.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4623,7 +4626,7 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 /**
  * Form colour field.
  * 
- * @class Colour
+ * @class Chatterbox.Settings.Item.Form.Colour
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4665,7 +4668,7 @@ Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
 /**
  * Radio box item.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4710,7 +4713,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4761,7 +4764,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Items
+ * @class Chatterbox.Settings.Item.Items
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.

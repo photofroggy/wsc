@@ -1,7 +1,7 @@
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class wsc.UI.Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */

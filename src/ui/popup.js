@@ -8,7 +8,7 @@
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class wsc.UI.Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */

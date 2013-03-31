@@ -1,6 +1,5 @@
 /**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
@@ -13,7 +12,7 @@ Chatterbox.STATE = 'beta';
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class wsc.UI
+ * @class Chatterbox
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.

@@ -3,6 +3,10 @@
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 

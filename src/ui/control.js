@@ -1,7 +1,7 @@
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class wsc.UI.Control
+ * @class Chatterbox.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
