@@ -441,6 +441,7 @@
             "file": "src/control.js",
             "line": 1,
             "description": "Controls the input panel of the client.",
+            "deprecated": true,
             "is_constructor": 1,
             "params": [
                 {
@@ -1439,7 +1440,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 218,
+            "line": 212,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -1448,7 +1449,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 231,
+            "line": 225,
             "description": "Add an extension to the client.",
             "itemtype": "method",
             "name": "add_extension",
@@ -1464,7 +1465,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 244,
+            "line": 238,
             "description": "Bind a method to an event.",
             "itemtype": "method",
             "name": "bind",
@@ -1485,7 +1486,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 263,
+            "line": 257,
             "description": "Clear event listeners for a given event.",
             "itemtype": "method",
             "name": "clear_listeners",
@@ -1501,7 +1502,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 275,
+            "line": 269,
             "description": "Trigger an event.",
             "itemtype": "method",
             "name": "trigger",
@@ -1522,7 +1523,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 288,
+            "line": 282,
             "description": "Add a middleware method.",
             "itemtype": "method",
             "name": "middle",
@@ -1531,7 +1532,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 299,
+            "line": 293,
             "description": "Run a method with middleware.",
             "itemtype": "method",
             "name": "cascade",
@@ -1540,7 +1541,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 310,
+            "line": 304,
             "description": "Open a connection to the chat server.\nIf the client if already connected, nothing happens.",
             "itemtype": "method",
             "name": "connect",
@@ -1549,7 +1550,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 341,
+            "line": 335,
             "description": "Close the connection foo.",
             "itemtype": "method",
             "name": "close",
@@ -1558,7 +1559,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 354,
+            "line": 348,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -1584,7 +1585,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 373,
+            "line": 372,
             "description": "Get a count of the number of channels the client has open.\nChannels with their tabs hidden are not counted.",
             "itemtype": "method",
             "name": "channels",
@@ -1604,7 +1605,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 395,
+            "line": 394,
             "description": "Iterate through the different channels.",
             "itemtype": "method",
             "name": "each_channel",
@@ -1620,7 +1621,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 421,
+            "line": 420,
             "description": "Deform a channel namespace to its shorthand form.",
             "itemtype": "method",
             "name": "deform_ns",
@@ -1640,7 +1641,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 457,
+            "line": 456,
             "description": "Format a channel namespace in its longhand form.",
             "itemtype": "method",
             "name": "format_ns",
@@ -1660,7 +1661,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 485,
+            "line": 484,
             "description": "Create a channel object for the client.",
             "itemtype": "method",
             "name": "create_ns",
@@ -1681,7 +1682,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 499,
+            "line": 498,
             "description": "Remove a channel object from the client.",
             "itemtype": "method",
             "name": "remove_ns",
@@ -1697,7 +1698,23 @@
         },
         {
             "file": "src/client.js",
-            "line": 519,
+            "line": 518,
+            "description": "Focus the client on a particular channel, for some reason.\n\nIf the UI is managing everything to do with the channel being used, maybe this\nshould be deprecated...",
+            "itemtype": "method",
+            "name": "select_ns",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the channel to select",
+                    "type": "String"
+                }
+            ],
+            "class": "wsc.Client",
+            "module": "wsc"
+        },
+        {
+            "file": "src/client.js",
+            "line": 533,
             "description": "Write a log message to a channel's log view.",
             "itemtype": "method",
             "name": "log",
@@ -1718,7 +1735,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 537,
+            "line": 551,
             "description": "Write a message to the client monitor.",
             "itemtype": "method",
             "name": "monitor",
@@ -1734,7 +1751,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 549,
+            "line": 563,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -1750,7 +1767,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 561,
+            "line": 575,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -1766,7 +1783,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 575,
+            "line": 589,
             "description": "Send a packet to the server.",
             "itemtype": "method",
             "name": "send",
@@ -1786,7 +1803,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 589,
+            "line": 603,
             "description": "Send a handshake packet.",
             "itemtype": "method",
             "name": "handshake",
@@ -1795,7 +1812,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 602,
+            "line": 616,
             "description": "Send a login packet.",
             "itemtype": "method",
             "name": "login",
@@ -1804,7 +1821,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 614,
+            "line": 628,
             "description": "Send a pong packet to the server.",
             "itemtype": "method",
             "name": "pong",
@@ -1813,7 +1830,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 625,
+            "line": 639,
             "description": "Join a channel.",
             "itemtype": "method",
             "name": "join",
@@ -1829,7 +1846,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 637,
+            "line": 651,
             "description": "Leave a channel.",
             "itemtype": "method",
             "name": "part",
@@ -1845,7 +1862,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 649,
+            "line": 663,
             "description": "Send a message to a channel.",
             "itemtype": "method",
             "name": "say",
@@ -1866,7 +1883,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 669,
+            "line": 683,
             "description": "Send a non-parsed message to a channel.",
             "itemtype": "method",
             "name": "npmsg",
@@ -1887,7 +1904,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 689,
+            "line": 703,
             "description": "Send an action message to a channel.",
             "itemtype": "method",
             "name": "action",
@@ -1908,7 +1925,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 709,
+            "line": 723,
             "description": "Promote a user in a channel.",
             "itemtype": "method",
             "name": "promote",
@@ -1935,7 +1952,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 724,
+            "line": 738,
             "description": "Demote a user in a channel.",
             "itemtype": "method",
             "name": "demote",
@@ -1962,7 +1979,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 739,
+            "line": 753,
             "description": "Ban a user from a channel.",
             "itemtype": "method",
             "name": "ban",
@@ -1983,7 +2000,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 753,
+            "line": 767,
             "description": "Unban a user from a channel.",
             "itemtype": "method",
             "name": "unban",
@@ -2004,7 +2021,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 767,
+            "line": 781,
             "description": "Kick a user from a channel.",
             "itemtype": "method",
             "name": "kick",
@@ -2031,7 +2048,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 786,
+            "line": 800,
             "description": "Kill a user's connection to the server.\nOnly message network admins have access to this packet on the server.",
             "itemtype": "method",
             "name": "kill",
@@ -2053,7 +2070,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 800,
+            "line": 814,
             "description": "Send an admin comment to a channel.",
             "itemtype": "method",
             "name": "admin",
@@ -2074,7 +2091,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 815,
+            "line": 829,
             "description": "Request a channel property from the server.",
             "itemtype": "method",
             "name": "property",
@@ -2095,7 +2112,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 828,
+            "line": 842,
             "description": "Set a channel property.",
             "itemtype": "method",
             "name": "set",
@@ -2121,7 +2138,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 849,
+            "line": 863,
             "description": "Get whois information for a user.",
             "itemtype": "method",
             "name": "whois",
@@ -2137,7 +2154,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 861,
+            "line": 875,
             "description": "Send a disconnect packet.",
             "itemtype": "method",
             "name": "disconnect",
@@ -2190,7 +2207,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 26,
+            "line": 27,
             "description": "Steal the lime light. Brings the cursor to the input panel.",
             "itemtype": "method",
             "name": "focus",
@@ -2199,7 +2216,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 37,
+            "line": 38,
             "description": "Set the input handlers for the input panel.",
             "itemtype": "method",
             "name": "set_input",
@@ -2208,7 +2225,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 57,
+            "line": 58,
             "description": "Save current input in a cache.",
             "itemtype": "method",
             "name": "cache_input",
@@ -2224,7 +2241,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 75,
+            "line": 76,
             "description": "Get a channel's input history object.\nIf no history object exists for the given channel, a new object is created\nand stored.",
             "itemtype": "method",
             "name": "get_history",
@@ -2245,7 +2262,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 102,
+            "line": 103,
             "description": "Append an item to the current channel's input history.",
             "itemtype": "method",
             "name": "append_history",
@@ -2261,7 +2278,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 122,
+            "line": 123,
             "description": "Scroll through the current channel's input history.",
             "itemtype": "method",
             "name": "scroll_history",
@@ -2277,7 +2294,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 151,
+            "line": 152,
             "description": "Handle the tab character being pressed.",
             "itemtype": "method",
             "name": "tab_item",
@@ -2293,7 +2310,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 178,
+            "line": 179,
             "description": "Start tab complete capabilities by compiling a list of items that match the\ncurrent user input.",
             "itemtype": "method",
             "name": "start_tab",
@@ -2309,7 +2326,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 233,
+            "line": 234,
             "description": "Clear the tabbing cache.",
             "itemtype": "method",
             "name": "end_tab",
@@ -2325,7 +2342,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 248,
+            "line": 249,
             "description": "Handle the send button being pressed.",
             "itemtype": "method",
             "name": "submit",
@@ -2341,7 +2358,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 263,
+            "line": 264,
             "description": "A keypress happened. Process the keypress biatch.",
             "itemtype": "method",
             "name": "keypress",
@@ -2357,7 +2374,7 @@
         },
         {
             "file": "src/control.js",
-            "line": 335,
+            "line": 336,
             "description": "Handle some user input.",
             "itemtype": "method",
             "name": "handle",

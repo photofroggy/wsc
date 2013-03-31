@@ -158,7 +158,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.ui = new this.settings.ui_object( this, view, {
         &#x27;themes&#x27;: this.settings.ui.themes,
         &#x27;theme&#x27;: this.settings.ui.theme,
         &#x27;monitor&#x27;: this.settings.monitor,
@@ -262,14 +262,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( &#x27;channel.selected&#x27;, function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
-    } );
     
     this.ui.on(&#x27;tab.close.clicked&#x27;, function( event, ui ) {
         if( event.chan.monitor )
@@ -437,8 +431,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] &amp;&amp; channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -587,6 +586,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     
     chan.remove();
     delete this.channelo[chan.raw.toLowerCase()];
+
+};
+
+&#x2F;**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ *&#x2F;
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(event.ns) || this.cchannel;
 
 };
 
