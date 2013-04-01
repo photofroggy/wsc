@@ -849,7 +849,6 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.trigger( 'send.set.before', e );
     var c = this;
     this.cascade( 'send.set',
         function( data ) {

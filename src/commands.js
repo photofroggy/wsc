@@ -206,7 +206,6 @@ wsc.defaults.Extension = function( client ) {
         
         client.settings[setting] = data;
         client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        client.control.setLabel();
         
     };
     
@@ -376,7 +375,7 @@ wsc.defaults.Extension = function( client ) {
     // Get the title or topic.
     cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
-        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+        client.ui.control.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.

@@ -2451,7 +2451,6 @@ wsc.defaults.Extension = function( client ) {
         
         client.settings[setting] = data;
         client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        client.control.setLabel();
         
     };
     
@@ -2621,7 +2620,7 @@ wsc.defaults.Extension = function( client ) {
     // Get the title or topic.
     cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
-        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+        client.ui.control.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.
@@ -4220,7 +4219,6 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.trigger( 'send.set.before', e );
     var c = this;
     this.cascade( 'send.set',
         function( data ) {
@@ -5879,7 +5877,10 @@ Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
     var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
         chan.resize( width, height );
     }
