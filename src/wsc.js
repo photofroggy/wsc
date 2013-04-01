@@ -1,9 +1,12 @@
-/*
- * wsc - photofroggy
- * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
- * chat servers and interact with them.
+/**
+ * jQuery plugin.
+ * 
+ * Wrapper for implementing the plugin.
+ * 
+ * @class jQuery.plugin
+ * @constructor
+ * @param $ {Object} jQuery instance
  */
-
 (function( $ ) {
     
     $('*').hover(
@@ -15,9 +18,21 @@
         }
     );
     
+    /**
+     * Implements the wsc client as a jQuery plugin.
+     * 
+     * To create a new client, pass `"init"` as the method, as follows:
+     *      
+     *      $('div.container').wsc( 'init', options );
+     * 
+     * @method wsc
+     * @param method {String} Method to call
+     * @param options {Object} Method input options
+     * @return {Object} Instance of wsc
+     */
     $.fn.wsc = function( method, options ) {
         
-        client = $(window).data('wscclient');
+        var client = $(window).data('wscclient');
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {

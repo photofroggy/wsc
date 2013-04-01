@@ -1,7 +1,7 @@
 /**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
@@ -10,7 +10,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
-    // Mappings for every packet.
+    /**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a `packet object`
+     * to an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure `[ param, args, body ]`. All items are optional, but
+     * positional. To discard a particular piece of data, `null` can be used.
+     * 
+     * When `args` is present it must be an array. This array names the arguments to store.
+     * Each item in the `args` array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When `body` is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (`*`). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink "wsc.MessageParser"}}message parser{{/crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "property",
+     *          "ns": pkt.param,
+     *          "p": pkt.arg.p,
+     *          "by": pkt.arg.by,
+     *          "ts": pkt.arg.ts,
+     *          "value": pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "kick",
+     *          "ns": pkt.param,
+     *          "user": pkt.arg.u,
+     *          "e": pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     */
     this.maps = {
         'chatserver': ['version'],
         'login': ['username', ['e'], 'data'],
@@ -195,6 +251,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = '', val = '';
+        
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:
@@ -249,18 +307,19 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  * Render a protocol message in the given format.
  * 
  * @method render
- * @param format {String} Format to render the event in.
- * @param event {Object} Event data.
- * @return {String} Rendered event.
+ * @param format {String} Format to render the event in
+ * @param event {Object} Event data
+ * @return {String} Rendered event
  */
 wsc.Protocol.prototype.render = function( event, format ) {
 
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
         return '';
     
-    msg = msgm[0];
+    var msg = msgm[0];
+    var d = '';
     
     for( key in event ) {
         if( !event.hasOwnProperty(key) || key == 'pkt' )

@@ -87,7 +87,14 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager"></div>\
+Chatterbox.template.ui = '<div class="soundbank">\
+            <audio class="click">\
+                <source src="{media}click.ogg" type="audio/ogg">\
+                <source src="{media}click.mp3" type="audio/mpeg">\
+            </audio>\
+        </div>\
+        <div class="pager">\
+        </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
@@ -120,6 +127,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
 
 Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
+
+Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 
 /**
  * HTML for a channel tab.
@@ -260,15 +269,17 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\

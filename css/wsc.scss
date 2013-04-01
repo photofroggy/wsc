@@ -37,6 +37,10 @@ div.wsc {
     line-height: 1.6em;
     clear: both;
     
+    div.soundbank {
+        display: none;
+    }
+    
     @include navbar;
     
     a {
@@ -109,12 +113,12 @@ div.wsc.wsct_dAmn {
         $chrome-ah: #2C3635,
         $chrome-ad: underline,
         $chrome-ahd: underline,
-        $heading-bg: #C2DDBE,
-        $heading-color: #4F6457,
+        $heading-bg: #C9D3C9,
+        $heading-color: #69796F,
         $topic-bg: #E8EEE6,
         $topic-color: #2C3635,
         $userlist-bg: #DAE7D7,
-        $inner-border: #9EAEA0,
+        $inner-border: #B9C2BA,
         $outer-border: #858585,
         $chrome-color: #2C3635,
         $log-bg: #DCE7DC,
@@ -144,19 +148,24 @@ div.wsc.wsct_dAmn {
         $tab-hbgsl: #D5DDD5,
         $tab-abgbg: #D0DBD0,
         $tab-abgsl: #E2F1E2,
-        $bgi: #CFDAD2,
-        $bgsl: #62806A,
-        $bgbg: #2B4E34,
-        $abgi: #CFDAD2,
-        $abgsl: #2B4E34,
-        $abgbg: #62806A,
-        $button: #C0E4C9,
-        $buttonh: #C0E4C9,
-        $buttona: #BAD5C0,
-        $buttonb: #20462A,
-        $buttonab: #20462A,
-        $button-shadow: #002409,
-        $buttona-shadow: #002409,
+        $bgi: #E7F3E7,
+        $bgsl: #D0DBD0,
+        $bgbg: #B5C4B5,
+        $abgi: #E7F3E7,
+        $abgsl: #B5C4B5,
+        $abgbg: #D0DBD0,
+        $hbgi: #E7F3E7,
+        $hbgsl: #DDECDD,
+        $hbgbg: #BEDBBE,
+        $button: #718D71,
+        $buttonh: #7D997D,
+        $buttona: #7E9C7E,
+        $buttonb: #A2ADA5,
+        $buttonab: #A2ADA5,
+        $buttonhb: #A2ADA5,
+        $button-shadow: #1A3824,
+        $buttona-shadow: #1A3824,
+        $buttonh-shadow: #1A3824,
         $pu-h-bg: #D0DBD0,
         $pu-h-color: #2C3635,
         $pu-h-bgs: top,
@@ -172,6 +181,7 @@ div.wsc.wsct_dAmn {
         $pager-bg: #E8EEE6,
         $pager-header: #4F6457,
         $pager-color: #515C52,
-        $pager-close: #4F6457
+        $pager-close: #4F6457,
+        $x: #4F6457
     );
 }

@@ -4,6 +4,14 @@
 
 var chains = [["recv", "admin"]];
 
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ */
 wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
@@ -18,6 +26,7 @@ wsc.Packet = function( data, separator ) {
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
+        
         if( idx > -1 ) {
             pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );

@@ -1,7 +1,7 @@
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -28,6 +28,15 @@ Chatterbox.Chatbook.prototype.height = function() {
 };
 
 /**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ */
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+/**
  * Resize the chatbook view pane.
  * 
  * @method resize
@@ -35,11 +44,14 @@ Chatterbox.Chatbook.prototype.height = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
+    var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
-        chan.resize();
+        chan.resize( width, height );
     }
 };
 
@@ -110,7 +122,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     if( this.trail.indexOf(chan.namespace) == -1 ) {
         this.trail.push(chan.namespace);
     }
-    this.toggle_channel(ns);
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
     this.manager.resize();
     return chan;
 };
@@ -138,7 +153,12 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan || chan.hidden ) {
+    if( !chan )
+        return;
+    
+    if( chan.hidden ) {
+        if( this.current && this.current == chan )
+            return;
         if( !this.manager.settings.developer ) {
             chan.hide();
             return;
@@ -161,12 +181,15 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**

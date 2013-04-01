@@ -2,9 +2,13 @@
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    var pns = {};
+    
     settings.bds = {
         // Main DSP channel.
+        version: '0.4',
         mns: 'chat:datashare',
+        gate: 'chat:dsgateway',
         channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
@@ -15,32 +19,35 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
     settings.bds.channel.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.gate);
     
     var init = function(  ) {
         client.hidden.add(settings.bds.mns);
         client.exclude.add(settings.bds.mns);
+        client.hidden.add(settings.bds.gate);
+        client.exclude.add(settings.bds.gate);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
         // BOTCHECK
         client.bind('BDS.BOTCHECK.DIRECT', handle.botcheck);
         client.bind('BDS.BOTCHECK.ALL', handle.botcheck);
+        client.bind('BDS.BOTCHECK.OK', handle.checkresp);
+        client.bind('BDS.BOTCHECK.DENIED', handle.checkresp);
         // pchats
         client.bind('CDS.LINK.REQUEST', handle.clreq);
         client.bind('CDS.LINK.REJECT', handle.clrj);
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
+        client.bind('closed', handle.closed);
     };
     
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
         
-        if( client.channel(settings.bds.mns) )
-            return;
-        
-        client.join('#datashare');
+        client.join(settings.bds.gate);
     };
     
     
@@ -58,7 +65,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'user': event.user,
             'name': '',
             'payload': '',
-            'head': ''
+            'head': [null, null, null],
+            'params': []
         };
         
         var msg = event.message.split(':');
@@ -75,6 +83,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
+        bdse.param = payload.split(',');
         
         client.trigger( head[0], bdse );
         client.trigger( head[0] + '.' + head[1], bdse );
@@ -82,6 +91,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Connection closed.
+        closed: function( event ) {
+            client.remove_ns( settings.bds.mns );
+            client.remove_ns( settings.bds.gate );
+        },
+        
         // Provider
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
@@ -99,9 +114,32 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
-            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION;
+            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
+        },
+        
+        // BDS:BOTCHECK:OK||DENIED
+        checkresp: function( event ) {
+            if( event.ns.toLowerCase() != settings.bds.gate )
+                return;
+            
+            if( event.param[0].toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            if( client.channel( event.ns ).info.members[client.settings.username].pc == 'Visitors' )
+                client.part( event.ns );
+            
+            if( event.head[2] == 'OK' ) {
+                client.join( settings.bds.mns );
+                return;
+            }
+            
+            client.ui.pager.notice({
+                'ref': 'botcheckdenied',
+                'heading': 'BDS Error',
+                'content': 'Denied entry to backend channel.\nReason provided: <code>' + event.param.slice(1).join(',') + '</code>'
+            });
         },
         
         // CDS:LINK:REQUEST
@@ -128,15 +166,43 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
             
-            console.log( client.channel(event.ns).info.members[event.user] );
-            
-            client.ui.pager.notice({
+            var pnotice = client.ui.pager.notice({
                 'ref': 'clink-' + event.user,
                 'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
                     client.channel(event.ns).info.members[event.user].usericon) + '" />',
                 'heading': 'Chat ' + event.user,
-                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them, or use the buttons below.',
+                'buttons': {
+                    'accept': {
+                        'ref': 'accept',
+                        'target': 'accept',
+                        'label': 'Accept',
+                        'title': 'Join the private chat',
+                        'click': function(  ) {
+                            client.ui.pager.remove_notice( pnotice );
+                            client.join('@' + event.user);
+                            return false;
+                        }
+                    },
+                    'reject': {
+                        'ref': 'reject',
+                        'target': 'reject',
+                        'label': 'Reject',
+                        'title': 'Reject the private chat',
+                        'click': function(  ) {
+                            client.npmsg(event.ns, 'CDS:LINK:REJECT:' + event.user);
+                            client.ui.pager.remove_notice( pnotice );
+                            return false;
+                        }
+                    }
+                }
             }, true );
+            
+            pns[event.user] = pnotice;
+            
+            pnotice.onclose = function(  ) {
+                client.npmsg( event.ns, 'CDS:LINK:REJECT:' + event.user );
+            };
         },
         
         // CDS:LINK:REJECT
@@ -196,9 +262,17 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         // pchat recv_join
         pcrj: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
             try {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
+            
+            if( !( event.user in pns ) )
+                return;
+            
+            client.ui.pager.remove_notice( pns[event.user] );
         }
     };
 

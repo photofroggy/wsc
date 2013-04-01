@@ -1,11 +1,14 @@
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -14,14 +17,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -36,7 +49,6 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
-        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
@@ -48,7 +60,8 @@ wsc.Client = function( view, options, mozilla ) {
             "theme": wsc.defaults.theme,
             "themes": wsc.defaults.themes,
             "tabclose": true,
-            "clock": true
+            "clock": true,
+            "media": "/static/"
         },
         "developer": false
     };
@@ -68,7 +81,9 @@ wsc.Client = function( view, options, mozilla ) {
     this.config_load();
     this.config_save();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.mw = new wsc.Middleware();
+    
+    this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
@@ -76,7 +91,8 @@ wsc.Client = function( view, options, mozilla ) {
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
         'tabclose': this.settings.ui.tabclose,
-        'developer': this.settings.developer
+        'developer': this.settings.developer,
+        'media': this.settings.ui.media
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
@@ -171,14 +187,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( 'channel.selected', function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
-    } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
@@ -269,6 +279,28 @@ wsc.Client.prototype.trigger = function( event, data ) {
 };
 
 /**
+ * Add a middleware method.
+ * 
+ * @method middle
+ */
+wsc.Client.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ *
+ * @method cascade
+ */
+wsc.Client.prototype.cascade = function( event, callback, data ) {
+
+    this.mw.run( event, callback, data );
+
+};
+
+/**
  * Open a connection to the chat server.
  * If the client if already connected, nothing happens.
  * 
@@ -324,8 +356,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] && channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -478,6 +515,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
 };
 
 /**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ */
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(ns) || this.cchannel;
+
+};
+
+/**
  * Write a log message to a channel's log view.
  * 
  * @method log
@@ -616,11 +668,14 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.msg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.msg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('msg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -633,11 +688,14 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.npmsg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.npmsg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('npmsg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -650,11 +708,14 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    var e = { 'input': action, 'ns': namespace };
-    this.trigger( 'send.action.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.action',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('action', 'main', {}, data.input)
+            ));
+        }, { 'input': action, 'ns': namespace }
+    );
 
 };
 
@@ -726,9 +787,12 @@ wsc.Client.prototype.unban = function( namespace, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    e = { 'input': reason || '', 'ns': namespace };
-    this.trigger( 'send.kick.before', e );
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
+    var c = this;
+    this.cascade( 'send.kick',
+        function( data ) {
+            c.send(wsc_packetstr('kick', c.format_ns(data.ns), { 'u': data.user }, data.input || null));
+        }, { 'input': reason || '', 'ns': namespace, 'user': user }
+    );
 
 };
 
@@ -742,7 +806,7 @@ wsc.Client.prototype.kick = function( namespace, user, reason ) {
  */
 wsc.Client.prototype.kill = function( user, reason ) {
 
-    this.send(wsc_packetstr('kill', user, {}, reason || null));
+    this.send(wsc_packetstr('kill', 'login:' + user, {}, reason || null));
 
 };
 
@@ -785,9 +849,12 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    e = { 'input': value, 'ns': namespace };
-    this.trigger( 'send.set.before', e );
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
+    var c = this;
+    this.cascade( 'send.set',
+        function( data ) {
+            c.send(wsc_packetstr('set', c.format_ns(data.ns), { 'p': data.property }, data.input));
+        }, { 'input': value, 'ns': namespace, 'property': property }
+    );
 
 };
 

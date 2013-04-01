@@ -1,30 +1,32 @@
 /**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.15.69';
+Chatterbox.VERSION = '0.17.79';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class Chatterbox
  * @constructor
+ * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( view, options, mozilla, events ) {
+Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
+    this.client = client;
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
+    this.viewing = true;
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -33,11 +35,37 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true,
         'tabclose': true,
-        'developer': false
+        'developer': false,
+        'media': '/static/'
+    };
+    
+    var ui = this;
+    this.sound = {
+        play: function( sound ) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        },
+        toggle: function( state ) {
+            for( var s in ui.sound.bank ) {
+                if( !ui.sound.bank.hasOwnProperty( s ) )
+                    continue;
+                ui.sound.bank[s].muted = state;
+            }
+        },
+        mute: function(  ) { ui.sound.toggle( true ); },
+        unmute: function(  ) { ui.sound.toggle( false ); },
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
     };
     
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
+    this.mw = new wsc.Middleware();
     
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
@@ -94,6 +122,28 @@ Chatterbox.UI.prototype.trigger = function( event, data ) {
 Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
+
+};
+
+/**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ */
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ */
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
 
 };
 
@@ -209,16 +259,66 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( Chatterbox.template.ui );
+    this.view.append( Chatterbox.render('ui', this.settings) );
+    
+    // UI Components.
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     this.pager = new Chatterbox.Pager( this );
+    
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
+    
     //this.control.setInput();
     this.control.focus();
+    
+    // Sound bank
+    this.sound.bank.m = this.view.find('div.soundbank');
+    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
+    this.sound.bank.c.load();
+    
+    var sound = this.sound;
+    
+    this.sound.click = function(  ) {
+        sound.play( sound.bank.c );
+    };
+    
+    // Mute button.
+    var muted = false;
+    var mute = this.nav.add_button({
+        'label': '',
+        'icon': 'volume',
+        'href': '#mute',
+        'title': 'Mute the client',
+        'handler': function(  ) {
+            if( !muted ) {
+                sound.mute();
+                mute.removeClass( 'volume' );
+                mute.addClass('volume_mute' );
+                mute.prop('title', 'Unmute the client');
+                muted = true;
+                return false;
+            }
+            sound.unmute();
+            mute.removeClass( 'volume_mute' );
+            mute.addClass( 'volume' );
+            mute.prop('title', 'Mute the client');
+            muted = false;
+            return false;
+        }
+    });
+    
+    // Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
     
 };
 
@@ -233,7 +333,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
 
 };
 

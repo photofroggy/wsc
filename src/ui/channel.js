@@ -1,7 +1,7 @@
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class Chatterbox.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -32,24 +32,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
+        topic: null                 //      Topic
     };
     this.mulw = 0;
     // Dimensions...
@@ -152,41 +135,45 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    if( head == 'topic' )
+        this.topic = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.head[head].text);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': h.m.innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        h.m.css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -194,13 +181,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        h.m.css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -209,7 +196,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -217,11 +204,11 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
@@ -234,7 +221,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    //console.log("hide " + this.info.selector);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -309,7 +295,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -326,12 +312,27 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-Chatterbox.Channel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    var wh = this.manager.chatbook.height();
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height;
     this.el.m.height(wh);
     // Width.
+    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -348,7 +349,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -370,8 +371,8 @@ Chatterbox.Channel.prototype.resize = function( ) {
         if( this.head[head].text.length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -384,7 +385,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -401,11 +402,18 @@ Chatterbox.Channel.prototype.loop = function(  ) {
  * @param msg {String} Message to display.
  */
 Chatterbox.Channel.prototype.log = function( msg ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg};
-    this.manager.trigger( 'log.before', data );
-    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+    
+    var chan = this;
+    
+    this.manager.cascade( 'log',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+        }, {
+            'ns': this.raw,
+            'sns': this.namespace,
+            'message': msg
+        }
+    );
 };
 
 /**
@@ -416,37 +424,40 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
-    ts = '';
+    var ts = '';
     
     if( this.manager.settings.clock ) {
         ts = formatTime('{HH}:{mm}:{ss}', date);
     } else {
         ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
     }
-        
-    data = {
-        'ts': ts,
-        'ms': date.getTime(),
-        'message': item.html,
-        'user': (item.user || 'system' ).toLowerCase()
-    };
     
-    this.manager.trigger( 'log_item.before', data );
-    if( this.visible ) {
-        this.st = this.el.l.w.scrollTop();
-    }
+    var chan = this;;
     
-    // Add content.
-    this.el.l.w.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
-    if( this.visible ) {
-        this.st+= this.el.l.w.find('li.logmsg').last().height();
-        this.el.l.w.scrollTop( this.st );
-    }
-    
-    // Scrollio
-    this.scroll();
-    this.noise();
+    this.manager.cascade( 'log_item',
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            // Add content.
+            chan.el.l.w.append(Chatterbox.render('logitem', data));
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last(), 'chan': chan } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find('li.logmsg').last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            // Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            'ts': ts,
+            'ms': date.getTime(),
+            'message': item.html,
+            'user': (item.user || 'system' ).toLowerCase()
+        }
+    );
 };
 
 /**
@@ -483,12 +494,17 @@ Chatterbox.Channel.prototype.retime = function(  ) {
  * @param [info] {String} Extra information for the message.
  */
 Chatterbox.Channel.prototype.server_message = function( msg, info ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg,
-        'info': info};
-    this.manager.trigger( 'server_message.before', data );
-    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+    var chan = this;
+    
+    this.manager.cascade( 'server_message',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+        }, {
+            'ns': this.namespace,
+            'message': msg,
+            'info': info
+        }
+    );
 };
 
 /**
@@ -510,7 +526,7 @@ Chatterbox.Channel.prototype.clear = function(  ) {
  * @param content {String} Infobox contents.
  */
 Chatterbox.Channel.prototype.log_info = function( ref, content ) {
-    data = {
+    var data = {
         'ns': this.namespace,
         'ref': ref,
         'content': content
@@ -657,22 +673,28 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.head[head].text = content.text();
     this.head[head].html = content.html();
+    var h = {};
+    h.m = this.el.m.find( 'header div.' + head );
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
     
-    this.el.h[head].m.replaceWith(
+    h.m.replaceWith(
         Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    h.m = this.el.m.find('header div.' + head);
+    
+    if( head == 'topic' )
+        this.topic = h.m;
     
     var chan = this;
     
     setTimeout( function(  ) {
         if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+            h.m.css( { display: 'block' } );
+            var tline = (h.m.outerHeight(true) - 5) * (-1);
+            h.e.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            h.m.css( { display: 'none' } );
         }
             
         chan.resize();
@@ -755,8 +777,15 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     }
     
-    if( tab.hasClass('active') )
+    if( tab.hasClass('active') ) {
+        if( !this.manager.viewing )
+            this.manager.sound.click();
         return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.sound.click();
+    }
     
     if( tab.hasClass('tabbed') )
         return;

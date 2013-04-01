@@ -1,5 +1,6 @@
 /**
  * Popup window base class.
+ *
  * Should allow people to easily create popups... or something.
  * Subclasses of the popups should provide a way of closing the popup, or
  * maybe I could change things around a bit so there's always a close button in
@@ -7,7 +8,7 @@
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -37,7 +38,7 @@ Chatterbox.Popup.prototype.build = function(  ) {
     var fill = this.options;
     
     if( this.options.close ) {
-        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
+        fill.title+= '<a href="#close" class="close iconic x"></a>';
     }
     
     this.pview.append(Chatterbox.render( 'popup', fill ));

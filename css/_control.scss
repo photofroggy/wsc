@@ -4,13 +4,13 @@
         margin: 0px;
         padding: 0px;
         width: 100%;
-        border-bottom: 1px solid black;
         font-size: 12px;
+        position: absolute;
+        bottom: 0px;
         
         div.brow {
             margin: 0px;
-            padding: 2px;
-            padding-left: 7px;
+            padding: 2px 2px 0px 7px;
             ul {
                 display: inline-block;
                 list-style: none;
@@ -33,29 +33,29 @@
             a.button {
                 font-size: 16px;
                 line-height: .9em;
-                padding: 4px;
                 margin-right: 5px;
                 &.text {
                     font-size: 12px;
                     position: relative;
-                    top: 3px;
-                    padding: 3px;
+                    top: 2px;
+                    padding: 3px 4px 2px 4px;
+                    font-weight: normal;
                 }
             }
         }
         
         form.msg {
             clear: both;
-            padding: 7px;
-            padding-top: 2px;
+            padding-left: 7px;
             margin: 0px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             width: 100%;
             overflow: hidden;
             input.msg {
                 line-height: 1.6em;
                 display: inline-block;
                 float: left;
+                height: 22px;
             }
             textarea.msg {
                 display: none;
@@ -73,17 +73,17 @@
     a.button,
     form.msg input[type="submit"] {
         text-align: middle;
-        padding: 5px 10px;
+        padding: 3px 5px;
         background: none;
         border: 1px solid black;
-        @include round-box(5px);
+        @include round-box(3px);
         font-size: 13px;
-        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
+        // @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:active {
             background: none;
             border: 1px solid black;
             cursor: pointer;
-            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+            // @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
         }
         &:hover {
             cursor: pointer;
@@ -99,29 +99,28 @@
     
     a.iconic.close {
         background: none;
-        height: 13px;
-        width: 13px;
-        background-color: black;
-        color: white;
-        border: 1px solid black;
         text-align: center;
         line-height: 1em;
-        @include round-box(20px);
-        font-size: 13px;
+        font-size: 16px;
         padding: 1px;
-        @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
+        // @include shadow(0px 1px 1px rgba(0, 0, 0, 0.75));
         &:hover {
             background: none;
-            border: 1px solid black;
             cursor: pointer;
         }
         &:active {
-            @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
+            // @include shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.75));
         }
+        
+        &.button {
+            background-color: black;
+            color: white;
+            border: 1px solid black;
+        }
+        
         &.big {
-            height: 25px;
-            width: 25px;
-            font-size: 25px;
+            padding: 1px 4px;
+            font-size: 18px;
         }
         &.medium {
             height: 20px;
@@ -129,8 +128,12 @@
             font-size: 20px;
         }
         &.square {
-            @include round-box(5px);
+            @include round-box(3px);
         }
+    }
+    
+    form.msg input[type="submit"] {
+        padding: 4px;
     }
 
 }

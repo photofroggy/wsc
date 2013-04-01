@@ -3,6 +3,10 @@
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 
@@ -11,7 +15,12 @@ Chatterbox.Pager = function( ui ) {
     this.halflife = 5000;
     
     this.el = {
-        m: null
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
     };
     
     this.notices = [];
@@ -36,19 +45,24 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
 
     var notice = {
         frame: null,
         close: null,
+        foot: null,
+        b: {},
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
             'heading': 'Some notice',
             'content': 'Notice content goes here.'
-        }, ( options || {} ) )
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestroy: function(  ) {}
     };
     
+    notice.options.ref+= '-' + (new Date()).valueOf();
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -57,21 +71,40 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
-    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
     notice.close = notice.frame.find('a.close_notice');
+    notice.foot = notice.frame.find('footer.buttons');
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render('pager.button', bopt) );
+        notice.b[b] = notice.foot.find('a#' + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
     
     var p = this;
     
     notice.close.click( function(  ) {
+        notice.onclose();
         p.remove_notice( notice );
         return false;
     } );
     
     if( !sticky ) {
+        if( !lifespan )
+            lifespan = p.lifespan;
+        
         setTimeout( function(  ) {
             p.remove_notice( notice, true );
-        }, p.lifespan );
+        }, lifespan );
     }
+    
+    if( silent !== true )
+        this.manager.sound.click();
     
     return notice;
 
@@ -92,6 +125,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
         p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
     } );
     
     if( interrupt ) {
@@ -112,5 +146,21 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
             } );
         } );
     }
+
+};
+
+/**
+ * Find a notice based on the reference.
+ *
+ */
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
 
 };

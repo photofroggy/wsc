@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.5.27';
+wsc.VERSION = '1.6.29';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.19.112';
+wsc.REVISION = '0.20.114';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
@@ -20,6 +20,13 @@ wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
  * @class EventEmitter
  * @constructor
  **/
+
+/**
+ * Event emitter object emits events and stuff.
+ * 
+ * @class EventEmitter
+ * @constructor
+ */
 function EventEmitter() {
     var events = {}, self = this;
 
@@ -84,11 +91,13 @@ _doProcessBlock:function(g,k){for(var b=0;16>b;b++){var h=k+b,w=g[h];g[h]=(w<<8|
 c=p(c,d,e,f,v,7,a[8]),f=p(f,c,d,e,x,12,a[9]),e=p(e,f,c,d,y,17,a[10]),d=p(d,e,f,c,z,22,a[11]),c=p(c,d,e,f,A,7,a[12]),f=p(f,c,d,e,B,12,a[13]),e=p(e,f,c,d,C,17,a[14]),d=p(d,e,f,c,D,22,a[15]),c=m(c,d,e,f,w,5,a[16]),f=m(f,c,d,e,t,9,a[17]),e=m(e,f,c,d,z,14,a[18]),d=m(d,e,f,c,h,20,a[19]),c=m(c,d,e,f,s,5,a[20]),f=m(f,c,d,e,y,9,a[21]),e=m(e,f,c,d,D,14,a[22]),d=m(d,e,f,c,r,20,a[23]),c=m(c,d,e,f,x,5,a[24]),f=m(f,c,d,e,C,9,a[25]),e=m(e,f,c,d,q,14,a[26]),d=m(d,e,f,c,v,20,a[27]),c=m(c,d,e,f,B,5,a[28]),f=m(f,c,
 d,e,j,9,a[29]),e=m(e,f,c,d,u,14,a[30]),d=m(d,e,f,c,A,20,a[31]),c=l(c,d,e,f,s,4,a[32]),f=l(f,c,d,e,v,11,a[33]),e=l(e,f,c,d,z,16,a[34]),d=l(d,e,f,c,C,23,a[35]),c=l(c,d,e,f,w,4,a[36]),f=l(f,c,d,e,r,11,a[37]),e=l(e,f,c,d,u,16,a[38]),d=l(d,e,f,c,y,23,a[39]),c=l(c,d,e,f,B,4,a[40]),f=l(f,c,d,e,h,11,a[41]),e=l(e,f,c,d,q,16,a[42]),d=l(d,e,f,c,t,23,a[43]),c=l(c,d,e,f,x,4,a[44]),f=l(f,c,d,e,A,11,a[45]),e=l(e,f,c,d,D,16,a[46]),d=l(d,e,f,c,j,23,a[47]),c=n(c,d,e,f,h,6,a[48]),f=n(f,c,d,e,u,10,a[49]),e=n(e,f,c,d,
 C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53]),e=n(e,f,c,d,y,15,a[54]),d=n(d,e,f,c,w,21,a[55]),c=n(c,d,e,f,v,6,a[56]),f=n(f,c,d,e,D,10,a[57]),e=n(e,f,c,d,t,15,a[58]),d=n(d,e,f,c,B,21,a[59]),c=n(c,d,e,f,r,6,a[60]),f=n(f,c,d,e,z,10,a[61]),e=n(e,f,c,d,j,15,a[62]),d=n(d,e,f,c,x,21,a[63]);b[0]=b[0]+c|0;b[1]=b[1]+d|0;b[2]=b[2]+e|0;b[3]=b[3]+f|0},_doFinalize:function(){var a=this._data,k=a.words,b=8*this._nDataBytes,h=8*a.sigBytes;k[h>>>5]|=128<<24-h%32;var l=s.floor(b/
-4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);/**
+4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);
+
+/**
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
- * @class Transport
+ * @class wsc.Transport
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.Transport.sopen] {Method} This method will be called when
@@ -219,7 +228,7 @@ wsc.Transport.prototype.close = function(  ) {};
 /**
  * WebSocket transport object.
  * 
- * @class WebSocket
+ * @class wsc.WebSocket
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
@@ -326,7 +335,7 @@ wsc.WebSocket.prototype.close = function(  ) {
 /**
  * SocketIO wrapper.
  * 
- * @class SocketIO
+ * @class wsc.SocketIO
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
@@ -667,19 +676,97 @@ StringSet.prototype.contains = function( item ) {
     return this.items.indexOf( item.toLowerCase() ) != -1;
 
 };
+
+/**
+ * Middleware management and execution.
+ * 
+ * @class wsc.Middleware
+ * @constructor
+ */
+wsc.Middleware = function(  ) {
+
+    this.callbacks = {};
+
+};
+
+/**
+ * Add a middleware callback for the given event.
+ * 
+ * @method add
+ */
+wsc.Middleware.prototype.add = function( event, callback ) {
+
+    var callbacks = this.callbacks[event] || false;
+    
+    if( callbacks === false )
+        this.callbacks[event] = [];
+    
+    this.callbacks[event].push( callback );
+    return this.callbacks[event].length;
+
+};
+
+/**
+ * Call a method, invoking middleware according to the given event name.
+ * 
+ * @method run
+ */
+wsc.Middleware.prototype.run = function( event, method, data ) {
+    
+    var mw = (this.callbacks[event] || []).slice();
+    mw.push( method );
+    
+    var done = function( data ) {
+        
+        mw.shift()( data, done );
+        
+    };
+    
+    done( data );
+
+};
 /**
  * Storage object.
- * Allows you to save stuffs yo.
+ * 
+ * This class is a light wrapper around localStorage. Keys are given namespaces, to avoid
+ * interfering with the data of other applications. This feature also allows us to create
+ * "folders".
+ * 
+ * @class wsc.Storage
+ * @constructor
+ * @param namespace {String} Storage namespace to apply to keys
+ * @param parent {Object} Parent storage object
  */
 wsc.Storage = function( namespace, parent ) {
 
+    /**
+     * The namespace for this storage object.
+     * 
+     * @property namespace
+     * @type String
+     * @default null
+     */
     this.ns = namespace || null;
+    
+    /**
+     * Parent storage object. As if it is a containing folder.
+     * 
+     * @property parent
+     * @type Object
+     * @default null
+     */
     this.parent = parent || null;
 
 };
 
 /**
- * Get a "folder".
+ * Create a storage "folder".
+ * 
+ * This method creates a storage object with a namespace `this.namespace + '.' + namespace`.
+ * 
+ * @method folder
+ * @param namespace
+ * @return {Object} A storage object.
  */
 wsc.Storage.prototype.folder = function( namespace ) {
 
@@ -692,6 +779,11 @@ wsc.Storage.prototype.folder = function( namespace ) {
 
 /**
  * Get an item from storage.
+ * 
+ * @method get
+ * @param key {String} Key of the entry to retrieve
+ * @param default_val {String} Value to return if the entry is not found
+ * @return {String} The corresponding value
  */
 wsc.Storage.prototype.get = function( key, default_val ) {
 
@@ -710,6 +802,10 @@ wsc.Storage.prototype.get = function( key, default_val ) {
 
 /**
  * Store an item.
+ * 
+ * @method set
+ * @param key {String} Key to store the value under
+ * @param value {Mixed} Item to store
  */
 wsc.Storage.prototype.set = function( key, value ) {
 
@@ -723,7 +819,11 @@ wsc.Storage.prototype.set = function( key, value ) {
 };
 
 /**
- * Remove an item.
+ * Remove an item from localStorage.
+ * 
+ * @method remove
+ * @param key {String} Entry to remove
+ * @param {Boolean} Success or failure
  */
 wsc.Storage.prototype.remove = function( key ) {
 
@@ -745,6 +845,14 @@ wsc.Storage.prototype.remove = function( key ) {
 
 var chains = [["recv", "admin"]];
 
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ */
 wsc.Packet = function( data, separator ) {
 
     if(!( data )) {
@@ -759,6 +867,7 @@ wsc.Packet = function( data, separator ) {
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
+        
         if( idx > -1 ) {
             pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
@@ -858,7 +967,7 @@ function packetEvtName( pkt ) {
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class Channel
+ * @class wsc.Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
@@ -1093,6 +1202,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * 
  * @method get_privclass_order
  * @param name {String} Name of the privilege class to get the order of.
+ * @return {Integer} The order of the privilege class.
  */
 wsc.Channel.prototype.get_privclass_order = function( name ) {
     name = name.toLowerCase();
@@ -1290,10 +1400,11 @@ wsc.Channel.prototype.recv_msg = function( e ) {
         return;
     
     if( this.ui != null) {
-        if( hlight )
+        if( hlight ) {
             this.ui.highlight( );
-        else
+        } else {
             this.ui.highlight( false );
+        }
     }
     
     this.client.trigger( 'pkt.recv_msg.highlighted', e );
@@ -1331,6 +1442,11 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 
 /**
  * Rendered message object.
+ * 
+ * @class wsc.MessageString
+ * @constructor
+ * @param data {String} Unparsed message.
+ * @param [parser=wsc.MessageParser] {Object} Object used to parse messages.
  */
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
@@ -1342,40 +1458,61 @@ with(wsc.MessageString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+/**
+ * Render the message in HTML where possible.
+ * @method html
+ * @return {String} The message rendered as an HTML string
+ */
 wsc.MessageString.prototype.html = function(  ) {
     return this.raw;
 };
 
 /**
- * @function text
- *
- * Render the tablumps in plain text where possible. Some tablumps appear as
- * HTML entities even through this.
+ * Render the message in plain text where possible.
+ * @method text
+ * @return {String} The message rendered as a plain text string
  */
 wsc.MessageString.prototype.text = function() {
     return this.raw;
 };
 
 /**
- * @function ansi
- * 
- * Render the tablumps with ANSI escape sequences.
- * 
- * For this rendering method to really be worth it, I'll actually have to move
- * away from the simple regex.
+ * Render the message with ANSI escape sequences.
+ * @method ansi
+ * @return {String} The message rendered as an ANSI-formatted string
  */
 wsc.MessageString.prototype.ansi = function() {
     return this.raw;
 };
 
+
+/**
+ * A parser for formatted messages.
+ * 
+ * @class wsc.MessageParser
+ * @constructor
+ */
 wsc.MessageParser = function(  ) {};
 
+/**
+ * Parse a given message.
+ * @method parse
+ * @param data {String} Raw message data
+ * @return {Object} Message string object.
+ */
 wsc.MessageParser.prototype.parse = function( data ) {
 
     return new wsc.MessageString(data, this);
 
 };
 
+/**
+ * Render a given message string.
+ * @method render
+ * @param mode {Integer} Determine how the message should be rendered
+ * @param data {Object} Message string to render
+ * @return {String} Rendered message
+ */
 wsc.MessageParser.prototype.render = function( mode, data ) {
 
     return data.raw;
@@ -1387,7 +1524,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 /**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
@@ -1396,7 +1533,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
-    // Mappings for every packet.
+    /**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a `packet object`
+     * to an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure `[ param, args, body ]`. All items are optional, but
+     * positional. To discard a particular piece of data, `null` can be used.
+     * 
+     * When `args` is present it must be an array. This array names the arguments to store.
+     * Each item in the `args` array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When `body` is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (`*`). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink "wsc.MessageParser"}}message parser{{/crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "property",
+     *          "ns": pkt.param,
+     *          "p": pkt.arg.p,
+     *          "by": pkt.arg.by,
+     *          "ts": pkt.arg.ts,
+     *          "value": pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "kick",
+     *          "ns": pkt.param,
+     *          "user": pkt.arg.u,
+     *          "e": pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     */
     this.maps = {
         'chatserver': ['version'],
         'login': ['username', ['e'], 'data'],
@@ -1581,6 +1774,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = '', val = '';
+        
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:
@@ -1635,18 +1830,19 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  * Render a protocol message in the given format.
  * 
  * @method render
- * @param format {String} Format to render the event in.
- * @param event {Object} Event data.
- * @return {String} Rendered event.
+ * @param format {String} Format to render the event in
+ * @param event {Object} Event data
+ * @return {String} Rendered event
  */
 wsc.Protocol.prototype.render = function( event, format ) {
 
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
         return '';
     
-    msg = msgm[0];
+    var msg = msgm[0];
+    var d = '';
     
     for( key in event ) {
         if( !event.hasOwnProperty(key) || key == 'pkt' )
@@ -1717,9 +1913,10 @@ wsc.Protocol.prototype.log = function( client, event ) {
 };
 
 /**
- * Control the client's program flow in relation to the chat this.
+ * Control the client's program flow. This object determines how the client responds to
+ * certain events.
  * 
- * @class Flow
+ * @class wsc.Flow
  * @constructor
  * @param protocol {Object} Protocol object.
  */
@@ -1836,12 +2033,13 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  */
 wsc.Flow.prototype.login = function( event, client ) {
     
-    if(event.pkt["arg"]["e"] == "ok") {
+    if(event.pkt.arg.e == "ok") {
         // Use the username returned by the server!
-        info = new wsc.Packet('info\n' + event.data);
+        var info = event.pkt.sub[0];
         client.settings["username"] = event.pkt["param"];
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
+        
         // Autojoin!
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
@@ -2049,6 +2247,8 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 
 /**
  * This extension implements most of the default commands for wsc.
+ * @class wsc.defaults.Extension
+ * @constructor
  */
 wsc.defaults.Extension = function( client ) {
 
@@ -2068,34 +2268,34 @@ wsc.defaults.Extension = function( client ) {
     
     var init = function(  ) {
         // Commands.
-        client.bind('cmd.connect', cmd_connection );
-        client.bind('cmd.set', cmd_setter );
+        client.bind('cmd.connect', cmd.connection );
+        client.bind('cmd.set', cmd.setter );
         
         // standard dAmn commands.
-        client.bind('cmd.join', cmd_join );
-        client.bind('cmd.chat', cmd_pjoin );
-        client.bind('cmd.part', cmd_part );
+        client.bind('cmd.join', cmd.join );
+        client.bind('cmd.chat', cmd.pjoin );
+        client.bind('cmd.part', cmd.part );
         // send ...
-        client.bind('cmd.say', cmd_say );
-        client.bind('cmd.npmsg', cmd_npmsg );
-        client.bind('cmd.me', cmd_action );
-        client.bind('cmd.promote', cmd_chgpriv );
-        client.bind('cmd.demote', cmd_chgpriv );
-        client.bind('cmd.ban', cmd_ban );
-        client.bind('cmd.unban', cmd_ban );
-        client.bind('cmd.kick', cmd_killk );
-        //client.bind('cmd.get', cmd_get );
-        client.bind('cmd.whois', cmd_whois );
-        client.bind('cmd.title', cmd_title );
-        client.bind('cmd.topic', cmd_title );
-        client.bind('cmd.admin', cmd_admin );
-        client.bind('cmd.disconnect', cmd_connection );
-        client.bind('cmd.kill', cmd_killk );
-        client.bind('cmd.raw', cmd_raw );
+        client.bind('cmd.say', cmd.say );
+        client.bind('cmd.npmsg', cmd.npmsg );
+        client.bind('cmd.me', cmd.action );
+        client.bind('cmd.promote', cmd.chgpriv );
+        client.bind('cmd.demote', cmd.chgpriv );
+        client.bind('cmd.ban', cmd.ban );
+        client.bind('cmd.unban', cmd.ban );
+        client.bind('cmd.kick', cmd.killk );
+        //client.bind('cmd.get', cmd.get );
+        client.bind('cmd.whois', cmd.whois );
+        client.bind('cmd.title', cmd.title );
+        client.bind('cmd.topic', cmd.title );
+        client.bind('cmd.admin', cmd.admin );
+        client.bind('cmd.disconnect', cmd.connection );
+        client.bind('cmd.kill', cmd.killk );
+        client.bind('cmd.raw', cmd.raw );
         
-        client.bind('cmd.clear', cmd_clear );
-        client.bind('cmd.clearall', cmd_clearall );
-        client.bind('cmd.close', cmd_close );
+        client.bind('cmd.clear', cmd.clear );
+        client.bind('cmd.clearall', cmd.clearall );
+        client.bind('cmd.close', cmd.close );
         
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.recv_admin_show', pkt_admin_show );
@@ -2104,11 +2304,11 @@ wsc.defaults.Extension = function( client ) {
         
         
         // Non-standard commands.
-        client.bind('cmd.gettitle', cmd_gett);
-        client.bind('cmd.gettopic', cmd_gett);
+        client.bind('cmd.gettitle', cmd.gett);
+        client.bind('cmd.gettopic', cmd.gett);
         
         // lol themes
-        client.bind('cmd.theme', cmd_theme);
+        client.bind('cmd.theme', cmd.theme);
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
@@ -2216,17 +2416,26 @@ wsc.defaults.Extension = function( client ) {
     
     };
     
-    var cmd_theme = function( e, client) {
+    /**
+     * Holds all of the command handling methods.
+     * 
+     * @property cmd
+     * @type Object
+     */
+    var cmd = {};
+    
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(' ').shift());
     };
         
     /**
-     * @function setter
-     * @cmd set set configuration options
      * This command allows the user to change the settings for the client through
      * the input box.
+     * 
+     * @method cmd.setter
+     * @param cmd {Object} Command event data.
      */
-    var cmd_setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(' ');
         var setting = data.shift().toLowerCase();
         var data = data.join(' ');
@@ -2242,20 +2451,19 @@ wsc.defaults.Extension = function( client ) {
         
         client.settings[setting] = data;
         client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        client.control.setLabel();
         
     };
     
     /**
-     * @function connect
      * This command allows the user to force the client to connect to the server.
+     * @method cmd.connection
      */
-    var cmd_connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     // Join a channel
-    var cmd_join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2270,7 +2478,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Join a channel
-    var cmd_pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2285,7 +2493,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Leave a channel
-    var cmd_part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(' ');
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -2300,18 +2508,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Set the title
-    var cmd_title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     // Promote or demote user
-    var cmd_chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(' ');
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     // Ban user
-    var cmd_ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(' ');
         var user = args.shift();
         var cmd = e.cmd;
@@ -2322,17 +2530,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send a /me action thingy.
-    var cmd_action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     // Send a raw packet.
-    var cmd_raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
     
     // Kick or kill someone.
-    var cmd_killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(' ');
         var u = d.shift();
         var r = d.length > 0 ? d.join(' ') : null;
@@ -2343,18 +2551,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Say something.
-    var cmd_say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     // Say something without emotes and shit. Zomg.
-    var cmd_npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     // Clear the channel's log.
-    var cmd_clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length > 0 ) {
             var users = e.args.split(' ');
             for( var i in users ) {
@@ -2368,7 +2576,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Clear all channel logs.
-    var cmd_clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length > 0 ) {
@@ -2389,30 +2597,30 @@ wsc.defaults.Extension = function( client ) {
         client.each_channel( method, true );
     };
     
-    var cmd_close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.
-    var cmd_whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
     };
     
     // Send an admin packet.
-    var cmd_admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     // Send an disconnect packet.
-    var cmd_disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     // Get the title or topic.
-    var cmd_gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
-        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+        client.ui.control.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.
@@ -2450,8 +2658,8 @@ wsc.defaults.Extension = function( client ) {
         client.ui.pager.notice({
             'ref': 'whois-' + usr,
             'heading': 'Whois Failed',
-            'content': 'Whois failed for ' + usr + '. No such user online.'
-        });
+            'content': 'Whois failed for ' + usr + '.\nNo such user online.'
+        }, false, 5000 );
     
     };
     
@@ -2482,8 +2690,26 @@ wsc.defaults.Extension = function( client ) {
     };
     
     init();
+    
+    /**
+     * Implements the ignore feature.
+     * 
+     * @method Ignore
+     */
     wsc.defaults.Extension.Ignore(client);
+    
+    /**
+     * Implements away messages.
+     * 
+     * @method Away
+     */
     wsc.defaults.Extension.Away(client);
+    
+    /**
+     * Implements autojoin channels.
+     * 
+     * @method Autojoin
+     */
     wsc.defaults.Extension.Autojoin(client);
 
 };
@@ -2493,8 +2719,9 @@ wsc.defaults.Extension = function( client ) {
 wsc.defaults.Extension.Autojoin = function( client ) {
 
     var settings = client.autojoin;
-    client.ui.control.add_button( {
-        'label': 'Autojoin',
+    client.ui.nav.add_button( {
+        'icon': 'chat',
+        'label': '',
         'title': 'Join your autojoin channels',
         'href': '#autojoin-do',
         'handler': function(  ) {
@@ -3142,13 +3369,16 @@ wsc.defaults.Extension.Ignore = function( client ) {
 };
 
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -3157,14 +3387,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -3179,7 +3419,6 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
-        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
@@ -3191,7 +3430,8 @@ wsc.Client = function( view, options, mozilla ) {
             "theme": wsc.defaults.theme,
             "themes": wsc.defaults.themes,
             "tabclose": true,
-            "clock": true
+            "clock": true,
+            "media": "/static/"
         },
         "developer": false
     };
@@ -3211,7 +3451,9 @@ wsc.Client = function( view, options, mozilla ) {
     this.config_load();
     this.config_save();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.mw = new wsc.Middleware();
+    
+    this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
@@ -3219,7 +3461,8 @@ wsc.Client = function( view, options, mozilla ) {
         'domain': this.settings.domain,
         'clock': this.settings.ui.clock,
         'tabclose': this.settings.ui.tabclose,
-        'developer': this.settings.developer
+        'developer': this.settings.developer,
+        'media': this.settings.ui.media
     }, mozilla );
     
     this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
@@ -3314,14 +3557,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( 'channel.selected', function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
-    } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
@@ -3412,6 +3649,28 @@ wsc.Client.prototype.trigger = function( event, data ) {
 };
 
 /**
+ * Add a middleware method.
+ * 
+ * @method middle
+ */
+wsc.Client.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ *
+ * @method cascade
+ */
+wsc.Client.prototype.cascade = function( event, callback, data ) {
+
+    this.mw.run( event, callback, data );
+
+};
+
+/**
  * Open a connection to the chat server.
  * If the client if already connected, nothing happens.
  * 
@@ -3467,8 +3726,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] && channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -3621,6 +3885,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
 };
 
 /**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ */
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(ns) || this.cchannel;
+
+};
+
+/**
  * Write a log message to a channel's log view.
  * 
  * @method log
@@ -3759,11 +4038,14 @@ wsc.Client.prototype.part = function( namespace ) {
  */
 wsc.Client.prototype.say = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.msg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('msg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.msg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('msg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -3776,11 +4058,14 @@ wsc.Client.prototype.say = function( namespace, message ) {
  */
 wsc.Client.prototype.npmsg = function( namespace, message ) {
 
-    var e = { 'input': message, 'ns': namespace };
-    this.trigger( 'send.npmsg.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('npmsg', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.npmsg',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('npmsg', 'main', {}, data.input)
+            ));
+        }, { 'input': message, 'ns': namespace }
+    );
 
 };
 
@@ -3793,11 +4078,14 @@ wsc.Client.prototype.npmsg = function( namespace, message ) {
  */
 wsc.Client.prototype.action = function( namespace, action ) {
 
-    var e = { 'input': action, 'ns': namespace };
-    this.trigger( 'send.action.before', e );
-    this.send(wsc_packetstr('send', this.format_ns(namespace), {},
-        wsc_packetstr('action', 'main', {}, e.input)
-    ));
+    var c = this;
+    this.cascade( 'send.action',
+        function( data ) {
+            c.send(wsc_packetstr('send', c.format_ns(data.ns), {},
+                wsc_packetstr('action', 'main', {}, data.input)
+            ));
+        }, { 'input': action, 'ns': namespace }
+    );
 
 };
 
@@ -3869,9 +4157,12 @@ wsc.Client.prototype.unban = function( namespace, user ) {
  */
 wsc.Client.prototype.kick = function( namespace, user, reason ) {
 
-    e = { 'input': reason || '', 'ns': namespace };
-    this.trigger( 'send.kick.before', e );
-    this.send(wsc_packetstr('kick', this.format_ns(namespace), { 'u': user }, e.input || null));
+    var c = this;
+    this.cascade( 'send.kick',
+        function( data ) {
+            c.send(wsc_packetstr('kick', c.format_ns(data.ns), { 'u': data.user }, data.input || null));
+        }, { 'input': reason || '', 'ns': namespace, 'user': user }
+    );
 
 };
 
@@ -3885,7 +4176,7 @@ wsc.Client.prototype.kick = function( namespace, user, reason ) {
  */
 wsc.Client.prototype.kill = function( user, reason ) {
 
-    this.send(wsc_packetstr('kill', user, {}, reason || null));
+    this.send(wsc_packetstr('kill', 'login:' + user, {}, reason || null));
 
 };
 
@@ -3928,9 +4219,12 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    e = { 'input': value, 'ns': namespace };
-    this.trigger( 'send.set.before', e );
-    this.send(wsc_packetstr('set', this.format_ns(namespace), { 'p': property }, e.input));
+    var c = this;
+    this.cascade( 'send.set',
+        function( data ) {
+            c.send(wsc_packetstr('set', c.format_ns(data.ns), { 'p': data.property }, data.input));
+        }, { 'input': value, 'ns': namespace, 'property': property }
+    );
 
 };
 
@@ -3958,418 +4252,34 @@ wsc.Client.prototype.disconnect = function(  ) {
 };
 
 /**
- * Controls the input panel of the client.
- * 
- * @class Control
- * @constructor
- * @param client {Object} wsc.Client object.
- */
-wsc.Control = function( client ) {
-
-    this.client = client;
-    this.ui = this.client.ui.control;
-    this.history = {};
-    this.tab = {
-        hit: false,
-        cache: '',
-        matched: [],
-        index: -1,
-        type: 0,
-        prefix: ['', '/', ''],
-    };
-    
-    this.set_input();
-
-};
-
-/**
- * Steal the lime light. Brings the cursor to the input panel.
- *
- * @method focus
- */
-wsc.Control.prototype.focus = function(  ) {
-
-    this.ui.focus();
-
-};
-
-/**
- * Set the input handlers for the input panel.
- * 
- * @method set_input
- */
-wsc.Control.prototype.set_input = function(  ) {
-
-    var o = this;
-    
-    this.ui.set_handlers(
-        function( event ) {
-            return o.keypress(event);
-        },
-        function( event ) {
-            return o.submit(event);
-        }
-    );
-
-};
-
-/**
- * Save current input in a cache.
- * 
- * @method cache_input
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.cache_input = function( event ) {
-
-    h = this.get_history( event.prev.namespace );
-    
-    if( h.index > -1 )
-        return;
-    
-    h.tmp = this.ui.get_text();
-    this.ui.set_text(this.get_history( event.chan.namespace ).tmp);
-
-};
-
-/**
- * Get a channel's input history object.
- * If no history object exists for the given channel, a new object is created
- * and stored.
- * 
- * @method get_history
- * @param [namespace] {String} Channel to get the history of. If not given, the
- *   channel currently being viewed is used.
- * @return history {Object} Channel's input history data.
- */
-wsc.Control.prototype.get_history = function( namespace ) {
-
-    if( !namespace ) {
-        if( !this.client.cchannel ) {
-             namespace = '~monitor';
-        }
-    }
-    
-    namespace = namespace || this.client.cchannel.namespace;
-    
-    if( !this.history[namespace] )
-        this.history[namespace] = { index: -1, list: [], tmp: '' };
-    
-    return this.history[namespace];
-
-};
-
-/**
- * Append an item to the current channel's input history.
- * 
- * @method append_history
- * @param data {String} Input string to store.
- */
-wsc.Control.prototype.append_history = function( data ) {
-
-    if( !data )
-        return;
-    
-    var h = this.get_history();
-    h.list.unshift(data);
-    h.index = -1;
-    
-    if( h.list.length > 100 )
-        h.list.pop();
-
-};
-
-/**
- * Scroll through the current channel's input history.
- * 
- * @method scroll_history
- * @param up {Boolean} Scroll up?
- */
-wsc.Control.prototype.scroll_history = function( up ) {
-
-    var history = this.get_history();
-    var data = this.ui.get_text();
-    
-    if( history.index == -1 )
-        if( data )
-            history.tmp = data;
-    else
-        history.list[history.index] = data;
-    
-    if( up ) {
-        if( history.list.length > 0 && history.index < (history.list.length - 1) )
-            history.index++;
-    } else {
-        if( history.index > -1)
-            history.index--;
-    }
-    
-    this.ui.set_text(history.list[history.index] || history.tmp);
-
-};
-
-/**
- * Handle the tab character being pressed.
- * 
- * @method tab_item
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.tab_item = function( event ) {
-
-    if( !this.tab.hit )
-        this.start_tab(event);
-    
-    this.ui.chomp();
-    this.tab.index++;
-    
-    if( this.tab.index >= this.tab.matched.length )
-        this.tab.index = -1;
-    
-    if( this.tab.index == -1 ) {
-        this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
-        return;
-    }
-    
-    suf = this.ui.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
-    this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
-
-};
-
-/**
- * Start tab complete capabilities by compiling a list of items that match the
- * current user input.
- * 
- * @method start_tab
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.start_tab = function( event ) {
-
-    this.tab.hit = true;
-    this.tab.index = -1;
-    this.tab.matched = [];
-    this.tab.type = 0;
-    
-    // We only tab the last word in the input. Slice!
-    var needle = this.ui.chomp();
-    this.ui.unchomp(needle);
-    
-    // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
-        this.tab.type = needle[0] == '/' ? 1 : 2;
-        if( needle[0] == '/' )
-            needle = needle.slice(1);
-    } else {
-        this.tab.type = 0;
-    }
-    
-    this.tab.cache = needle;
-    needle = needle.toLowerCase();
-    
-    // Nows we have to find our matches. Fun.
-    // Lets start with matching users.
-    this.tab.matched = [];
-    if( this.tab.type == 0 ) {
-        for( user in this.client.cchannel.info['members'] )
-            if( user.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(user);
-    } else if( this.tab.type == 1 ) {
-        // Matching with commands.
-        for( var i in this.client.cmds ) {
-            cmd = this.client.cmds[i];
-            if( cmd.indexOf(needle) == 0 )
-                this.tab.matched.push(cmd);
-        }
-    } else if( this.tab.type == 2 ) {
-        // Matching with channels.
-        var ctrl = this;
-        this.client.each_channel( function( ns, chan ) {
-            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
-                ctrl.tab.matched.push(chan.namespace);
-        } );
-    }
-
-};
-
-/**
- * Clear the tabbing cache.
- * 
- * @method end_tab
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.end_tab = function( event ) {
-
-    this.tab.hit = false;
-    this.tab.matched = [];
-    this.tab.cache = '';
-    this.tab.index = -1;
-
-};
-
-/**
- * Handle the send button being pressed.
- * 
- * @method submit
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.submit = function( event ) {
-
-    msg = this.ui.get_text();
-    this.append_history(msg);
-    this.ui.set_text('');
-    this.handle(event, msg);
-    return false;
-
-};
-/**
- * A keypress happened. Process the keypress biatch.
- * 
- * @method keypress
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.keypress = function( event ) {
-
-    var key = event.which || event.keyCode;
-    var ut = this.tab.hit;
-    var bubble = false;
-    
-    switch( key ) {
-        case 13: // Enter
-            if( !this.ui.multiline() ) {
-                this.submit(event);
-            } else {
-                if( event.shiftKey ) {
-                    this.submit(event);
-                } else {
-                    bubble = true;
-                }
-            }
-            break;
-        case 38: // Up
-            if( !this.ui.multiline() ) {
-                this.scroll_history(true);
-                break;
-            }
-            bubble = true;
-            break;
-        case 40: // Down
-            if( !this.ui.multiline() ) {
-                this.scroll_history(false);
-                break;
-            }
-            bubble = true;
-            break;
-        case 9: // Tab
-            if( event.shiftKey ) {
-                this.client.ui.channel_right();
-            } else {
-                this.tab_item( event );
-                ut = false;
-            }
-            break;
-        case 219: // [
-            if( event.ctrlKey ) {
-                this.client.ui.channel_left();
-            } else {
-                bubble = true;
-            }
-            break;
-        case 221: // ] (using instead of +)
-            if( event.ctrlKey ) {
-                this.client.ui.channel_right();
-            } else {
-                bubble = true;
-            }
-            break;
-        default:
-            bubble = true;
-            break;
-    }
-    
-    if( ut )
-        this.end_tab( event );
-    
-    return bubble;
-
-};
-
-/**
- * Handle some user input.
- * 
- * @method handle
- * @param event {Object} Event data.
- * @param data {String} Input message given by the user.
- */
-wsc.Control.prototype.handle = function( event, data ) {
-
-    if( data == '' )
-        return;
-    
-    if( !this.client.cchannel )
-        return;
-    
-    var autocmd = false;
-    
-    if( data[0] != '/' ) {
-        autocmd = true;
-    }
-    
-    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
-    data = data.slice(1);
-    bits = data.split(' ');
-    cmdn = bits.shift().toLowerCase();
-    ens = this.client.cchannel.namespace;
-    etarget = ens;
-    
-    if( !autocmd && bits[0] ) {
-        hash = bits[0][0];
-        if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
-            etarget = this.client.format_ns(bits.shift());
-        }
-    }
-    
-    arg = bits.join(' ');
-    
-    var fired = this.client.trigger('cmd.' + cmdn, {
-        name: 'cmd',
-        cmd: cmdn,
-        args: arg,
-        target: etarget,
-        ns: ens
-    });
-    
-    if( fired == 0 ) {
-        this.client.cchannel.ui.server_message('Command failed', '"' + cmdn + '" is not a command.');
-    }
-
-};
-
-
-/**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.15.69';
+Chatterbox.VERSION = '0.17.79';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class Chatterbox
  * @constructor
+ * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( view, options, mozilla, events ) {
+Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
+    this.client = client;
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
+    this.viewing = true;
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -4378,11 +4288,37 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true,
         'tabclose': true,
-        'developer': false
+        'developer': false,
+        'media': '/static/'
+    };
+    
+    var ui = this;
+    this.sound = {
+        play: function( sound ) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        },
+        toggle: function( state ) {
+            for( var s in ui.sound.bank ) {
+                if( !ui.sound.bank.hasOwnProperty( s ) )
+                    continue;
+                ui.sound.bank[s].muted = state;
+            }
+        },
+        mute: function(  ) { ui.sound.toggle( true ); },
+        unmute: function(  ) { ui.sound.toggle( false ); },
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
     };
     
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
+    this.mw = new wsc.Middleware();
     
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
@@ -4439,6 +4375,28 @@ Chatterbox.UI.prototype.trigger = function( event, data ) {
 Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
+
+};
+
+/**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ */
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ */
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
 
 };
 
@@ -4554,16 +4512,66 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( Chatterbox.template.ui );
+    this.view.append( Chatterbox.render('ui', this.settings) );
+    
+    // UI Components.
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     this.pager = new Chatterbox.Pager( this );
+    
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
+    
     //this.control.setInput();
     this.control.focus();
+    
+    // Sound bank
+    this.sound.bank.m = this.view.find('div.soundbank');
+    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
+    this.sound.bank.c.load();
+    
+    var sound = this.sound;
+    
+    this.sound.click = function(  ) {
+        sound.play( sound.bank.c );
+    };
+    
+    // Mute button.
+    var muted = false;
+    var mute = this.nav.add_button({
+        'label': '',
+        'icon': 'volume',
+        'href': '#mute',
+        'title': 'Mute the client',
+        'handler': function(  ) {
+            if( !muted ) {
+                sound.mute();
+                mute.removeClass( 'volume' );
+                mute.addClass('volume_mute' );
+                mute.prop('title', 'Unmute the client');
+                muted = true;
+                return false;
+            }
+            sound.unmute();
+            mute.removeClass( 'volume_mute' );
+            mute.addClass( 'volume' );
+            mute.prop('title', 'Mute the client');
+            muted = false;
+            return false;
+        }
+    });
+    
+    // Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
     
 };
 
@@ -4578,7 +4586,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
 
 };
 
@@ -4839,7 +4847,7 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class Chatterbox.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -4870,24 +4878,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
+        topic: null                 //      Topic
     };
     this.mulw = 0;
     // Dimensions...
@@ -4990,41 +4981,45 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    if( head == 'topic' )
+        this.topic = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.head[head].text);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': h.m.innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        h.m.css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -5032,13 +5027,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        h.m.css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -5047,7 +5042,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -5055,11 +5050,11 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
@@ -5072,7 +5067,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    //console.log("hide " + this.info.selector);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -5147,7 +5141,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -5164,12 +5158,27 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-Chatterbox.Channel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    var wh = this.manager.chatbook.height();
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height;
     this.el.m.height(wh);
     // Width.
+    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -5186,7 +5195,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -5208,8 +5217,8 @@ Chatterbox.Channel.prototype.resize = function( ) {
         if( this.head[head].text.length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -5222,7 +5231,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -5239,11 +5248,18 @@ Chatterbox.Channel.prototype.loop = function(  ) {
  * @param msg {String} Message to display.
  */
 Chatterbox.Channel.prototype.log = function( msg ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg};
-    this.manager.trigger( 'log.before', data );
-    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+    
+    var chan = this;
+    
+    this.manager.cascade( 'log',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+        }, {
+            'ns': this.raw,
+            'sns': this.namespace,
+            'message': msg
+        }
+    );
 };
 
 /**
@@ -5254,37 +5270,40 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
-    ts = '';
+    var ts = '';
     
     if( this.manager.settings.clock ) {
         ts = formatTime('{HH}:{mm}:{ss}', date);
     } else {
         ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
     }
-        
-    data = {
-        'ts': ts,
-        'ms': date.getTime(),
-        'message': item.html,
-        'user': (item.user || 'system' ).toLowerCase()
-    };
     
-    this.manager.trigger( 'log_item.before', data );
-    if( this.visible ) {
-        this.st = this.el.l.w.scrollTop();
-    }
+    var chan = this;;
     
-    // Add content.
-    this.el.l.w.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
-    if( this.visible ) {
-        this.st+= this.el.l.w.find('li.logmsg').last().height();
-        this.el.l.w.scrollTop( this.st );
-    }
-    
-    // Scrollio
-    this.scroll();
-    this.noise();
+    this.manager.cascade( 'log_item',
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            // Add content.
+            chan.el.l.w.append(Chatterbox.render('logitem', data));
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last(), 'chan': chan } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find('li.logmsg').last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            // Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            'ts': ts,
+            'ms': date.getTime(),
+            'message': item.html,
+            'user': (item.user || 'system' ).toLowerCase()
+        }
+    );
 };
 
 /**
@@ -5321,12 +5340,17 @@ Chatterbox.Channel.prototype.retime = function(  ) {
  * @param [info] {String} Extra information for the message.
  */
 Chatterbox.Channel.prototype.server_message = function( msg, info ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg,
-        'info': info};
-    this.manager.trigger( 'server_message.before', data );
-    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+    var chan = this;
+    
+    this.manager.cascade( 'server_message',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+        }, {
+            'ns': this.namespace,
+            'message': msg,
+            'info': info
+        }
+    );
 };
 
 /**
@@ -5348,7 +5372,7 @@ Chatterbox.Channel.prototype.clear = function(  ) {
  * @param content {String} Infobox contents.
  */
 Chatterbox.Channel.prototype.log_info = function( ref, content ) {
-    data = {
+    var data = {
         'ns': this.namespace,
         'ref': ref,
         'content': content
@@ -5495,22 +5519,28 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.head[head].text = content.text();
     this.head[head].html = content.html();
+    var h = {};
+    h.m = this.el.m.find( 'header div.' + head );
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
     
-    this.el.h[head].m.replaceWith(
+    h.m.replaceWith(
         Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    h.m = this.el.m.find('header div.' + head);
+    
+    if( head == 'topic' )
+        this.topic = h.m;
     
     var chan = this;
     
     setTimeout( function(  ) {
         if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+            h.m.css( { display: 'block' } );
+            var tline = (h.m.outerHeight(true) - 5) * (-1);
+            h.e.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            h.m.css( { display: 'none' } );
         }
             
         chan.resize();
@@ -5593,8 +5623,15 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     }
     
-    if( tab.hasClass('active') )
+    if( tab.hasClass('active') ) {
+        if( !this.manager.viewing )
+            this.manager.sound.click();
         return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.sound.click();
+    }
     
     if( tab.hasClass('tabbed') )
         return;
@@ -5795,7 +5832,7 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -5822,6 +5859,15 @@ Chatterbox.Chatbook.prototype.height = function() {
 };
 
 /**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ */
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+/**
  * Resize the chatbook view pane.
  * 
  * @method resize
@@ -5829,11 +5875,14 @@ Chatterbox.Chatbook.prototype.height = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
+    var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
-        chan.resize();
+        chan.resize( width, height );
     }
 };
 
@@ -5904,7 +5953,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     if( this.trail.indexOf(chan.namespace) == -1 ) {
         this.trail.push(chan.namespace);
     }
-    this.toggle_channel(ns);
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
     this.manager.resize();
     return chan;
 };
@@ -5932,7 +5984,12 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan || chan.hidden ) {
+    if( !chan )
+        return;
+    
+    if( chan.hidden ) {
+        if( this.current && this.current == chan )
+            return;
         if( !this.manager.settings.developer ) {
             chan.hide();
             return;
@@ -5955,12 +6012,15 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**
@@ -6142,7 +6202,7 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class Control
+ * @class Chatterbox.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6152,6 +6212,16 @@ Chatterbox.Control = function( ui ) {
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
     this.ml = false;
+    
+    this.history = {};
+    this.tab = {
+        hit: false,
+        cache: '',
+        matched: [],
+        index: -1,
+        type: 0,
+        prefix: ['', '/', ''],
+    };
     
     /**
      * UI elements
@@ -6178,8 +6248,87 @@ Chatterbox.Control = function( ui ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
+    
+    // Input handling.
+    this.el.i.s.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.i.m.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.form.submit( function( event ) { return ctrl.submit( event ); } );
+    
+    // FORMATTING BUTTONS
+    
+    this.add_button({
+        'label': '<b>b</b>',
+        'icon': false,
+        'href': '#bold',
+        'title': 'Bold text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<b>', '</b>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<i>i</i>',
+        'icon': false,
+        'href': '#italic',
+        'title': 'Italic text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<i>', '</i>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<u>u</u>',
+        'icon': false,
+        'href': '#underline',
+        'title': 'Underline text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<u>', '</u>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sup>sup</sup>',
+        'icon': false,
+        'href': '#sup',
+        'title': 'Superscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sup>', '</sup>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sub>sub</sub>',
+        'icon': false,
+        'href': '#sub',
+        'title': 'Subscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sub>', '</sub>');
+        }
+    });
 
 };
+
+/**
+ * Lifted from superdAmn.
+ *
+ * SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+ * @method surroundtext
+ * @param tf
+ * @param left
+ * @param right
+ */
+Chatterbox.Control.prototype.surroundtext = function(tf, left, right){
+    // Thanks, Zikes
+    var tmpScroll     = tf.scrollTop;
+    var t             = tf.value, s = tf.selectionStart, e = tf.selectionEnd;
+    var selectedText  = tf.value.substring(s,e);
+    tf.value          = t.substring(0,s) + left + selectedText + right + t.substring(e);
+    tf.selectionStart = s + left.length;
+    tf.selectionEnd   = s + left.length + selectedText.length;
+    tf.scrollTop      = tmpScroll;
+    tf.focus();
+};
+
 
 /**
  * Steal the lime light. Brings the cursor to the input panel.
@@ -6212,29 +6361,8 @@ Chatterbox.Control.prototype.resize = function( ) {
  * @method height
  */
 Chatterbox.Control.prototype.height = function( ) {
-    return this.view.height();
-};
-
-
-/**
- * Set the handlers for the UI input.
- *
- * @method set_handlers
- * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
- *   `keypress`.
- * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
- *   `submit`.
- */
-Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    if( this.manager.mozilla ) {
-        this.el.i.s.keypress( onkeypress || this._onkeypress );
-        this.el.i.m.keypress( onkeypress || this._onkeypress );
-    } else {
-        this.el.i.s.keydown( onkeypress || this._onkeypress );
-        this.el.i.m.keydown( onkeypress || this._onkeypress );
-    }
-    
-    this.el.form.submit( onsubmit || this._onsubmit );
+    var h = this.view.outerHeight();
+    return h;
 };
 
 /**
@@ -6261,6 +6389,13 @@ Chatterbox.Control.prototype.multiline = function( on ) {
 
 };
 
+/**
+ * Add a button to the control panel button row.
+ * 
+ * @method add_button
+ * @param options {Object} Configuration options for the button.
+ * @return {Object} DOM element or something.
+ */
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -6289,6 +6424,12 @@ Chatterbox.Control.prototype.add_button = function( options ) {
 
 };
 
+/**
+ * Add status text to the control panel button row.
+ * 
+ * @method add_state
+ * @param options {Object} Status configuration options
+ */
 Chatterbox.Control.prototype.add_state = function( options ) {
 
     options = Object.extend( {
@@ -6308,14 +6449,17 @@ Chatterbox.Control.prototype.add_state = function( options ) {
 
 };
 
+/**
+ * Remove a status item from the control panel button row.
+ * 
+ * @method rem_state
+ * @param ref {String} Reference ID for the button
+ */
 Chatterbox.Control.prototype.rem_state = function( ref ) {
 
     return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
-
-Chatterbox.Control.prototype._onkeypress = function( event ) {};
-Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.
@@ -6383,9 +6527,349 @@ Chatterbox.Control.prototype.set_text = function( text ) {
 };
 
 /**
+ * Save current input in a cache.
+ * 
+ * @method cache_input
+ * @param previous {Object} Channel to cache input for.
+ * @param chan {Object} Newly selected channel
+ */
+Chatterbox.Control.prototype.cache_input = function( previous, chan ) {
+
+    var h = this.get_history( previous.namespace );
+    
+    if( h.index > -1 )
+        return;
+    
+    h.tmp = this.get_text();
+    this.set_text(this.get_history( chan.namespace ).tmp);
+
+};
+
+/**
+ * Get a channel's input history object.
+ * 
+ * If no history object exists for the given channel, a new object is created
+ * and stored.
+ * 
+ * @method get_history
+ * @param [namespace] {String} Channel to get the history of. If not given, the
+ *   channel currently being viewed is used.
+ * @return history {Object} Channel's input history data.
+ */
+Chatterbox.Control.prototype.get_history = function( namespace ) {
+
+    if( !namespace ) {
+        if( !this.manager.chatbook.current ) {
+             namespace = '~monitor';
+        }
+    }
+    
+    namespace = namespace || this.manager.chatbook.current.namespace;
+    
+    if( !this.history[namespace] )
+        this.history[namespace] = { index: -1, list: [], tmp: '' };
+    
+    return this.history[namespace];
+
+};
+
+/**
+ * Append an item to the current channel's input history.
+ * 
+ * @method append_history
+ * @param data {String} Input string to store.
+ */
+Chatterbox.Control.prototype.append_history = function( data ) {
+
+    if( !data )
+        return;
+    
+    var h = this.get_history();
+    h.list.unshift(data);
+    h.index = -1;
+    
+    if( h.list.length > 100 )
+        h.list.pop();
+
+};
+
+/**
+ * Scroll through the current channel's input history.
+ * 
+ * @method scroll_history
+ * @param up {Boolean} Scroll up?
+ */
+Chatterbox.Control.prototype.scroll_history = function( up ) {
+
+    var history = this.get_history();
+    var data = this.get_text();
+    
+    if( history.index == -1 )
+        if( data )
+            history.tmp = data;
+    else
+        history.list[history.index] = data;
+    
+    if( up ) {
+        if( history.list.length > 0 && history.index < (history.list.length - 1) )
+            history.index++;
+    } else {
+        if( history.index > -1)
+            history.index--;
+    }
+    
+    this.set_text(history.list[history.index] || history.tmp);
+
+};
+
+/**
+ * Handle the tab character being pressed.
+ * 
+ * @method tab_item
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.tab_item = function( event ) {
+
+    if( !this.tab.hit )
+        this.start_tab(event);
+    
+    this.chomp();
+    this.tab.index++;
+    
+    if( this.tab.index >= this.tab.matched.length )
+        this.tab.index = -1;
+    
+    if( this.tab.index == -1 ) {
+        this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
+        return;
+    }
+    
+    var suf = this.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
+    this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
+
+};
+
+/**
+ * Start tab complete capabilities by compiling a list of items that match the
+ * current user input.
+ * 
+ * TODO: make this actually work in its new found home
+ * 
+ * @method start_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.start_tab = function( event ) {
+
+    this.tab.hit = true;
+    this.tab.index = -1;
+    this.tab.matched = [];
+    this.tab.type = 0;
+    
+    // We only tab the last word in the input. Slice!
+    var needle = this.chomp();
+    this.unchomp(needle);
+    
+    // Check if we's dealing with commands here
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
+        this.tab.type = needle[0] == '/' ? 1 : 2;
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
+    } else {
+        this.tab.type = 0;
+    }
+    
+    this.tab.cache = needle;
+    needle = needle.toLowerCase();
+    
+    // Nows we have to find our matches. Fun.
+    // Lets start with matching users.
+    this.tab.matched = [];
+    if( this.tab.type == 0 ) {
+        var c = this.manager.client.channel( this.manager.chatbook.current.namespace );
+        for( var user in c.info['members'] ) {
+            if( user.toLowerCase().indexOf(needle) == 0 )
+                this.tab.matched.push(user);
+        }
+    } else if( this.tab.type == 1 ) {
+        // Matching with commands.
+        var cmd = '';
+        for( var i in this.manager.client.cmds ) {
+            cmd = this.manager.client.cmds[i];
+            if( cmd.indexOf(needle) == 0 )
+                this.tab.matched.push(cmd);
+        }
+    } else if( this.tab.type == 2 ) {
+        // Matching with channels.
+        var ctrl = this;
+        this.manager.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
+    }
+
+};
+
+/**
+ * Clear the tabbing cache.
+ * 
+ * @method end_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.end_tab = function( event ) {
+
+    this.tab.hit = false;
+    this.tab.matched = [];
+    this.tab.cache = '';
+    this.tab.index = -1;
+
+};
+
+/**
+ * Handle the send button being pressed.
+ * 
+ * @method submit
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.submit = function( event ) {
+
+    var msg = this.get_text();
+    this.append_history(msg);
+    this.set_text('');
+    this.handle(event, msg);
+    return false;
+
+};
+/**
+ * Processes a key being typed in the input area.
+ * 
+ * @method keypress
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.keypress = function( event ) {
+
+    var key = event.which || event.keyCode;
+    var ut = this.tab.hit;
+    var bubble = false;
+    
+    switch( key ) {
+        case 13: // Enter
+            if( !this.multiline() ) {
+                this.submit(event);
+            } else {
+                if( event.shiftKey ) {
+                    this.submit(event);
+                } else {
+                    bubble = true;
+                }
+            }
+            break;
+        case 38: // Up
+            if( !this.multiline() ) {
+                this.scroll_history(true);
+                break;
+            }
+            bubble = true;
+            break;
+        case 40: // Down
+            if( !this.multiline() ) {
+                this.scroll_history(false);
+                break;
+            }
+            bubble = true;
+            break;
+        case 9: // Tab
+            if( event.shiftKey ) {
+                this.manager.channel_right();
+            } else {
+                this.tab_item( event );
+                ut = false;
+            }
+            break;
+        case 219: // [
+            if( event.ctrlKey ) {
+                this.manager.channel_left();
+            } else {
+                bubble = true;
+            }
+            break;
+        case 221: // ] (using instead of +)
+            if( event.ctrlKey ) {
+                this.manager.channel_right();
+            } else {
+                bubble = true;
+            }
+            break;
+        default:
+            bubble = true;
+            break;
+    }
+    
+    if( ut )
+        this.end_tab( event );
+    
+    return bubble;
+
+};
+
+/**
+ * Handle some user input.
+ * 
+ * @method handle
+ * @param event {Object} Event data.
+ * @param data {String} Input message given by the user.
+ */
+Chatterbox.Control.prototype.handle = function( event, data ) {
+
+    if( data == '' )
+        return;
+    
+    if( !this.manager.chatbook.current )
+        return;
+    
+    var autocmd = false;
+    
+    if( data[0] != '/' ) {
+        autocmd = true;
+    }
+    
+    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
+    data = data.slice(1);
+    var bits = data.split(' ');
+    var cmdn = bits.shift().toLowerCase();
+    var ens = this.manager.chatbook.current.namespace;
+    var etarget = ens;
+    
+    if( !autocmd && bits[0] ) {
+        var hash = bits[0][0];
+        if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
+            etarget = this.manager.format_ns(bits.shift());
+        }
+    }
+    
+    var arg = bits.join(' ');
+    
+    var fired = this.manager.client.trigger('cmd.' + cmdn, {
+        name: 'cmd',
+        cmd: cmdn,
+        args: arg,
+        target: etarget,
+        ns: ens
+    });
+    
+    if( fired == 0 ) {
+        this.manager.pager.notice({
+            'ref': 'cmd-fail',
+            'heading': 'Command failed',
+            'content': '"' + cmdn + '" is not a command.'
+        }, false, 5000 );
+    }
+
+};
+
+/**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6541,7 +7025,43 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.el.n.height();
+    var h = this.el.n.outerHeight();
+    return h;
+};
+
+/**
+ * Add a button to the top button row.
+ *
+ * @method add_button
+ */
+Chatterbox.Navigation.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = ' text';
+    }
+    
+    this.el.b.prepend(Chatterbox.render('nav_button', options));
+    var button = this.el.b.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        options['handler']();
+        return false;
+    } );
+    
+    this.resize();
+    
+    return button;
+
 };
 
 /**
@@ -6603,6 +7123,10 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 
@@ -6611,7 +7135,12 @@ Chatterbox.Pager = function( ui ) {
     this.halflife = 5000;
     
     this.el = {
-        m: null
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
     };
     
     this.notices = [];
@@ -6636,19 +7165,24 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
 
     var notice = {
         frame: null,
         close: null,
+        foot: null,
+        b: {},
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
             'heading': 'Some notice',
             'content': 'Notice content goes here.'
-        }, ( options || {} ) )
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestroy: function(  ) {}
     };
     
+    notice.options.ref+= '-' + (new Date()).valueOf();
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -6657,21 +7191,40 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
-    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
     notice.close = notice.frame.find('a.close_notice');
+    notice.foot = notice.frame.find('footer.buttons');
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render('pager.button', bopt) );
+        notice.b[b] = notice.foot.find('a#' + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
     
     var p = this;
     
     notice.close.click( function(  ) {
+        notice.onclose();
         p.remove_notice( notice );
         return false;
     } );
     
     if( !sticky ) {
+        if( !lifespan )
+            lifespan = p.lifespan;
+        
         setTimeout( function(  ) {
             p.remove_notice( notice, true );
-        }, p.lifespan );
+        }, lifespan );
     }
+    
+    if( silent !== true )
+        this.manager.sound.click();
     
     return notice;
 
@@ -6692,6 +7245,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
         p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
     } );
     
     if( interrupt ) {
@@ -6714,8 +7268,25 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     }
 
 };
+
+/**
+ * Find a notice based on the reference.
+ *
+ */
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
+
+};
 /**
  * Popup window base class.
+ *
  * Should allow people to easily create popups... or something.
  * Subclasses of the popups should provide a way of closing the popup, or
  * maybe I could change things around a bit so there's always a close button in
@@ -6723,7 +7294,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6753,7 +7324,7 @@ Chatterbox.Popup.prototype.build = function(  ) {
     var fill = this.options;
     
     if( this.options.close ) {
-        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
+        fill.title+= '<a href="#close" class="close iconic x"></a>';
     }
     
     this.pview.append(Chatterbox.render( 'popup', fill ));
@@ -7081,7 +7652,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class Settings
+ * @class Chatterbox.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.
@@ -7181,6 +7752,7 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+    this.book.width( wrap.innerWidth() - 20 );
     this.config.resize();
 
 };
@@ -7234,7 +7806,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * Settings options object.
  * Extensions can configure the settings window with this shit yo.
  * 
- * @class Settings.Config
+ * @class Chatterbox.Settings.Config
  * @constructor
  */
 Chatterbox.Settings.Config = function( ui ) {
@@ -7386,7 +7958,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
 /**
  * Settings page config object.
  * 
- * @class Settings.Page
+ * @class Chatterbox.Settings.Page
  * @constructor
  * @param name {String} Name of the page.
  */
@@ -7588,7 +8160,7 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
 /**
  * A base class for settings page items.
  * 
- * @class Settings.Item
+ * @class Chatterbox.Settings.Item
  * @constructor
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
@@ -7880,7 +8452,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
  * HTML form as a single settings page item.
  * This item should be given settings items to use as form fields.
  * 
- * @class Form
+ * @class Chatterbox.Settings.Item.Form
  * @constructor
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
@@ -8063,7 +8635,7 @@ Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 /**
  * Base class for form fields.
  * 
- * @class Field
+ * @class Chatterbox.Settings.Item.Form.Field
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8145,7 +8717,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 /**
  * Form radio field.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Form.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8234,7 +8806,7 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 /**
  * Form checkbox field.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Form.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8314,7 +8886,7 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 /**
  * Form colour field.
  * 
- * @class Colour
+ * @class Chatterbox.Settings.Item.Form.Colour
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8356,7 +8928,7 @@ Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
 /**
  * Radio box item.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8401,7 +8973,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8452,7 +9024,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Items
+ * @class Chatterbox.Settings.Item.Items
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8758,7 +9330,14 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager"></div>\
+Chatterbox.template.ui = '<div class="soundbank">\
+            <audio class="click">\
+                <source src="{media}click.ogg" type="audio/ogg">\
+                <source src="{media}click.mp3" type="audio/mpeg">\
+            </audio>\
+        </div>\
+        <div class="pager">\
+        </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
@@ -8791,6 +9370,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
 
 Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
+
+Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 
 /**
  * HTML for a channel tab.
@@ -8931,15 +9512,17 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\
@@ -9323,22 +9906,27 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
 
 
 /**
- * dAmn module lolol.
+ * This module holds the dAmn extension.
+ *
  * 
  * @module wsc
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.7.20';
+wsc.dAmn.VERSION = '0.9.25';
 wsc.dAmn.STATE = 'alpha';
 
 
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
+    var pns = {};
+    
     settings.bds = {
         // Main DSP channel.
+        version: '0.4',
         mns: 'chat:datashare',
+        gate: 'chat:dsgateway',
         channel: ( new StringSet() ),
         // Because it's fun spamming #ds
         'provides': [
@@ -9349,32 +9937,35 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
     settings.bds.channel.add(settings.bds.mns);
+    settings.bds.channel.add(settings.bds.gate);
     
     var init = function(  ) {
         client.hidden.add(settings.bds.mns);
         client.exclude.add(settings.bds.mns);
+        client.hidden.add(settings.bds.gate);
+        client.exclude.add(settings.bds.gate);
         client.bind('pkt.login', pkt_login);
         client.bind('pkt.recv_msg', bds_msg);
         client.bind('pkt.join', handle.join);
         // BOTCHECK
         client.bind('BDS.BOTCHECK.DIRECT', handle.botcheck);
         client.bind('BDS.BOTCHECK.ALL', handle.botcheck);
+        client.bind('BDS.BOTCHECK.OK', handle.checkresp);
+        client.bind('BDS.BOTCHECK.DENIED', handle.checkresp);
         // pchats
         client.bind('CDS.LINK.REQUEST', handle.clreq);
         client.bind('CDS.LINK.REJECT', handle.clrj);
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
         client.bind('pkt.property', handle.pcp);
+        client.bind('closed', handle.closed);
     };
     
     var pkt_login = function( event ) {
         if( event.pkt.arg.e != 'ok' )
             return;
         
-        if( client.channel(settings.bds.mns) )
-            return;
-        
-        client.join('#datashare');
+        client.join(settings.bds.gate);
     };
     
     
@@ -9392,7 +9983,8 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             'user': event.user,
             'name': '',
             'payload': '',
-            'head': ''
+            'head': [null, null, null],
+            'params': []
         };
         
         var msg = event.message.split(':');
@@ -9409,6 +10001,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         bdse.name = head.join('.');
         bdse.payload = payload;
         bdse.head = head;
+        bdse.param = payload.split(',');
         
         client.trigger( head[0], bdse );
         client.trigger( head[0] + '.' + head[1], bdse );
@@ -9416,6 +10009,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Connection closed.
+        closed: function( event ) {
+            client.remove_ns( settings.bds.mns );
+            client.remove_ns( settings.bds.gate );
+        },
+        
         // Provider
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
@@ -9433,9 +10032,32 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
-            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION;
+            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
+        },
+        
+        // BDS:BOTCHECK:OK||DENIED
+        checkresp: function( event ) {
+            if( event.ns.toLowerCase() != settings.bds.gate )
+                return;
+            
+            if( event.param[0].toLowerCase() != client.settings.username.toLowerCase() )
+                return;
+            
+            if( client.channel( event.ns ).info.members[client.settings.username].pc == 'Visitors' )
+                client.part( event.ns );
+            
+            if( event.head[2] == 'OK' ) {
+                client.join( settings.bds.mns );
+                return;
+            }
+            
+            client.ui.pager.notice({
+                'ref': 'botcheckdenied',
+                'heading': 'BDS Error',
+                'content': 'Denied entry to backend channel.\nReason provided: <code>' + event.param.slice(1).join(',') + '</code>'
+            });
         },
         
         // CDS:LINK:REQUEST
@@ -9462,15 +10084,43 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             
             client.npmsg(event.ns, 'CDS:LINK:ACK:' + event.user);
             
-            console.log( client.channel(event.ns).info.members[event.user] );
-            
-            client.ui.pager.notice({
+            var pnotice = client.ui.pager.notice({
                 'ref': 'clink-' + event.user,
                 'icon': '<img src="' + wsc.dAmn.avatar.src(event.user,
                     client.channel(event.ns).info.members[event.user].usericon) + '" />',
                 'heading': 'Chat ' + event.user,
-                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them'
+                'content': event.user + ' wants to talk in private.\nType <code>/chat '+event.user+'</code> to talk to them, or use the buttons below.',
+                'buttons': {
+                    'accept': {
+                        'ref': 'accept',
+                        'target': 'accept',
+                        'label': 'Accept',
+                        'title': 'Join the private chat',
+                        'click': function(  ) {
+                            client.ui.pager.remove_notice( pnotice );
+                            client.join('@' + event.user);
+                            return false;
+                        }
+                    },
+                    'reject': {
+                        'ref': 'reject',
+                        'target': 'reject',
+                        'label': 'Reject',
+                        'title': 'Reject the private chat',
+                        'click': function(  ) {
+                            client.npmsg(event.ns, 'CDS:LINK:REJECT:' + event.user);
+                            client.ui.pager.remove_notice( pnotice );
+                            return false;
+                        }
+                    }
+                }
             }, true );
+            
+            pns[event.user] = pnotice;
+            
+            pnotice.onclose = function(  ) {
+                client.npmsg( event.ns, 'CDS:LINK:REJECT:' + event.user );
+            };
         },
         
         // CDS:LINK:REJECT
@@ -9530,9 +10180,17 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         
         // pchat recv_join
         pcrj: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
             try {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
+            
+            if( !( event.user in pns ) )
+                return;
+            
+            client.ui.pager.remove_notice( pns[event.user] );
         }
     };
 
@@ -9620,23 +10278,32 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     
     };
     
-    settings.colours.send_colour = function( event ) {
-        if( !settings.colours.send )
+    settings.colours.send_colour = function( data, done ) {
+        if( !settings.colours.send ) {
+            done( data );
             return;
-        event.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        }
+        
+        data.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
+        done( data );
     };
     
     settings.colours.parse_colour = function( event ) {
         if( !settings.colours.on )
             return;
         
-        var html = event.item.html();
-        var m = html.match( /<abbr title="colors:([A-F0-9]{6}):([A-F0-9]{6})"><\/abbr>/ );
+        var abbr = event.item.find('abbr');
+        
+        if( abbr.length == 0 )
+            return;
+        
+        abbr = abbr.last();
+        var m = abbr.prop('title').match( /colors:([A-F0-9]{6}):([A-F0-9]{6})/ );
         
         if( m == null )
             return;
         
-        event.item.html( replaceAll( html, m[0], '' ) );
+        abbr.remove();
         event.item.find('.cmsg, .caction').css('color', '#' + m[2]);
         event.item.find('.cmsg.user, .caction.user').css('color', '#' + m[1]);
     };
@@ -9644,8 +10311,8 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
     client.ui.on('settings.open.ran', settings.colours.configure_page);
     client.ui.on('log_item.after', settings.colours.parse_colour);
     
-    client.bind('send.msg.before', settings.colours.send_colour);
-    client.bind('send.action.before', settings.colours.send_colour);
+    client.middle('send.msg', settings.colours.send_colour);
+    client.middle('send.action', settings.colours.send_colour);
 
 };
 
@@ -9757,26 +10424,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
-                    settings.emotes.notice = new Chatterbox.Popup( client.ui, {
-                        'title': 'Emotes',
-                        'content': 'Custom emoticons loaded!'
-                    } );
-                    settings.emotes.notice.build();
-                    settings.emotes.notice.window.css({
-                        'bottom': 60,
-                        'right': 50
-                    });
-                    setTimeout( function(  ) {
-                        if( settings.emotes.notice == null )
-                            return;
-                        settings.emotes.notice.window.fadeOut(
-                            'slow',
-                            function(  ) {
-                                settings.emotes.notice.window.remove();
-                                settings.emotes.notice = null;
-                            }
-                        );
-                    }, 5000 );
+                    client.ui.pager.notice({
+                        'ref': 'emotes-loaded',
+                        'heading': 'Emote CLOUD',
+                        'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
+                    }, false, 5000, true);
                 }
             }
             
@@ -9791,26 +10443,37 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         });
     };
     
-    settings.emotes.swap = function( e ) {
+    settings.emotes.swap = function( data, done ) {
     
-        if( !settings.emotes.on )
+        if( !settings.emotes.on ) {
+            done( data );
             return;
+        }
         
-        var fec = -1;
-        for( var code in settings.emotes.emote ) {
+        var codes = data.input.match(/:([\S]+):/g);
+        var code = '';
+        var ci = -1;
+        
+        var fcs = function( em ) {
+            return em != codes[ci];
+        };
+        
+        for( ci in codes ) {
+            
+            code = codes[ci];
+            codes = codes.filter( fcs );
+            
             if( !settings.emotes.emote.hasOwnProperty(code) )
                 continue;
-            fec = e.input.indexOf(code);
-            if( fec == -1 )
-                continue;
             
-            e.input = replaceAll(
-                e.input, code,
+            data.input = replaceAll(
+                data.input, code,
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
             );
         }
         
-        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+        data.input = replaceAll( data.input, ':B', ':bucktooth:' );
+        done( data );
     
     };
     
@@ -9908,10 +10571,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         );
     };
     
-    client.bind('send.msg.before', settings.emotes.swap);
-    client.bind('send.action.before', settings.emotes.swap);
-    client.bind('send.kick.before', settings.emotes.swap);
-    client.bind('send.set.before', settings.emotes.swap);
+    client.middle('send.msg', settings.emotes.swap);
+    client.middle('send.action', settings.emotes.swap);
+    client.middle('send.kick', settings.emotes.swap);
+    client.middle('send.set', settings.emotes.swap);
     
     if( !settings.emotes.on )
         return;
@@ -10280,9 +10943,10 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
 };
 
 /**
- * dAmn extension makes the client work with dAmn.
+ * The dAmn extension makes the client work with dAmn. This extension also implements
+ * various other features to improve on the user experience.
  * 
- * @class Extension
+ * @class dAmn.Extension
  * @constructor
  */
 wsc.dAmn.Extension = function( client ) {
@@ -10345,6 +11009,7 @@ wsc.dAmn.Extension = function( client ) {
     client.flow.dAmnServer = client.flow.chatserver;
     
     client.exclude.add( 'chat:devart' );
+    client.exclude.add( 'chat:damnidlers' );
     
     client.ui.on( 'userinfo.before', function( event, ui ) {
         event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
@@ -10370,21 +11035,67 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    /**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     */
     wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     */
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    /**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     */
     wsc.dAmn.Colours( client, storage.colours, settings );
+    
+    /**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
+    wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };
 
+/**
+ * This object provides a few helper functions relating to deviantART avatars.
+ * 
+ * @class dAmn.avatar
+ */
 wsc.dAmn.avatar = {};
+
+/**
+ * An array containing the different file types avatars can be.
+ *
+ * @property ext
+ * @type Array
+ * @default [ 'gif', 'gif', 'jpg', 'png' ]
+ */
 wsc.dAmn.avatar.ext = [ 'gif', 'gif', 'jpg', 'png' ];
 
 /**
  * Produces an avatar link.
  * 
- * @class avatar_link
- * @constructor
+ * @method link
+ * @param un {String} Username to generate an avatar link for
+ * @param icon {String} Icon number as provided by dAmn's protocol
+ * @return {String} Valid avatar link
  */
 wsc.dAmn.avatar.link = function( un, icon ) {
     
@@ -10396,9 +11107,12 @@ wsc.dAmn.avatar.link = function( un, icon ) {
 
 
 /**
- * Works out the src url for an avatar.
+ * Works out the source url for an avatar.
  *
  * @method src
+ * @param un {String} Username to resolve the avatar source for
+ * @param icon {String} The user's icon number
+ * @return {String} The source URL
  */
 wsc.dAmn.avatar.src = function( un, icon ) {
 
@@ -10675,7 +11389,155 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
     
     init();
 
-};/**
+};
+/**
+ * Extension to handle stash links posted in the chat. Provides some helper functions
+ * to meet this end as well.
+ *
+ * @class dAmn.Stash
+ */
+wsc.dAmn.Stash = function( client, storage, settings ) {
+
+    var init = function(  ) {
+    
+        client.ui.on('log_item.after', handle.log_item);
+    
+    };
+    
+    var handle = {
+    
+        log_item: function( event ) {
+        
+            var links = event.item.find('a[href^="http://sta.sh"]');
+            
+            links.each( function( i, dlink ) {
+                var link = event.item.find(dlink);
+                wsc.dAmn.Stash.fetch( event, link );
+            } );
+        
+        }
+    
+    };
+    
+    init();
+
+};
+
+
+/**
+ * Fetch stash data.
+ */
+wsc.dAmn.Stash.fetch = function( event, link ) {
+
+    $.getJSON(
+        'http://backend.deviantart.com/oembed?url=' + link.prop('href') + '&format=jsonp&callback=?',
+        function( data ) {
+            wsc.dAmn.Stash.render( event, link, data );
+        }
+    );
+
+};
+
+
+/**
+ * Render a stash thumb.
+ */
+wsc.dAmn.Stash.render = function( event, link, data ) {
+
+    if( 'error' in data )
+        return;
+    
+    if( data.type != 'photo' )
+        return;
+    
+    var lurl = link.prop('href');
+    var w = data.thumbnail_width; var h = data.thumbnail_height;
+    var tw, th;
+    
+    // Deviation link tag. First segment only.
+    var title = data.title + ' by ' + data.author_name;
+    var anchor = '<a target="_blank" href="' + lurl + '" title="' + title + '">';
+    
+    if( w/h > 1) {
+        th = parseInt((h * 100) / w);
+        tw = 100;
+    } else {
+        tw = parseInt((w * 100) / h);
+        th = 100;
+    }
+    
+    if( tw > w || th > h ) {
+        tw = w;
+        th = h;
+    }
+    
+    var dim = 'width="' + tw + '" height="' + th + '"';
+    var shadow = !data.thumbnail_url.match(/.png$/i) ? ' shadow' : '';
+    var id = lurl.split('/').pop();
+    
+    var thumb = '<span class="stashthumb" id="'+id+'">' + anchor + '<img class="smaller thumb' + shadow + '"' +
+        dim + ' " alt="' + lurl + '" src="' + data.thumbnail_url_150 + '" />\
+        </a><a href="#toggle" class="button iconic plus" title="Larger"></a></span>';
+    
+    link.replaceWith(thumb);
+    
+    var lw = event.item.find('span#' + id);
+    link = lw.find('a[href="' + lurl + '"]');
+    
+    var smaller = link.find('img.smaller');
+    var larger = null;
+    var zoomed = false;
+    
+    var toggle = lw.find('a[href="#toggle"]');
+    
+    toggle.click( function(  ) {
+    
+        if( !zoomed ) {
+            smaller.css('display', 'none');
+            
+            if( larger == null ) {
+                lw.prepend('<img class="larger thumb' + shadow + '" width="' + w + '"\
+                height="' + h + '" alt="' + lurl + '" src="' + data.thumbnail_url + '" />');
+                larger = lw.find('img.larger');
+            }
+            
+            larger.css('display', 'inline');
+            zoomed = true;
+            
+            toggle.removeClass('plus');
+            toggle.addClass('minus');
+            toggle.prop('title', 'Smaller');
+                    
+            event.chan.st+= event.item.height();
+            event.chan.el.l.w.scrollTop( event.chan.st );
+            event.chan.scroll();
+            
+            return false;
+        }
+        
+        larger.css('display', 'none');
+        smaller.css('display', 'inline');
+        
+        toggle.removeClass('minus');
+        toggle.addClass('plus');
+        toggle.prop('title', 'Larger');
+            
+        event.chan.st+= event.item.height();
+        event.chan.el.l.w.scrollTop( event.chan.st );
+        event.chan.scroll();
+        
+        zoomed = false;
+        
+        return false;
+    
+    } );
+    
+    event.chan.st+= event.item.height();
+    event.chan.el.l.w.scrollTop( event.chan.st );
+    event.chan.scroll();
+
+};
+/**
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
  * 
@@ -10687,10 +11549,11 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
  *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  * 
- * @class TablumpString
+ * @class dAmn.TablumpString
+ * @extends wsc.MessageString
  * @constructor
  * @param data {String} String possibly containing tablumps.
- * @param parser {Object} A reference to a tablumps parser. Not required.
+ * @param [parser] {Object} A reference to a tablumps parser.
  */
 wsc.dAmn.TablumpString = function(data, parser) {
     this._parser = parser || new wsc.dAmn.Tablumps();
@@ -10758,12 +11621,32 @@ wsc.dAmn.PARSE = {
 
 
 /**
- * @object wsc.dAmn.TablumpParser
- *
- * Constructor for the tablumps parser.
+ * Parser for dAmn Tablumps.
+ * 
+ * @class dAmn.TablumpParser
+ * @extends wsc.MessageParser
+ * @constructor
  */
 wsc.dAmn.TablumpParser = function(  ) {
 
+    /**
+     * This object holds each tablump's parsing and rendering rules. For each tablump,
+     * there is a key, which is the tablump's head, or "tag". The entry is an array
+     * with the number of arguments in the tablump, followed by different renderers.
+     * As a generalisation, it looks like this:
+     *
+     *      this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];
+     * 
+     * Renderers can be formatting strings or functions. All renderers other than the
+     * first one are optional. If a particular render is not available, the rendering step
+     * falls back to the first renderer in the Array. As a brief example, this is what the
+     * img tag's entry looks like:
+     *      
+     *      this.lumps['&img\t'] = [ 3, '<img src="{0}" alt="{1}" title="{2}" />'];
+     * 
+     * @property lumps
+     * @type Object
+     */
     this.lumps = this.defaultMap();
 
 };
@@ -10772,18 +11655,17 @@ wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
 wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
 
 /**
- * @function registerMap
- *
  * I should probably deprecate this. Sets the rendering map to the given map.
+ * @method registerMap
+ * @deprecated
  */
 wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
 /**
- * @function extend
- *
  * Add the given rendering items to the parser's render map.
+ * @method extend
  */
 wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
@@ -10792,9 +11674,8 @@ wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
 };
 
 /**
- * @function defaultMap
- * 
  * Get all the default nonsense.
+ * @method defaultMap
  */
 wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
@@ -10878,9 +11759,12 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
 
 
 /**
- * @function parse
+ * Parse a message into tokens and return it as a
+ * {{#crossLink "dAmn.TablumpString"}}{{/crossLink}} object.
  *
- * Create a wsc.dAmn.TablumpString obejct and return it.
+ * @method parse
+ * @param data {String} Message to parse
+ * @return {Object} Parsed tablump string
  */
 wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
     data = replaceAll(data, '<', '&lt;');
@@ -10889,9 +11773,11 @@ wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
 };
 
 /**
- * @function tokenise
- * 
  * Parse a message possibly containing tablumps into tokens.
+ * 
+ * @method tokenise
+ * @param data {String} Message to parse
+ * @return {Array} Tokens
  */
 wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 
@@ -10987,8 +11873,6 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 };
 
 /**
- * @function render
- *
  * Render tablumps in a given format.
  * 
  * Here, the flag should be a number, and defines the index of the renderer
@@ -10999,6 +11883,11 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
  * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
  * where possible. Setting `flag` to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
+ * 
+ * @method render
+ * @param flag {Integer} Determines how the message should be rendered
+ * @param data {Object} TablumpString to be rendered
+ * @return {String} Rendered tablump string
  */
 wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     if( !data )
@@ -11031,8 +11920,12 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
 };
 
 /**
- * @function renderOne
  * Render a single tablump.
+ * @method renderOne
+ * @param type {Integer} Type of renderer to use
+ * @param tag {String} Name of the tablump tag
+ * @param tokens {Array} Tablump arguments
+ * @return {String} The rendered tablump
  */
 wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     var lump = this.lumps[tag];
@@ -11051,12 +11944,15 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
         return renderer.call(this, tokens);
 };
 
-/*
- * wsc - photofroggy
- * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
- * chat servers and interact with them.
+/**
+ * jQuery plugin.
+ * 
+ * Wrapper for implementing the plugin.
+ * 
+ * @class jQuery.plugin
+ * @constructor
+ * @param $ {Object} jQuery instance
  */
-
 (function( $ ) {
     
     $('*').hover(
@@ -11068,9 +11964,21 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
         }
     );
     
+    /**
+     * Implements the wsc client as a jQuery plugin.
+     * 
+     * To create a new client, pass `"init"` as the method, as follows:
+     *      
+     *      $('div.container').wsc( 'init', options );
+     * 
+     * @method wsc
+     * @param method {String} Method to call
+     * @param options {Object} Method input options
+     * @return {Object} Instance of wsc
+     */
     $.fn.wsc = function( method, options ) {
         
-        client = $(window).data('wscclient');
+        var client = $(window).data('wscclient');
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {

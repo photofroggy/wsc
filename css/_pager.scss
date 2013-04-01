@@ -6,7 +6,8 @@
         z-index: 100;
         
         div.notice {
-            padding: 10px 15px 10px 0px;
+            padding: 15px;
+            padding-left: 0px;
             margin-bottom: 10px;
             background-color: white;
             border: 1px solid black;
@@ -23,6 +24,13 @@
                 float: left;
                 margin-left: 15px;
                 max-width: 350px;
+                footer.buttons {
+                    padding-top: 10px;
+                    a.button {
+                        margin-right: 5px;
+                        font-size: 16px;
+                    }
+                }
             }
             
             a.close_notice {

@@ -47,6 +47,31 @@
     $hbgi: #FFD3D3,
     $hbgsl: #B61C1C,
     $hbgbg: #681B1B,
+    // NAV BUTTONS
+    $nbutton: #B7C4B7,
+    $nbuttonh: #D3DDD3,
+    $nbuttona: #B7C4B7,
+    $nbuttond: none,
+    $nbuttonhd: none,
+    $nbuttonb: #5B6859,
+    $nbuttonhb: #5B6859,
+    $nbuttonab: #5B6859,
+    $nbutton-shadow: #0A384E, 
+    $nbuttonh-shadow: #1773A0, 
+    $nbuttona-shadow: #1773A0, 
+    $nbgs: top,
+    $nbgi: #BFCABD,
+    $nbgsl: #849183,
+    $nbgbg: #657562,
+    $hnbgs: top,
+    $hnbgi: #DBE4DA,
+    $hnbgsl: #B3C2B2,
+    $hnbgbg: #839480,
+    $anbgs: top,
+    $anbgi: #BFCABD,
+    $anbgsl: #657562,
+    $anbgbg: #849183,
+    // /NAV BUTTONS
     $close: #FFF6E4,
     $closeh: #FFF6E4,
     $closea: #FFF6E4,
@@ -109,7 +134,11 @@
     $pager-header: #063B63,
     $pager-color: #3E7A88,
     $pager-close: #063B63,
-    $pager-closeh: #B9280D) {
+    $pager-closeh: #B9280D,
+    $x: #063B63,
+    $xh: #B9280D,
+    $xd: none,
+    $xhd: none) {
     
     color: $base;
     a {
@@ -126,14 +155,14 @@
         background-color: $bgbg;
         border-color: $buttonb;
         color: $button;
-        text-shadow: 0px -1px $button-shadow;
+        //text-shadow: 0px -1px $button-shadow;
         text-decoration: $buttond;
         &:hover {
             @include button-gradient($hbgs, $hbgi, $hbgsl, $hbgbg);
             background-color: $hbgbg;
             border-color: $buttonhb;
             color: $buttonh;
-            text-shadow: 0px -1px $buttonh-shadow;
+            //text-shadow: 0px -1px $buttonh-shadow;
             text-decoration: $buttonhd;
         }
         &:active {
@@ -141,30 +170,38 @@
             background-color: $abgbg;
             border-color: $buttonab;
             color: $buttona;
-            text-shadow: 0px -1px $buttona-shadow;
         }
     }
     
     a.iconic.close {
-        @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
-        color: $close !important;
-        text-shadow: 0px -1px $close-shadow;
-        font-weight: bold;
-        border-color: $closeb;
-        text-decoration: $closed !important;
+        color: $x !important;
+        text-decoration: $xd !important;
         &:hover {
-            @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
-            color: $closeh !important;
-            text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closehd !important;
-            border-color: $closehb;
+            color: $xh !important;
+            text-decoration: $xhd !important;
         }
-        &:active {
-            @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
-            color: $closea !important;
+        
+        &.button {
+            @include button-gradient($close-bgs, $close-bgi, $close-bgsl, $close-bgbg);
+            color: $close !important;
             text-shadow: 0px -1px $close-shadow;
-            text-decoration: $closead !important;
-            border-color: $closeab;
+            font-weight: bold;
+            border-color: $closeb;
+            text-decoration: $closed !important;
+            &:hover {
+                @include button-gradient($close-hbgs, $close-hbgi, $close-hbgsl, $close-hbgbg);
+                color: $closeh !important;
+                text-shadow: 0px -1px $close-shadow;
+                text-decoration: $closehd !important;
+                border-color: $closehb;
+            }
+            &:active {
+                @include button-gradient($close-abgs, $close-abgi, $close-abgsl, $close-abgbg);
+                color: $closea !important;
+                text-shadow: 0px -1px $close-shadow;
+                text-decoration: $closead !important;
+                border-color: $closeab;
+            }
         }
     }
     
@@ -199,6 +236,31 @@
             }
             &.active a.tab {
                 @include button-gradient($tab-abgs, $tab-abgi, $tab-abgsl, $tab-abgbg);
+            }
+        }
+        ul#tabnav li {
+            a.button,
+            form.msg input[type="submit"] {
+                @include button-gradient($nbgs, $nbgi, $nbgsl, $nbgbg);
+                background-color: $nbgbg;
+                border-color: $nbuttonb;
+                color: $nbutton;
+                //text-shadow: 0px -1px $button-shadow;
+                text-decoration: $nbuttond;
+                &:hover {
+                    @include button-gradient($hnbgs, $hnbgi, $hnbgsl, $hnbgbg);
+                    background-color: $hnbgbg;
+                    border-color: $nbuttonhb;
+                    color: $nbuttonh;
+                    //text-shadow: 0px -1px $nbuttonh-shadow;
+                    text-decoration: $nbuttonhd;
+                }
+                &:active {
+                    @include button-gradient($anbgs, $anbgi, $anbgsl, $anbgbg);
+                    background-color: $anbgbg;
+                    border-color: $nbuttonab;
+                    color: $nbuttona;
+                }
             }
         }
     }
@@ -310,14 +372,13 @@
             }
         }
         border: 1px solid $inner-border;
-        background-color: $userlist-bg;
     }
     
     div.chatwindow div.userinfo {
         border-color: $inner-border;
         background-color: $heading-bg;
         div.info {
-            background-color: $userlist-bg;
+            background-color: $chrome;
             border-color: $inner-border;
             color: $chrome-color;
             a {

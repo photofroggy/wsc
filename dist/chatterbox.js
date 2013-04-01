@@ -1,30 +1,32 @@
 /**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.15.69';
+Chatterbox.VERSION = '0.17.79';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class Chatterbox
  * @constructor
+ * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( view, options, mozilla, events ) {
+Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
+    this.client = client;
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
+    this.viewing = true;
     this.settings = {
         'themes': ['wsct_default', 'wsct_dAmn'],
         'theme': 'wsct_default',
@@ -33,11 +35,37 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
         'domain': 'website.com',
         'clock': true,
         'tabclose': true,
-        'developer': false
+        'developer': false,
+        'media': '/static/'
+    };
+    
+    var ui = this;
+    this.sound = {
+        play: function( sound ) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        },
+        toggle: function( state ) {
+            for( var s in ui.sound.bank ) {
+                if( !ui.sound.bank.hasOwnProperty( s ) )
+                    continue;
+                ui.sound.bank[s].muted = state;
+            }
+        },
+        mute: function(  ) { ui.sound.toggle( true ); },
+        unmute: function(  ) { ui.sound.toggle( false ); },
+        bank: {
+            m: null,
+            c: null
+        },
+        click: null,
     };
     
     view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
+    
+    this.mw = new wsc.Middleware();
     
     this.view = view.find('.wsc');
     this.mns = this.format_ns(this.settings['monitor'][0]);
@@ -94,6 +122,28 @@ Chatterbox.UI.prototype.trigger = function( event, data ) {
 Chatterbox.UI.prototype.on = function( event, handler ) {
 
     this.events.addListener( event, handler );
+
+};
+
+/**
+ * Add a piece of middleware for something.
+ * 
+ * @method middle
+ */
+Chatterbox.UI.prototype.middle = function( event, callback ) {
+
+    return this.mw.add( event, callback );
+
+};
+
+/**
+ * Run a method with middleware.
+ * 
+ * @method cascade
+ */
+Chatterbox.UI.prototype.cascade = function( event, method, data ) {
+
+    this.mw.run( event, method, data );
 
 };
 
@@ -209,16 +259,66 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
-    this.view.append( Chatterbox.template.ui );
+    this.view.append( Chatterbox.render('ui', this.settings) );
+    
+    // UI Components.
     this.control = new ( control || Chatterbox.Control )( this );
     this.nav = new ( navigation || Chatterbox.Navigation )( this );
     this.chatbook = new ( chatbook || Chatterbox.Chatbook )( this );
     this.pager = new Chatterbox.Pager( this );
+    
     // The monitor channel is essentially our console for the chat.
     this.monitoro = this.chatbook.create_channel(this.mns, this.settings.monitor[1], true);
     this.monitoro.show();
+    
     //this.control.setInput();
     this.control.focus();
+    
+    // Sound bank
+    this.sound.bank.m = this.view.find('div.soundbank');
+    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
+    this.sound.bank.c.load();
+    
+    var sound = this.sound;
+    
+    this.sound.click = function(  ) {
+        sound.play( sound.bank.c );
+    };
+    
+    // Mute button.
+    var muted = false;
+    var mute = this.nav.add_button({
+        'label': '',
+        'icon': 'volume',
+        'href': '#mute',
+        'title': 'Mute the client',
+        'handler': function(  ) {
+            if( !muted ) {
+                sound.mute();
+                mute.removeClass( 'volume' );
+                mute.addClass('volume_mute' );
+                mute.prop('title', 'Unmute the client');
+                muted = true;
+                return false;
+            }
+            sound.unmute();
+            mute.removeClass( 'volume_mute' );
+            mute.addClass( 'volume' );
+            mute.prop('title', 'Mute the client');
+            muted = false;
+            return false;
+        }
+    });
+    
+    // Focusing stuff?
+    var ui = this;
+    $(window).focus( function(  ) {
+        ui.viewing = true;
+    } );
+    
+    $(window).blur( function(  ) {
+        ui.viewing = false;
+    } );
     
 };
 
@@ -233,7 +333,7 @@ Chatterbox.UI.prototype.resize = function() {
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
     this.nav.resize(  );
-    this.chatbook.resize( this.view.parent().height() - this.nav.height() - this.control.height() );
+    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
 
 };
 
@@ -494,7 +594,7 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class Chatterbox.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -525,24 +625,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
+        topic: null                 //      Topic
     };
     this.mulw = 0;
     // Dimensions...
@@ -645,41 +728,45 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    if( head == 'topic' )
+        this.topic = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.head[head].text);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': h.m.innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        h.m.css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -687,13 +774,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        h.m.css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -702,7 +789,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -710,11 +797,11 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
@@ -727,7 +814,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * @method hide
  */
 Chatterbox.Channel.prototype.hide = function( ) {
-    //console.log("hide " + this.info.selector);
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -802,7 +888,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -819,12 +905,27 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * 
  * @method resize
  */
-Chatterbox.Channel.prototype.resize = function( ) {
+Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    var wh = this.manager.chatbook.height();
+    height = height || this.manager.chatbook.height();
+    width = width || this.manager.chatbook.width();
+    var wh = height;
     this.el.m.height(wh);
     // Width.
+    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -841,7 +942,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -863,8 +964,8 @@ Chatterbox.Channel.prototype.resize = function( ) {
         if( this.head[head].text.length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -877,7 +978,7 @@ Chatterbox.Channel.prototype.resize = function( ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -894,11 +995,18 @@ Chatterbox.Channel.prototype.loop = function(  ) {
  * @param msg {String} Message to display.
  */
 Chatterbox.Channel.prototype.log = function( msg ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg};
-    this.manager.trigger( 'log.before', data );
-    this.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+    
+    var chan = this;
+    
+    this.manager.cascade( 'log',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('logmsg', {'message': data.message}) });
+        }, {
+            'ns': this.raw,
+            'sns': this.namespace,
+            'message': msg
+        }
+    );
 };
 
 /**
@@ -909,37 +1017,40 @@ Chatterbox.Channel.prototype.log = function( msg ) {
  */
 Chatterbox.Channel.prototype.log_item = function( item ) {
     var date = new Date();
-    ts = '';
+    var ts = '';
     
     if( this.manager.settings.clock ) {
         ts = formatTime('{HH}:{mm}:{ss}', date);
     } else {
         ts = formatTime('{hh}:{mm}:{ss} {mr}', date);
     }
-        
-    data = {
-        'ts': ts,
-        'ms': date.getTime(),
-        'message': item.html,
-        'user': (item.user || 'system' ).toLowerCase()
-    };
     
-    this.manager.trigger( 'log_item.before', data );
-    if( this.visible ) {
-        this.st = this.el.l.w.scrollTop();
-    }
+    var chan = this;;
     
-    // Add content.
-    this.el.l.w.append(Chatterbox.render('logitem', data));
-    this.manager.trigger( 'log_item.after', {'item': this.el.l.w.find('li').last() } );
-    if( this.visible ) {
-        this.st+= this.el.l.w.find('li.logmsg').last().height();
-        this.el.l.w.scrollTop( this.st );
-    }
-    
-    // Scrollio
-    this.scroll();
-    this.noise();
+    this.manager.cascade( 'log_item',
+        function( data ) {
+            if( chan.visible ) {
+                chan.st = chan.el.l.w.scrollTop();
+            }
+            
+            // Add content.
+            chan.el.l.w.append(Chatterbox.render('logitem', data));
+            chan.manager.trigger( 'log_item.after', {'item': chan.el.l.w.find('li').last(), 'chan': chan } );
+            if( chan.visible ) {
+                chan.st+= chan.el.l.w.find('li.logmsg').last().height();
+                chan.el.l.w.scrollTop( chan.st );
+            }
+            
+            // Scrollio
+            chan.scroll();
+            chan.noise();
+        }, {
+            'ts': ts,
+            'ms': date.getTime(),
+            'message': item.html,
+            'user': (item.user || 'system' ).toLowerCase()
+        }
+    );
 };
 
 /**
@@ -976,12 +1087,17 @@ Chatterbox.Channel.prototype.retime = function(  ) {
  * @param [info] {String} Extra information for the message.
  */
 Chatterbox.Channel.prototype.server_message = function( msg, info ) {
-    data = {
-        'ns': this.namespace,
-        'message': msg,
-        'info': info};
-    this.manager.trigger( 'server_message.before', data );
-    this.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+    var chan = this;
+    
+    this.manager.cascade( 'server_message',
+        function( data ) {
+            chan.log_item({ 'html': Chatterbox.render('servermsg', {'message': data.message, 'info': data.info}) });
+        }, {
+            'ns': this.namespace,
+            'message': msg,
+            'info': info
+        }
+    );
 };
 
 /**
@@ -1003,7 +1119,7 @@ Chatterbox.Channel.prototype.clear = function(  ) {
  * @param content {String} Infobox contents.
  */
 Chatterbox.Channel.prototype.log_info = function( ref, content ) {
-    data = {
+    var data = {
         'ns': this.namespace,
         'ref': ref,
         'content': content
@@ -1150,22 +1266,28 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.head[head].text = content.text();
     this.head[head].html = content.html();
+    var h = {};
+    h.m = this.el.m.find( 'header div.' + head );
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
     
-    this.el.h[head].m.replaceWith(
+    h.m.replaceWith(
         Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    h.m = this.el.m.find('header div.' + head);
+    
+    if( head == 'topic' )
+        this.topic = h.m;
     
     var chan = this;
     
     setTimeout( function(  ) {
         if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+            h.m.css( { display: 'block' } );
+            var tline = (h.m.outerHeight(true) - 5) * (-1);
+            h.e.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            h.m.css( { display: 'none' } );
         }
             
         chan.resize();
@@ -1248,8 +1370,15 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
     }
     
-    if( tab.hasClass('active') )
+    if( tab.hasClass('active') ) {
+        if( !this.manager.viewing )
+            this.manager.sound.click();
         return;
+    }
+    
+    if( !this.hidden ) {
+        this.manager.sound.click();
+    }
     
     if( tab.hasClass('tabbed') )
         return;
@@ -1450,7 +1579,7 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -1477,6 +1606,15 @@ Chatterbox.Chatbook.prototype.height = function() {
 };
 
 /**
+ * Return the width of the chatbook.
+ *
+ * @method height
+ */
+Chatterbox.Chatbook.prototype.width = function() {
+    return this.view.width();
+};
+
+/**
  * Resize the chatbook view pane.
  * 
  * @method resize
@@ -1484,11 +1622,14 @@ Chatterbox.Chatbook.prototype.height = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
+    var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
-        chan.resize();
+        chan.resize( width, height );
     }
 };
 
@@ -1559,7 +1700,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
     if( this.trail.indexOf(chan.namespace) == -1 ) {
         this.trail.push(chan.namespace);
     }
-    this.toggle_channel(ns);
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
     this.manager.resize();
     return chan;
 };
@@ -1587,7 +1731,12 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     var chan = this.channel(ns);
     var prev = chan;
     
-    if( !chan || chan.hidden ) {
+    if( !chan )
+        return;
+    
+    if( chan.hidden ) {
+        if( this.current && this.current == chan )
+            return;
         if( !this.manager.settings.developer ) {
             chan.hide();
             return;
@@ -1610,12 +1759,15 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**
@@ -1797,7 +1949,7 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
 /**
  * This object provides an interface for the chat input panel.
  * 
- * @class Control
+ * @class Chatterbox.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -1807,6 +1959,16 @@ Chatterbox.Control = function( ui ) {
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
     this.ml = false;
+    
+    this.history = {};
+    this.tab = {
+        hit: false,
+        cache: '',
+        matched: [],
+        index: -1,
+        type: 0,
+        prefix: ['', '/', ''],
+    };
     
     /**
      * UI elements
@@ -1833,8 +1995,87 @@ Chatterbox.Control = function( ui ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
+    
+    // Input handling.
+    this.el.i.s.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.i.m.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.form.submit( function( event ) { return ctrl.submit( event ); } );
+    
+    // FORMATTING BUTTONS
+    
+    this.add_button({
+        'label': '<b>b</b>',
+        'icon': false,
+        'href': '#bold',
+        'title': 'Bold text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<b>', '</b>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<i>i</i>',
+        'icon': false,
+        'href': '#italic',
+        'title': 'Italic text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<i>', '</i>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<u>u</u>',
+        'icon': false,
+        'href': '#underline',
+        'title': 'Underline text',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<u>', '</u>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sup>sup</sup>',
+        'icon': false,
+        'href': '#sup',
+        'title': 'Superscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sup>', '</sup>');
+        }
+    });
+    
+    this.add_button({
+        'label': '<sub>sub</sub>',
+        'icon': false,
+        'href': '#sub',
+        'title': 'Subscript',
+        'handler': function(  ) {
+            ctrl.surroundtext( ctrl.el.i.c[0], '<sub>', '</sub>');
+        }
+    });
 
 };
+
+/**
+ * Lifted from superdAmn.
+ *
+ * SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+ * @method surroundtext
+ * @param tf
+ * @param left
+ * @param right
+ */
+Chatterbox.Control.prototype.surroundtext = function(tf, left, right){
+    // Thanks, Zikes
+    var tmpScroll     = tf.scrollTop;
+    var t             = tf.value, s = tf.selectionStart, e = tf.selectionEnd;
+    var selectedText  = tf.value.substring(s,e);
+    tf.value          = t.substring(0,s) + left + selectedText + right + t.substring(e);
+    tf.selectionStart = s + left.length;
+    tf.selectionEnd   = s + left.length + selectedText.length;
+    tf.scrollTop      = tmpScroll;
+    tf.focus();
+};
+
 
 /**
  * Steal the lime light. Brings the cursor to the input panel.
@@ -1867,29 +2108,8 @@ Chatterbox.Control.prototype.resize = function( ) {
  * @method height
  */
 Chatterbox.Control.prototype.height = function( ) {
-    return this.view.height();
-};
-
-
-/**
- * Set the handlers for the UI input.
- *
- * @method set_handlers
- * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
- *   `keypress`.
- * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
- *   `submit`.
- */
-Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    if( this.manager.mozilla ) {
-        this.el.i.s.keypress( onkeypress || this._onkeypress );
-        this.el.i.m.keypress( onkeypress || this._onkeypress );
-    } else {
-        this.el.i.s.keydown( onkeypress || this._onkeypress );
-        this.el.i.m.keydown( onkeypress || this._onkeypress );
-    }
-    
-    this.el.form.submit( onsubmit || this._onsubmit );
+    var h = this.view.outerHeight();
+    return h;
 };
 
 /**
@@ -1916,6 +2136,13 @@ Chatterbox.Control.prototype.multiline = function( on ) {
 
 };
 
+/**
+ * Add a button to the control panel button row.
+ * 
+ * @method add_button
+ * @param options {Object} Configuration options for the button.
+ * @return {Object} DOM element or something.
+ */
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -1944,6 +2171,12 @@ Chatterbox.Control.prototype.add_button = function( options ) {
 
 };
 
+/**
+ * Add status text to the control panel button row.
+ * 
+ * @method add_state
+ * @param options {Object} Status configuration options
+ */
 Chatterbox.Control.prototype.add_state = function( options ) {
 
     options = Object.extend( {
@@ -1963,14 +2196,17 @@ Chatterbox.Control.prototype.add_state = function( options ) {
 
 };
 
+/**
+ * Remove a status item from the control panel button row.
+ * 
+ * @method rem_state
+ * @param ref {String} Reference ID for the button
+ */
 Chatterbox.Control.prototype.rem_state = function( ref ) {
 
     return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
-
-Chatterbox.Control.prototype._onkeypress = function( event ) {};
-Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.
@@ -2038,9 +2274,349 @@ Chatterbox.Control.prototype.set_text = function( text ) {
 };
 
 /**
+ * Save current input in a cache.
+ * 
+ * @method cache_input
+ * @param previous {Object} Channel to cache input for.
+ * @param chan {Object} Newly selected channel
+ */
+Chatterbox.Control.prototype.cache_input = function( previous, chan ) {
+
+    var h = this.get_history( previous.namespace );
+    
+    if( h.index > -1 )
+        return;
+    
+    h.tmp = this.get_text();
+    this.set_text(this.get_history( chan.namespace ).tmp);
+
+};
+
+/**
+ * Get a channel's input history object.
+ * 
+ * If no history object exists for the given channel, a new object is created
+ * and stored.
+ * 
+ * @method get_history
+ * @param [namespace] {String} Channel to get the history of. If not given, the
+ *   channel currently being viewed is used.
+ * @return history {Object} Channel's input history data.
+ */
+Chatterbox.Control.prototype.get_history = function( namespace ) {
+
+    if( !namespace ) {
+        if( !this.manager.chatbook.current ) {
+             namespace = '~monitor';
+        }
+    }
+    
+    namespace = namespace || this.manager.chatbook.current.namespace;
+    
+    if( !this.history[namespace] )
+        this.history[namespace] = { index: -1, list: [], tmp: '' };
+    
+    return this.history[namespace];
+
+};
+
+/**
+ * Append an item to the current channel's input history.
+ * 
+ * @method append_history
+ * @param data {String} Input string to store.
+ */
+Chatterbox.Control.prototype.append_history = function( data ) {
+
+    if( !data )
+        return;
+    
+    var h = this.get_history();
+    h.list.unshift(data);
+    h.index = -1;
+    
+    if( h.list.length > 100 )
+        h.list.pop();
+
+};
+
+/**
+ * Scroll through the current channel's input history.
+ * 
+ * @method scroll_history
+ * @param up {Boolean} Scroll up?
+ */
+Chatterbox.Control.prototype.scroll_history = function( up ) {
+
+    var history = this.get_history();
+    var data = this.get_text();
+    
+    if( history.index == -1 )
+        if( data )
+            history.tmp = data;
+    else
+        history.list[history.index] = data;
+    
+    if( up ) {
+        if( history.list.length > 0 && history.index < (history.list.length - 1) )
+            history.index++;
+    } else {
+        if( history.index > -1)
+            history.index--;
+    }
+    
+    this.set_text(history.list[history.index] || history.tmp);
+
+};
+
+/**
+ * Handle the tab character being pressed.
+ * 
+ * @method tab_item
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.tab_item = function( event ) {
+
+    if( !this.tab.hit )
+        this.start_tab(event);
+    
+    this.chomp();
+    this.tab.index++;
+    
+    if( this.tab.index >= this.tab.matched.length )
+        this.tab.index = -1;
+    
+    if( this.tab.index == -1 ) {
+        this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
+        return;
+    }
+    
+    var suf = this.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
+    this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
+
+};
+
+/**
+ * Start tab complete capabilities by compiling a list of items that match the
+ * current user input.
+ * 
+ * TODO: make this actually work in its new found home
+ * 
+ * @method start_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.start_tab = function( event ) {
+
+    this.tab.hit = true;
+    this.tab.index = -1;
+    this.tab.matched = [];
+    this.tab.type = 0;
+    
+    // We only tab the last word in the input. Slice!
+    var needle = this.chomp();
+    this.unchomp(needle);
+    
+    // Check if we's dealing with commands here
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
+        this.tab.type = needle[0] == '/' ? 1 : 2;
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
+    } else {
+        this.tab.type = 0;
+    }
+    
+    this.tab.cache = needle;
+    needle = needle.toLowerCase();
+    
+    // Nows we have to find our matches. Fun.
+    // Lets start with matching users.
+    this.tab.matched = [];
+    if( this.tab.type == 0 ) {
+        var c = this.manager.client.channel( this.manager.chatbook.current.namespace );
+        for( var user in c.info['members'] ) {
+            if( user.toLowerCase().indexOf(needle) == 0 )
+                this.tab.matched.push(user);
+        }
+    } else if( this.tab.type == 1 ) {
+        // Matching with commands.
+        var cmd = '';
+        for( var i in this.manager.client.cmds ) {
+            cmd = this.manager.client.cmds[i];
+            if( cmd.indexOf(needle) == 0 )
+                this.tab.matched.push(cmd);
+        }
+    } else if( this.tab.type == 2 ) {
+        // Matching with channels.
+        var ctrl = this;
+        this.manager.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
+    }
+
+};
+
+/**
+ * Clear the tabbing cache.
+ * 
+ * @method end_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.end_tab = function( event ) {
+
+    this.tab.hit = false;
+    this.tab.matched = [];
+    this.tab.cache = '';
+    this.tab.index = -1;
+
+};
+
+/**
+ * Handle the send button being pressed.
+ * 
+ * @method submit
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.submit = function( event ) {
+
+    var msg = this.get_text();
+    this.append_history(msg);
+    this.set_text('');
+    this.handle(event, msg);
+    return false;
+
+};
+/**
+ * Processes a key being typed in the input area.
+ * 
+ * @method keypress
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.keypress = function( event ) {
+
+    var key = event.which || event.keyCode;
+    var ut = this.tab.hit;
+    var bubble = false;
+    
+    switch( key ) {
+        case 13: // Enter
+            if( !this.multiline() ) {
+                this.submit(event);
+            } else {
+                if( event.shiftKey ) {
+                    this.submit(event);
+                } else {
+                    bubble = true;
+                }
+            }
+            break;
+        case 38: // Up
+            if( !this.multiline() ) {
+                this.scroll_history(true);
+                break;
+            }
+            bubble = true;
+            break;
+        case 40: // Down
+            if( !this.multiline() ) {
+                this.scroll_history(false);
+                break;
+            }
+            bubble = true;
+            break;
+        case 9: // Tab
+            if( event.shiftKey ) {
+                this.manager.channel_right();
+            } else {
+                this.tab_item( event );
+                ut = false;
+            }
+            break;
+        case 219: // [
+            if( event.ctrlKey ) {
+                this.manager.channel_left();
+            } else {
+                bubble = true;
+            }
+            break;
+        case 221: // ] (using instead of +)
+            if( event.ctrlKey ) {
+                this.manager.channel_right();
+            } else {
+                bubble = true;
+            }
+            break;
+        default:
+            bubble = true;
+            break;
+    }
+    
+    if( ut )
+        this.end_tab( event );
+    
+    return bubble;
+
+};
+
+/**
+ * Handle some user input.
+ * 
+ * @method handle
+ * @param event {Object} Event data.
+ * @param data {String} Input message given by the user.
+ */
+Chatterbox.Control.prototype.handle = function( event, data ) {
+
+    if( data == '' )
+        return;
+    
+    if( !this.manager.chatbook.current )
+        return;
+    
+    var autocmd = false;
+    
+    if( data[0] != '/' ) {
+        autocmd = true;
+    }
+    
+    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
+    data = data.slice(1);
+    var bits = data.split(' ');
+    var cmdn = bits.shift().toLowerCase();
+    var ens = this.manager.chatbook.current.namespace;
+    var etarget = ens;
+    
+    if( !autocmd && bits[0] ) {
+        var hash = bits[0][0];
+        if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
+            etarget = this.manager.format_ns(bits.shift());
+        }
+    }
+    
+    var arg = bits.join(' ');
+    
+    var fired = this.manager.client.trigger('cmd.' + cmdn, {
+        name: 'cmd',
+        cmd: cmdn,
+        args: arg,
+        target: etarget,
+        ns: ens
+    });
+    
+    if( fired == 0 ) {
+        this.manager.pager.notice({
+            'ref': 'cmd-fail',
+            'heading': 'Command failed',
+            'content': '"' + cmdn + '" is not a command.'
+        }, false, 5000 );
+    }
+
+};
+
+/**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -2196,7 +2772,43 @@ Chatterbox.Navigation.prototype.configure_page = function( event ) {
  * @return {Integer} The height of the navigation bar in pixels.
  */
 Chatterbox.Navigation.prototype.height = function(  ) {
-    return this.el.n.height();
+    var h = this.el.n.outerHeight();
+    return h;
+};
+
+/**
+ * Add a button to the top button row.
+ *
+ * @method add_button
+ */
+Chatterbox.Navigation.prototype.add_button = function( options ) {
+
+    options = Object.extend( {
+        'label': 'New',
+        'icon': false,
+        'href': '#button',
+        'title': 'Button.',
+        'handler': function(  ) {}
+    }, ( options || {} ) );
+    
+    if( options.icon !== false ) {
+        options.icon = ' iconic ' + options.icon;
+    } else {
+        options.icon = ' text';
+    }
+    
+    this.el.b.prepend(Chatterbox.render('nav_button', options));
+    var button = this.el.b.find('a[href='+options.href+'].button');
+    
+    button.click( function( event ) {
+        options['handler']();
+        return false;
+    } );
+    
+    this.resize();
+    
+    return button;
+
 };
 
 /**
@@ -2258,6 +2870,10 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 
@@ -2266,7 +2882,12 @@ Chatterbox.Pager = function( ui ) {
     this.halflife = 5000;
     
     this.el = {
-        m: null
+        m: null,
+        click: null
+    };
+    
+    this.sound = {
+        click: function(  ) {},
     };
     
     this.notices = [];
@@ -2291,19 +2912,24 @@ Chatterbox.Pager.prototype.build = function(  ) {
  * 
  * @method notice
  */
-Chatterbox.Pager.prototype.notice = function( options, sticky ) {
+Chatterbox.Pager.prototype.notice = function( options, sticky, lifespan, silent ) {
 
     var notice = {
         frame: null,
         close: null,
+        foot: null,
+        b: {},
         options: Object.extend( {
             'ref': 'notice',
             'icon': '',
             'heading': 'Some notice',
             'content': 'Notice content goes here.'
-        }, ( options || {} ) )
+        }, ( options || {} ) ),
+        onclose: function(  ) {},
+        ondestroy: function(  ) {}
     };
     
+    notice.options.ref+= '-' + (new Date()).valueOf();
     notice.options.content = notice.options.content.split('\n').join('</p><p>');
     
     this.notices.push( notice );
@@ -2312,21 +2938,40 @@ Chatterbox.Pager.prototype.notice = function( options, sticky ) {
         Chatterbox.render( 'pager.notice', notice.options )
     );
     
-    notice.frame = this.el.m.find( '#' + notice.options.ref );
+    notice.frame = this.el.m.find( '#' + notice.options.ref ).last();
     notice.close = notice.frame.find('a.close_notice');
+    notice.foot = notice.frame.find('footer.buttons');
+    var bopt = {};
+    
+    for( var b in notice.options.buttons ) {
+        if( !notice.options.buttons.hasOwnProperty( b ) )
+            continue;
+        
+        bopt = notice.options.buttons[b];
+        notice.foot.append( Chatterbox.render('pager.button', bopt) );
+        notice.b[b] = notice.foot.find('a#' + bopt.ref);
+        notice.b[b].click( bopt.click );
+    }
     
     var p = this;
     
     notice.close.click( function(  ) {
+        notice.onclose();
         p.remove_notice( notice );
         return false;
     } );
     
     if( !sticky ) {
+        if( !lifespan )
+            lifespan = p.lifespan;
+        
         setTimeout( function(  ) {
             p.remove_notice( notice, true );
-        }, p.lifespan );
+        }, lifespan );
     }
+    
+    if( silent !== true )
+        this.manager.sound.click();
     
     return notice;
 
@@ -2347,6 +2992,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     notice.frame.fadeTo( ( interrupt ? this.halflife : 300 ), 0 ).slideUp( function(  ) {
         notice.frame.remove();
         p.notices.splice( p.notices.indexOf( notice ), 1 );
+        notice.ondestroy();
     } );
     
     if( interrupt ) {
@@ -2369,8 +3015,25 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
     }
 
 };
+
+/**
+ * Find a notice based on the reference.
+ *
+ */
+Chatterbox.Pager.prototype.find_notice = function( reference ) {
+
+    for( var i in this.notices ) {
+        if( this.notices[i].options.ref == reference ) {
+            return this.notices[i];
+        }
+    }
+    
+    return null;
+
+};
 /**
  * Popup window base class.
+ *
  * Should allow people to easily create popups... or something.
  * Subclasses of the popups should provide a way of closing the popup, or
  * maybe I could change things around a bit so there's always a close button in
@@ -2378,7 +3041,7 @@ Chatterbox.Pager.prototype.remove_notice = function( notice, interrupt ) {
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -2408,7 +3071,7 @@ Chatterbox.Popup.prototype.build = function(  ) {
     var fill = this.options;
     
     if( this.options.close ) {
-        fill.title+= '<a href="#close" class="button close medium iconic x"></a>';
+        fill.title+= '<a href="#close" class="close iconic x"></a>';
     }
     
     this.pview.append(Chatterbox.render( 'popup', fill ));
@@ -2736,7 +3399,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class Settings
+ * @class Chatterbox.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.
@@ -2836,6 +3499,7 @@ Chatterbox.Settings.prototype.resize = function(  ) {
     var foot = inner.find('footer');
     wrap.height(inner.height() - foot.outerHeight() - head.outerHeight() - 15);
     this.book.height(wrap.innerHeight() - this.tabs.outerHeight() - 25);
+    this.book.width( wrap.innerWidth() - 20 );
     this.config.resize();
 
 };
@@ -2889,7 +3553,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * Settings options object.
  * Extensions can configure the settings window with this shit yo.
  * 
- * @class Settings.Config
+ * @class Chatterbox.Settings.Config
  * @constructor
  */
 Chatterbox.Settings.Config = function( ui ) {
@@ -3041,7 +3705,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
 /**
  * Settings page config object.
  * 
- * @class Settings.Page
+ * @class Chatterbox.Settings.Page
  * @constructor
  * @param name {String} Name of the page.
  */
@@ -3243,7 +3907,7 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
 /**
  * A base class for settings page items.
  * 
- * @class Settings.Item
+ * @class Chatterbox.Settings.Item
  * @constructor
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
@@ -3535,7 +4199,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
  * HTML form as a single settings page item.
  * This item should be given settings items to use as form fields.
  * 
- * @class Form
+ * @class Chatterbox.Settings.Item.Form
  * @constructor
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
@@ -3718,7 +4382,7 @@ Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 /**
  * Base class for form fields.
  * 
- * @class Field
+ * @class Chatterbox.Settings.Item.Form.Field
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -3800,7 +4464,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 /**
  * Form radio field.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Form.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -3889,7 +4553,7 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 /**
  * Form checkbox field.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Form.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -3969,7 +4633,7 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 /**
  * Form colour field.
  * 
- * @class Colour
+ * @class Chatterbox.Settings.Item.Form.Colour
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4011,7 +4675,7 @@ Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
 /**
  * Radio box item.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4056,7 +4720,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4107,7 +4771,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Items
+ * @class Chatterbox.Settings.Item.Items
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -4413,7 +5077,14 @@ Chatterbox.template.clean = function( keys ) {
  * @property ui
  * @type String
  */
-Chatterbox.template.ui = '<div class="pager"></div>\
+Chatterbox.template.ui = '<div class="soundbank">\
+            <audio class="click">\
+                <source src="{media}click.ogg" type="audio/ogg">\
+                <source src="{media}click.mp3" type="audio/mpeg">\
+            </audio>\
+        </div>\
+        <div class="pager">\
+        </div>\
         <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
@@ -4446,6 +5117,8 @@ Chatterbox.template.control = '<div class="chatcontrol">\
 
 Chatterbox.template.brow_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 Chatterbox.template.brow_state = '<li id="{ref}">{label}</li>';
+
+Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="button{icon}">{label}</a></li>';
 
 /**
  * HTML for a channel tab.
@@ -4586,15 +5259,17 @@ Chatterbox.template.pager = {
             <div class="content">\
                 <h3>{heading}</h3>\
                 <p>{content}</p>\
+                <footer class="buttons"></footer>\
             </div>\
             </div>'
+    },
+    button: {
+        frame: '<a href="#{target}" title="{title}" id="{ref}" class="button text">{label}</a>'
     }
 };
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\

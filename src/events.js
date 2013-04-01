@@ -8,6 +8,13 @@
  * @class EventEmitter
  * @constructor
  **/
+
+/**
+ * Event emitter object emits events and stuff.
+ * 
+ * @class EventEmitter
+ * @constructor
+ */
 function EventEmitter() {
     var events = {}, self = this;
 

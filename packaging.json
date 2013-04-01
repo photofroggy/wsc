@@ -26,6 +26,7 @@
                 "src/cryptomd5.js",
                 "src/transport.js",
                 "src/lib.js",
+                "src/middleware.js",
                 "src/storage.js",
                 "src/packet.js",
                 "src/channel.js",
@@ -37,7 +38,6 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "src/control.js",
                 "dist/chatterbox.js",
                 "src/wsc.js"
             ]
@@ -51,6 +51,7 @@
                 "src/cryptomd5.js",
                 "src/transport.js",
                 "src/lib.js",
+                "src/middleware.js",
                 "src/storage.js",
                 "src/packet.js",
                 "src/channel.js",
@@ -62,7 +63,6 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "src/control.js",
                 "dist/chatterbox.js",
                 "dist/dAmn.js",
                 "src/wsc.js"
@@ -79,5 +79,5 @@
             "files": "css/wsc.scss"
         }
     ],
-    "post": ["./mvlh"]
+    "post": ["./mvlh", "./doctq"]
 }

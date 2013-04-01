@@ -107,26 +107,11 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
-                    settings.emotes.notice = new Chatterbox.Popup( client.ui, {
-                        'title': 'Emotes',
-                        'content': 'Custom emoticons loaded!'
-                    } );
-                    settings.emotes.notice.build();
-                    settings.emotes.notice.window.css({
-                        'bottom': 60,
-                        'right': 50
-                    });
-                    setTimeout( function(  ) {
-                        if( settings.emotes.notice == null )
-                            return;
-                        settings.emotes.notice.window.fadeOut(
-                            'slow',
-                            function(  ) {
-                                settings.emotes.notice.window.remove();
-                                settings.emotes.notice = null;
-                            }
-                        );
-                    }, 5000 );
+                    client.ui.pager.notice({
+                        'ref': 'emotes-loaded',
+                        'heading': 'Emote CLOUD',
+                        'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
+                    }, false, 5000, true);
                 }
             }
             
@@ -141,26 +126,37 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         });
     };
     
-    settings.emotes.swap = function( e ) {
+    settings.emotes.swap = function( data, done ) {
     
-        if( !settings.emotes.on )
+        if( !settings.emotes.on ) {
+            done( data );
             return;
+        }
         
-        var fec = -1;
-        for( var code in settings.emotes.emote ) {
+        var codes = data.input.match(/:([\S]+):/g);
+        var code = '';
+        var ci = -1;
+        
+        var fcs = function( em ) {
+            return em != codes[ci];
+        };
+        
+        for( ci in codes ) {
+            
+            code = codes[ci];
+            codes = codes.filter( fcs );
+            
             if( !settings.emotes.emote.hasOwnProperty(code) )
                 continue;
-            fec = e.input.indexOf(code);
-            if( fec == -1 )
-                continue;
             
-            e.input = replaceAll(
-                e.input, code,
+            data.input = replaceAll(
+                data.input, code,
                 ':thumb' + settings.emotes.emote[code]['devid'] + ':'
             );
         }
         
-        e.input = replaceAll( e.input, ':B', ':bucktooth:' );
+        data.input = replaceAll( data.input, ':B', ':bucktooth:' );
+        done( data );
     
     };
     
@@ -258,10 +254,10 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         );
     };
     
-    client.bind('send.msg.before', settings.emotes.swap);
-    client.bind('send.action.before', settings.emotes.swap);
-    client.bind('send.kick.before', settings.emotes.swap);
-    client.bind('send.set.before', settings.emotes.swap);
+    client.middle('send.msg', settings.emotes.swap);
+    client.middle('send.action', settings.emotes.swap);
+    client.middle('send.kick', settings.emotes.swap);
+    client.middle('send.set', settings.emotes.swap);
     
     if( !settings.emotes.on )
         return;
