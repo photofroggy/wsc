@@ -251,6 +251,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = '', val = '';
+        
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:

@@ -91,7 +91,9 @@ _doProcessBlock:function(g,k){for(var b=0;16>b;b++){var h=k+b,w=g[h];g[h]=(w<<8|
 c=p(c,d,e,f,v,7,a[8]),f=p(f,c,d,e,x,12,a[9]),e=p(e,f,c,d,y,17,a[10]),d=p(d,e,f,c,z,22,a[11]),c=p(c,d,e,f,A,7,a[12]),f=p(f,c,d,e,B,12,a[13]),e=p(e,f,c,d,C,17,a[14]),d=p(d,e,f,c,D,22,a[15]),c=m(c,d,e,f,w,5,a[16]),f=m(f,c,d,e,t,9,a[17]),e=m(e,f,c,d,z,14,a[18]),d=m(d,e,f,c,h,20,a[19]),c=m(c,d,e,f,s,5,a[20]),f=m(f,c,d,e,y,9,a[21]),e=m(e,f,c,d,D,14,a[22]),d=m(d,e,f,c,r,20,a[23]),c=m(c,d,e,f,x,5,a[24]),f=m(f,c,d,e,C,9,a[25]),e=m(e,f,c,d,q,14,a[26]),d=m(d,e,f,c,v,20,a[27]),c=m(c,d,e,f,B,5,a[28]),f=m(f,c,
 d,e,j,9,a[29]),e=m(e,f,c,d,u,14,a[30]),d=m(d,e,f,c,A,20,a[31]),c=l(c,d,e,f,s,4,a[32]),f=l(f,c,d,e,v,11,a[33]),e=l(e,f,c,d,z,16,a[34]),d=l(d,e,f,c,C,23,a[35]),c=l(c,d,e,f,w,4,a[36]),f=l(f,c,d,e,r,11,a[37]),e=l(e,f,c,d,u,16,a[38]),d=l(d,e,f,c,y,23,a[39]),c=l(c,d,e,f,B,4,a[40]),f=l(f,c,d,e,h,11,a[41]),e=l(e,f,c,d,q,16,a[42]),d=l(d,e,f,c,t,23,a[43]),c=l(c,d,e,f,x,4,a[44]),f=l(f,c,d,e,A,11,a[45]),e=l(e,f,c,d,D,16,a[46]),d=l(d,e,f,c,j,23,a[47]),c=n(c,d,e,f,h,6,a[48]),f=n(f,c,d,e,u,10,a[49]),e=n(e,f,c,d,
 C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53]),e=n(e,f,c,d,y,15,a[54]),d=n(d,e,f,c,w,21,a[55]),c=n(c,d,e,f,v,6,a[56]),f=n(f,c,d,e,D,10,a[57]),e=n(e,f,c,d,t,15,a[58]),d=n(d,e,f,c,B,21,a[59]),c=n(c,d,e,f,r,6,a[60]),f=n(f,c,d,e,z,10,a[61]),e=n(e,f,c,d,j,15,a[62]),d=n(d,e,f,c,x,21,a[63]);b[0]=b[0]+c|0;b[1]=b[1]+d|0;b[2]=b[2]+e|0;b[3]=b[3]+f|0},_doFinalize:function(){var a=this._data,k=a.words,b=8*this._nDataBytes,h=8*a.sigBytes;k[h>>>5]|=128<<24-h%32;var l=s.floor(b/
-4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);/**
+4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);
+
+/**
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
@@ -1772,6 +1774,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = '', val = '';
+        
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:
@@ -2420,7 +2424,7 @@ wsc.defaults.Extension = function( client ) {
      */
     var cmd = {};
     
-    var cmd.theme = function( e, client) {
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(' ').shift());
     };
         
@@ -2431,7 +2435,7 @@ wsc.defaults.Extension = function( client ) {
      * @method cmd.setter
      * @param cmd {Object} Command event data.
      */
-    var cmd.setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(' ');
         var setting = data.shift().toLowerCase();
         var data = data.join(' ');
@@ -2455,12 +2459,12 @@ wsc.defaults.Extension = function( client ) {
      * This command allows the user to force the client to connect to the server.
      * @method cmd.connection
      */
-    var cmd.connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     // Join a channel
-    var cmd.join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2475,7 +2479,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Join a channel
-    var cmd.pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2490,7 +2494,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Leave a channel
-    var cmd.part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(' ');
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -2505,18 +2509,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Set the title
-    var cmd.title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     // Promote or demote user
-    var cmd.chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(' ');
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     // Ban user
-    var cmd.ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(' ');
         var user = args.shift();
         var cmd = e.cmd;
@@ -2527,17 +2531,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send a /me action thingy.
-    var cmd.action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     // Send a raw packet.
-    var cmd.raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
     
     // Kick or kill someone.
-    var cmd.killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(' ');
         var u = d.shift();
         var r = d.length > 0 ? d.join(' ') : null;
@@ -2548,18 +2552,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Say something.
-    var cmd.say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     // Say something without emotes and shit. Zomg.
-    var cmd.npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     // Clear the channel's log.
-    var cmd.clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length > 0 ) {
             var users = e.args.split(' ');
             for( var i in users ) {
@@ -2573,7 +2577,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Clear all channel logs.
-    var cmd.clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length > 0 ) {
@@ -2594,28 +2598,28 @@ wsc.defaults.Extension = function( client ) {
         client.each_channel( method, true );
     };
     
-    var cmd.close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.
-    var cmd.whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
     };
     
     // Send an admin packet.
-    var cmd.admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     // Send an disconnect packet.
-    var cmd.disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     // Get the title or topic.
-    var cmd.gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };

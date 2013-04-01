@@ -179,7 +179,7 @@ wsc.defaults.Extension = function( client ) {
      */
     var cmd = {};
     
-    var cmd.theme = function( e, client) {
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(' ').shift());
     };
         
@@ -190,7 +190,7 @@ wsc.defaults.Extension = function( client ) {
      * @method cmd.setter
      * @param cmd {Object} Command event data.
      */
-    var cmd.setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(' ');
         var setting = data.shift().toLowerCase();
         var data = data.join(' ');
@@ -214,12 +214,12 @@ wsc.defaults.Extension = function( client ) {
      * This command allows the user to force the client to connect to the server.
      * @method cmd.connection
      */
-    var cmd.connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     // Join a channel
-    var cmd.join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -234,7 +234,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Join a channel
-    var cmd.pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -249,7 +249,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Leave a channel
-    var cmd.part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(' ');
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -264,18 +264,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Set the title
-    var cmd.title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     // Promote or demote user
-    var cmd.chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(' ');
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     // Ban user
-    var cmd.ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(' ');
         var user = args.shift();
         var cmd = e.cmd;
@@ -286,17 +286,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send a /me action thingy.
-    var cmd.action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     // Send a raw packet.
-    var cmd.raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
     
     // Kick or kill someone.
-    var cmd.killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(' ');
         var u = d.shift();
         var r = d.length > 0 ? d.join(' ') : null;
@@ -307,18 +307,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Say something.
-    var cmd.say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     // Say something without emotes and shit. Zomg.
-    var cmd.npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     // Clear the channel's log.
-    var cmd.clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length > 0 ) {
             var users = e.args.split(' ');
             for( var i in users ) {
@@ -332,7 +332,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Clear all channel logs.
-    var cmd.clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length > 0 ) {
@@ -353,28 +353,28 @@ wsc.defaults.Extension = function( client ) {
         client.each_channel( method, true );
     };
     
-    var cmd.close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.
-    var cmd.whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
     };
     
     // Send an admin packet.
-    var cmd.admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     // Send an disconnect packet.
-    var cmd.disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     // Get the title or topic.
-    var cmd.gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
         client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
