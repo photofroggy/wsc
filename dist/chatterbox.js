@@ -978,7 +978,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
