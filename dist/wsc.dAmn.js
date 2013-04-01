@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.17.79';
+Chatterbox.VERSION = '0.17.80';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4878,7 +4878,10 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        topic: null                 //      Topic
+        h: {                        // Head
+            title: null,            //      Title
+            topic: null             //      Topic
+        }
     };
     this.mulw = 0;
     // Dimensions...
@@ -4887,16 +4890,6 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         h: {                        // Header
             title: [0, 0],          //      Title [ width, height ]
             topic: [0, 0]           //      Topic [ width, height ]
-        }
-    };
-    this.head = {
-        title: {
-            text: '',
-            html: ''
-        },
-        topic: {
-            text: '',
-            html: ''
         }
     };
 
@@ -4988,8 +4981,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     h.s = this.el.m.find('header.' + head + ' a[href=#save]');
     h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    if( head == 'topic' )
-        this.topic = h.m;
+    this.el.h[head] = h.m;
     
     h.m.parent().mouseover( function( e ) {
         if( !h.editing ) {
@@ -5010,14 +5002,14 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     h.e.click( function( e ) {
-        h.t.text(chan.head[head].text);
+        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
         
         h.t.css({
             'display': 'block',
-            'width': h.m.innerWidth() - 10,
+            'width': chan.el.h[head].innerWidth() - 10,
         });
         
-        h.m.css('display', 'none');
+        chan.el.h[head].css('display', 'none');
         h.e.css('display', 'none');
         h.editing = true;
         
@@ -5030,7 +5022,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         var val = h.t.val();
         h.t.text('');
         h.t.css('display', 'none');
-        h.m.css('display', 'block');
+        chan.el.h[head].css('display', 'block');
         h.s.css('display', 'none');
         h.c.css('display', 'none');
         h.editing = false;
@@ -5141,7 +5133,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -5210,11 +5202,11 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.u.css({height: this.d.u[1]});
     
     // Make sure edit buttons are in the right place.
-    for( var head in this.head ) {
-        if( !this.head.hasOwnProperty( head ) )
+    for( var head in heads ) {
+        if( !heads[head].m.hasOwnProperty( head ) )
             continue;
         
-        if( this.head[head].text.length == 0 )
+        if( heads[head].m.html().length == 0 )
             continue;
         
         var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
@@ -5508,43 +5500,34 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 
 /**
  * Set the channel header.
+ * 
  * This can be the title or topic, determined by `head`.
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {String} HTML to use for the header.
+ * @param content {Object} Content for the header.
  */
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
+    
     head = head.toLowerCase();
+    var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
     
-    this.head[head].text = content.text();
-    this.head[head].html = content.html();
-    var h = {};
-    h.m = this.el.m.find( 'header div.' + head );
-    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    
-    h.m.replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
-    );
-    
-    h.m = this.el.m.find('header div.' + head);
-    
-    if( head == 'topic' )
-        this.topic = h.m;
+    this.el.h[head].html(content.html());
     
     var chan = this;
     
     setTimeout( function(  ) {
-        if( chan.head[head].text.length > 0 ) {
-            h.m.css( { display: 'block' } );
-            var tline = (h.m.outerHeight(true) - 5) * (-1);
-            h.e.css('top', tline);
+        if( content.text().length > 0 ) {
+            chan.el.h[head].css( { display: 'block' } );
+            var tline = (chan.el.h[head].outerHeight(true) - 5) * (-1);
+            edit.css('top', tline);
         } else {
-            h.m.css( { display: 'none' } );
+            chan.el.h[head].css( { display: 'none' } );
         }
             
         chan.resize();
     }, 100 );
+    
 };
 
 /**
