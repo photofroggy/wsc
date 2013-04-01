@@ -555,13 +555,18 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
         return this.settings.theme;
+    
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
             return this.settings.theme;
     }
+    
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    
+    this.trigger('theme.set', { name: 'theme.set', theme: theme });
+    
     return this.settings.theme;
 };
 
