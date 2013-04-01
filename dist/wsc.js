@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.6.29';
+wsc.VERSION = '1.6.30';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.20.114';
+wsc.REVISION = '0.20.115';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn', 'wsct_dark' ];
@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.17.80';
+Chatterbox.VERSION = '0.18.81';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4808,13 +4808,18 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
         return this.settings.theme;
+    
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
             return this.settings.theme;
     }
+    
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    
+    this.trigger('theme.set', { name: 'theme.set', theme: theme });
+    
     return this.settings.theme;
 };
 
