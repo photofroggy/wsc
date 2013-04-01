@@ -2150,7 +2150,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 568,
+            "line": 573,
             "description": "Add a new theme to the client.",
             "itemtype": "method",
             "name": "add_theme",
@@ -2166,7 +2166,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 583,
+            "line": 588,
             "description": "Toggle developer mode for the UI.",
             "itemtype": "method",
             "name": "developer",

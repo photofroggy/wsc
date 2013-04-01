@@ -121,7 +121,7 @@
  *&#x2F;
 var Chatterbox = {};
 
-Chatterbox.VERSION = &#x27;0.17.80&#x27;;
+Chatterbox.VERSION = &#x27;0.18.81&#x27;;
 Chatterbox.STATE = &#x27;beta&#x27;;
 
 &#x2F;**
@@ -144,7 +144,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        &#x27;themes&#x27;: [&#x27;wsct_default&#x27;, &#x27;wsct_dAmn&#x27;],
+        &#x27;themes&#x27;: [&#x27;wsct_default&#x27;, &#x27;wsct_dAmn&#x27;, &#x27;wsct_dark&#x27;],
         &#x27;theme&#x27;: &#x27;wsct_default&#x27;,
         &#x27;monitor&#x27;: [&#x27;~Monitor&#x27;, true],
         &#x27;username&#x27;: &#x27;&#x27;,
@@ -671,13 +671,18 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
         return this.settings.theme;
+    
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = &#x27;wsct_&#x27; + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
             return this.settings.theme;
     }
+    
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    
+    this.trigger(&#x27;theme.set&#x27;, { name: &#x27;theme.set&#x27;, theme: theme });
+    
     return this.settings.theme;
 };
 
