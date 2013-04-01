@@ -124,6 +124,8 @@
     $pu-h-bgi: #D3EDFF,
     $pu-h-bgsl: #55A5DB,
     $pu-h-bgbg: #406D8B,
+    $pu-t: #960101,
+    $pu-ta: #960101,
     $settings-color: #3E7A88,
     $settings-outer-border: #0D4D69,
     $settings-inner-border: #0D4D69,
@@ -444,6 +446,7 @@
         div.inner {
             background-color: $chrome;
             border-color: $settings-outer-border;
+            color: $chrome-color;
         }
         
         h2 {
@@ -460,14 +463,17 @@
                         border-color: $settings-inner-border;
                         border-radius: 0;
                         background-color: $heading-bg;
+                        color: $pu-t;
                     }
                     .active .tab {
                         background-color: $log-bg;
+                        color: $pu-ta;
                     }
                 }
                 div.book {
                     background-color: $log-bg;
                     border-color: $settings-inner-border;
+                    color: $settings-color;
                     div.page {
                         .item {
                             border-color: $settings-item-border;
