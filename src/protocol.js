@@ -305,9 +305,9 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  * Render a protocol message in the given format.
  * 
  * @method render
- * @param format {String} Format to render the event in.
- * @param event {Object} Event data.
- * @return {String} Rendered event.
+ * @param format {String} Format to render the event in
+ * @param event {Object} Event data
+ * @return {String} Rendered event
  */
 wsc.Protocol.prototype.render = function( event, format ) {
 

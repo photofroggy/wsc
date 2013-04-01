@@ -1,5 +1,6 @@
 /**
- * dAmn module lolol.
+ * This module holds the dAmn extension.
+ *
  * 
  * @module wsc
  * @submodule dAmn
