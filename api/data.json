@@ -5286,24 +5286,42 @@
         },
         {
             "file": "src/commands.js",
-            "line": 178,
-            "itemtype": "method",
-            "name": "setter",
-            "cmd": "set set configuration options\nThis command allows the user to change the settings for the client through\nthe input box.",
+            "line": 174,
+            "description": "Holds all of the command handling methods.",
+            "itemtype": "property",
+            "name": "cmd",
+            "type": "Object",
             "class": "wsc.defaults.Extension",
             "module": "wsc"
         },
         {
             "file": "src/commands.js",
-            "line": 204,
+            "line": 186,
+            "description": "This command allows the user to change the settings for the client through\nthe input box.",
             "itemtype": "method",
-            "name": "connect\nThis command allows the user to force the client to connect to the server.",
+            "name": "cmd.setter",
+            "params": [
+                {
+                    "name": "cmd",
+                    "description": "Command event data.",
+                    "type": "Object"
+                }
+            ],
             "class": "wsc.defaults.Extension",
             "module": "wsc"
         },
         {
             "file": "src/commands.js",
-            "line": 441,
+            "line": 213,
+            "description": "This command allows the user to force the client to connect to the server.",
+            "itemtype": "method",
+            "name": "cmd.connection",
+            "class": "wsc.defaults.Extension",
+            "module": "wsc"
+        },
+        {
+            "file": "src/commands.js",
+            "line": 450,
             "description": "Implements the ignore feature.",
             "itemtype": "method",
             "name": "Ignore",
@@ -5312,7 +5330,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 448,
+            "line": 457,
             "description": "Implements away messages.",
             "itemtype": "method",
             "name": "Away",
@@ -5321,7 +5339,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 455,
+            "line": 464,
             "description": "Implements autojoin channels.",
             "itemtype": "method",
             "name": "Autojoin",
@@ -5907,24 +5925,24 @@
         },
         {
             "file": "src/protocol.js",
-            "line": 304,
+            "line": 306,
             "description": "Render a protocol message in the given format.",
             "itemtype": "method",
             "name": "render",
             "params": [
                 {
                     "name": "format",
-                    "description": "Format to render the event in.",
+                    "description": "Format to render the event in",
                     "type": "String"
                 },
                 {
                     "name": "event",
-                    "description": "Event data.",
+                    "description": "Event data",
                     "type": "Object"
                 }
             ],
             "return": {
-                "description": "Rendered event.",
+                "description": "Rendered event",
                 "type": "String"
             },
             "class": "wsc.Protocol",
@@ -6321,18 +6339,6 @@
         {
             "message": "unknown tag: remove_notice",
             "line": " src/ui/pager.js:113"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/commands.js:178"
-        },
-        {
-            "message": "unknown tag: cmd",
-            "line": " src/commands.js:178"
-        },
-        {
-            "message": "replacing incorrect tag: function with method",
-            "line": " src/commands.js:204"
         },
         {
             "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",

@@ -137,34 +137,34 @@ wsc.defaults.Extension = function( client ) {
     
     var init = function(  ) {
         &#x2F;&#x2F; Commands.
-        client.bind(&#x27;cmd.connect&#x27;, cmd_connection );
-        client.bind(&#x27;cmd.set&#x27;, cmd_setter );
+        client.bind(&#x27;cmd.connect&#x27;, cmd.connection );
+        client.bind(&#x27;cmd.set&#x27;, cmd.setter );
         
         &#x2F;&#x2F; standard dAmn commands.
-        client.bind(&#x27;cmd.join&#x27;, cmd_join );
-        client.bind(&#x27;cmd.chat&#x27;, cmd_pjoin );
-        client.bind(&#x27;cmd.part&#x27;, cmd_part );
+        client.bind(&#x27;cmd.join&#x27;, cmd.join );
+        client.bind(&#x27;cmd.chat&#x27;, cmd.pjoin );
+        client.bind(&#x27;cmd.part&#x27;, cmd.part );
         &#x2F;&#x2F; send ...
-        client.bind(&#x27;cmd.say&#x27;, cmd_say );
-        client.bind(&#x27;cmd.npmsg&#x27;, cmd_npmsg );
-        client.bind(&#x27;cmd.me&#x27;, cmd_action );
-        client.bind(&#x27;cmd.promote&#x27;, cmd_chgpriv );
-        client.bind(&#x27;cmd.demote&#x27;, cmd_chgpriv );
-        client.bind(&#x27;cmd.ban&#x27;, cmd_ban );
-        client.bind(&#x27;cmd.unban&#x27;, cmd_ban );
-        client.bind(&#x27;cmd.kick&#x27;, cmd_killk );
-        &#x2F;&#x2F;client.bind(&#x27;cmd.get&#x27;, cmd_get );
-        client.bind(&#x27;cmd.whois&#x27;, cmd_whois );
-        client.bind(&#x27;cmd.title&#x27;, cmd_title );
-        client.bind(&#x27;cmd.topic&#x27;, cmd_title );
-        client.bind(&#x27;cmd.admin&#x27;, cmd_admin );
-        client.bind(&#x27;cmd.disconnect&#x27;, cmd_connection );
-        client.bind(&#x27;cmd.kill&#x27;, cmd_killk );
-        client.bind(&#x27;cmd.raw&#x27;, cmd_raw );
+        client.bind(&#x27;cmd.say&#x27;, cmd.say );
+        client.bind(&#x27;cmd.npmsg&#x27;, cmd.npmsg );
+        client.bind(&#x27;cmd.me&#x27;, cmd.action );
+        client.bind(&#x27;cmd.promote&#x27;, cmd.chgpriv );
+        client.bind(&#x27;cmd.demote&#x27;, cmd.chgpriv );
+        client.bind(&#x27;cmd.ban&#x27;, cmd.ban );
+        client.bind(&#x27;cmd.unban&#x27;, cmd.ban );
+        client.bind(&#x27;cmd.kick&#x27;, cmd.killk );
+        &#x2F;&#x2F;client.bind(&#x27;cmd.get&#x27;, cmd.get );
+        client.bind(&#x27;cmd.whois&#x27;, cmd.whois );
+        client.bind(&#x27;cmd.title&#x27;, cmd.title );
+        client.bind(&#x27;cmd.topic&#x27;, cmd.title );
+        client.bind(&#x27;cmd.admin&#x27;, cmd.admin );
+        client.bind(&#x27;cmd.disconnect&#x27;, cmd.connection );
+        client.bind(&#x27;cmd.kill&#x27;, cmd.killk );
+        client.bind(&#x27;cmd.raw&#x27;, cmd.raw );
         
-        client.bind(&#x27;cmd.clear&#x27;, cmd_clear );
-        client.bind(&#x27;cmd.clearall&#x27;, cmd_clearall );
-        client.bind(&#x27;cmd.close&#x27;, cmd_close );
+        client.bind(&#x27;cmd.clear&#x27;, cmd.clear );
+        client.bind(&#x27;cmd.clearall&#x27;, cmd.clearall );
+        client.bind(&#x27;cmd.close&#x27;, cmd.close );
         
         client.bind(&#x27;pkt.property&#x27;, pkt_property );
         client.bind(&#x27;pkt.recv_admin_show&#x27;, pkt_admin_show );
@@ -173,11 +173,11 @@ wsc.defaults.Extension = function( client ) {
         
         
         &#x2F;&#x2F; Non-standard commands.
-        client.bind(&#x27;cmd.gettitle&#x27;, cmd_gett);
-        client.bind(&#x27;cmd.gettopic&#x27;, cmd_gett);
+        client.bind(&#x27;cmd.gettitle&#x27;, cmd.gett);
+        client.bind(&#x27;cmd.gettopic&#x27;, cmd.gett);
         
         &#x2F;&#x2F; lol themes
-        client.bind(&#x27;cmd.theme&#x27;, cmd_theme);
+        client.bind(&#x27;cmd.theme&#x27;, cmd.theme);
         &#x2F;&#x2F; some ui business.
         client.ui.on(&#x27;settings.open&#x27;, settings_page);
         client.ui.on(&#x27;settings.open.ran&#x27;, about_page);
@@ -285,17 +285,26 @@ wsc.defaults.Extension = function( client ) {
     
     };
     
-    var cmd_theme = function( e, client) {
+    &#x2F;**
+     * Holds all of the command handling methods.
+     * 
+     * @property cmd
+     * @type Object
+     *&#x2F;
+    var cmd = {};
+    
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(&#x27; &#x27;).shift());
     };
         
     &#x2F;**
-     * @function setter
-     * @cmd set set configuration options
      * This command allows the user to change the settings for the client through
      * the input box.
+     * 
+     * @method cmd.setter
+     * @param cmd {Object} Command event data.
      *&#x2F;
-    var cmd_setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(&#x27; &#x27;);
         var setting = data.shift().toLowerCase();
         var data = data.join(&#x27; &#x27;);
@@ -316,15 +325,15 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;**
-     * @function connect
      * This command allows the user to force the client to connect to the server.
+     * @method cmd.connection
      *&#x2F;
-    var cmd_connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     &#x2F;&#x2F; Join a channel
-    var cmd_join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(&#x27; &#x27;);
         var chans = chans.toString() == &#x27;&#x27; ? [] : chans;
         
@@ -339,7 +348,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Join a channel
-    var cmd_pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(&#x27; &#x27;);
         var chans = chans.toString() == &#x27;&#x27; ? [] : chans;
         
@@ -354,7 +363,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Leave a channel
-    var cmd_part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(&#x27; &#x27;);
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -369,18 +378,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Set the title
-    var cmd_title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     &#x2F;&#x2F; Promote or demote user
-    var cmd_chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(&#x27; &#x27;);
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     &#x2F;&#x2F; Ban user
-    var cmd_ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(&#x27; &#x27;);
         var user = args.shift();
         var cmd = e.cmd;
@@ -391,17 +400,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Send a &#x2F;me action thingy.
-    var cmd_action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     &#x2F;&#x2F; Send a raw packet.
-    var cmd_raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(&#x2F;\\n&#x2F;gm, &quot;\n&quot;) );
     };
     
     &#x2F;&#x2F; Kick or kill someone.
-    var cmd_killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(&#x27; &#x27;);
         var u = d.shift();
         var r = d.length &gt; 0 ? d.join(&#x27; &#x27;) : null;
@@ -412,18 +421,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Say something.
-    var cmd_say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     &#x2F;&#x2F; Say something without emotes and shit. Zomg.
-    var cmd_npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     &#x2F;&#x2F; Clear the channel&#x27;s log.
-    var cmd_clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length &gt; 0 ) {
             var users = e.args.split(&#x27; &#x27;);
             for( var i in users ) {
@@ -437,7 +446,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     &#x2F;&#x2F; Clear all channel logs.
-    var cmd_clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length &gt; 0 ) {
@@ -458,28 +467,28 @@ wsc.defaults.Extension = function( client ) {
         client.each_channel( method, true );
     };
     
-    var cmd_close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     &#x2F;&#x2F; Send a whois thingy.
-    var cmd_whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(&#x27; &#x27;)[0] );
     };
     
     &#x2F;&#x2F; Send an admin packet.
-    var cmd_admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     &#x2F;&#x2F; Send an disconnect packet.
-    var cmd_disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     &#x2F;&#x2F; Get the title or topic.
-    var cmd_gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf(&#x27;title&#x27;) &gt; -1 ? &#x27;title&#x27; : &#x27;topic&#x27;;
         client.control.ui.set_text(&#x27;&#x2F;&#x27; + which + &#x27; &#x27; + client.channel(event.target).info[which].content);
     };

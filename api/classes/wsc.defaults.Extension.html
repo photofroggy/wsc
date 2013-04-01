@@ -209,6 +209,8 @@
             <li id="methods" class="active"><a href="#methods">Methods</a></li>
         
         
+            <li id="properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -242,9 +244,16 @@
                         
                             
                             <li class="index-item method">
-                                <a href="#method_connect
-This command allows the user to force the client to connect to the server.">connect
-This command allows the user to force the client to connect to the server.</a>
+                                <a href="#method_cmd.connection">cmd.connection</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_cmd.setter">cmd.setter</a>
 
                                 
                                 
@@ -260,19 +269,24 @@ This command allows the user to force the client to connect to the server.</a>
                             </li>
                             
                         
-                            
-                            <li class="index-item method">
-                                <a href="#method_setter">setter</a>
-
-                                
-                                
-                            </li>
-                            
-                        
                     </ul>
                 </div>
             
 
+            
+                <div class="index properties">
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_cmd">cmd</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
             
 
             
@@ -320,7 +334,7 @@ This command allows the user to force the client to connect to the server.</a>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_commands.js.html#l455"><code>src&#x2F;commands.js:455</code></a>
+        <a href="..&#x2F;files&#x2F;src_commands.js.html#l464"><code>src&#x2F;commands.js:464</code></a>
         
         </p>
 
@@ -383,7 +397,7 @@ This command allows the user to force the client to connect to the server.</a>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_commands.js.html#l448"><code>src&#x2F;commands.js:448</code></a>
+        <a href="..&#x2F;files&#x2F;src_commands.js.html#l457"><code>src&#x2F;commands.js:457</code></a>
         
         </p>
 
@@ -411,12 +425,10 @@ This command allows the user to force the client to connect to the server.</a>
 
                 
                     
-<div id="method_connect
-This command allows the user to force the client to connect to the server." class="method item">
+<div id="method_cmd.connection" class="method item">
     <header>
         <section class="signature">
-            <h3><code>connect
-This command allows the user to force the client to connect to the server.</code></h3>
+            <h3><code>cmd.connection</code></h3>
 
         
             <span class="paren">()</span>
@@ -448,7 +460,7 @@ This command allows the user to force the client to connect to the server.</code
             
         
         
-        <a href="..&#x2F;files&#x2F;src_commands.js.html#l204"><code>src&#x2F;commands.js:204</code></a>
+        <a href="..&#x2F;files&#x2F;src_commands.js.html#l213"><code>src&#x2F;commands.js:213</code></a>
         
         </p>
 
@@ -460,7 +472,108 @@ This command allows the user to force the client to connect to the server.</code
     </header>
     <section class="body">
     
+    <section class="description">
+        <p>This command allows the user to force the client to connect to the server.</p>
+    </section>
+    
 
+    
+
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_cmd.setter" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>cmd.setter</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>cmd</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_commands.js.html#l186"><code>src&#x2F;commands.js:186</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>This command allows the user to change the settings for the client through
+the input box.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">cmd</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Command event data.</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
     
 
     
@@ -507,7 +620,7 @@ This command allows the user to force the client to connect to the server.</code
             
         
         
-        <a href="..&#x2F;files&#x2F;src_commands.js.html#l441"><code>src&#x2F;commands.js:441</code></a>
+        <a href="..&#x2F;files&#x2F;src_commands.js.html#l450"><code>src&#x2F;commands.js:450</code></a>
         
         </p>
 
@@ -534,68 +647,65 @@ This command allows the user to force the client to connect to the server.</code
 
 
                 
-                    
-<div id="method_setter" class="method item">
-    <header>
-        <section class="signature">
-            <h3><code>setter</code></h3>
-
-        
-            <span class="paren">()</span>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    </section>
-
-    <section class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_commands.js.html#l178"><code>src&#x2F;commands.js:178</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </section>
-    </header>
-    <section class="body">
-    
-
-    
-
-    
-
-    
-    </section>
-</div>
-
-
-                
             </div>
         
 
+        
+            <div id="properties" class="listing">
+
+                
+                    
+<div id="property_cmd" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>cmd</code></h3>
+            <span class="type">Object</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_commands.js.html#l174"><code>src&#x2F;commands.js:174</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>Holds all of the command handling methods.</p>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section>
+</div>
+
+                
+            </div>
         
 
         

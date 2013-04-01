@@ -365,6 +365,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = &#x27;&#x27;, val = &#x27;&#x27;;
+        
         switch(parseInt(i)) {
             &#x2F;&#x2F; e.&lt;map[event][0]&gt; = packet.param
             case 0:
@@ -419,9 +421,9 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  * Render a protocol message in the given format.
  * 
  * @method render
- * @param format {String} Format to render the event in.
- * @param event {Object} Event data.
- * @return {String} Rendered event.
+ * @param format {String} Format to render the event in
+ * @param event {Object} Event data
+ * @return {String} Rendered event
  *&#x2F;
 wsc.Protocol.prototype.render = function( event, format ) {
 
