@@ -446,6 +446,7 @@
         div.inner {
             background-color: $chrome;
             border-color: $settings-outer-border;
+            color: $chrome-color;
         }
         
         h2 {
@@ -472,6 +473,7 @@
                 div.book {
                     background-color: $log-bg;
                     border-color: $settings-inner-border;
+                    color: $settings-color;
                     div.page {
                         .item {
                             border-color: $settings-item-border;

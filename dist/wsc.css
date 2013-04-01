@@ -1730,6 +1730,7 @@ div.wsc.wsct_default div.floater.item-picker div.inner section.buttons .button.t
 div.wsc.wsct_default div.floater div.inner {
   background-color: #406d8b;
   border-color: #0d4d69;
+  color: #afd7f5;
 }
 div.wsc.wsct_default div.floater h2 {
   background: -webkit-linear-gradient(top, #d3edff 0%, #55a5db 5%, #406d8b 97%);
@@ -1756,6 +1757,7 @@ div.wsc.wsct_default div.floater.settings div.bookwrap nav.tabs .active .tab {
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book {
   background-color: #cedbe2;
   border-color: #0d4d69;
+  color: #3e7a88;
 }
 div.wsc.wsct_default div.floater.settings div.bookwrap div.book div.page .item {
   border-color: #8cb3c4;
@@ -2116,6 +2118,7 @@ div.wsc.wsct_dAmn div.floater.item-picker div.inner section.buttons .button.text
 div.wsc.wsct_dAmn div.floater div.inner {
   background-color: #d0dbd0;
   border-color: #858585;
+  color: #2c3635;
 }
 div.wsc.wsct_dAmn div.floater h2 {
   background: -webkit-linear-gradient(top, #f9fff9 0%, #e2f1e2 5%, #d0dbd0 97%);
@@ -2142,6 +2145,7 @@ div.wsc.wsct_dAmn div.floater.settings div.bookwrap nav.tabs .active .tab {
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book {
   background-color: #dce7dc;
   border-color: #9eaea0;
+  color: #515c52;
 }
 div.wsc.wsct_dAmn div.floater.settings div.bookwrap div.book div.page .item {
   border-color: #c3cac4;
@@ -2364,7 +2368,7 @@ div.wsc.wsct_dark div.chatwindow header div.title a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow header div.topic {
-  background-color: #6cbcc7;
+  background-color: #c3e0e4;
   border-color: #2a4e5a;
   color: #1b4949;
 }
@@ -2502,6 +2506,7 @@ div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text
 div.wsc.wsct_dark div.floater div.inner {
   background-color: #415b64;
   border-color: #3a5058;
+  color: #aac3c7;
 }
 div.wsc.wsct_dark div.floater h2 {
   background: -webkit-linear-gradient(top, #afbbbe 0%, #5e7c86 5%, #415b64 97%);
@@ -2528,6 +2533,7 @@ div.wsc.wsct_dark div.floater.settings div.bookwrap nav.tabs .active .tab {
 div.wsc.wsct_dark div.floater.settings div.bookwrap div.book {
   background-color: #b3d2df;
   border-color: #3a5058;
+  color: #515c52;
 }
 div.wsc.wsct_dark div.floater.settings div.bookwrap div.book div.page .item {
   border-color: #769caa;
@@ -2546,7 +2552,7 @@ div.wsc.wsct_dark div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #698b8b;
 }
 div.wsc.wsct_dark div.pager div.notice {
-  background-color: #6cbcc7;
+  background-color: #c3e0e4;
   border-color: #3a5058;
 }
 div.wsc.wsct_dark div.pager div.notice h3 {
