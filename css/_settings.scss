@@ -125,7 +125,7 @@
                         .radiobox, .checkbox {
                             overflow: hidden;
                             background-color: rgba(255, 255, 255, 0.85);
-                            border: 1px solid #B1B1B1;
+                            border: 1px solid rgba(0, 0, 0, 0.25);
                             float: left;
                             form {
                                 padding: 0px;
@@ -134,7 +134,7 @@
                         &.items {
                             div.items {
                                 background-color: rgba(255, 255, 255, 0.33);
-                                border: 1px solid #B1B1B1;
+                                border: 1px solid rgba(0, 0, 0, 0.25);
                                 padding: 2px 0px;
                             }
                             section {
@@ -154,7 +154,7 @@
                                     list-style: none;
                                     li {
                                         background-color: rgba(0, 0, 0, 0.07);
-                                        border: 1px solid #B1B1B1;
+                                        border: 1px solid rgba(0, 0, 0, 0.25);
                                         padding: 5px;
                                         margin-bottom: 5px;
                                         &:last-child {
@@ -195,7 +195,7 @@
                         &.boxed,
                         &.boxed-ff-indv form .fields .field {
                             background-color: rgba(255, 255, 255, 0.85);
-                            border: 1px solid #B1B1B1;
+                            border: 1px solid rgba(0, 0, 0, 0.25);
                         }
                         &.boxed-ff-indv form .fields .field {
                             padding: 5px;
