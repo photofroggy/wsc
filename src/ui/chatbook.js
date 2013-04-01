@@ -44,7 +44,6 @@ Chatterbox.Chatbook.prototype.width = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
     var width = this.view.innerWidth();
     
     for( select in this.chan ) {

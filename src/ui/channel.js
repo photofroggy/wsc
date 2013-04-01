@@ -32,24 +32,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
+        topic: null                 //      Topic
     };
     this.mulw = 0;
     // Dimensions...
@@ -152,41 +135,45 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    if( head == 'topic' )
+        this.topic = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.head[head].text);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': h.m.innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        h.m.css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -194,13 +181,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        h.m.css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -209,7 +196,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -217,11 +204,11 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
@@ -308,7 +295,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -326,6 +313,18 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * @method resize
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
     height = height || this.manager.chatbook.height();
@@ -350,7 +349,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -372,8 +371,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
         if( this.head[head].text.length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -674,22 +673,28 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.head[head].text = content.text();
     this.head[head].html = content.html();
+    var h = {};
+    h.m = this.el.m.find( 'header div.' + head );
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
     
-    this.el.h[head].m.replaceWith(
+    h.m.replaceWith(
         Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
     );
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    h.m = this.el.m.find('header div.' + head);
+    
+    if( head == 'topic' )
+        this.topic = h.m;
     
     var chan = this;
     
     setTimeout( function(  ) {
         if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+            h.m.css( { display: 'block' } );
+            var tline = (h.m.outerHeight(true) - 5) * (-1);
+            h.e.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            h.m.css( { display: 'none' } );
         }
             
         chan.resize();

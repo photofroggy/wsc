@@ -13,7 +13,7 @@
 wsc.Storage = function( namespace, parent ) {
 
     /**
-     * The namaespace for this storage object.
+     * The namespace for this storage object.
      * 
      * @property namespace
      * @type String
