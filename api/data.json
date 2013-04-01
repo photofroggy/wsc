@@ -2175,7 +2175,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 59,
+            "line": 52,
             "description": "Draw channel on screen and store the different elements in attributes.",
             "itemtype": "method",
             "name": "build",
@@ -2184,7 +2184,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 130,
+            "line": 123,
             "description": "Set up a header so it can be edited in the UI.",
             "itemtype": "method",
             "name": "setup_header",
@@ -2193,7 +2193,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 218,
+            "line": 210,
             "description": "Hide the channel from view.",
             "itemtype": "method",
             "name": "hide",
@@ -2202,7 +2202,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 229,
+            "line": 221,
             "description": "Display the channel.",
             "itemtype": "method",
             "name": "show",
@@ -2211,7 +2211,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 247,
+            "line": 239,
             "description": "Display or hide the tab based on whether we are in developer mode or not.",
             "itemtype": "method",
             "name": "developer",
@@ -2220,7 +2220,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 262,
+            "line": 254,
             "description": "Remove the channel from the UI.",
             "itemtype": "method",
             "name": "remove",
@@ -2229,7 +2229,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 272,
+            "line": 264,
             "description": "Scroll the log panel downwards.",
             "itemtype": "method",
             "name": "scroll",
@@ -2238,7 +2238,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 288,
+            "line": 280,
             "description": "Add padding to the channel log's wrapping ul.\nThis is done to make sure messages always appear at the bottom first.",
             "itemtype": "method",
             "name": "pad",
@@ -2247,7 +2247,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 310,
+            "line": 302,
             "description": "Fix the dimensions of the log window.",
             "itemtype": "method",
             "name": "resize",
@@ -2256,7 +2256,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 379,
+            "line": 371,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2265,7 +2265,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 398,
+            "line": 390,
             "description": "Display a log message.",
             "itemtype": "method",
             "name": "log",
@@ -2281,7 +2281,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 419,
+            "line": 411,
             "description": "Send a message to the log window.",
             "itemtype": "method",
             "name": "log_item",
@@ -2297,7 +2297,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 463,
+            "line": 455,
             "description": "Rewrite time signatures for all messages. Woo.",
             "itemtype": "method",
             "name": "retime",
@@ -2306,7 +2306,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 489,
+            "line": 481,
             "description": "Send a server message to the log window.",
             "itemtype": "method",
             "name": "server_message",
@@ -2328,7 +2328,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 510,
+            "line": 502,
             "description": "Clear all log messages from the log window.",
             "itemtype": "method",
             "name": "clear",
@@ -2337,7 +2337,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 522,
+            "line": 514,
             "description": "Display an info box in the channel log.",
             "itemtype": "method",
             "name": "log_info",
@@ -2353,7 +2353,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 554,
+            "line": 546,
             "description": "Display a user's whois info.",
             "itemtype": "method",
             "name": "show_whois",
@@ -2369,7 +2369,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 628,
+            "line": 620,
             "description": "Display some information relating to a privilege class.",
             "itemtype": "method",
             "name": "log_pc",
@@ -2390,8 +2390,8 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 663,
-            "description": "Set the channel header.\nThis can be the title or topic, determined by `head`.",
+            "line": 655,
+            "description": "Set the channel header.\n\nThis can be the title or topic, determined by `head`.",
             "itemtype": "method",
             "name": "set_header",
             "params": [
@@ -2402,8 +2402,8 @@
                 },
                 {
                     "name": "content",
-                    "description": "HTML to use for the header.",
-                    "type": "String"
+                    "description": "Content for the header.",
+                    "type": "Object"
                 }
             ],
             "class": "Chatterbox.Channel",
@@ -2411,7 +2411,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 704,
+            "line": 687,
             "description": "Get a channel header's contents.",
             "itemtype": "method",
             "name": "get_header",
@@ -2431,7 +2431,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 717,
+            "line": 700,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
@@ -2447,7 +2447,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 762,
+            "line": 745,
             "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
             "itemtype": "method",
             "name": "highlight",
@@ -2464,7 +2464,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 811,
+            "line": 794,
             "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
             "itemtype": "method",
             "name": "noise",
@@ -2473,7 +2473,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 847,
+            "line": 830,
             "description": "Display a user info hover box.",
             "itemtype": "method",
             "name": "userinfo",
@@ -2493,7 +2493,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 906,
+            "line": 889,
             "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
             "itemtype": "method",
             "name": "unhover_user",
@@ -2514,7 +2514,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 940,
+            "line": 923,
             "description": "Hide messages from a given user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2530,7 +2530,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 955,
+            "line": 938,
             "description": "Reveal messages received from a given user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2546,7 +2546,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 970,
+            "line": 953,
             "description": "Remove a user's messages completely.",
             "itemtype": "method",
             "name": "clear_user",

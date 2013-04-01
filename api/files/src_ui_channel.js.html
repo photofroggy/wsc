@@ -148,7 +148,10 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                &#x2F;&#x2F;      Wrap
         },                          &#x2F;&#x2F;
         u: null,                    &#x2F;&#x2F; User panel
-        topic: null                 &#x2F;&#x2F;      Topic
+        h: {                        &#x2F;&#x2F; Head
+            title: null,            &#x2F;&#x2F;      Title
+            topic: null             &#x2F;&#x2F;      Topic
+        }
     };
     this.mulw = 0;
     &#x2F;&#x2F; Dimensions...
@@ -157,16 +160,6 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
         h: {                        &#x2F;&#x2F; Header
             title: [0, 0],          &#x2F;&#x2F;      Title [ width, height ]
             topic: [0, 0]           &#x2F;&#x2F;      Topic [ width, height ]
-        }
-    };
-    this.head = {
-        title: {
-            text: &#x27;&#x27;,
-            html: &#x27;&#x27;
-        },
-        topic: {
-            text: &#x27;&#x27;,
-            html: &#x27;&#x27;
         }
     };
 
@@ -258,8 +251,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     h.s = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#save]&#x27;);
     h.c = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#cancel]&#x27;);
     
-    if( head == &#x27;topic&#x27; )
-        this.topic = h.m;
+    this.el.h[head] = h.m;
     
     h.m.parent().mouseover( function( e ) {
         if( !h.editing ) {
@@ -280,14 +272,14 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     h.e.click( function( e ) {
-        h.t.text(chan.head[head].text);
+        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
         
         h.t.css({
             &#x27;display&#x27;: &#x27;block&#x27;,
-            &#x27;width&#x27;: h.m.innerWidth() - 10,
+            &#x27;width&#x27;: chan.el.h[head].innerWidth() - 10,
         });
         
-        h.m.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        chan.el.h[head].css(&#x27;display&#x27;, &#x27;none&#x27;);
         h.e.css(&#x27;display&#x27;, &#x27;none&#x27;);
         h.editing = true;
         
@@ -300,7 +292,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         var val = h.t.val();
         h.t.text(&#x27;&#x27;);
         h.t.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        h.m.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        chan.el.h[head].css(&#x27;display&#x27;, &#x27;block&#x27;);
         h.s.css(&#x27;display&#x27;, &#x27;none&#x27;);
         h.c.css(&#x27;display&#x27;, &#x27;none&#x27;);
         h.editing = false;
@@ -411,7 +403,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     &#x2F;&#x2F; Add padding.
     this.el.l.w.css({&#x27;padding-top&#x27;: 0, &#x27;height&#x27;: &#x27;auto&#x27;});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad &gt; 0 )
@@ -480,11 +472,11 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.u.css({height: this.d.u[1]});
     
     &#x2F;&#x2F; Make sure edit buttons are in the right place.
-    for( var head in this.head ) {
-        if( !this.head.hasOwnProperty( head ) )
+    for( var head in heads ) {
+        if( !heads[head].m.hasOwnProperty( head ) )
             continue;
         
-        if( this.head[head].text.length == 0 )
+        if( heads[head].m.html().length == 0 )
             continue;
         
         var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
@@ -501,7 +493,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
  *&#x2F;
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( &#x27;.logmsg&#x27; );
+    var msgs = this.el.l.p.find( &#x27;.logmsg&#x27; );
     
     if( msgs.length &lt; 200 )
         return;
@@ -778,43 +770,34 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 
 &#x2F;**
  * Set the channel header.
+ * 
  * This can be the title or topic, determined by &#x60;head&#x60;.
  * 
  * @method set_header
  * @param head {String} Should be &#x27;title&#x27; or &#x27;topic&#x27;.
- * @param content {String} HTML to use for the header.
+ * @param content {Object} Content for the header.
  *&#x2F;
 Chatterbox.Channel.prototype.set_header = function( head, content ) {
+    
     head = head.toLowerCase();
+    var edit = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
     
-    this.head[head].text = content.text();
-    this.head[head].html = content.html();
-    var h = {};
-    h.m = this.el.m.find( &#x27;header div.&#x27; + head );
-    h.e = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
-    
-    h.m.replaceWith(
-        Chatterbox.render(&#x27;header&#x27;, {&#x27;head&#x27;: head, &#x27;content&#x27;: this.head[head].html})
-    );
-    
-    h.m = this.el.m.find(&#x27;header div.&#x27; + head);
-    
-    if( head == &#x27;topic&#x27; )
-        this.topic = h.m;
+    this.el.h[head].html(content.html());
     
     var chan = this;
     
     setTimeout( function(  ) {
-        if( chan.head[head].text.length &gt; 0 ) {
-            h.m.css( { display: &#x27;block&#x27; } );
-            var tline = (h.m.outerHeight(true) - 5) * (-1);
-            h.e.css(&#x27;top&#x27;, tline);
+        if( content.text().length &gt; 0 ) {
+            chan.el.h[head].css( { display: &#x27;block&#x27; } );
+            var tline = (chan.el.h[head].outerHeight(true) - 5) * (-1);
+            edit.css(&#x27;top&#x27;, tline);
         } else {
-            h.m.css( { display: &#x27;none&#x27; } );
+            chan.el.h[head].css( { display: &#x27;none&#x27; } );
         }
             
         chan.resize();
     }, 100 );
+    
 };
 
 &#x2F;**
