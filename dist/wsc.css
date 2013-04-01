@@ -2364,9 +2364,9 @@ div.wsc.wsct_dark div.chatwindow header div.title a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow header div.topic {
-  background-color: #407981;
+  background-color: #6cbcc7;
   border-color: #2a4e5a;
-  color: #c7e9e5;
+  color: #1b4949;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog {
   background-color: #b3d2df;
@@ -2546,17 +2546,17 @@ div.wsc.wsct_dark div.floater.settings div.bookwrap div.book div.page .item h3 {
   color: #698b8b;
 }
 div.wsc.wsct_dark div.pager div.notice {
-  background-color: #e8eee6;
+  background-color: #6cbcc7;
   border-color: #3a5058;
 }
 div.wsc.wsct_dark div.pager div.notice h3 {
-  color: #4f6457;
+  color: #346363;
 }
 div.wsc.wsct_dark div.pager div.notice p {
-  color: #515c52;
+  color: #1b4949;
 }
 div.wsc.wsct_dark div.pager div.notice a.close_notice {
-  color: #4f6457;
+  color: #1f4443;
 }
 div.wsc.wsct_dark div.pager div.notice a.close_notice:hover {
   color: #b9280d;
