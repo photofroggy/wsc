@@ -26,6 +26,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "dAmn.TablumpParser",
         "dAmn.TablumpString",
         "dAmn.avatar",
+        "jQuery.plugin",
         "template",
         "wsc.Channel",
         "wsc.Client",

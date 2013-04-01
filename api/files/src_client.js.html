@@ -77,6 +77,8 @@
     
         <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
     
+        <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -963,7 +965,6 @@ wsc.Client.prototype.property = function( namespace, property ) {
  *&#x2F;
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.trigger( &#x27;send.set.before&#x27;, e );
     var c = this;
     this.cascade( &#x27;send.set&#x27;,
         function( data ) {

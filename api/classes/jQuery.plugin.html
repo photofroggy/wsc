@@ -110,7 +110,7 @@
     </ul>
 </nav>
         <div class="content">
-            <h1>wsc.Middleware Class</h1>
+            <h1>jQuery.plugin Class</h1>
 
     <section class="main">
     
@@ -121,7 +121,7 @@
     
         
             <p>
-                Defined in: <a href="..&#x2F;files&#x2F;src_middleware.js.html#l2"><code>src&#x2F;middleware.js:2</code></a>
+                Defined in: <a href="..&#x2F;files&#x2F;src_wsc.js.html#l1"><code>src&#x2F;wsc.js:1</code></a>
             </p>
         
     
@@ -137,20 +137,32 @@
     </article>
     
     <section class="intro">
-        <p>Middleware management and execution.</p>
+        <p>jQuery plugin.</p>
+
+<p>Wrapper for implementing the plugin.</p>
     </section>
     
     
         <article class="constructor">
             <h2>Constructor</h2>
             
-<div id="method_wsc.Middleware" class="method item">
+<div id="method_jQuery.plugin" class="method item">
     <header>
         <section class="signature">
-            <h3><code>wsc.Middleware</code></h3>
+            <h3><code>jQuery.plugin</code></h3>
 
         
-            <span class="paren">()</span>
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>$</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
         
     
         
@@ -179,7 +191,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_middleware.js.html#l2"><code>src&#x2F;middleware.js:2</code></a>
+        <a href="..&#x2F;files&#x2F;src_wsc.js.html#l1"><code>src&#x2F;wsc.js:1</code></a>
         
         </p>
 
@@ -192,6 +204,29 @@
     <section class="body">
     
 
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">$</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>jQuery instance</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
     
 
     
@@ -226,16 +261,7 @@
                         
                             
                             <li class="index-item method">
-                                <a href="#method_add">add</a>
-
-                                
-                                
-                            </li>
-                            
-                        
-                            
-                            <li class="index-item method">
-                                <a href="#method_run">run</a>
+                                <a href="#method_wsc">wsc</a>
 
                                 
                                 
@@ -258,15 +284,35 @@
 
                 
                     
-<div id="method_add" class="method item">
+<div id="method_wsc" class="method item">
     <header>
         <section class="signature">
-            <h3><code>add</code></h3>
+            <h3><code>wsc</code></h3>
 
         
-            <span class="paren">()</span>
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>method</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>options</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
         
     
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
         
     
         
@@ -293,7 +339,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_middleware.js.html#l14"><code>src&#x2F;middleware.js:14</code></a>
+        <a href="..&#x2F;files&#x2F;src_wsc.js.html#l21"><code>src&#x2F;wsc.js:21</code></a>
         
         </p>
 
@@ -306,75 +352,68 @@
     <section class="body">
     
     <section class="description">
-        <p>Add a middleware callback for the given event.</p>
+        <p>Implements the wsc client as a jQuery plugin.</p>
+
+<p>To create a new client, pass <code>"init"</code> as the method, as follows:</p>
+
+<pre class="code prettyprint"><code> $('div.container').wsc( 'init', options );
+</code></pre>
     </section>
     
 
     
+        <section class="params">
+            <h4>Parameters:</h4>
 
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">method</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Method to call</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">options</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Method input options</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
     
 
     
-    </section>
-</div>
+        <section class="returns">
+            <h4>Returns:</h4>
 
-
+            <p>
                 
                     
-<div id="method_run" class="method item">
-    <header>
-        <section class="signature">
-            <h3><code>run</code></h3>
-
-        
-            <span class="paren">()</span>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    </section>
-
-    <section class="meta">
-        
-            
+                        <span class="type">Object</span>:
+                    
+                    Instance of wsc
                 
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_middleware.js.html#l31"><code>src&#x2F;middleware.js:31</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </section>
-    </header>
-    <section class="body">
-    
-    <section class="description">
-        <p>Call a method, invoking middleware according to the given event name.</p>
-    </section>
-    
-
-    
-
+            </p>
+        </section>
     
 
     

@@ -77,6 +77,8 @@
     
         <li><a href="/wsc/api/classes/EventEmitter.html">EventEmitter</a></li>
     
+        <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -146,24 +148,7 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                &#x2F;&#x2F;      Wrap
         },                          &#x2F;&#x2F;
         u: null,                    &#x2F;&#x2F; User panel
-        h: {                        &#x2F;&#x2F; Header
-            title: {                &#x2F;&#x2F;      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                &#x2F;&#x2F;      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
+        topic: null                 &#x2F;&#x2F;      Topic
     };
     this.mulw = 0;
     &#x2F;&#x2F; Dimensions...
@@ -266,41 +251,45 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find(&#x27;header.&#x27; + head + &#x27; div&#x27;);
-    this.el.h[head].e = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
-    this.el.h[head].t = this.el.m.find(&#x27;header.&#x27; + head + &#x27; textarea&#x27;);
-    this.el.h[head].s = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#save]&#x27;);
-    this.el.h[head].c = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#cancel]&#x27;);
+    var h = {};
+    h.m = this.el.m.find(&#x27;header.&#x27; + head + &#x27; div&#x27;);
+    h.e = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
+    h.t = this.el.m.find(&#x27;header.&#x27; + head + &#x27; textarea&#x27;);
+    h.s = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#save]&#x27;);
+    h.c = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#cancel]&#x27;);
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;block&#x27;);
+    if( head == &#x27;topic&#x27; )
+        this.topic = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css(&#x27;display&#x27;, &#x27;block&#x27;);
             return;
         }
-        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;block&#x27;);
-        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        h.s.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        h.c.css(&#x27;display&#x27;, &#x27;block&#x27;);
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;none&#x27;);
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css(&#x27;display&#x27;, &#x27;none&#x27;);
             return;
         }
-        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.s.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.c.css(&#x27;display&#x27;, &#x27;none&#x27;);
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.head[head].text);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             &#x27;display&#x27;: &#x27;block&#x27;,
-            &#x27;width&#x27;: chan.el.h[head].m.innerWidth() - 10,
+            &#x27;width&#x27;: h.m.innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].e.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].editing = true;
+        h.m.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.e.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.editing = true;
         
         chan.resize();
         
@@ -308,13 +297,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text(&#x27;&#x27;);
-        chan.el.h[head].t.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].m.css(&#x27;display&#x27;, &#x27;block&#x27;);
-        chan.el.h[head].s.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].c.css(&#x27;display&#x27;, &#x27;none&#x27;);
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text(&#x27;&#x27;);
+        h.t.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.m.css(&#x27;display&#x27;, &#x27;block&#x27;);
+        h.s.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.c.css(&#x27;display&#x27;, &#x27;none&#x27;);
+        h.editing = false;
         
         &#x2F;&#x2F;setTimeout( function(  ) {
             chan.resize();
@@ -323,7 +312,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + &#x27;.save&#x27;, {
@@ -331,11 +320,11 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text(&#x27;&#x27;);
+        h.t.text(&#x27;&#x27;);
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
@@ -422,7 +411,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     &#x2F;&#x2F; Add padding.
     this.el.l.w.css({&#x27;padding-top&#x27;: 0, &#x27;height&#x27;: &#x27;auto&#x27;});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad &gt; 0 )
@@ -440,6 +429,18 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * @method resize
  *&#x2F;
 Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    var heads = {
+        &#x27;title&#x27;: {
+            m: this.el.m.find( &#x27;header div.title&#x27; ),
+            e: this.el.m.find(&#x27;header.title a[href=#edit]&#x27;)
+        },
+        &#x27;topic&#x27;: {
+            m: this.el.m.find( &#x27;header div.topic&#x27; ),
+            e: this.el.m.find(&#x27;header.topic a[href=#edit]&#x27;)
+        }
+    };
+    
     this.el.l.w.css({&#x27;padding-top&#x27;: 0});
     &#x2F;&#x2F; Height.
     height = height || this.manager.chatbook.height();
@@ -464,7 +465,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     &#x2F;&#x2F; Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     &#x2F;&#x2F; Log panel dimensions
     this.el.l.p.css({
@@ -486,8 +487,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
         if( this.head[head].text.length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css(&#x27;top&#x27;, tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css(&#x27;top&#x27;, tline);
     }
 };
 
@@ -788,22 +789,28 @@ Chatterbox.Channel.prototype.set_header = function( head, content ) {
     
     this.head[head].text = content.text();
     this.head[head].html = content.html();
+    var h = {};
+    h.m = this.el.m.find( &#x27;header div.&#x27; + head );
+    h.e = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
     
-    this.el.h[head].m.replaceWith(
+    h.m.replaceWith(
         Chatterbox.render(&#x27;header&#x27;, {&#x27;head&#x27;: head, &#x27;content&#x27;: this.head[head].html})
     );
     
-    this.el.h[head].m = this.el.m.find(&#x27;header div.&#x27; + head);
+    h.m = this.el.m.find(&#x27;header div.&#x27; + head);
+    
+    if( head == &#x27;topic&#x27; )
+        this.topic = h.m;
     
     var chan = this;
     
     setTimeout( function(  ) {
         if( chan.head[head].text.length &gt; 0 ) {
-            chan.el.h[head].m.css( { display: &#x27;block&#x27; } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css(&#x27;top&#x27;, tline);
+            h.m.css( { display: &#x27;block&#x27; } );
+            var tline = (h.m.outerHeight(true) - 5) * (-1);
+            h.e.css(&#x27;top&#x27;, tline);
         } else {
-            chan.el.h[head].m.css( { display: &#x27;none&#x27; } );
+            h.m.css( { display: &#x27;none&#x27; } );
         }
             
         chan.resize();

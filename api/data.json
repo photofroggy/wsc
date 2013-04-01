@@ -293,6 +293,15 @@
             },
             "fors": {},
             "namespaces": {}
+        },
+        "src/wsc.js": {
+            "name": "src/wsc.js",
+            "modules": {},
+            "classes": {
+                "jQuery.plugin": 1
+            },
+            "fors": {},
+            "namespaces": {}
         }
     },
     "modules": {
@@ -320,13 +329,14 @@
                 "wsc.Storage": 1,
                 "wsc.Transport": 1,
                 "wsc.WebSocket": 1,
-                "wsc.SocketIO": 1
+                "wsc.SocketIO": 1,
+                "jQuery.plugin": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "src/transport.js",
-            "line": 240,
+            "file": "src/wsc.js",
+            "line": 1,
             "description": "WebSocket Chat client module."
         },
         "dAmn": {
@@ -1362,6 +1372,28 @@
                     "optdefault": "wsc.SocketIO.sdisconnect"
                 }
             ]
+        },
+        "jQuery.plugin": {
+            "name": "jQuery.plugin",
+            "shortname": "jQuery.plugin",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/wsc.js",
+            "line": 1,
+            "description": "jQuery plugin.\n\nWrapper for implementing the plugin.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "$",
+                    "description": "jQuery instance",
+                    "type": "Object"
+                }
+            ]
         }
     },
     "classitems": [
@@ -2143,7 +2175,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 76,
+            "line": 59,
             "description": "Draw channel on screen and store the different elements in attributes.",
             "itemtype": "method",
             "name": "build",
@@ -2152,7 +2184,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 147,
+            "line": 130,
             "description": "Set up a header so it can be edited in the UI.",
             "itemtype": "method",
             "name": "setup_header",
@@ -2161,7 +2193,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 231,
+            "line": 218,
             "description": "Hide the channel from view.",
             "itemtype": "method",
             "name": "hide",
@@ -2170,7 +2202,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 242,
+            "line": 229,
             "description": "Display the channel.",
             "itemtype": "method",
             "name": "show",
@@ -2179,7 +2211,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 260,
+            "line": 247,
             "description": "Display or hide the tab based on whether we are in developer mode or not.",
             "itemtype": "method",
             "name": "developer",
@@ -2188,7 +2220,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 275,
+            "line": 262,
             "description": "Remove the channel from the UI.",
             "itemtype": "method",
             "name": "remove",
@@ -2197,7 +2229,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 285,
+            "line": 272,
             "description": "Scroll the log panel downwards.",
             "itemtype": "method",
             "name": "scroll",
@@ -2206,7 +2238,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 301,
+            "line": 288,
             "description": "Add padding to the channel log's wrapping ul.\nThis is done to make sure messages always appear at the bottom first.",
             "itemtype": "method",
             "name": "pad",
@@ -2215,7 +2247,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 323,
+            "line": 310,
             "description": "Fix the dimensions of the log window.",
             "itemtype": "method",
             "name": "resize",
@@ -2224,7 +2256,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 380,
+            "line": 379,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2233,7 +2265,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 399,
+            "line": 398,
             "description": "Display a log message.",
             "itemtype": "method",
             "name": "log",
@@ -2249,7 +2281,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 420,
+            "line": 419,
             "description": "Send a message to the log window.",
             "itemtype": "method",
             "name": "log_item",
@@ -2265,7 +2297,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 464,
+            "line": 463,
             "description": "Rewrite time signatures for all messages. Woo.",
             "itemtype": "method",
             "name": "retime",
@@ -2274,7 +2306,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 490,
+            "line": 489,
             "description": "Send a server message to the log window.",
             "itemtype": "method",
             "name": "server_message",
@@ -2296,7 +2328,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 511,
+            "line": 510,
             "description": "Clear all log messages from the log window.",
             "itemtype": "method",
             "name": "clear",
@@ -2305,7 +2337,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 523,
+            "line": 522,
             "description": "Display an info box in the channel log.",
             "itemtype": "method",
             "name": "log_info",
@@ -2321,7 +2353,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 555,
+            "line": 554,
             "description": "Display a user's whois info.",
             "itemtype": "method",
             "name": "show_whois",
@@ -2337,7 +2369,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 629,
+            "line": 628,
             "description": "Display some information relating to a privilege class.",
             "itemtype": "method",
             "name": "log_pc",
@@ -2358,7 +2390,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 664,
+            "line": 663,
             "description": "Set the channel header.\nThis can be the title or topic, determined by `head`.",
             "itemtype": "method",
             "name": "set_header",
@@ -2379,7 +2411,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 699,
+            "line": 704,
             "description": "Get a channel header's contents.",
             "itemtype": "method",
             "name": "get_header",
@@ -2399,7 +2431,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 712,
+            "line": 717,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
@@ -2415,7 +2447,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 757,
+            "line": 762,
             "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
             "itemtype": "method",
             "name": "highlight",
@@ -2432,7 +2464,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 806,
+            "line": 811,
             "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
             "itemtype": "method",
             "name": "noise",
@@ -2441,7 +2473,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 842,
+            "line": 847,
             "description": "Display a user info hover box.",
             "itemtype": "method",
             "name": "userinfo",
@@ -2461,7 +2493,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 901,
+            "line": 906,
             "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
             "itemtype": "method",
             "name": "unhover_user",
@@ -2482,7 +2514,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 935,
+            "line": 940,
             "description": "Hide messages from a given user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2498,7 +2530,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 950,
+            "line": 955,
             "description": "Reveal messages received from a given user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2514,7 +2546,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 965,
+            "line": 970,
             "description": "Remove a user's messages completely.",
             "itemtype": "method",
             "name": "clear_user",
@@ -2566,7 +2598,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 56,
+            "line": 58,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2575,7 +2607,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 71,
+            "line": 73,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -2601,7 +2633,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 88,
+            "line": 90,
             "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
             "itemtype": "method",
             "name": "channels",
@@ -2613,7 +2645,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 107,
+            "line": 109,
             "description": "Create a channel in the UI.",
             "itemtype": "method",
             "name": "create_channel",
@@ -2643,7 +2675,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 131,
+            "line": 133,
             "description": "Create a new channel panel object.\nOverride this method to use a different type of channel object.",
             "itemtype": "method",
             "name": "channel_object",
@@ -2668,7 +2700,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 144,
+            "line": 146,
             "description": "Select which channel is currently being viewed.",
             "itemtype": "method",
             "name": "toggle_channel",
@@ -2684,7 +2716,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 193,
+            "line": 195,
             "description": "Remove a channel from the UI.",
             "itemtype": "method",
             "name": "remove_channel",
@@ -2700,7 +2732,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 215,
+            "line": 217,
             "description": "Switch to the channel left of the current channel.",
             "itemtype": "method",
             "name": "channel_left",
@@ -2709,7 +2741,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 248,
+            "line": 250,
             "description": "Switch to the channel right of the current channel.",
             "itemtype": "method",
             "name": "channel_right",
@@ -2718,7 +2750,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 280,
+            "line": 282,
             "description": "Iterate through the different channels.",
             "itemtype": "method",
             "name": "each",
@@ -2734,7 +2766,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 302,
+            "line": 304,
             "description": "Display a server message across all open channels.",
             "itemtype": "method",
             "name": "server_message",
@@ -2756,7 +2788,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 317,
+            "line": 319,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -2772,7 +2804,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 331,
+            "line": 333,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -2788,7 +2820,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 345,
+            "line": 347,
             "description": "Rewrite timestamps for all open channels.",
             "itemtype": "method",
             "name": "retime",
@@ -2797,7 +2829,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 358,
+            "line": 360,
             "description": "Toggle the developer mode of each channel.",
             "itemtype": "method",
             "name": "developer",
@@ -5261,7 +5293,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 862,
+            "line": 861,
             "description": "Get whois information for a user.",
             "itemtype": "method",
             "name": "whois",
@@ -5277,7 +5309,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 874,
+            "line": 873,
             "description": "Send a disconnect packet.",
             "itemtype": "method",
             "name": "disconnect",
@@ -5312,7 +5344,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 213,
+            "line": 212,
             "description": "This command allows the user to force the client to connect to the server.",
             "itemtype": "method",
             "name": "cmd.connection",
@@ -5321,7 +5353,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 450,
+            "line": 449,
             "description": "Implements the ignore feature.",
             "itemtype": "method",
             "name": "Ignore",
@@ -5330,7 +5362,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 457,
+            "line": 456,
             "description": "Implements away messages.",
             "itemtype": "method",
             "name": "Away",
@@ -5339,7 +5371,7 @@
         },
         {
             "file": "src/commands.js",
-            "line": 464,
+            "line": 463,
             "description": "Implements autojoin channels.",
             "itemtype": "method",
             "name": "Autojoin",
@@ -5951,7 +5983,7 @@
         {
             "file": "src/storage.js",
             "line": 15,
-            "description": "The namaespace for this storage object.",
+            "description": "The namespace for this storage object.",
             "itemtype": "property",
             "name": "namespace",
             "type": "String",
@@ -6320,6 +6352,31 @@
             "itemtype": "method",
             "name": "close",
             "class": "wsc.SocketIO",
+            "module": "wsc"
+        },
+        {
+            "file": "src/wsc.js",
+            "line": 21,
+            "description": "Implements the wsc client as a jQuery plugin.\n\nTo create a new client, pass `\"init\"` as the method, as follows:\n     \n     $('div.container').wsc( 'init', options );",
+            "itemtype": "method",
+            "name": "wsc",
+            "params": [
+                {
+                    "name": "method",
+                    "description": "Method to call",
+                    "type": "String"
+                },
+                {
+                    "name": "options",
+                    "description": "Method input options",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Instance of wsc",
+                "type": "Object"
+            },
+            "class": "jQuery.plugin",
             "module": "wsc"
         }
     ],
