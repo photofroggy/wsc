@@ -489,6 +489,8 @@ div.wsc nav.channels {
   height: 100%;
   margin-right: 5px;
   border: 1px solid black;
+  position: relative;
+  left: 0px;
 }
 div.wsc nav.tabs {
   width: 100%;
@@ -527,15 +529,15 @@ div.wsc nav.tabs ul li {
   float: left;
   margin-top: 9px;
 }
-div.wsc nav.tabs ul li.chans {
-  display: block;
-}
 div.wsc nav.tabs ul.tabs {
   height: 30px;
 }
 div.wsc nav.tabs ul.tabs li {
   margin-right: 2px;
   display: none;
+}
+div.wsc nav.tabs ul.tabs li.chans {
+  display: block;
 }
 div.wsc nav.tabs ul.tabs li a.tab {
   text-decoration: none;

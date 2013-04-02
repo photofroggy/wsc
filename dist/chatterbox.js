@@ -2821,7 +2821,16 @@ Chatterbox.Navigation = function( ui ) {
         l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
         r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
         s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
+        side: this.manager.view.find('nav.channels'),                     // Nav side bar
+        sideb: this.manager.view.find('nav.tabs #chattabs .chans'),   // Side bar button
     };
+    
+    this.side = false;
+    var shift = this.el.side.outerWidth(true) * -1;
+    this.el.side.css( {
+        'left': shift,
+        'margin-right': shift
+    } );
     
     if( !this.showclose ) {
         if( !this.el.t.hasClass('hc') )
@@ -2870,6 +2879,11 @@ Chatterbox.Navigation = function( ui ) {
             return false;
         }
     );
+    
+    this.el.sideb.find('a.tab').click(function(){
+        nav.toggle_sidebar();
+        return false;
+    });
 
 };
 
@@ -3032,7 +3046,7 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
  */
 Chatterbox.Navigation.prototype.listwidth = function(  ) {
 
-    return this.manager.view.find('nav.channels').outerWidth(true);
+    return this.side ? this.manager.view.find('nav.channels').outerWidth(true) : 0;
 
 };
 
@@ -5283,7 +5297,9 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </div>\
         <div class="pager">\
         </div>\
-        <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs"></ul></div>\
+        <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs">\
+        <li class="chans"><a href="#chans" class="tab">Chats</a></li>\
+        </ul></div>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\

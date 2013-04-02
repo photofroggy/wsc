@@ -8,6 +8,8 @@
         height: 100%;
         margin-right: 5px;
         border: 1px solid black;
+        position: relative;
+        left: 0px;
     }
     
     nav.tabs {
@@ -50,16 +52,15 @@
                 margin-top: 9px;
             }
             
-            li.chans {
-                display: block;
-            }
-            
             &.tabs {
                 height: 30px;
             
                 li {
                     margin-right: 2px;
                     display: none;
+                    &.chans {
+                        display: block;
+                    }
                     
                     a.tab {
                         text-decoration: none;
