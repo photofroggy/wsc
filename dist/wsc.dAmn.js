@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.6.30';
+wsc.VERSION = '1.7.31';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.20.115';
+wsc.REVISION = '0.21.116';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_default';
 wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn', 'wsct_dark' ];
@@ -1195,6 +1195,16 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
     this.info["pc_order"].sort(function(a, b){ return b - a });
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( this.namespace[0] == '@' ) {
+        names[100] = 'Room Members';
+        orders.unshift( 'Room Members' );
+    }
+    
+    this.ui.build_user_list( names, orders );
 };
 
 /**
@@ -1226,7 +1236,7 @@ wsc.Channel.prototype.set_members = function( e ) {
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
             continue;
-        this.register_user(e.pkt.sub[i]);
+        this.register_user(e.pkt.sub[i], true);
     }
     
     this.set_user_list();
@@ -1238,76 +1248,73 @@ wsc.Channel.prototype.set_members = function( e ) {
  * @method set_user_list
  */
 wsc.Channel.prototype.set_user_list = function( ) {
+    
     if( Object.size(this.info.members) == 0 )
         return;
     
     var names = this.get_usernames();
-    var pcs = {};
+    var users = [];
+    var uinfo = null;
     
     for( var i in names ) {
+        
         if( !names.hasOwnProperty(i) )
             continue;
-        var un = names[i];
-        var member = this.info.members[un];
         
-        if( !(member['pc'] in pcs) )
-            pcs[member['pc']] = {'name': member['pc'], 'users': []};
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        uinfo = {
-            'name': un,
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        pcs[member['pc']].users.push(uinfo);
+        users.push( this.info.members[names[i]] );
+    
     }
     
-    var ulist = [];
-    
-    for(var index in this.info["pc_order"]) {
-        var pc = this.info['pc'][this.info["pc_order"][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( 'Room Members' in pcs )
-        ulist.push(pcs['Room Members']);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    
-    this.client.trigger('set.userlist', {
+    this.client.trigger(this.namespace + '.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace']
+        'ns': this.info['namespace'],
+        'users': users
     });
+};
+
+/**
+ * Generate user info for the user list.
+ * 
+ * @method user_info
+ * @param user {String} User name
+ * @return {Object} User info
+ */
+wsc.Channel.prototype.user_info = function( user ) {
+        
+    var member = this.info.members[user];
+    var s = member.symbol;
+    
+    return {
+        'name': user,
+        'pc': member['pc'],
+        'symbol': s,
+        'conn': member.conn,
+        'hover': {
+            'member': member,
+            'name': user,
+            'avatar': '<img class="avatar" src="" height="50" width="50" />',
+            'link': s + '<a target="_blank" href="http://' + user + '.'+ this.client.settings['domain'] + '/">' + user + '</a>',
+            'info': []
+        }
+    };
+
 };
 
 /**
  * Register a user with the channel.
  * 
  * @method register_user
- * @param pkt {Object} User data.
+ * @param pkt {Object} User data
+ * @param suppress {Boolean} Set to true to suppress events
  */
-wsc.Channel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     var un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt["arg"];
         this.info.members[un]["username"] = un;
         this.info.members[un]["conn"] = 1;
+        this.info.members[un] = this.user_info( un );
     } else {
         for( i in pkt.arg ) {
             this.info.members[un][i] = pkt.arg[i];
@@ -1316,6 +1323,17 @@ wsc.Channel.prototype.register_user = function( pkt ) {
     }
     if( !('pc' in this.info.members[un]) ) 
         this.info.members[un]['pc'] = 'Room Members';
+    
+    suppress = suppress || false;
+    
+    if( suppress )
+        return;
+    
+    this.client.trigger(this.namespace + '.user.registered', {
+        name: this.namespace + '.user.registered',
+        user: un
+    });
+    
 };
 
 /**
@@ -1349,10 +1367,11 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     
     member['conn']--;
     
-    if( member['conn'] > 0 && !force)
-        return;
+    if( member['conn'] == 0 || !force) {
+        delete this.info.members[user];
+    }
     
-    delete this.info.members[user];
+    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
 };
 
 /**
@@ -1364,7 +1383,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
 wsc.Channel.prototype.recv_join = function( e ) {
     var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
-    this.set_user_list();
 };
 
 /**
@@ -1376,7 +1394,6 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
 };
 
@@ -1418,13 +1435,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member['pc'] = data.pc;
+    }, e);
     
-    member['pc'] = e.pc;
-    this.set_user_list();
 };
 
 /**
@@ -4258,7 +4279,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.18.81';
+Chatterbox.VERSION = '0.19.82';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4968,6 +4989,30 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
+    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
+        
+        chan.set_user_list( event.users );
+        
+    } );
+    
+    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
+        
+        chan.privchg( data, done );
+    
+    });
+    
+    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
+    
+        chan.remove_one_user( data, done );
+    
+    } );
+    
+    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
+    
+        chan.register_user( event.user );
+    
+    } );
+    
     this.built = true;
 };
 
@@ -5208,7 +5253,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     
     // Make sure edit buttons are in the right place.
     for( var head in heads ) {
-        if( !heads[head].m.hasOwnProperty( head ) )
+        if( !heads.hasOwnProperty( head ) )
             continue;
         
         if( heads[head].m.html().length == 0 )
@@ -5549,48 +5594,218 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
 };
 
 /**
+ * Build the user list.
+ * 
+ * @method build_user_list
+ * @param names {Object} Privilege class names
+ * @param order {Array} Privilege class orders
+ */
+Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var pc = '';
+    var pcel = null;
+    
+    uld.html('');
+    
+    for(var index in order) {
+        var pc = names[order[index]];
+        uld.append('<div class="pc" id="' + pc + '"><h3>' + pc + '</h3><ul></ul>');
+        pcel = uld.find('.pc#' + pc);
+        pcel.css('display', 'none');
+    }
+
+};
+
+/**
+ * Reveal or hide the userlist depending on the number of users present.
+ * 
+ * @method reveal_user_list
+ */
+Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var total = 0;
+    var count = 0;
+    var pc = null;
+    
+    uld.find('div.pc').each( function( i, el ) {
+        pc = uld.find(this);
+        count = pc.find('ul li').length;
+        total+= count;
+        pc.css('display', ( count == 0 ? 'none' : 'block' ));
+    } );
+    
+    uld.css('display', ( total == 0 ? 'none' : 'block' ));
+    
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
- * @param userlist {Array} Listing of users in the channel.
+ * @param users {Array} Listing of users in the channel.
  */
-Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
-    if( Object.size(userlist) == 0 )
+    if( Object.size(users) == 0 )
         return;
     
-    var infoboxes = [];
-    var html = '';
-    var pc = {};
-    var conn = '';
-    var user = '';
+    var uld = this.el.m.find('div.chatusers');
+    var user = null;
     
-    for( var order in userlist ) {
-        pc = userlist[order];
-        html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
-        for( var un in pc.users ) {
-            user = pc.users[un];
-            conn = user.conn == 1 ? '' : '[' + user.conn + ']';
-            html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
-            if( user.hover )
-                infoboxes.push(user.hover);
-        }
-        html+= '</ul></div>';
+    for( var index in users ) {
+        
+        user = users[index];
+        this.set_user( user, true );
+    
     }
     
-    this.el.m.find('div.chatusers').html(html);
-    this.el.u = this.el.m.find('div.chatusers');
-    this.el.u.css({display: 'block'});
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
+    this.reveal_user_list();
     
-    for( var index in infoboxes ) {
-        this.userinfo(infoboxes[index]);
+};
+
+/**
+ * Set a user in the user list.
+ * 
+ * @method set_user
+ * @param user {Object} Information about the user
+ * @param noreveal {Boolean} Do not run the reveal method
+ */
+Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
+
+    var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
+    var ull = uld.find('ul');
+    var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
+    
+    if( ull.find('a#' + user.name).length == 1 )
+        return;
+    
+    if( ull.find('li').length == 0 ) {
+        ull.append( html );
+    } else {
+    
+        var mname = user.name.toLowerCase();
+        var link = null;
+        var done = false;
+        
+        ull.find('li a').each( function(  ) {
+            
+            if( done )
+                return;
+            
+            link = ull.find(this);
+            
+            if( mname < link.prop('id').toLowerCase() ) {
+                link.parent().before( html );
+                done = true;
+            }
+            
+        } );
+        
+        if( !done )
+            ull.append( html );
+    
     }
-    this.resize();
     
+    var c = this;
+    this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+        
+
+};
+
+/**
+ * Remove a user from the user list.
+ * 
+ * @method remove_user
+ * @param user to remove
+ */
+Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
+
+    this.el
+        .m.find('div.chatusers div.pc ul li a#' + user)
+        .parent().remove();
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+
+};
+
+/**
+ * Remove a single instance of a user from the user list.
+ * 
+ * @method remove_one_user
+ * @param user {String} Username
+ */
+Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+
+    this.remove_user( user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        done( user );
+        return;
+    }
+    
+    this.set_user( user );
+    done( user );
+
+};
+
+/**
+ * Move a user from one privclass to another.
+ * 
+ * @method privchg
+ * @param event {Object} recv_privchg event data
+ * @param done {Function} Next method
+ */
+Chatterbox.Channel.prototype.privchg = function( data, done ) {
+
+    this.remove_user( data.user, true );
+    
+    var member = Object.extend(
+        this.manager.client.channel(this.namespace).info.members[data.user],
+        {});
+    
+    member.pc = data.pc;
+    
+    this.set_user( member );
+
+};
+
+/**
+ * Handle the register user event.
+ * 
+ * @method register_user
+ * @param user {String} Name of the user to register
+ */
+Chatterbox.Channel.prototype.register_user = function( user ) {
+
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
 };
 
 /**
@@ -5695,45 +5910,46 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     var chan = this;
     var box = null;
     
-    link.hover(
-        function( e ) {
-            user.info = [];
-            var ed = { 'ns': chan.namespace, 'user': user };
-            chan.manager.trigger( 'userinfo.before', ed );
-            user = ed.user;
-            var infoli = '';
-            
-            for( index in user.info ) {
-                infoli+= '<li>' + user.info[index] + '</li>';
-            }
-            
-            chan.window.append(Chatterbox.render('userinfo', {
-                'username': user.name,
-                'avatar': user.avatar,
-                'link': user.link,
-                'info': infoli}));
-            
-            box = chan.window.find('.userinfo#'+user.name);
-            chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            var pos = link.offset();
-            box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
-            box.find('.info').height(box.height());
-            
-            box.hover(
-                function(){ box.data('hover', 1); },
-                function( e ) {
-                    box.data('hover', 0);
-                    chan.unhover_user( box, e );
-                }
-            );
-            
-            box.data('hover', 0);
-        },
-        function( e ) {
-            link.data('hover', 0);
-            chan.unhover_user(box, e);
+    var menter = function( e ) {
+        var infoli = '';
+        
+        for( index in user.info ) {
+            infoli+= '<li>' + user.info[index] + '</li>';
         }
-    );
+        
+        chan.window.append(Chatterbox.render('userinfo', {
+            'username': user.name,
+            'avatar': user.avatar,
+            'link': user.link,
+            'info': infoli}));
+        
+        box = chan.window.find('.userinfo#'+user.name);
+        chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
+        var pos = link.offset();
+        box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+        box.find('.info').height(box.height());
+        
+        box.hover(
+            function(){ box.data('hover', 1); },
+            function( e ) {
+                box.data('hover', 0);
+                chan.unhover_user( box, e );
+            }
+        );
+        
+        box.data('hover', 0);
+    };
+    
+    var mleave = function( e ) {
+        link.data('hover', 0);
+        chan.unhover_user(box, e);
+    };
+    
+    link.off( 'mouseenter', menter );
+    link.off( 'mouseleave', mleave );
+    
+    link.on( 'mouseenter', menter );
+    link.on( 'mouseleave', mleave );
 
 };
 
@@ -10999,14 +11215,16 @@ wsc.dAmn.Extension = function( client ) {
     client.exclude.add( 'chat:devart' );
     client.exclude.add( 'chat:damnidlers' );
     
-    client.ui.on( 'userinfo.before', function( event, ui ) {
-        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+    client.ui.middle( 'user.hover', function( data, done ) {
+        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
-        if( event.user.member.realname )
-            event.user.info.push(event.user.member.realname);
+        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
+            data.info.push(data.member.realname);
         
-        if( event.user.member.typename )
-            event.user.info.push(event.user.member.typename);
+        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
+            data.info.push(data.member.typename);
+        
+        done( data );
     });
     
     client.ui.on( 'settings.save', settings.save );

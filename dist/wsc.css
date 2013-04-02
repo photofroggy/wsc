@@ -2277,7 +2277,7 @@ div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab {
   background: linear-gradient(top, #afbbbe 0%, #6e848f 5%, #3b505a 97%);
   background-color: #415b64;
   border-color: #3a5058;
-  color: #abbdc4;
+  color: #112f4b;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab.button {
   border-color: #3c4d50;
@@ -2288,17 +2288,17 @@ div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab:hover {
   background: -ms-linear-gradient(top, #afbbbe 0%, #7b909b 5%, #3b505a 97%);
   background: -o-linear-gradient(top, #afbbbe 0%, #7b909b 5%, #3b505a 97%);
   background: linear-gradient(top, #afbbbe 0%, #7b909b 5%, #3b505a 97%);
-  color: #abbdc4;
+  color: #112f4b;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li.noise a.tab {
   font-weight: bold;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li.noise.chatting a.tab {
-  color: #0c299e;
+  color: #abbdc4;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li.tabbed a.tab {
-  color: #e02d2d;
-  border-color: #e02d2d;
+  color: #831414;
+  border-color: #831414;
   border-width: 2px;
   font-weight: bold;
 }
