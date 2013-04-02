@@ -47,7 +47,11 @@
             
             li {
                 float: left;
-                margin-top: 2px;
+                margin-top: 9px;
+            }
+            
+            li.chans {
+                display: block;
             }
             
             &.tabs {
@@ -111,8 +115,9 @@
                                 display: block;
                                 position: relative;
                                 top: 0px;
-                                right: 18px;
+                                right: 22px;
                                 float: right;
+                                margin-right: -15px;
                             }
                         }
                     
