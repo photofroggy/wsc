@@ -381,7 +381,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     
     // Make sure edit buttons are in the right place.
     for( var head in heads ) {
-        if( !heads[head].m.hasOwnProperty( head ) )
+        if( !heads.hasOwnProperty( head ) )
             continue;
         
         if( heads[head].m.html().length == 0 )
