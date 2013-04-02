@@ -71,10 +71,10 @@ wsc.dAmn.Extension = function( client ) {
     client.ui.middle( 'user.hover', function( data, done ) {
         data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
-        if( data.member.realname )
+        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
             data.info.push(data.member.realname);
         
-        if( data.member.typename )
+        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
             data.info.push(data.member.typename);
         
         done( data );

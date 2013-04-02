@@ -1636,41 +1636,46 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     var chan = this;
     var box = null;
     
-    link.hover(
-        function( e ) {
-            var infoli = '';
-            
-            for( index in user.info ) {
-                infoli+= '<li>' + user.info[index] + '</li>';
-            }
-            
-            chan.window.append(Chatterbox.render('userinfo', {
-                'username': user.name,
-                'avatar': user.avatar,
-                'link': user.link,
-                'info': infoli}));
-            
-            box = chan.window.find('.userinfo#'+user.name);
-            chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            var pos = link.offset();
-            box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
-            box.find('.info').height(box.height());
-            
-            box.hover(
-                function(){ box.data('hover', 1); },
-                function( e ) {
-                    box.data('hover', 0);
-                    chan.unhover_user( box, e );
-                }
-            );
-            
-            box.data('hover', 0);
-        },
-        function( e ) {
-            link.data('hover', 0);
-            chan.unhover_user(box, e);
+    var menter = function( e ) {
+        var infoli = '';
+        
+        for( index in user.info ) {
+            infoli+= '<li>' + user.info[index] + '</li>';
         }
-    );
+        
+        chan.window.append(Chatterbox.render('userinfo', {
+            'username': user.name,
+            'avatar': user.avatar,
+            'link': user.link,
+            'info': infoli}));
+        
+        box = chan.window.find('.userinfo#'+user.name);
+        chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
+        var pos = link.offset();
+        box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+        box.find('.info').height(box.height());
+        
+        box.hover(
+            function(){ box.data('hover', 1); },
+            function( e ) {
+                box.data('hover', 0);
+                chan.unhover_user( box, e );
+            }
+        );
+        
+        box.data('hover', 0);
+    };
+    
+    var mleave = function( e ) {
+        link.data('hover', 0);
+        chan.unhover_user(box, e);
+    };
+    
+    link.off( 'mouseenter', menter );
+    link.off( 'mouseleave', mleave );
+    
+    link.on( 'mouseenter', menter );
+    link.on( 'mouseleave', mleave );
 
 };
 
