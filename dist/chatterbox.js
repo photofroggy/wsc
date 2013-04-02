@@ -1341,11 +1341,13 @@ Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
     var uld = this.el.m.find('div.chatusers');
     var total = 0;
     var count = 0;
+    var pc = null;
     
     uld.find('div.pc').each( function( i, el ) {
-        count = uld.find(this).find('ul li').length;
+        pc = uld.find(this);
+        count = pc.find('ul li').length;
         total+= count;
-        uld.find(this).css(count == 0 ? 'none' : 'block');
+        pc.css('display', ( count == 0 ? 'none' : 'block' ));
     } );
     
     uld.css('display', ( total == 0 ? 'none' : 'block' ));
