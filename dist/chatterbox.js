@@ -1408,11 +1408,37 @@ Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
     var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
     
     if( ull.find('a#' + user.name).length == 1 )
         return;
     
-    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>' );
+    if( ull.find('li').length == 0 ) {
+        ull.append( html );
+    } else {
+    
+        var mname = user.name.toLowerCase();
+        var link = null;
+        var done = false;
+        
+        ull.find('li a').each( function(  ) {
+            
+            if( done )
+                return;
+            
+            link = ull.find(this);
+            
+            if( mname < link.prop('id').toLowerCase() ) {
+                link.parent().before( html );
+                done = true;
+            }
+            
+        } );
+        
+        if( !done )
+            ull.append( html );
+    
+    }
     
     var c = this;
     this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
