@@ -276,37 +276,7 @@ wsc.Channel.prototype.set_members = function( e ) {
 wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
-    
-    var names = this.get_usernames();
-    var pcs = {};
-    
-    for( var i in names ) {
-        if( !names.hasOwnProperty(i) )
-            continue;
-        var un = names[i];
-        var member = this.info.members[un];
-        
-        if( !(member['pc'] in pcs) )
-            pcs[member['pc']] = {'name': member['pc'], 'users': []};
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        uinfo = {
-            'name': un,
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        pcs[member['pc']].users.push(uinfo);
-    }
-    
+    /*
     var ulist = [];
     
     for(var index in this.info["pc_order"]) {
@@ -323,6 +293,46 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     if( this.ui != null ) {
         this.ui.set_user_list(ulist);
+    }
+    */
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( 'Room Members' in pcs ) {
+        names[100] = 'Room Members';
+        orders.unshift( 'Room Members' );
+    }
+    
+    this.ui.build_user_list( names, orders );
+    
+    var names = this.get_usernames();
+    var users = [];
+    var uinfo = null;
+    
+    for( var i in names ) {
+        
+        if( !names.hasOwnProperty(i) )
+            continue;
+        
+        var un = names[i];
+        var member = this.info.members[un];
+        
+        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+        var s = member.symbol;
+        this.ui.set_user( {
+            'name': un,
+            'pc': member['pc'],
+            'symbol': s,
+            'conn': member.conn,
+            'hover': {
+                'member': member,
+                'name': un,
+                'avatar': '<img class="avatar" src="" height="50" width="50" />',
+                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
+                'info': []
+            }
+        } );
     }
     
     this.client.trigger('set.userlist', {

@@ -1240,37 +1240,7 @@ wsc.Channel.prototype.set_members = function( e ) {
 wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
-    
-    var names = this.get_usernames();
-    var pcs = {};
-    
-    for( var i in names ) {
-        if( !names.hasOwnProperty(i) )
-            continue;
-        var un = names[i];
-        var member = this.info.members[un];
-        
-        if( !(member['pc'] in pcs) )
-            pcs[member['pc']] = {'name': member['pc'], 'users': []};
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        uinfo = {
-            'name': un,
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        pcs[member['pc']].users.push(uinfo);
-    }
-    
+    /*
     var ulist = [];
     
     for(var index in this.info["pc_order"]) {
@@ -1287,6 +1257,46 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     if( this.ui != null ) {
         this.ui.set_user_list(ulist);
+    }
+    */
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( 'Room Members' in pcs ) {
+        names[100] = 'Room Members';
+        orders.unshift( 'Room Members' );
+    }
+    
+    this.ui.build_user_list( names, orders );
+    
+    var names = this.get_usernames();
+    var users = [];
+    var uinfo = null;
+    
+    for( var i in names ) {
+        
+        if( !names.hasOwnProperty(i) )
+            continue;
+        
+        var un = names[i];
+        var member = this.info.members[un];
+        
+        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
+        var s = member.symbol;
+        this.ui.set_user( {
+            'name': un,
+            'pc': member['pc'],
+            'symbol': s,
+            'conn': member.conn,
+            'hover': {
+                'member': member,
+                'name': un,
+                'avatar': '<img class="avatar" src="" height="50" width="50" />',
+                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
+                'info': []
+            }
+        } );
     }
     
     this.client.trigger('set.userlist', {
@@ -5549,25 +5559,57 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
 };
 
 /**
+ * Build the user list.
+ * 
+ * @method build_user_list
+ * @param names {Object} Privilege class names
+ * @param order {Array} Privilege class orders
+ */
+Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var pc = '';
+    var pcel = null;
+    
+    uld.html('');
+    
+    for(var index in order) {
+        var pc = names[order[index]];
+        uld.append('<div class="pc" id="' + pc + '"><h3>' + pc + '</h3><ul></ul>');
+        pcel = uld.find('.pc#' + pc);
+        pcel.css('display', 'none');
+    }
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
- * @param userlist {Array} Listing of users in the channel.
+ * @param users {Array} Listing of users in the channel.
  */
-Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
-    if( Object.size(userlist) == 0 )
+    if( Object.size(users) == 0 )
         return;
     
-    var infoboxes = [];
-    var html = '';
-    var pc = {};
+    var uld = this.el.m.find('div.chatusers');
     var conn = '';
-    var user = '';
+    var user = null;
     
-    for( var order in userlist ) {
-        pc = userlist[order];
-        html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
+    for( var index in users ) {
+        
+        user = users[index];
+        this.set_user( user );
+    
+    }
+    
+    uld.find('div.pc').each( function( i, el ) {
+        console.log(i, el, this, uld.find(this).find('ul li').length);
+    } );
+    
+    /*
+        html += '<div class="pc" id="' + pc.name + '"><h3>' + pc.name + '</h3><ul>';
         for( var un in pc.users ) {
             user = pc.users[un];
             conn = user.conn == 1 ? '' : '[' + user.conn + ']';
@@ -5577,7 +5619,7 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
         }
         html+= '</ul></div>';
     }
-    
+    /*
     this.el.m.find('div.chatusers').html(html);
     this.el.u = this.el.m.find('div.chatusers');
     this.el.u.css({display: 'block'});
@@ -5588,9 +5630,30 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
     
     for( var index in infoboxes ) {
         this.userinfo(infoboxes[index]);
-    }
+    }*/
     this.resize();
     
+};
+
+/**
+ * Set a user in the user list.
+ * 
+ * @method set_user
+ * @param user {Object} Information about the user
+ */
+Chatterbox.Channel.prototype.set_user = function( user ) {
+
+    var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
+    var ull = uld.find('ul');
+    
+    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>' );
+    
+    this.manager.cascade( 'user.hover', this.userinfo, user.hover);
+    
+    if( ull.find('li').length > 0 ) {
+        uld.css('display', 'block');
+    }
+
 };
 
 /**
