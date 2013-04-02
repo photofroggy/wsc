@@ -231,6 +231,16 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
     this.info["pc_order"].sort(function(a, b){ return b - a });
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( this.namespace[0] == '@' ) {
+        names[100] = 'Room Members';
+        orders.unshift( 'Room Members' );
+    }
+    
+    this.ui.build_user_list( names, orders );
 };
 
 /**
@@ -262,7 +272,7 @@ wsc.Channel.prototype.set_members = function( e ) {
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
             continue;
-        this.register_user(e.pkt.sub[i]);
+        this.register_user(e.pkt.sub[i], true);
     }
     
     this.set_user_list();
@@ -274,76 +284,73 @@ wsc.Channel.prototype.set_members = function( e ) {
  * @method set_user_list
  */
 wsc.Channel.prototype.set_user_list = function( ) {
+    
     if( Object.size(this.info.members) == 0 )
         return;
     
     var names = this.get_usernames();
-    var pcs = {};
+    var users = [];
+    var uinfo = null;
     
     for( var i in names ) {
+        
         if( !names.hasOwnProperty(i) )
             continue;
-        var un = names[i];
-        var member = this.info.members[un];
         
-        if( !(member['pc'] in pcs) )
-            pcs[member['pc']] = {'name': member['pc'], 'users': []};
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        uinfo = {
-            'name': un,
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        pcs[member['pc']].users.push(uinfo);
+        users.push( this.info.members[names[i]] );
+    
     }
     
-    var ulist = [];
-    
-    for(var index in this.info["pc_order"]) {
-        var pc = this.info['pc'][this.info["pc_order"][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( 'Room Members' in pcs )
-        ulist.push(pcs['Room Members']);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    
-    this.client.trigger('set.userlist', {
+    this.client.trigger(this.namespace + '.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace']
+        'ns': this.info['namespace'],
+        'users': users
     });
+};
+
+/**
+ * Generate user info for the user list.
+ * 
+ * @method user_info
+ * @param user {String} User name
+ * @return {Object} User info
+ */
+wsc.Channel.prototype.user_info = function( user ) {
+        
+    var member = this.info.members[user];
+    var s = member.symbol;
+    
+    return {
+        'name': user,
+        'pc': member['pc'],
+        'symbol': s,
+        'conn': member.conn,
+        'hover': {
+            'member': member,
+            'name': user,
+            'avatar': '<img class="avatar" src="" height="50" width="50" />',
+            'link': s + '<a target="_blank" href="http://' + user + '.'+ this.client.settings['domain'] + '/">' + user + '</a>',
+            'info': []
+        }
+    };
+
 };
 
 /**
  * Register a user with the channel.
  * 
  * @method register_user
- * @param pkt {Object} User data.
+ * @param pkt {Object} User data
+ * @param suppress {Boolean} Set to true to suppress events
  */
-wsc.Channel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     var un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt["arg"];
         this.info.members[un]["username"] = un;
         this.info.members[un]["conn"] = 1;
+        this.info.members[un] = this.user_info( un );
     } else {
         for( i in pkt.arg ) {
             this.info.members[un][i] = pkt.arg[i];
@@ -352,6 +359,17 @@ wsc.Channel.prototype.register_user = function( pkt ) {
     }
     if( !('pc' in this.info.members[un]) ) 
         this.info.members[un]['pc'] = 'Room Members';
+    
+    suppress = suppress || false;
+    
+    if( suppress )
+        return;
+    
+    this.client.trigger(this.namespace + '.user.registered', {
+        name: this.namespace + '.user.registered',
+        user: un
+    });
+    
 };
 
 /**
@@ -385,10 +403,11 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     
     member['conn']--;
     
-    if( member['conn'] > 0 && !force)
-        return;
+    if( member['conn'] == 0 || !force) {
+        delete this.info.members[user];
+    }
     
-    delete this.info.members[user];
+    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
 };
 
 /**
@@ -400,7 +419,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
 wsc.Channel.prototype.recv_join = function( e ) {
     var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
-    this.set_user_list();
 };
 
 /**
@@ -412,7 +430,6 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
 };
 
@@ -454,13 +471,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member['pc'] = data.pc;
+    }, e);
     
-    member['pc'] = e.pc;
-    this.set_user_list();
 };
 
 /**
