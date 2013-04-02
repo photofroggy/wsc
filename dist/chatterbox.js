@@ -1357,29 +1357,6 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
     uld.css('display', ( total == 0 ? 'none' : 'block' ));
     
-    /*
-        html += '<div class="pc" id="' + pc.name + '"><h3>' + pc.name + '</h3><ul>';
-        for( var un in pc.users ) {
-            user = pc.users[un];
-            conn = user.conn == 1 ? '' : '[' + user.conn + ']';
-            html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
-            if( user.hover )
-                infoboxes.push(user.hover);
-        }
-        html+= '</ul></div>';
-    }
-    /*
-    this.el.m.find('div.chatusers').html(html);
-    this.el.u = this.el.m.find('div.chatusers');
-    this.el.u.css({display: 'block'});
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
-    
-    for( var index in infoboxes ) {
-        this.userinfo(infoboxes[index]);
-    }*/
     var c = this;
     setTimeout( function( ) {
         c.resize();
@@ -1397,8 +1374,8 @@ Chatterbox.Channel.prototype.set_user = function( user ) {
 
     var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
     var ull = uld.find('ul');
-    
-    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + user.conn + '</li>' );
+    var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>' );
     
     var c = this;
     this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
@@ -1513,10 +1490,6 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     
     link.hover(
         function( e ) {
-            user.info = [];
-            var ed = { 'ns': chan.namespace, 'user': user };
-            chan.manager.trigger( 'userinfo.before', ed );
-            user = ed.user;
             var infoli = '';
             
             for( index in user.info ) {
