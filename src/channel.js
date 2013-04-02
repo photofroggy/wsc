@@ -330,7 +330,8 @@ wsc.Channel.prototype.set_user_list = function( ) {
         
         var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
         var s = member.symbol;
-        this.ui.set_user( {
+        
+        users.push( {
             'name': un,
             'pc': member['pc'],
             'symbol': s,
@@ -344,6 +345,8 @@ wsc.Channel.prototype.set_user_list = function( ) {
             }
         } );
     }
+    
+    this.ui.set_user_list( users );
     
     this.client.trigger('set.userlist', {
         'name': 'set.userlist',

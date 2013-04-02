@@ -1294,7 +1294,8 @@ wsc.Channel.prototype.set_user_list = function( ) {
         
         var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
         var s = member.symbol;
-        this.ui.set_user( {
+        
+        users.push( {
             'name': un,
             'pc': member['pc'],
             'symbol': s,
@@ -1308,6 +1309,8 @@ wsc.Channel.prototype.set_user_list = function( ) {
             }
         } );
     }
+    
+    this.ui.set_user_list( users );
     
     this.client.trigger('set.userlist', {
         'name': 'set.userlist',
@@ -5604,7 +5607,6 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
         return;
     
     var uld = this.el.m.find('div.chatusers');
-    var conn = '';
     var user = null;
     
     for( var index in users ) {
@@ -5614,9 +5616,22 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
     }
     
+    var total = 0;
+    var count = 0;
+    
     uld.find('div.pc').each( function( i, el ) {
-        console.log(i, el, this, uld.find(this).find('ul li').length);
+        count = uld.find(this).find('ul li').length;
+        total+= count;
+        
+        if( count == 0 ) {
+            uld.find(this).css('display', 'none');
+            return;
+        }
+        
+        uld.find(this).css('display', 'block');
     } );
+    
+    uld.css('display', ( total == 0 ? 'none' : 'block' ));
     
     /*
         html += '<div class="pc" id="' + pc.name + '"><h3>' + pc.name + '</h3><ul>';
@@ -5641,7 +5656,10 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     for( var index in infoboxes ) {
         this.userinfo(infoboxes[index]);
     }*/
-    this.resize();
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
     
 };
 
@@ -5656,11 +5674,10 @@ Chatterbox.Channel.prototype.set_user = function( user ) {
     var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
     var ull = uld.find('ul');
     
-    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>' );
+    ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + user.conn + '</li>' );
     
-    this.manager.cascade( 'user.hover', this.userinfo, user.hover);
-    
-    console.log(ull.find('li').length, ull.find('li'));
+    var c = this;
+    this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
     
     if( ull.find('li').length > 0 ) {
         uld.css('display', 'block');
