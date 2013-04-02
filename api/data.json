@@ -1406,7 +1406,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 95,
+            "line": 97,
             "description": "Implements the Data Sharing Protocol.",
             "itemtype": "method",
             "name": "BDS",
@@ -1415,7 +1415,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 102,
+            "line": 104,
             "description": "Implements Data Sharing Links. Links are private chats between two clients that\nare used for exchanging information autonomously.",
             "itemtype": "method",
             "name": "BDS.Link",
@@ -1424,7 +1424,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 110,
+            "line": 112,
             "description": "Implements custom colours.",
             "itemtype": "method",
             "name": "Colours",
@@ -1433,7 +1433,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 117,
+            "line": 119,
             "description": "Implements custom emoticons.",
             "itemtype": "method",
             "name": "Emotes",
@@ -1442,7 +1442,7 @@
         },
         {
             "file": "src/dAmn/extension.js",
-            "line": 124,
+            "line": 126,
             "description": "Implements Sta.sh thumbnails.",
             "itemtype": "method",
             "name": "Stash",
@@ -2184,7 +2184,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 123,
+            "line": 147,
             "description": "Set up a header so it can be edited in the UI.",
             "itemtype": "method",
             "name": "setup_header",
@@ -2193,7 +2193,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 210,
+            "line": 234,
             "description": "Hide the channel from view.",
             "itemtype": "method",
             "name": "hide",
@@ -2202,7 +2202,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 221,
+            "line": 245,
             "description": "Display the channel.",
             "itemtype": "method",
             "name": "show",
@@ -2211,7 +2211,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 239,
+            "line": 263,
             "description": "Display or hide the tab based on whether we are in developer mode or not.",
             "itemtype": "method",
             "name": "developer",
@@ -2220,7 +2220,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 254,
+            "line": 278,
             "description": "Remove the channel from the UI.",
             "itemtype": "method",
             "name": "remove",
@@ -2229,7 +2229,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 264,
+            "line": 288,
             "description": "Scroll the log panel downwards.",
             "itemtype": "method",
             "name": "scroll",
@@ -2238,7 +2238,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 280,
+            "line": 304,
             "description": "Add padding to the channel log's wrapping ul.\nThis is done to make sure messages always appear at the bottom first.",
             "itemtype": "method",
             "name": "pad",
@@ -2247,7 +2247,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 302,
+            "line": 326,
             "description": "Fix the dimensions of the log window.",
             "itemtype": "method",
             "name": "resize",
@@ -2256,7 +2256,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 371,
+            "line": 395,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2265,7 +2265,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 390,
+            "line": 414,
             "description": "Display a log message.",
             "itemtype": "method",
             "name": "log",
@@ -2281,7 +2281,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 411,
+            "line": 435,
             "description": "Send a message to the log window.",
             "itemtype": "method",
             "name": "log_item",
@@ -2297,7 +2297,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 455,
+            "line": 479,
             "description": "Rewrite time signatures for all messages. Woo.",
             "itemtype": "method",
             "name": "retime",
@@ -2306,7 +2306,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 481,
+            "line": 505,
             "description": "Send a server message to the log window.",
             "itemtype": "method",
             "name": "server_message",
@@ -2328,7 +2328,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 502,
+            "line": 526,
             "description": "Clear all log messages from the log window.",
             "itemtype": "method",
             "name": "clear",
@@ -2337,7 +2337,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 514,
+            "line": 538,
             "description": "Display an info box in the channel log.",
             "itemtype": "method",
             "name": "log_info",
@@ -2353,7 +2353,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 546,
+            "line": 570,
             "description": "Display a user's whois info.",
             "itemtype": "method",
             "name": "show_whois",
@@ -2369,7 +2369,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 620,
+            "line": 644,
             "description": "Display some information relating to a privilege class.",
             "itemtype": "method",
             "name": "log_pc",
@@ -2390,7 +2390,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 655,
+            "line": 679,
             "description": "Set the channel header.\n\nThis can be the title or topic, determined by `head`.",
             "itemtype": "method",
             "name": "set_header",
@@ -2411,7 +2411,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 687,
+            "line": 711,
             "description": "Get a channel header's contents.",
             "itemtype": "method",
             "name": "get_header",
@@ -2431,13 +2431,43 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 700,
+            "line": 724,
+            "description": "Build the user list.",
+            "itemtype": "method",
+            "name": "build_user_list",
+            "params": [
+                {
+                    "name": "names",
+                    "description": "Privilege class names",
+                    "type": "Object"
+                },
+                {
+                    "name": "order",
+                    "description": "Privilege class orders",
+                    "type": "Array"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 748,
+            "description": "Reveal or hide the userlist depending on the number of users present.",
+            "itemtype": "method",
+            "name": "reveal_user_list",
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 776,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
             "params": [
                 {
-                    "name": "userlist",
+                    "name": "users",
                     "description": "Listing of users in the channel.",
                     "type": "Array"
                 }
@@ -2447,7 +2477,96 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 745,
+            "line": 801,
+            "description": "Set a user in the user list.",
+            "itemtype": "method",
+            "name": "set_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Information about the user",
+                    "type": "Object"
+                },
+                {
+                    "name": "noreveal",
+                    "description": "Do not run the reveal method",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 856,
+            "description": "Remove a user from the user list.",
+            "itemtype": "method",
+            "name": "remove_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "to remove"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 875,
+            "description": "Remove a single instance of a user from the user list.",
+            "itemtype": "method",
+            "name": "remove_one_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Username",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 898,
+            "description": "Move a user from one privclass to another.",
+            "itemtype": "method",
+            "name": "privchg",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "recv_privchg event data",
+                    "type": "Object"
+                },
+                {
+                    "name": "done",
+                    "description": "Next method",
+                    "type": "Function"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 919,
+            "description": "Handle the register user event.",
+            "itemtype": "method",
+            "name": "register_user",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "Name of the user to register",
+                    "type": "String"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/channel.js",
+            "line": 939,
             "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
             "itemtype": "method",
             "name": "highlight",
@@ -2464,7 +2583,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 794,
+            "line": 988,
             "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
             "itemtype": "method",
             "name": "noise",
@@ -2473,7 +2592,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 830,
+            "line": 1024,
             "description": "Display a user info hover box.",
             "itemtype": "method",
             "name": "userinfo",
@@ -2493,7 +2612,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 889,
+            "line": 1084,
             "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
             "itemtype": "method",
             "name": "unhover_user",
@@ -2514,7 +2633,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 923,
+            "line": 1118,
             "description": "Hide messages from a given user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2530,7 +2649,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 938,
+            "line": 1133,
             "description": "Reveal messages received from a given user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2546,7 +2665,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 953,
+            "line": 1148,
             "description": "Remove a user's messages completely.",
             "itemtype": "method",
             "name": "clear_user",
@@ -4391,7 +4510,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 236,
+            "line": 246,
             "description": "Get the order of a given privilege class.",
             "itemtype": "method",
             "name": "get_privclass_order",
@@ -4411,7 +4530,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 253,
+            "line": 263,
             "description": "Store each member of the this.",
             "itemtype": "method",
             "name": "set_members",
@@ -4427,7 +4546,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 271,
+            "line": 281,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
@@ -4436,15 +4555,40 @@
         },
         {
             "file": "src/channel.js",
-            "line": 334,
+            "line": 311,
+            "description": "Generate user info for the user list.",
+            "itemtype": "method",
+            "name": "user_info",
+            "params": [
+                {
+                    "name": "user",
+                    "description": "User name",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "User info",
+                "type": "Object"
+            },
+            "class": "wsc.Channel",
+            "module": "wsc"
+        },
+        {
+            "file": "src/channel.js",
+            "line": 339,
             "description": "Register a user with the channel.",
             "itemtype": "method",
             "name": "register_user",
             "params": [
                 {
                     "name": "pkt",
-                    "description": "User data.",
+                    "description": "User data",
                     "type": "Object"
+                },
+                {
+                    "name": "suppress",
+                    "description": "Set to true to suppress events",
+                    "type": "Boolean"
                 }
             ],
             "class": "wsc.Channel",
@@ -4452,7 +4596,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 357,
+            "line": 375,
             "description": "Return a list of usernames, sorted alphabetically.",
             "itemtype": "method",
             "name": "get_usernames",
@@ -4461,7 +4605,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 373,
+            "line": 391,
             "description": "Remove a user from the channel.",
             "itemtype": "method",
             "name": "remove_user",
@@ -4477,7 +4621,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 394,
+            "line": 413,
             "description": "Process a recv_join event.",
             "itemtype": "method",
             "name": "recv_join",
@@ -4493,7 +4637,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 406,
+            "line": 424,
             "description": "Process a recv_part event.",
             "itemtype": "method",
             "name": "recv_part",
@@ -4509,7 +4653,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 419,
+            "line": 436,
             "description": "Process a recv_msg event.",
             "itemtype": "method",
             "name": "recv_msg",
@@ -4525,7 +4669,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 450,
+            "line": 467,
             "description": "Process a recv_privchg event.",
             "itemtype": "method",
             "name": "recv_privchg",
@@ -4541,7 +4685,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 466,
+            "line": 487,
             "description": "Process a recv_kicked event.",
             "itemtype": "method",
             "name": "recv_kicked",

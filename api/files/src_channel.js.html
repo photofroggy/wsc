@@ -347,6 +347,16 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
         this.info[&quot;pc&quot;][parseInt(bits[0])] = bits[1];
     }
     this.info[&quot;pc_order&quot;].sort(function(a, b){ return b - a });
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( this.namespace[0] == &#x27;@&#x27; ) {
+        names[100] = &#x27;Room Members&#x27;;
+        orders.unshift( &#x27;Room Members&#x27; );
+    }
+    
+    this.ui.build_user_list( names, orders );
 };
 
 &#x2F;**
@@ -378,7 +388,7 @@ wsc.Channel.prototype.set_members = function( e ) {
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
             continue;
-        this.register_user(e.pkt.sub[i]);
+        this.register_user(e.pkt.sub[i], true);
     }
     
     this.set_user_list();
@@ -390,76 +400,73 @@ wsc.Channel.prototype.set_members = function( e ) {
  * @method set_user_list
  *&#x2F;
 wsc.Channel.prototype.set_user_list = function( ) {
+    
     if( Object.size(this.info.members) == 0 )
         return;
     
     var names = this.get_usernames();
-    var pcs = {};
+    var users = [];
+    var uinfo = null;
     
     for( var i in names ) {
+        
         if( !names.hasOwnProperty(i) )
             continue;
-        var un = names[i];
-        var member = this.info.members[un];
         
-        if( !(member[&#x27;pc&#x27;] in pcs) )
-            pcs[member[&#x27;pc&#x27;]] = {&#x27;name&#x27;: member[&#x27;pc&#x27;], &#x27;users&#x27;: []};
-        
-        var conn = member[&#x27;conn&#x27;] == 1 ? &#x27;&#x27; : &#x27;[&#x27; + member[&#x27;conn&#x27;] + &#x27;]&#x27;;
-        var s = member.symbol;
-        uinfo = {
-            &#x27;name&#x27;: un,
-            &#x27;symbol&#x27;: s,
-            &#x27;conn&#x27;: member.conn,
-            &#x27;hover&#x27;: {
-                &#x27;member&#x27;: member,
-                &#x27;name&#x27;: un,
-                &#x27;avatar&#x27;: &#x27;&lt;img class=&quot;avatar&quot; src=&quot;&quot; height=&quot;50&quot; width=&quot;50&quot; &#x2F;&gt;&#x27;,
-                &#x27;link&#x27;: s + &#x27;&lt;a target=&quot;_blank&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + un + &#x27;.&#x27;+ this.client.settings[&#x27;domain&#x27;] + &#x27;&#x2F;&quot;&gt;&#x27; + un + &#x27;&lt;&#x2F;a&gt;&#x27;,
-                &#x27;info&#x27;: []
-            }
-        };
-        
-        pcs[member[&#x27;pc&#x27;]].users.push(uinfo);
+        users.push( this.info.members[names[i]] );
+    
     }
     
-    var ulist = [];
-    
-    for(var index in this.info[&quot;pc_order&quot;]) {
-        var pc = this.info[&#x27;pc&#x27;][this.info[&quot;pc_order&quot;][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( &#x27;Room Members&#x27; in pcs )
-        ulist.push(pcs[&#x27;Room Members&#x27;]);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    
-    this.client.trigger(&#x27;set.userlist&#x27;, {
+    this.client.trigger(this.namespace + &#x27;.user.list&#x27;, {
         &#x27;name&#x27;: &#x27;set.userlist&#x27;,
-        &#x27;ns&#x27;: this.info[&#x27;namespace&#x27;]
+        &#x27;ns&#x27;: this.info[&#x27;namespace&#x27;],
+        &#x27;users&#x27;: users
     });
+};
+
+&#x2F;**
+ * Generate user info for the user list.
+ * 
+ * @method user_info
+ * @param user {String} User name
+ * @return {Object} User info
+ *&#x2F;
+wsc.Channel.prototype.user_info = function( user ) {
+        
+    var member = this.info.members[user];
+    var s = member.symbol;
+    
+    return {
+        &#x27;name&#x27;: user,
+        &#x27;pc&#x27;: member[&#x27;pc&#x27;],
+        &#x27;symbol&#x27;: s,
+        &#x27;conn&#x27;: member.conn,
+        &#x27;hover&#x27;: {
+            &#x27;member&#x27;: member,
+            &#x27;name&#x27;: user,
+            &#x27;avatar&#x27;: &#x27;&lt;img class=&quot;avatar&quot; src=&quot;&quot; height=&quot;50&quot; width=&quot;50&quot; &#x2F;&gt;&#x27;,
+            &#x27;link&#x27;: s + &#x27;&lt;a target=&quot;_blank&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + user + &#x27;.&#x27;+ this.client.settings[&#x27;domain&#x27;] + &#x27;&#x2F;&quot;&gt;&#x27; + user + &#x27;&lt;&#x2F;a&gt;&#x27;,
+            &#x27;info&#x27;: []
+        }
+    };
+
 };
 
 &#x2F;**
  * Register a user with the channel.
  * 
  * @method register_user
- * @param pkt {Object} User data.
+ * @param pkt {Object} User data
+ * @param suppress {Boolean} Set to true to suppress events
  *&#x2F;
-wsc.Channel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     var un = pkt[&quot;param&quot;];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt[&quot;arg&quot;];
         this.info.members[un][&quot;username&quot;] = un;
         this.info.members[un][&quot;conn&quot;] = 1;
+        this.info.members[un] = this.user_info( un );
     } else {
         for( i in pkt.arg ) {
             this.info.members[un][i] = pkt.arg[i];
@@ -468,6 +475,17 @@ wsc.Channel.prototype.register_user = function( pkt ) {
     }
     if( !(&#x27;pc&#x27; in this.info.members[un]) ) 
         this.info.members[un][&#x27;pc&#x27;] = &#x27;Room Members&#x27;;
+    
+    suppress = suppress || false;
+    
+    if( suppress )
+        return;
+    
+    this.client.trigger(this.namespace + &#x27;.user.registered&#x27;, {
+        name: this.namespace + &#x27;.user.registered&#x27;,
+        user: un
+    });
+    
 };
 
 &#x2F;**
@@ -501,10 +519,11 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     
     member[&#x27;conn&#x27;]--;
     
-    if( member[&#x27;conn&#x27;] &gt; 0 &amp;&amp; !force)
-        return;
+    if( member[&#x27;conn&#x27;] == 0 || !force) {
+        delete this.info.members[user];
+    }
     
-    delete this.info.members[user];
+    this.client.cascade( this.namespace + &#x27;.user.remove&#x27;, function( user ) {}, member.name);
 };
 
 &#x2F;**
@@ -516,7 +535,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
 wsc.Channel.prototype.recv_join = function( e ) {
     var info = new wsc.Packet(&#x27;user &#x27; + e.user + &#x27;\n&#x27; + e[&#x27;info&#x27;]);
     this.register_user( info );
-    this.set_user_list();
 };
 
 &#x2F;**
@@ -528,7 +546,6 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
 };
 
@@ -570,13 +587,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  *&#x2F;
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade(this.namespace + &#x27;.user.privchg&#x27;, function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member[&#x27;pc&#x27;] = data.pc;
+    }, e);
     
-    member[&#x27;pc&#x27;] = e.pc;
-    this.set_user_list();
 };
 
 &#x2F;**

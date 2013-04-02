@@ -233,6 +233,30 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass(&#x27;hidden&#x27;);
     }
     
+    this.manager.client.bind( this.namespace + &#x27;.user.list&#x27;, function( event ) {
+        
+        chan.set_user_list( event.users );
+        
+    } );
+    
+    this.manager.client.middle( this.namespace + &#x27;.user.privchg&#x27;, function( data, done ) {
+        
+        chan.privchg( data, done );
+    
+    });
+    
+    this.manager.client.middle( this.namespace + &#x27;.user.remove&#x27;, function( data, done ) {
+    
+        chan.remove_one_user( data, done );
+    
+    } );
+    
+    this.manager.client.bind( this.namespace + &#x27;.user.registered&#x27;, function( event ) {
+    
+        chan.register_user( event.user );
+    
+    } );
+    
     this.built = true;
 };
 
@@ -473,7 +497,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     
     &#x2F;&#x2F; Make sure edit buttons are in the right place.
     for( var head in heads ) {
-        if( !heads[head].m.hasOwnProperty( head ) )
+        if( !heads.hasOwnProperty( head ) )
             continue;
         
         if( heads[head].m.html().length == 0 )
@@ -814,48 +838,218 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
 };
 
 &#x2F;**
+ * Build the user list.
+ * 
+ * @method build_user_list
+ * @param names {Object} Privilege class names
+ * @param order {Array} Privilege class orders
+ *&#x2F;
+Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
+
+    var uld = this.el.m.find(&#x27;div.chatusers&#x27;);
+    var pc = &#x27;&#x27;;
+    var pcel = null;
+    
+    uld.html(&#x27;&#x27;);
+    
+    for(var index in order) {
+        var pc = names[order[index]];
+        uld.append(&#x27;&lt;div class=&quot;pc&quot; id=&quot;&#x27; + pc + &#x27;&quot;&gt;&lt;h3&gt;&#x27; + pc + &#x27;&lt;&#x2F;h3&gt;&lt;ul&gt;&lt;&#x2F;ul&gt;&#x27;);
+        pcel = uld.find(&#x27;.pc#&#x27; + pc);
+        pcel.css(&#x27;display&#x27;, &#x27;none&#x27;);
+    }
+
+};
+
+&#x2F;**
+ * Reveal or hide the userlist depending on the number of users present.
+ * 
+ * @method reveal_user_list
+ *&#x2F;
+Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
+
+    var uld = this.el.m.find(&#x27;div.chatusers&#x27;);
+    var total = 0;
+    var count = 0;
+    var pc = null;
+    
+    uld.find(&#x27;div.pc&#x27;).each( function( i, el ) {
+        pc = uld.find(this);
+        count = pc.find(&#x27;ul li&#x27;).length;
+        total+= count;
+        pc.css(&#x27;display&#x27;, ( count == 0 ? &#x27;none&#x27; : &#x27;block&#x27; ));
+    } );
+    
+    uld.css(&#x27;display&#x27;, ( total == 0 ? &#x27;none&#x27; : &#x27;block&#x27; ));
+    
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
+
+};
+
+&#x2F;**
  * Set the channel user list.
  * 
  * @method set_user_list
- * @param userlist {Array} Listing of users in the channel.
+ * @param users {Array} Listing of users in the channel.
  *&#x2F;
-Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
-    if( Object.size(userlist) == 0 )
+    if( Object.size(users) == 0 )
         return;
     
-    var infoboxes = [];
-    var html = &#x27;&#x27;;
-    var pc = {};
-    var conn = &#x27;&#x27;;
-    var user = &#x27;&#x27;;
+    var uld = this.el.m.find(&#x27;div.chatusers&#x27;);
+    var user = null;
     
-    for( var order in userlist ) {
-        pc = userlist[order];
-        html += &#x27;&lt;div class=&quot;pc&quot;&gt;&lt;h3&gt;&#x27; + pc.name + &#x27;&lt;&#x2F;h3&gt;&lt;ul&gt;&#x27;;
-        for( var un in pc.users ) {
-            user = pc.users[un];
-            conn = user.conn == 1 ? &#x27;&#x27; : &#x27;[&#x27; + user.conn + &#x27;]&#x27;;
-            html+= &#x27;&lt;li&gt;&lt;a target=&quot;_blank&quot; id=&quot;&#x27; + user.name + &#x27;&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + user.name + &#x27;.&#x27; + this.manager.settings[&#x27;domain&#x27;] + &#x27;&quot;&gt;&lt;em&gt;&#x27; + user.symbol + &#x27;&lt;&#x2F;em&gt;&#x27; + user.name + &#x27;&lt;&#x2F;a&gt;&#x27; + conn + &#x27;&lt;&#x2F;li&gt;&#x27;
-            if( user.hover )
-                infoboxes.push(user.hover);
-        }
-        html+= &#x27;&lt;&#x2F;ul&gt;&lt;&#x2F;div&gt;&#x27;;
+    for( var index in users ) {
+        
+        user = users[index];
+        this.set_user( user, true );
+    
     }
     
-    this.el.m.find(&#x27;div.chatusers&#x27;).html(html);
-    this.el.u = this.el.m.find(&#x27;div.chatusers&#x27;);
-    this.el.u.css({display: &#x27;block&#x27;});
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
+    this.reveal_user_list();
     
-    for( var index in infoboxes ) {
-        this.userinfo(infoboxes[index]);
+};
+
+&#x2F;**
+ * Set a user in the user list.
+ * 
+ * @method set_user
+ * @param user {Object} Information about the user
+ * @param noreveal {Boolean} Do not run the reveal method
+ *&#x2F;
+Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
+
+    var uld = this.el.m.find(&#x27;div.chatusers div.pc#&#x27; + user.pc);
+    var ull = uld.find(&#x27;ul&#x27;);
+    var conn = user.conn == 1 ? &#x27;&#x27; : &#x27;[&#x27; + user.conn + &#x27;]&#x27;;
+    var html = &#x27;&lt;li&gt;&lt;a target=&quot;_blank&quot; id=&quot;&#x27; + user.name + &#x27;&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + user.name + &#x27;.&#x27; + this.manager.settings[&#x27;domain&#x27;] + &#x27;&quot;&gt;&lt;em&gt;&#x27; + user.symbol + &#x27;&lt;&#x2F;em&gt;&#x27; + user.name + &#x27;&lt;&#x2F;a&gt;&#x27; + conn + &#x27;&lt;&#x2F;li&gt;&#x27;;
+    
+    if( ull.find(&#x27;a#&#x27; + user.name).length == 1 )
+        return;
+    
+    if( ull.find(&#x27;li&#x27;).length == 0 ) {
+        ull.append( html );
+    } else {
+    
+        var mname = user.name.toLowerCase();
+        var link = null;
+        var done = false;
+        
+        ull.find(&#x27;li a&#x27;).each( function(  ) {
+            
+            if( done )
+                return;
+            
+            link = ull.find(this);
+            
+            if( mname &lt; link.prop(&#x27;id&#x27;).toLowerCase() ) {
+                link.parent().before( html );
+                done = true;
+            }
+            
+        } );
+        
+        if( !done )
+            ull.append( html );
+    
     }
-    this.resize();
     
+    var c = this;
+    this.manager.cascade( &#x27;user.hover&#x27;, function( data ) { c.userinfo( data ); }, user.hover);
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+        
+
+};
+
+&#x2F;**
+ * Remove a user from the user list.
+ * 
+ * @method remove_user
+ * @param user to remove
+ *&#x2F;
+Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
+
+    this.el
+        .m.find(&#x27;div.chatusers div.pc ul li a#&#x27; + user)
+        .parent().remove();
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+
+};
+
+&#x2F;**
+ * Remove a single instance of a user from the user list.
+ * 
+ * @method remove_one_user
+ * @param user {String} Username
+ *&#x2F;
+Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+
+    this.remove_user( user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        done( user );
+        return;
+    }
+    
+    this.set_user( user );
+    done( user );
+
+};
+
+&#x2F;**
+ * Move a user from one privclass to another.
+ * 
+ * @method privchg
+ * @param event {Object} recv_privchg event data
+ * @param done {Function} Next method
+ *&#x2F;
+Chatterbox.Channel.prototype.privchg = function( data, done ) {
+
+    this.remove_user( data.user, true );
+    
+    var member = Object.extend(
+        this.manager.client.channel(this.namespace).info.members[data.user],
+        {});
+    
+    member.pc = data.pc;
+    
+    this.set_user( member );
+
+};
+
+&#x2F;**
+ * Handle the register user event.
+ * 
+ * @method register_user
+ * @param user {String} Name of the user to register
+ *&#x2F;
+Chatterbox.Channel.prototype.register_user = function( user ) {
+
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
 };
 
 &#x2F;**
@@ -960,45 +1154,46 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     var chan = this;
     var box = null;
     
-    link.hover(
-        function( e ) {
-            user.info = [];
-            var ed = { &#x27;ns&#x27;: chan.namespace, &#x27;user&#x27;: user };
-            chan.manager.trigger( &#x27;userinfo.before&#x27;, ed );
-            user = ed.user;
-            var infoli = &#x27;&#x27;;
-            
-            for( index in user.info ) {
-                infoli+= &#x27;&lt;li&gt;&#x27; + user.info[index] + &#x27;&lt;&#x2F;li&gt;&#x27;;
-            }
-            
-            chan.window.append(Chatterbox.render(&#x27;userinfo&#x27;, {
-                &#x27;username&#x27;: user.name,
-                &#x27;avatar&#x27;: user.avatar,
-                &#x27;link&#x27;: user.link,
-                &#x27;info&#x27;: infoli}));
-            
-            box = chan.window.find(&#x27;.userinfo#&#x27;+user.name);
-            chan.window.find(&#x27;div.userinfo:not(\&#x27;#&#x27; + user.name + &#x27;\&#x27;)&#x27;).remove();
-            var pos = link.offset();
-            box.css({ &#x27;top&#x27;: (pos.top - link.height()) + 10, &#x27;left&#x27;: (pos.left - (box.width())) - 6 });
-            box.find(&#x27;.info&#x27;).height(box.height());
-            
-            box.hover(
-                function(){ box.data(&#x27;hover&#x27;, 1); },
-                function( e ) {
-                    box.data(&#x27;hover&#x27;, 0);
-                    chan.unhover_user( box, e );
-                }
-            );
-            
-            box.data(&#x27;hover&#x27;, 0);
-        },
-        function( e ) {
-            link.data(&#x27;hover&#x27;, 0);
-            chan.unhover_user(box, e);
+    var menter = function( e ) {
+        var infoli = &#x27;&#x27;;
+        
+        for( index in user.info ) {
+            infoli+= &#x27;&lt;li&gt;&#x27; + user.info[index] + &#x27;&lt;&#x2F;li&gt;&#x27;;
         }
-    );
+        
+        chan.window.append(Chatterbox.render(&#x27;userinfo&#x27;, {
+            &#x27;username&#x27;: user.name,
+            &#x27;avatar&#x27;: user.avatar,
+            &#x27;link&#x27;: user.link,
+            &#x27;info&#x27;: infoli}));
+        
+        box = chan.window.find(&#x27;.userinfo#&#x27;+user.name);
+        chan.window.find(&#x27;div.userinfo:not(\&#x27;#&#x27; + user.name + &#x27;\&#x27;)&#x27;).remove();
+        var pos = link.offset();
+        box.css({ &#x27;top&#x27;: (pos.top - link.height()) + 10, &#x27;left&#x27;: (pos.left - (box.width())) - 6 });
+        box.find(&#x27;.info&#x27;).height(box.height());
+        
+        box.hover(
+            function(){ box.data(&#x27;hover&#x27;, 1); },
+            function( e ) {
+                box.data(&#x27;hover&#x27;, 0);
+                chan.unhover_user( box, e );
+            }
+        );
+        
+        box.data(&#x27;hover&#x27;, 0);
+    };
+    
+    var mleave = function( e ) {
+        link.data(&#x27;hover&#x27;, 0);
+        chan.unhover_user(box, e);
+    };
+    
+    link.off( &#x27;mouseenter&#x27;, menter );
+    link.off( &#x27;mouseleave&#x27;, mleave );
+    
+    link.on( &#x27;mouseenter&#x27;, menter );
+    link.on( &#x27;mouseleave&#x27;, mleave );
 
 };
 

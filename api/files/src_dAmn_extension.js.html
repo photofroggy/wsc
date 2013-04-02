@@ -184,14 +184,16 @@ wsc.dAmn.Extension = function( client ) {
     client.exclude.add( &#x27;chat:devart&#x27; );
     client.exclude.add( &#x27;chat:damnidlers&#x27; );
     
-    client.ui.on( &#x27;userinfo.before&#x27;, function( event, ui ) {
-        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+    client.ui.middle( &#x27;user.hover&#x27;, function( data, done ) {
+        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
-        if( event.user.member.realname )
-            event.user.info.push(event.user.member.realname);
+        if( data.member.realname &amp;&amp; data.info.indexOf( data.member.realname ) == -1 )
+            data.info.push(data.member.realname);
         
-        if( event.user.member.typename )
-            event.user.info.push(event.user.member.typename);
+        if( data.member.typename &amp;&amp; data.info.indexOf( data.member.typename ) == -1 )
+            data.info.push(data.member.typename);
+        
+        done( data );
     });
     
     client.ui.on( &#x27;settings.save&#x27;, settings.save );
