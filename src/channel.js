@@ -382,10 +382,11 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     
     member['conn']--;
     
-    if( member['conn'] > 0 && !force)
-        return;
+    if( member['conn'] == 0 || !force) {
+        delete this.info.members[user];
+    }
     
-    delete this.info.members[user];
+    this.manager.cascade( this.namespace + '.user.remove', function( user ) {}, user);
 };
 
 /**

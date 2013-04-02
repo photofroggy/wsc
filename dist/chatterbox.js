@@ -721,6 +721,12 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     });
     
+    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
+    
+        chan.remove_one_user( data, done );
+    
+    } );
+    
     this.built = true;
 };
 
@@ -1422,6 +1428,27 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
     
     if( !( noreveal ) )
         this.reveal_user_list();
+
+};
+
+/**
+ * Remove a single instance of a user from the user list.
+ * 
+ * @method remove_one_user
+ * @param user {String} Username
+ */
+Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    console.log(member);
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( user );
 
 };
 
