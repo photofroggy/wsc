@@ -715,6 +715,12 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
+    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
+        
+        chan.set_user_list( event.users );
+        
+    } );
+    
     this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
         
         chan.privchg( data, done );

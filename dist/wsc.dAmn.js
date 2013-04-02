@@ -1265,11 +1265,10 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.ui.set_user_list( users );
-    
-    this.client.trigger('set.userlist', {
+    this.client.trigger(this.namespace + '.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace']
+        'ns': this.info['namespace'],
+        'users': users
     });
 };
 
@@ -1395,7 +1394,6 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
 };
 
@@ -4990,6 +4988,12 @@ Chatterbox.Channel.prototype.build = function( ) {
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
+    
+    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
+        
+        chan.set_user_list( event.users );
+        
+    } );
     
     this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
         

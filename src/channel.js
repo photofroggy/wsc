@@ -301,11 +301,10 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.ui.set_user_list( users );
-    
-    this.client.trigger('set.userlist', {
+    this.client.trigger(this.namespace + '.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace']
+        'ns': this.info['namespace'],
+        'users': users
     });
 };
 
@@ -431,7 +430,6 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
 };
 
