@@ -28,8 +28,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_dAmn', 'wsct_dark'],
-        'theme': 'wsct_default',
+        'themes': [ 'wsct_dAmn', 'wsct_dark' ],
+        'theme': 'wsct_dark',
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',

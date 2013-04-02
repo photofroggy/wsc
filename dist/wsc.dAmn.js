@@ -8,8 +8,8 @@ wsc.VERSION = '1.7.31';
 wsc.STATE = 'release candidate';
 wsc.REVISION = '0.21.116';
 wsc.defaults = {};
-wsc.defaults.theme = 'wsct_default';
-wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn', 'wsct_dark' ];
+wsc.defaults.theme = 'wsct_dark';
+wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
@@ -4302,8 +4302,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_dAmn', 'wsct_dark'],
-        'theme': 'wsct_default',
+        'themes': [ 'wsct_dAmn', 'wsct_dark' ],
+        'theme': 'wsct_dark',
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
