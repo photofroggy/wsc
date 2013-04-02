@@ -231,6 +231,16 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
         this.info["pc"][parseInt(bits[0])] = bits[1];
     }
     this.info["pc_order"].sort(function(a, b){ return b - a });
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
+    if( this.namespace[0] == '@' ) {
+        names[100] = 'Room Members';
+        orders.unshift( 'Room Members' );
+    }
+    
+    this.ui.build_user_list( names, orders );
 };
 
 /**
@@ -295,7 +305,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
         this.ui.set_user_list(ulist);
     }
     */
-    
+    /*
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
@@ -305,7 +315,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     }
     
     this.ui.build_user_list( names, orders );
-    
+    */
     var names = this.get_usernames();
     var users = [];
     var uinfo = null;

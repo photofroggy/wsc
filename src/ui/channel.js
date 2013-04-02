@@ -789,6 +789,8 @@ Chatterbox.Channel.prototype.set_user = function( user ) {
     
     this.manager.cascade( 'user.hover', this.userinfo, user.hover);
     
+    console.log(ull.find('li').length, ull.find('li'));
+    
     if( ull.find('li').length > 0 ) {
         uld.css('display', 'block');
     }
