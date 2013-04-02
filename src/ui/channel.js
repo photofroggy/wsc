@@ -343,8 +343,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    height = height || this.manager.chatbook.height();
-    width = width || this.manager.chatbook.width();
+    height = ( height || ((this.manager.chatbook.height() - this.manager.control.height()) - this.manager.nav.height()) - 5 );
+    width = (width || this.manager.chatbook.width()) - this.manager.nav.listwidth();
     var wh = height;
     this.el.m.height(wh);
     // Width.
@@ -365,7 +365,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - heads.title.m.parent().outerHeight();
+    wh = (wh - heads.title.m.parent().outerHeight());
         
     // Log panel dimensions
     this.el.l.p.css({

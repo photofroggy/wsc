@@ -102,7 +102,9 @@ Chatterbox.template.ui = '<div class="soundbank">\
             <li><a href="#settings" title="Change client settings" class="button iconic cog" id="settings-button"></a></li>\
         </ul>\
         </nav>\
-        <div class="chatbook"></div>';
+        <div class="chatbook">\
+        <nav class="channels"><ul></ul></nav>\
+        </div>';
 
 /**
  * HTML for an input panel.

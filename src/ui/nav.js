@@ -217,10 +217,24 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    var w = this.el.n.width() - this.el.b.outerWidth() - 20
+    this.el.tw.width( w );
+    this.el.t.width( w );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
+
+};
+
+/**
+ * Get the width of the tab list.
+ * 
+ * @method listwidth
+ * @return {Integer} Width of the channel list, in pixels
+ */
+Chatterbox.Navigation.prototype.listwidth = function(  ) {
+
+    return this.manager.view.find('nav.channels').outerWidth(true);
 
 };
 

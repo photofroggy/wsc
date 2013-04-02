@@ -5215,8 +5215,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     
     this.el.l.w.css({'padding-top': 0});
     // Height.
-    height = height || this.manager.chatbook.height();
-    width = width || this.manager.chatbook.width();
+    height = ( height || ((this.manager.chatbook.height() - this.manager.control.height()) - this.manager.nav.height()) - 5 );
+    width = (width || this.manager.chatbook.width()) - this.manager.nav.listwidth();
     var wh = height;
     this.el.m.height(wh);
     // Width.
@@ -5237,7 +5237,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - heads.title.m.parent().outerHeight();
+    wh = (wh - heads.title.m.parent().outerHeight());
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -7289,10 +7289,24 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    var w = this.el.n.width() - this.el.b.outerWidth() - 20
+    this.el.tw.width( w );
+    this.el.t.width( w );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
+
+};
+
+/**
+ * Get the width of the tab list.
+ * 
+ * @method listwidth
+ * @return {Integer} Width of the channel list, in pixels
+ */
+Chatterbox.Navigation.prototype.listwidth = function(  ) {
+
+    return this.manager.view.find('nav.channels').outerWidth(true);
 
 };
 
@@ -9550,7 +9564,9 @@ Chatterbox.template.ui = '<div class="soundbank">\
             <li><a href="#settings" title="Change client settings" class="button iconic cog" id="settings-button"></a></li>\
         </ul>\
         </nav>\
-        <div class="chatbook"></div>';
+        <div class="chatbook">\
+        <nav class="channels"><ul></ul></nav>\
+        </div>';
 
 /**
  * HTML for an input panel.

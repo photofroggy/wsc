@@ -53,6 +53,8 @@ div.wsc {
         padding: 5px;
         padding-bottom: 0px;
         border-top: 1px solid black;
+        height: 100%;
+        width: 100%;
         
         img {
             display: inline;
@@ -62,6 +64,7 @@ div.wsc {
             
     div.chatwindow {
         overflow: hidden;
+        float: left;
         
         div.chatlog {
             overflow: hidden;
