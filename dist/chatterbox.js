@@ -727,8 +727,8 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     } );
     
-    this.manager.client.bind( this.namespace + 'user.registered', function( event ) {
-        
+    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
+    
         chan.register_user( event.user );
     
     } );
@@ -1490,7 +1490,6 @@ Chatterbox.Channel.prototype.privchg = function( data, done ) {
  */
 Chatterbox.Channel.prototype.register_user = function( user ) {
 
-    console.log('what', user );
     this.remove_user( user, true );
     var member = this.manager.client.channel(this.namespace).info.members[user];
     
