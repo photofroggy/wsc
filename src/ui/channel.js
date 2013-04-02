@@ -129,6 +129,12 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     } );
     
+    this.manager.client.bind( this.namespace + 'user.registered', function( event ) {
+        
+        chan.register_user( event.user );
+    
+    } );
+    
     this.built = true;
 };
 
@@ -873,6 +879,27 @@ Chatterbox.Channel.prototype.privchg = function( data, done ) {
         {});
     
     member.pc = data.pc;
+    
+    this.set_user( member );
+
+};
+
+/**
+ * Handle the register user event.
+ * 
+ * @method register_user
+ * @param user {String} Name of the user to register
+ */
+Chatterbox.Channel.prototype.register_user = function( user ) {
+
+    console.log('what', user );
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
     
     this.set_user( member );
 

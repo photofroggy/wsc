@@ -272,7 +272,7 @@ wsc.Channel.prototype.set_members = function( e ) {
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
             continue;
-        this.register_user(e.pkt.sub[i]);
+        this.register_user(e.pkt.sub[i], true);
     }
     
     this.set_user_list();
@@ -284,6 +284,7 @@ wsc.Channel.prototype.set_members = function( e ) {
  * @method set_user_list
  */
 wsc.Channel.prototype.set_user_list = function( ) {
+    
     if( Object.size(this.info.members) == 0 )
         return;
     
@@ -296,28 +297,8 @@ wsc.Channel.prototype.set_user_list = function( ) {
         if( !names.hasOwnProperty(i) )
             continue;
         
-        var un = names[i];
-        var member = this.info.members[un];
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        
-        uinfo = {
-            'name': un,
-            'pc': member['pc'],
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        users.push( uinfo );
-        this.info.members[un] = uinfo;
+        users.push( this.info.members[names[i]] );
+    
     }
     
     this.ui.set_user_list( users );
@@ -329,18 +310,48 @@ wsc.Channel.prototype.set_user_list = function( ) {
 };
 
 /**
+ * Generate user info for the user list.
+ * 
+ * @method user_info
+ * @param user {String} User name
+ * @return {Object} User info
+ */
+wsc.Channel.prototype.user_info = function( user ) {
+        
+    var member = this.info.members[user];
+    var s = member.symbol;
+    
+    return {
+        'name': user,
+        'pc': member['pc'],
+        'symbol': s,
+        'conn': member.conn,
+        'hover': {
+            'member': member,
+            'name': user,
+            'avatar': '<img class="avatar" src="" height="50" width="50" />',
+            'link': s + '<a target="_blank" href="http://' + user + '.'+ this.client.settings['domain'] + '/">' + user + '</a>',
+            'info': []
+        }
+    };
+
+};
+
+/**
  * Register a user with the channel.
  * 
  * @method register_user
- * @param pkt {Object} User data.
+ * @param pkt {Object} User data
+ * @param suppress {Boolean} Set to true to suppress events
  */
-wsc.Channel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     var un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt["arg"];
         this.info.members[un]["username"] = un;
         this.info.members[un]["conn"] = 1;
+        this.info.members[un] = this.user_info( un );
     } else {
         for( i in pkt.arg ) {
             this.info.members[un][i] = pkt.arg[i];
@@ -349,6 +360,17 @@ wsc.Channel.prototype.register_user = function( pkt ) {
     }
     if( !('pc' in this.info.members[un]) ) 
         this.info.members[un]['pc'] = 'Room Members';
+    
+    suppress = suppress || false;
+    
+    if( suppress )
+        return;
+    
+    this.client.trigger(this.namespace + '.user.registered', {
+        name: this.namespace + '.user.registered',
+        user: un
+    });
+    
 };
 
 /**
@@ -398,7 +420,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
 wsc.Channel.prototype.recv_join = function( e ) {
     var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
-    this.set_user_list();
 };
 
 /**
