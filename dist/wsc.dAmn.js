@@ -1250,36 +1250,7 @@ wsc.Channel.prototype.set_members = function( e ) {
 wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
-    /*
-    var ulist = [];
     
-    for(var index in this.info["pc_order"]) {
-        var pc = this.info['pc'][this.info["pc_order"][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( 'Room Members' in pcs )
-        ulist.push(pcs['Room Members']);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    */
-    /*
-    var names = this.info.pc;
-    var orders = this.info.pc_order.slice(0);
-    
-    if( 'Room Members' in pcs ) {
-        names[100] = 'Room Members';
-        orders.unshift( 'Room Members' );
-    }
-    
-    this.ui.build_user_list( names, orders );
-    */
     var names = this.get_usernames();
     var users = [];
     var uinfo = null;
@@ -1295,7 +1266,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
         var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
         var s = member.symbol;
         
-        users.push( {
+        uinfo = {
             'name': un,
             'pc': member['pc'],
             'symbol': s,
@@ -1307,7 +1278,10 @@ wsc.Channel.prototype.set_user_list = function( ) {
                 'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
                 'info': []
             }
-        } );
+        };
+        
+        users.push( uinfo );
+        this.info.members[un] = uinfo;
     }
     
     this.ui.set_user_list( users );
@@ -1441,13 +1415,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member['pc'] = data.pc;
+    }, e);
     
-    member['pc'] = e.pc;
-    this.set_user_list();
 };
 
 /**
@@ -4991,6 +4969,12 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
+    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
+        
+        chan.privchg( data, done );
+    
+    });
+    
     this.built = true;
 };
 
@@ -5596,6 +5580,32 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
 };
 
 /**
+ * Reveal or hide the userlist depending on the number of users present.
+ * 
+ * @method reveal_user_list
+ */
+Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var total = 0;
+    var count = 0;
+    
+    uld.find('div.pc').each( function( i, el ) {
+        count = uld.find(this).find('ul li').length;
+        total+= count;
+        uld.find(this).css(count == 0 ? 'none' : 'block');
+    } );
+    
+    uld.css('display', ( total == 0 ? 'none' : 'block' ));
+    
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
@@ -5612,31 +5622,11 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     for( var index in users ) {
         
         user = users[index];
-        this.set_user( user );
+        this.set_user( user, true );
     
     }
     
-    var total = 0;
-    var count = 0;
-    
-    uld.find('div.pc').each( function( i, el ) {
-        count = uld.find(this).find('ul li').length;
-        total+= count;
-        
-        if( count == 0 ) {
-            uld.find(this).css('display', 'none');
-            return;
-        }
-        
-        uld.find(this).css('display', 'block');
-    } );
-    
-    uld.css('display', ( total == 0 ? 'none' : 'block' ));
-    
-    var c = this;
-    setTimeout( function( ) {
-        c.resize();
-    }, 100);
+    this.reveal_user_list();
     
 };
 
@@ -5645,20 +5635,65 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  * 
  * @method set_user
  * @param user {Object} Information about the user
+ * @param noreveal {Boolean} Do not run the reveal method
  */
-Chatterbox.Channel.prototype.set_user = function( user ) {
+Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
     var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    
+    if( ull.find('a#' + user.name).length == 1 )
+        return;
+    
     ull.append( '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>' );
     
     var c = this;
     this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
     
-    if( ull.find('li').length > 0 ) {
-        uld.css('display', 'block');
-    }
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+        
+
+};
+
+/**
+ * Remove a user from the user list.
+ * 
+ * @method remove_user
+ * @param user to remove
+ */
+Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
+
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    var pc = this.el.m.find('div.chatusers div.pc#' + member.pc);
+    
+    pc.find('ul li a#' + data.user).parent().remove();
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+
+};
+
+/**
+ * Move a user from one privclass to another.
+ * 
+ * @method privchg
+ * @param event {Object} recv_privchg event data
+ * @param done {Function} Next method
+ */
+Chatterbox.Channel.prototype.privchg = function( data, done ) {
+
+    this.remove_user( data.user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[data.user];
+    member.pc = data.pc;
+    
+    this.set_user( member );
 
 };
 

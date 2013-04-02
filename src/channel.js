@@ -286,36 +286,7 @@ wsc.Channel.prototype.set_members = function( e ) {
 wsc.Channel.prototype.set_user_list = function( ) {
     if( Object.size(this.info.members) == 0 )
         return;
-    /*
-    var ulist = [];
     
-    for(var index in this.info["pc_order"]) {
-        var pc = this.info['pc'][this.info["pc_order"][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( 'Room Members' in pcs )
-        ulist.push(pcs['Room Members']);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    */
-    /*
-    var names = this.info.pc;
-    var orders = this.info.pc_order.slice(0);
-    
-    if( 'Room Members' in pcs ) {
-        names[100] = 'Room Members';
-        orders.unshift( 'Room Members' );
-    }
-    
-    this.ui.build_user_list( names, orders );
-    */
     var names = this.get_usernames();
     var users = [];
     var uinfo = null;
@@ -331,7 +302,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
         var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
         var s = member.symbol;
         
-        users.push( {
+        uinfo = {
             'name': un,
             'pc': member['pc'],
             'symbol': s,
@@ -343,7 +314,10 @@ wsc.Channel.prototype.set_user_list = function( ) {
                 'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
                 'info': []
             }
-        } );
+        };
+        
+        users.push( uinfo );
+        this.info.members[un] = uinfo;
     }
     
     this.ui.set_user_list( users );
@@ -477,13 +451,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member['pc'] = data.pc;
+    }, e);
     
-    member['pc'] = e.pc;
-    this.set_user_list();
 };
 
 /**
