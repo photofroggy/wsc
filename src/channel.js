@@ -386,7 +386,7 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
         delete this.info.members[user];
     }
     
-    this.manager.cascade( this.namespace + '.user.remove', function( user ) {}, user);
+    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
 };
 
 /**

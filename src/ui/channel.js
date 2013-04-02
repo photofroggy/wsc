@@ -823,10 +823,9 @@ Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
  */
 Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
 
-    var member = this.manager.client.channel(this.namespace).info.members[user];
-    var pc = this.el.m.find('div.chatusers div.pc#' + member.pc);
-    
-    pc.find('ul li a#' + data.user).parent().remove();
+    this.el
+        .m.find('div.chatusers div.pc ul li a#' + user)
+        .parent().remove();
     
     noreveal = noreveal || false;
     
@@ -844,15 +843,17 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
 Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
 
     this.remove_user( user, true );
+    
     var member = this.manager.client.channel(this.namespace).info.members[user];
-    console.log(member);
     
     if( !member ) {
         this.reveal_user_list();
+        done( user );
         return;
     }
     
     this.set_user( user );
+    done( user );
 
 };
 
@@ -867,7 +868,10 @@ Chatterbox.Channel.prototype.privchg = function( data, done ) {
 
     this.remove_user( data.user, true );
     
-    var member = this.manager.client.channel(this.namespace).info.members[data.user];
+    var member = Object.extend(
+        this.manager.client.channel(this.namespace).info.members[data.user],
+        {});
+    
     member.pc = data.pc;
     
     this.set_user( member );
