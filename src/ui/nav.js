@@ -24,7 +24,7 @@ Chatterbox.Navigation = function( ui ) {
         r: this.manager.view.find('nav.tabs #tabnav .arrow_right'),       // Tab right.
         s: this.manager.view.find('nav.tabs #tabnav #settings-button'),   // Settings
         side: this.manager.view.find('nav.channels'),                     // Nav side bar
-        sideb: this.manager.view.find('nav.tabs #chattabs .chans'),   // Side bar button
+        sideb: this.manager.view.find('nav.tabs #chattabs .chans'),       // Side bar button
     };
     
     this.side = false;
@@ -301,6 +301,36 @@ Chatterbox.Navigation.prototype.toggle_sidebar = function( show ) {
     
     this.manager.resize();
     this.manager.control.focus();
+
+};
+
+/**
+ * Show activity status in channel list tab.
+ * 
+ * @method noise
+ * @param type {Integer} The type of activity have we just received. 0, 1, or 2
+ */
+Chatterbox.Navigation.prototype.noise = function( type ) {
+
+    if( this.side )
+        return;
+    
+    var b = this.el.sideb;
+    
+    type = type || 0;
+    console.log(type);
+    
+    if( type == 0 || type == 1 ) {
+        b.addClass('noise');
+        
+        if( type == 1 )
+            b.addClass('chatting');
+    }
+    
+    if( type == 2 ) {
+        b.addClass('tabbed');
+        b.removeClass('chatting');
+    }
 
 };
 

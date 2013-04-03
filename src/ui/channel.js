@@ -972,6 +972,7 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
     
     if( !this.hidden ) {
         this.manager.sound.click();
+        this.manager.nav.noise( 2 );
     }
     
     if( tab.hasClass('tabbed') )
@@ -1021,11 +1022,28 @@ Chatterbox.Channel.prototype.noise = function(  ) {
     
     if( !this.el.t.o[1].hasClass('active') ) {
         this.el.t.o[1].addClass('noise');
+        
         if( !this.el.t.o[1].hasClass('tabbed') ) {
+        
             if( msg.find('.cevent').length == 0 ) {
                 this.el.t.o[1].addClass('chatting');
+                
+                if( !this.hidden )
+                    this.manager.nav.noise( 1 );
+                
+                return;
             }
+            
+            if( !this.hidden )
+                this.manager.nav.noise( 0 );
+            
+            return;
+        
         }
+        
+        if( !this.hidden )
+            this.manager.noise( 2 );
+        
     }
     
 
