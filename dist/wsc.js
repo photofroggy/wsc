@@ -9615,7 +9615,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         <div class="pager">\
         </div>\
         <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs">\
-        <li class="chans"><a href="#chans" class="tab">Chats</a></li>\
+        <li class="chans"><a href="#chans" class="tab">Channels</a></li>\
         </ul></div>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\

@@ -1854,14 +1854,14 @@ div.wsc.wsct_dAmn div.pager div.notice a.close_notice:hover {
 
 /* dark blue theme */
 div.wsc.wsct_dark {
-  color: #3c4d50;
+  color: #294952;
 }
 div.wsc.wsct_dark a {
-  color: #3c4d50;
+  color: #294952;
   text-decoration: underline;
 }
 div.wsc.wsct_dark a:hover {
-  color: #3c4d50;
+  color: #294952;
   text-decoration: underline;
 }
 div.wsc.wsct_dark a.button,
@@ -1952,7 +1952,7 @@ div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab {
   color: #112f4b;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab.button {
-  border-color: #3c4d50;
+  border-color: #294952;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab:hover {
   background: -webkit-linear-gradient(top, #afbbbe 0%, #7b909b 5%, #3b505a 97%);
@@ -2025,15 +2025,15 @@ div.wsc.wsct_dark nav.tabs ul#tabnav li form.msg input[type="submit"]:active {
   color: #b7c4b7;
 }
 div.wsc.wsct_dark nav.channels {
-  border-color: #2a4e5a;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark nav.channels h3 {
-  border-color: #2a4e5a;
+  border-color: #24444e;
   color: #698b8b;
   background-color: #2f4750;
 }
 div.wsc.wsct_dark nav.channels ul li a {
-  border-color: #2a4e5a;
+  border-color: #24444e;
   background-color: #415b64;
   color: #112f4b;
   text-decoration: none;
@@ -2061,30 +2061,30 @@ div.wsc.wsct_dark div.chatwindow header div.title a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow header div.topic {
-  background-color: #c3e0e4;
-  border-color: #2a4e5a;
+  background-color: #9bb5bd;
+  border-color: #24444e;
   color: #1b4949;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog {
-  background-color: #b3d2df;
-  border-color: #2a4e5a;
+  background-color: #7a9ea8;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap a {
-  color: #3c4d50;
+  color: #294952;
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap a:hover {
-  color: #3c4d50;
+  color: #294952;
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg {
-  color: #3c4d50;
+  color: #294952;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
   background-color: white;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
-  color: #608288;
+  color: #45707c;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo {
   background-color: #415b64;
@@ -2110,11 +2110,11 @@ div.wsc.wsct_dark div.chatcontrol div.brow ul.states li {
   color: #95b4b6;
 }
 div.wsc.wsct_dark div.chatusers {
-  border: 1px solid #2a4e5a;
+  border: 1px solid #24444e;
 }
 div.wsc.wsct_dark div.chatusers div.pc h3, div.wsc.wsct_dark div.chatusers div.pc h4 {
   background-color: #2f4750;
-  border-color: #2a4e5a !important;
+  border-color: #24444e !important;
   color: #698b8b;
 }
 div.wsc.wsct_dark div.chatusers div.pc ul {
@@ -2132,12 +2132,12 @@ div.wsc.wsct_dark div.chatusers div.pc ul a em {
   color: #aac3c7;
 }
 div.wsc.wsct_dark div.chatwindow div.userinfo {
-  border-color: #2a4e5a;
+  border-color: #24444e;
   background-color: #2f4750;
 }
 div.wsc.wsct_dark div.chatwindow div.userinfo div.info {
   background-color: #415b64;
-  border-color: #2a4e5a;
+  border-color: #24444e;
   color: #aac3c7;
 }
 div.wsc.wsct_dark div.chatwindow div.userinfo div.info a {
@@ -2149,16 +2149,16 @@ div.wsc.wsct_dark div.chatwindow div.userinfo div.info a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner {
-  border-color: #2a4e5a;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.tabs ul li.selected a {
   background-color: rgba(145, 163, 173, 0.75);
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.pages {
-  border-color: #2a4e5a;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.pages ul li {
-  border-color: #2a4e5a;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.pages ul li span.value {
   color: #aac3c7;
@@ -2179,7 +2179,7 @@ div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text
   text-decoration: underline;
   background-color: rgba(255, 255, 255, 0.75);
   text-shadow: none;
-  border-color: #2a4e5a;
+  border-color: #24444e;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.tabs ul li a:hover,
 div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text:hover {
@@ -2189,12 +2189,12 @@ div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.tabs ul li a.evented,
 div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text.evented {
-  color: #2a4e5a;
+  color: #24444e;
 }
 div.wsc.wsct_dark div.floater.item-picker div.inner section.tabs ul li a.evented:hover,
 div.wsc.wsct_dark div.floater.item-picker div.inner section.buttons .button.text.evented:hover {
   background-color: rgba(255, 255, 255, 0.75);
-  color: #2a4e5a;
+  color: #24444e;
 }
 div.wsc.wsct_dark div.floater div.inner {
   background-color: #415b64;
@@ -2220,11 +2220,11 @@ div.wsc.wsct_dark div.floater.settings div.bookwrap nav.tabs a.tab {
   color: #8a9fa3;
 }
 div.wsc.wsct_dark div.floater.settings div.bookwrap nav.tabs .active .tab {
-  background-color: #b3d2df;
+  background-color: #7a9ea8;
   color: #3c4d50;
 }
 div.wsc.wsct_dark div.floater.settings div.bookwrap div.book {
-  background-color: #b3d2df;
+  background-color: #7a9ea8;
   border-color: #3a5058;
   color: #515c52;
 }
@@ -2234,7 +2234,7 @@ div.wsc.wsct_dark div.floater.settings div.bookwrap div.book div.page .item {
 div.wsc.wsct_dark div.floater.settings div.bookwrap div.book div.page .item aside.hint {
   border-color: #3a5058;
   border-left-color: #769caa;
-  background-color: #b3d2df;
+  background-color: #7a9ea8;
   color: #648686;
   font-style: normal;
 }
