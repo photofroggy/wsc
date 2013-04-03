@@ -35,6 +35,18 @@
                         right: 5px;
                     }
                 }
+                &.hidden {
+                    display: none;
+                }
+                &.active {
+                    .close {
+                        display: block;
+                        float: right;
+                        position: relative;
+                        top: -23px;
+                        right: 5px;
+                    }
+                }
             }
             
             li + li a.tab {

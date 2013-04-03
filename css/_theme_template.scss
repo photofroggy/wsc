@@ -106,6 +106,7 @@
     $tab-abgi: #D3EDFF,
     $tab-abgsl: #55A5DB,
     $tab-abgbg: #406D8B,
+    $tab-sac: #FFB024,
     $tab-sbg: #406D8B,
     $tab-sbgh: #2E9BE4,
     $tab-sbga: #2E9BE4,
@@ -298,6 +299,32 @@
                 &:hover a {
                     color: $tab-ah;
                     background-color: $tab-sbgh;
+                }
+                &.noise a.tab { font-weight: bold; }
+                &.noise.chatting a.tab { color: $tab-sac; }
+                &.tabbed {
+                    a.tab {
+                        color: $tabbed-fill;;
+                        background-color: $tabbed;
+                        border: 1px solid $tabbed;
+                        border-width: 2px;
+                        font-weight: bold;
+                    }
+                    .close {
+                        background-color: $tabbed;
+                    }
+                    
+                    &.fill a.tab {
+                        background-color: $tab-sbg;
+                        color: $tabbed;
+                    }
+                    
+                    &.fill .close {
+                        background-color: $tab-sbg;
+                    }
+                }
+                &.active a.tab {
+                    background-color: $tab-sbga;
                 }
             }
         

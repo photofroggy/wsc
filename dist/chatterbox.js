@@ -1557,7 +1557,7 @@ Chatterbox.Channel.prototype.register_user = function( user ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var tab = this.el.t.o[1];
     
     if( message !== false ) {
         ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
