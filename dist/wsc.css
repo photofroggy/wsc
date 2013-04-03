@@ -1854,7 +1854,7 @@ div.wsc.wsct_dAmn div.pager div.notice a.close_notice:hover {
 
 /* dark blue theme */
 div.wsc.wsct_dark {
-  color: #294952;
+  color: #14343d;
 }
 div.wsc.wsct_dark a {
   color: #294952;
@@ -1952,7 +1952,7 @@ div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab {
   color: #112f4b;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab.button {
-  border-color: #294952;
+  border-color: #14343d;
 }
 div.wsc.wsct_dark nav.tabs ul#chattabs li a.tab:hover {
   background: -webkit-linear-gradient(top, #afbbbe 0%, #7b909b 5%, #3b505a 97%);
@@ -2078,13 +2078,13 @@ div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap a:hover {
   text-decoration: underline;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg {
-  color: #294952;
+  color: #14343d;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
   background-color: white;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
-  color: #45707c;
+  color: #385b64;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo {
   background-color: #415b64;
