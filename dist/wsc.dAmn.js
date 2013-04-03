@@ -7378,6 +7378,7 @@ Chatterbox.Navigation.prototype.toggle_sidebar = function( show ) {
         } );
         
         this.manager.resize();
+        this.manager.control.focus();
         
         return;
     
@@ -7390,6 +7391,7 @@ Chatterbox.Navigation.prototype.toggle_sidebar = function( show ) {
     } );
     
     this.manager.resize();
+    this.manager.control.focus();
 
 };
 
