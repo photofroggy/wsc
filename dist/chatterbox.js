@@ -3019,8 +3019,14 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.el.t.find('#' + selector + '-tab');
+    var thtml = Chatterbox.render('tab', {'selector': selector, 'ns': ns});
+    this.el.t.append(thtml);
+    this.el.t.find( '#' + selector + '-tab' ).click( function(  ) { return false; } );
+    
+    var side = this.el.side.find('ul');
+    side.append( thtml );
+    
+    return this.manager.view.find('#' + selector + '-tab');
 };
 
 /**
@@ -5351,8 +5357,6 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </nav>\
         <div class="chatbook">\
         <nav class="channels"><h3>Channels</h3><ul>\
-            <li><a href="#chan1">#chan1</a></li>\
-            <li><a href="#chan2">#chan2</a></li>\
         </ul></nav>\
         </div>';
 

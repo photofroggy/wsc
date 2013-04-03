@@ -220,8 +220,14 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
  *   for the tab.
  */
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
-    this.el.t.append(Chatterbox.render('tab', {'selector': selector, 'ns': ns}));
-    return this.el.t.find('#' + selector + '-tab');
+    var thtml = Chatterbox.render('tab', {'selector': selector, 'ns': ns});
+    this.el.t.append(thtml);
+    this.el.t.find( '#' + selector + '-tab' ).click( function(  ) { return false; } );
+    
+    var side = this.el.side.find('ul');
+    side.append( thtml );
+    
+    return this.manager.view.find('#' + selector + '-tab');
 };
 
 /**
