@@ -10,6 +10,23 @@
         border: 1px solid black;
         position: relative;
         left: 0px;
+        
+        h3 {
+            padding: 5px 15px;
+            border-bottom: 1px solid black;
+        }
+        
+        ul {
+            list-style: none;
+            li a {
+                padding: 5px 20px;
+                display: block;
+            }
+            
+            li + li a {
+                border-top: 1px solid black;
+            }
+        }
     }
     
     nav.tabs {

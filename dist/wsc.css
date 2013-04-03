@@ -492,6 +492,20 @@ div.wsc nav.channels {
   position: relative;
   left: 0px;
 }
+div.wsc nav.channels h3 {
+  padding: 5px 15px;
+  border-bottom: 1px solid black;
+}
+div.wsc nav.channels ul {
+  list-style: none;
+}
+div.wsc nav.channels ul li a {
+  padding: 5px 20px;
+  display: block;
+}
+div.wsc nav.channels ul li + li a {
+  border-top: 1px solid black;
+}
 div.wsc nav.tabs {
   width: 100%;
   height: 30px;
@@ -1601,6 +1615,27 @@ div.wsc.wsct_dAmn nav.tabs ul#tabnav li form.msg input[type="submit"]:active {
   border-color: #5b6859;
   color: #b7c4b7;
 }
+div.wsc.wsct_dAmn nav.channels {
+  border-color: #b9c2ba;
+}
+div.wsc.wsct_dAmn nav.channels h3 {
+  border-color: #b9c2ba;
+  color: #69796f;
+  background-color: #c9d3c9;
+}
+div.wsc.wsct_dAmn nav.channels ul li a {
+  border-color: #b9c2ba;
+  background-color: #d0dbd0;
+  color: #2c3635;
+  text-decoration: none;
+}
+div.wsc.wsct_dAmn nav.channels ul li a:hover {
+  color: #2c3635;
+  background-color: #e9e9e9;
+}
+div.wsc.wsct_dAmn nav.channels ul li a.active {
+  background-color: #e9e9e9;
+}
 div.wsc.wsct_dAmn div.chatbook {
   background-color: #d0dbd0;
   border-color: #858585;
@@ -1988,6 +2023,27 @@ div.wsc.wsct_dark nav.tabs ul#tabnav li form.msg input[type="submit"]:active {
   background-color: #849183;
   border-color: #5b6859;
   color: #b7c4b7;
+}
+div.wsc.wsct_dark nav.channels {
+  border-color: #2a4e5a;
+}
+div.wsc.wsct_dark nav.channels h3 {
+  border-color: #2a4e5a;
+  color: #698b8b;
+  background-color: #2f4750;
+}
+div.wsc.wsct_dark nav.channels ul li a {
+  border-color: #2a4e5a;
+  background-color: #415b64;
+  color: #112f4b;
+  text-decoration: none;
+}
+div.wsc.wsct_dark nav.channels ul li a:hover {
+  color: #112f4b;
+  background-color: #56727c;
+}
+div.wsc.wsct_dark nav.channels ul li a.active {
+  background-color: #56727c;
 }
 div.wsc.wsct_dark div.chatbook {
   background-color: #415b64;
