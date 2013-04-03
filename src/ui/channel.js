@@ -354,11 +354,11 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.l.w.css({'padding-top': 0});
     // Height.
     height = ( height || ((this.manager.chatbook.height() - this.manager.control.height()) - this.manager.nav.height()) - 5 );
-    width = (width || this.manager.chatbook.width()) - this.manager.nav.listwidth();
+    width = ( width ? ( width ) : this.manager.chatbook.width() + 10 ) - ( this.manager.nav.listwidth() || 8 );
     var wh = height;
     this.el.m.height(wh);
     // Width.
-    this.el.m.css('width', width - 10);
+    this.el.m.css('width', width - 10 );
     var cw = this.el.m.width();
     
     // Userlist width.

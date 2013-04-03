@@ -261,7 +261,7 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
  */
 Chatterbox.Navigation.prototype.listwidth = function(  ) {
 
-    return this.side ? this.manager.view.find('nav.channels').outerWidth(true) : 0;
+    return this.side ? this.manager.view.find('nav.channels').outerWidth(true) + 8 : 0;
 
 };
 
