@@ -105,7 +105,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </ul>\
         </nav>\
         <div class="chatbook">\
-        <nav class="channels"><ul></ul></nav>\
+        <nav class="channels"><h3>Channels</h3><ul></ul></nav>\
         </div>';
 
 /**

@@ -332,8 +332,9 @@ Chatterbox.UI.prototype.resize = function() {
     this.control.resize();
     this.view.height( this.view.parent().height() );
     //this.view.width( '100%' );
+    var newh = ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5;
     this.nav.resize(  );
-    this.chatbook.resize( ((this.view.parent().height() - this.nav.height()) - this.control.height()) - 5 );
+    this.chatbook.resize( newh );
 
 };
 
@@ -3029,12 +3030,17 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    var w = this.el.n.width() - this.el.b.outerWidth() - 20
+    var w = this.el.n.width() - this.el.b.outerWidth() - 20;
+    var h = ((this.manager.view.parent().height() - this.height()) - this.manager.control.height()) - 8;
+    
     this.el.tw.width( w );
     this.el.t.width( w );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
+    
+    this.el.side.height(h);
+    
 
 };
 
@@ -3047,6 +3053,43 @@ Chatterbox.Navigation.prototype.resize = function(  ) {
 Chatterbox.Navigation.prototype.listwidth = function(  ) {
 
     return this.side ? this.manager.view.find('nav.channels').outerWidth(true) : 0;
+
+};
+
+/**
+ * Show or hide the side bar.
+ * 
+ * @method toggle_sidebar
+ * @param [show] {Object} Show or hide the side bar
+ */
+Chatterbox.Navigation.prototype.toggle_sidebar = function( show ) {
+
+    if( show === undefined )
+        show = !this.side;
+    
+    this.side = show;
+    
+    if( show ) {
+    
+        this.el.sideb.removeClass('noise chatting tabbed fill');
+        this.el.side.css( {
+            'left': 0,
+            'margin-right': 5
+        } );
+        
+        this.manager.resize();
+        
+        return;
+    
+    }
+    
+    var shift = this.el.side.outerWidth(true) * -1;
+    this.el.side.css( {
+        'left': shift,
+        'margin-right': shift
+    } );
+    
+    this.manager.resize();
 
 };
 
@@ -5307,7 +5350,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </ul>\
         </nav>\
         <div class="chatbook">\
-        <nav class="channels"><ul></ul></nav>\
+        <nav class="channels"><h3>Channels</h3><ul></ul></nav>\
         </div>';
 
 /**
