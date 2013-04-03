@@ -222,12 +222,14 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
     var thtml = Chatterbox.render('tab', {'selector': selector, 'ns': ns});
     this.el.t.append(thtml);
-    this.el.t.find( '#' + selector + '-tab' ).click( function(  ) { return false; } );
+    var top = this.el.t.find( '#' + selector + '-tab' );
+    top.find('a.tab').click( function(  ) { return false; } );
     
     var side = this.el.side.find('ul');
     side.append( thtml );
+    side = side.find( '#' + selector + '-tab' ); 
     
-    return this.manager.view.find('#' + selector + '-tab');
+    return [ top, side ];
 };
 
 /**

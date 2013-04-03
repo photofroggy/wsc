@@ -2101,7 +2101,7 @@ div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg {
   color: #14343d;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
-  background-color: white;
+  background-color: #b9d6df;
 }
 div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
   color: #385b64;

@@ -663,8 +663,8 @@ Chatterbox.Channel.prototype.build = function( ) {
     var raw = this.raw;
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
-    this.el.t.l = this.el.t.o.find('.tab');
-    this.el.t.c = this.el.t.o.find('.close');
+    this.el.t.l = [ this.el.t.o[0].find('.tab'), this.el.t.o[1].find( '.tab' ) ];
+    this.el.t.c = [ this.el.t.o[0].find('.close'), this.el.t.o[1].find('.close') ];
     // Draw
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
     // Store
@@ -694,26 +694,30 @@ Chatterbox.Channel.prototype.build = function( ) {
     } );
     
     // When someone clicks the tab link.
-    this.el.t.l.click(function () {
+    this.el.t.l[1].click(function () {
         chan.manager.toggle_channel(raw);
         return false;
     });
     
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
+    var cclose = function ( e ) {
         chan.manager.trigger( 'tab.close.clicked', {
             'ns': chan.raw,
             'chan': chan,
             'e': e
         } );
         return false;
-    });
+    };
+    
+    // When someone clicks the tab close button.
+    this.el.t.c[0].click( cclose );
+    this.el.t.c[1].click( cclose );
     
     this.setup_header('title');
     this.setup_header('topic');
     
     if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
+        this.el.t.o[0].toggleClass('hidden');
+        this.el.t.o[1].toggleClass('hidden');
     }
     
     this.manager.client.bind( this.namespace + '.user.list', function( event ) {
@@ -837,7 +841,8 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  */
 Chatterbox.Channel.prototype.hide = function( ) {
     this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
+    this.el.t.o[0].removeClass('active');
+    this.el.t.o[1].removeClass('active');
     this.visible = false;
 };
 
@@ -849,8 +854,10 @@ Chatterbox.Channel.prototype.hide = function( ) {
 Chatterbox.Channel.prototype.show = function( ) {
     this.visible = true;
     this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
+    this.el.t.o[0].addClass('active');
+    this.el.t.o[0].removeClass('noise chatting tabbed fill');
+    this.el.t.o[1].addClass('active');
+    this.el.t.o[1].removeClass('noise chatting tabbed fill');
     var c = this;
     setTimeout( function(  ) {
         c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
@@ -866,11 +873,13 @@ Chatterbox.Channel.prototype.show = function( ) {
  */
 Chatterbox.Channel.prototype.developer = function(  ) {
     if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
+        this.el.t.o[0].removeClass('hidden');
+        this.el.t.o[1].removeClass('hidden');
         return;
     }
     if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
+        this.el.t.o[0].addClass('hidden');
+        this.el.t.o[1].addClass('hidden');
     }
 };
 
@@ -880,7 +889,8 @@ Chatterbox.Channel.prototype.developer = function(  ) {
  * @method remove
  */
 Chatterbox.Channel.prototype.remove = function(  ) {
-    this.el.t.o.remove();
+    this.el.t.o[0].remove();
+    this.el.t.o[1].remove();
     this.el.m.remove();
 };
 
@@ -1608,11 +1618,11 @@ Chatterbox.Channel.prototype.noise = function(  ) {
         }
     }
     
-    if( !this.el.t.o.hasClass('active') ) {
-        this.el.t.o.addClass('noise');
-        if( !this.el.t.o.hasClass('tabbed') ) {
+    if( !this.el.t.o[1].hasClass('active') ) {
+        this.el.t.o[1].addClass('noise');
+        if( !this.el.t.o[1].hasClass('tabbed') ) {
             if( msg.find('.cevent').length == 0 ) {
-                this.el.t.o.addClass('chatting');
+                this.el.t.o[1].addClass('chatting');
             }
         }
     }
@@ -3021,12 +3031,14 @@ Chatterbox.Navigation.prototype.add_button = function( options ) {
 Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
     var thtml = Chatterbox.render('tab', {'selector': selector, 'ns': ns});
     this.el.t.append(thtml);
-    this.el.t.find( '#' + selector + '-tab' ).click( function(  ) { return false; } );
+    var top = this.el.t.find( '#' + selector + '-tab' );
+    top.find('a.tab').click( function(  ) { return false; } );
     
     var side = this.el.side.find('ul');
     side.append( thtml );
+    side = side.find( '#' + selector + '-tab' ); 
     
-    return this.manager.view.find('#' + selector + '-tab');
+    return [ top, side ];
 };
 
 /**
