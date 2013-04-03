@@ -18,14 +18,34 @@
         
         ul {
             list-style: none;
-            li a {
-                padding: 5px 20px;
-                display: block;
+            li {
+                a {
+                    padding: 5px 20px;
+                    display: block;
+                }
+                .close {
+                    display: none;
+                }
+                &:hover {
+                    .close {
+                        display: block;
+                        float: right;
+                        position: relative;
+                        top: -23px;
+                        right: 5px;
+                    }
+                }
             }
             
-            li + li a {
+            li + li a.tab {
                 border-top: 1px solid black;
             }
+        }
+    }
+    
+    .tabwrap ul {
+        li {
+            display: none;
         }
     }
     
@@ -74,7 +94,6 @@
             
                 li {
                     margin-right: 2px;
-                    display: none;
                     &.chans {
                         display: block;
                     }

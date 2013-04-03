@@ -281,17 +281,23 @@
         
         ul {
         
-            li a {
-                border-color: $inner-border;
-                background-color: $tab-sbg;
-                color: $tab-a;
-                text-decoration: none;
-                &:hover {
+            li {
+                a.tab {
+                    border-color: $inner-border;
+                    background-color: $tab-sbg;
+                    color: $tab-a;
+                    text-decoration: none;
+                    &:hover {
+                        color: $tab-ah;
+                        background-color: $tab-sbgh;
+                    }
+                    &.active {
+                        background-color: $tab-sbga;
+                    }
+                }
+                &:hover a {
                     color: $tab-ah;
                     background-color: $tab-sbgh;
-                }
-                &.active {
-                    background-color: $tab-sbga;
                 }
             }
         

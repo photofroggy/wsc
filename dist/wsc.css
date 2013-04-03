@@ -503,8 +503,21 @@ div.wsc nav.channels ul li a {
   padding: 5px 20px;
   display: block;
 }
-div.wsc nav.channels ul li + li a {
+div.wsc nav.channels ul li .close {
+  display: none;
+}
+div.wsc nav.channels ul li:hover .close {
+  display: block;
+  float: right;
+  position: relative;
+  top: -23px;
+  right: 5px;
+}
+div.wsc nav.channels ul li + li a.tab {
   border-top: 1px solid black;
+}
+div.wsc .tabwrap ul li {
+  display: none;
 }
 div.wsc nav.tabs {
   width: 100%;
@@ -548,7 +561,6 @@ div.wsc nav.tabs ul.tabs {
 }
 div.wsc nav.tabs ul.tabs li {
   margin-right: 2px;
-  display: none;
 }
 div.wsc nav.tabs ul.tabs li.chans {
   display: block;
@@ -1623,17 +1635,21 @@ div.wsc.wsct_dAmn nav.channels h3 {
   color: #69796f;
   background-color: #c9d3c9;
 }
-div.wsc.wsct_dAmn nav.channels ul li a {
+div.wsc.wsct_dAmn nav.channels ul li a.tab {
   border-color: #b9c2ba;
   background-color: #d0dbd0;
   color: #2c3635;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn nav.channels ul li a:hover {
+div.wsc.wsct_dAmn nav.channels ul li a.tab:hover {
   color: #2c3635;
   background-color: #e9e9e9;
 }
-div.wsc.wsct_dAmn nav.channels ul li a.active {
+div.wsc.wsct_dAmn nav.channels ul li a.tab.active {
+  background-color: #e9e9e9;
+}
+div.wsc.wsct_dAmn nav.channels ul li:hover a {
+  color: #2c3635;
   background-color: #e9e9e9;
 }
 div.wsc.wsct_dAmn div.chatbook {
@@ -2032,17 +2048,21 @@ div.wsc.wsct_dark nav.channels h3 {
   color: #698b8b;
   background-color: #2f4750;
 }
-div.wsc.wsct_dark nav.channels ul li a {
+div.wsc.wsct_dark nav.channels ul li a.tab {
   border-color: #24444e;
   background-color: #415b64;
   color: #112f4b;
   text-decoration: none;
 }
-div.wsc.wsct_dark nav.channels ul li a:hover {
+div.wsc.wsct_dark nav.channels ul li a.tab:hover {
   color: #112f4b;
   background-color: #56727c;
 }
-div.wsc.wsct_dark nav.channels ul li a.active {
+div.wsc.wsct_dark nav.channels ul li a.tab.active {
+  background-color: #56727c;
+}
+div.wsc.wsct_dark nav.channels ul li:hover a {
+  color: #112f4b;
   background-color: #56727c;
 }
 div.wsc.wsct_dark div.chatbook {
