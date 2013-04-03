@@ -598,8 +598,16 @@ Chatterbox.Control.prototype.keypress = function( event ) {
                 bubble = true;
             }
             break;
+        case 84:
+            if( event.ctrlKey ) {
+                this.manager.nav.toggle_sidebar();
+            } else {
+                bubble = true;
+            }
+            break;
         default:
             bubble = true;
+            // console.log(key);
             break;
     }
     
