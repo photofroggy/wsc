@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.82';
+Chatterbox.VERSION = '0.19.83';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1499,7 +1499,7 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
         return;
     }
     
-    this.set_user( user );
+    this.set_user( member );
     done( user );
 
 };

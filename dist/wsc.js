@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.31';
+wsc.VERSION = '1.7.32';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.116';
+wsc.REVISION = '0.21.117';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -1365,9 +1365,9 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     if( member == undefined )
         return;
     
-    member['conn']--;
+    member.conn--;
     
-    if( member['conn'] == 0 || !force) {
+    if( member.conn == 0 || force) {
         delete this.info.members[user];
     }
     
@@ -4279,7 +4279,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.82';
+Chatterbox.VERSION = '0.19.83';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5773,7 +5773,7 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
         return;
     }
     
-    this.set_user( user );
+    this.set_user( member );
     done( user );
 
 };
