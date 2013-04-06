@@ -490,7 +490,6 @@ div.wsc nav.tabs div.tabwrap {
   float: left;
   margin: 0px;
   padding: 0px;
-  overflow: auto;
 }
 div.wsc nav.tabs ul {
   list-style: none;
