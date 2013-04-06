@@ -401,9 +401,9 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     if( member == undefined )
         return;
     
-    member['conn']--;
+    member.conn--;
     
-    if( member['conn'] == 0 || !force) {
+    if( member.conn == 0 || force) {
         delete this.info.members[user];
     }
     

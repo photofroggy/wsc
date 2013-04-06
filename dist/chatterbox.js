@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.82';
+Chatterbox.VERSION = '0.19.83';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -28,8 +28,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_dAmn', 'wsct_dark'],
-        'theme': 'wsct_default',
+        'themes': [ 'wsct_dAmn', 'wsct_dark' ],
+        'theme': 'wsct_dark',
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
@@ -1488,7 +1488,7 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
         return;
     }
     
-    this.set_user( user );
+    this.set_user( member );
     done( user );
 
 };
@@ -2815,6 +2815,7 @@ Chatterbox.Navigation = function( ui ) {
      */
     this.el = {
         n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        tw: this.manager.view.find('nav.tabs div.tabwrap'),
         t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
         b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
         l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
@@ -3014,7 +3015,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -5268,7 +5269,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </div>\
         <div class="pager">\
         </div>\
-        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+        <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs"></ul></div>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\

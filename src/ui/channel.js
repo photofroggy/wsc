@@ -890,7 +890,7 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
         return;
     }
     
-    this.set_user( user );
+    this.set_user( member );
     done( user );
 
 };
