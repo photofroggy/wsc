@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.32';
+wsc.VERSION = '1.7.33';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.117';
+wsc.REVISION = '0.21.118';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -4279,7 +4279,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.83';
+Chatterbox.VERSION = '0.19.84';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5789,13 +5789,19 @@ Chatterbox.Channel.prototype.privchg = function( data, done ) {
 
     this.remove_user( data.user, true );
     
-    var member = Object.extend(
-        this.manager.client.channel(this.namespace).info.members[data.user],
-        {});
+    var member = this.manager.client.channel(this.namespace).info.members[data.user];
     
+    if( !member ) {
+        this.reveal_user_list();
+        done( data );
+        return;
+    }
+    
+    member = Object.extend( member, {} );
     member.pc = data.pc;
     
     this.set_user( member );
+    done( data );
 
 };
 
@@ -7032,7 +7038,8 @@ Chatterbox.Control.prototype.keypress = function( event ) {
                 bubble = true;
             }
             break;
-        case 84:
+        case 84: // t
+            console.log( event.altKey, event );
             if( event.ctrlKey ) {
                 this.manager.nav.toggle_sidebar();
             } else {

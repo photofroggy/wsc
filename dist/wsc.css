@@ -490,6 +490,7 @@ div.wsc nav.channels {
   border: 1px solid black;
   position: relative;
   left: 0px;
+  overflow: auto;
 }
 div.wsc nav.channels h3 {
   padding: 5px 15px;
