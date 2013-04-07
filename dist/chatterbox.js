@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.83';
+Chatterbox.VERSION = '0.19.84';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -1504,13 +1504,19 @@ Chatterbox.Channel.prototype.privchg = function( data, done ) {
 
     this.remove_user( data.user, true );
     
-    var member = Object.extend(
-        this.manager.client.channel(this.namespace).info.members[data.user],
-        {});
+    var member = this.manager.client.channel(this.namespace).info.members[data.user];
     
+    if( !member ) {
+        this.reveal_user_list();
+        done( data );
+        return;
+    }
+    
+    member = Object.extend( member, {} );
     member.pc = data.pc;
     
     this.set_user( member );
+    done( data );
 
 };
 
