@@ -598,9 +598,8 @@ Chatterbox.Control.prototype.keypress = function( event ) {
                 bubble = true;
             }
             break;
-        case 84: // t
-            console.log( event.altKey, event );
-            if( event.ctrlKey ) {
+        case 84: // ctrl alt t - toggle side bar.
+            if( event.ctrlKey && event.altKey ) {
                 this.manager.nav.toggle_sidebar();
             } else {
                 bubble = true;
