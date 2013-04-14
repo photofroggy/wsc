@@ -617,7 +617,11 @@ function timeLengthString( length ) {
 }
 
 /**
- * Sets. Yeah. Fun.
+ * Sets of unique strings.
+ * 
+ * Strings in the set are stored lower case.
+ * @class StringSet
+ * @param [items=[]] {Array} Items to start with
  */
 function StringSet( items ) {
 
@@ -627,6 +631,10 @@ function StringSet( items ) {
 
 /**
  * Add an item.
+ * @method add
+ * @param item {String} Item to add to the set
+ * @param [unshift=false] {Boolean} Pass true to unshift instead of push when adding
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.add = function( item, unshift ) {
 
@@ -649,6 +657,9 @@ StringSet.prototype.add = function( item, unshift ) {
 
 /**
  * Remove an item.
+ * @method remove
+ * @param item {String} Item to remove from the set
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.remove = function( item ) {
 
@@ -666,7 +677,10 @@ StringSet.prototype.remove = function( item ) {
 };
 
 /**
- * Contains an item?
+ * Check if the set contains an item.
+ * @method contains
+ * @param item {String} Item to search for
+ * @return {Boolean} Found or not found
  */
 StringSet.prototype.contains = function( item ) {
 

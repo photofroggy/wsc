@@ -617,7 +617,11 @@ function timeLengthString( length ) {
 }
 
 /**
- * Sets. Yeah. Fun.
+ * Sets of unique strings.
+ * 
+ * Strings in the set are stored lower case.
+ * @class StringSet
+ * @param [items=[]] {Array} Items to start with
  */
 function StringSet( items ) {
 
@@ -627,6 +631,10 @@ function StringSet( items ) {
 
 /**
  * Add an item.
+ * @method add
+ * @param item {String} Item to add to the set
+ * @param [unshift=false] {Boolean} Pass true to unshift instead of push when adding
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.add = function( item, unshift ) {
 
@@ -649,6 +657,9 @@ StringSet.prototype.add = function( item, unshift ) {
 
 /**
  * Remove an item.
+ * @method remove
+ * @param item {String} Item to remove from the set
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.remove = function( item ) {
 
@@ -666,7 +677,10 @@ StringSet.prototype.remove = function( item ) {
 };
 
 /**
- * Contains an item?
+ * Check if the set contains an item.
+ * @method contains
+ * @param item {String} Item to search for
+ * @return {Boolean} Found or not found
  */
 StringSet.prototype.contains = function( item ) {
 
@@ -10168,6 +10182,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('CDS.LINK.REJECT', handle.clrj);
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
+        client.bind('pkt.recv_part', handle.pcrp);
         client.bind('pkt.property', handle.pcp);
         client.bind('closed', handle.closed);
     };
@@ -10340,10 +10355,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             var p = event.payload.split(',');
             var t = p.shift();
             p = p.join(',');
+            
             if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
+            
             if( !(user in pchats) )
                 return;
+            
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
@@ -10374,8 +10392,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             // Other guy is already here.
-            if( client.channel(event.ns).get_usernames().length == 2 )
+            if( client.channel(event.ns).get_usernames().length == 2 ) {
+                client.bds.channel.add( event.ns );
                 return;
+            }
             
             // Send notice...
             var user = event.sns.substr(1);
@@ -10398,10 +10418,20 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
             
+            client.bds.channel.add( event.ns );
+            
             if( !( event.user in pns ) )
                 return;
             
             client.ui.pager.remove_notice( pns[event.user] );
+        },
+        
+        // pchat recv_part
+        pcrp: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
+            client.bds.channel.remove( event.ns );
         }
     };
 
