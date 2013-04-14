@@ -21,6 +21,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "Chatterbox.Settings.Item.Radio",
         "Chatterbox.Settings.Page",
         "EventEmitter",
+        "StringSet",
         "dAmn.Extension",
         "dAmn.Stash",
         "dAmn.TablumpParser",

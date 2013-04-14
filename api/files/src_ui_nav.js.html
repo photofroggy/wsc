@@ -79,6 +79,8 @@
     
         <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
     
+        <li><a href="/wsc/api/classes/StringSet.html">StringSet</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -133,6 +135,7 @@ Chatterbox.Navigation = function( ui ) {
      *&#x2F;
     this.el = {
         n: this.manager.view.find(&#x27;nav.tabs&#x27;),                            &#x2F;&#x2F; Navigation bar
+        tw: this.manager.view.find(&#x27;nav.tabs div.tabwrap&#x27;),
         t: this.manager.view.find(&#x27;nav.tabs #chattabs&#x27;),                  &#x2F;&#x2F; Tabs
         b: this.manager.view.find(&#x27;nav.tabs #tabnav&#x27;),                    &#x2F;&#x2F; Buttons
         l: this.manager.view.find(&#x27;nav.tabs #tabnav .arrow_left&#x27;),        &#x2F;&#x2F; Tab left navigation button
@@ -332,7 +335,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  *&#x2F;
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }

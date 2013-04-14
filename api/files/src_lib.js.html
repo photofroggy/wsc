@@ -79,6 +79,8 @@
     
         <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
     
+        <li><a href="/wsc/api/classes/StringSet.html">StringSet</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -290,7 +292,11 @@ function timeLengthString( length ) {
 }
 
 &#x2F;**
- * Sets. Yeah. Fun.
+ * Sets of unique strings.
+ * 
+ * Strings in the set are stored lower case.
+ * @class StringSet
+ * @param [items=[]] {Array} Items to start with
  *&#x2F;
 function StringSet( items ) {
 
@@ -300,6 +306,10 @@ function StringSet( items ) {
 
 &#x2F;**
  * Add an item.
+ * @method add
+ * @param item {String} Item to add to the set
+ * @param [unshift=false] {Boolean} Pass true to unshift instead of push when adding
+ * @return {Boolean} Success or failure
  *&#x2F;
 StringSet.prototype.add = function( item, unshift ) {
 
@@ -322,6 +332,9 @@ StringSet.prototype.add = function( item, unshift ) {
 
 &#x2F;**
  * Remove an item.
+ * @method remove
+ * @param item {String} Item to remove from the set
+ * @return {Boolean} Success or failure
  *&#x2F;
 StringSet.prototype.remove = function( item ) {
 
@@ -339,7 +352,10 @@ StringSet.prototype.remove = function( item ) {
 };
 
 &#x2F;**
- * Contains an item?
+ * Check if the set contains an item.
+ * @method contains
+ * @param item {String} Item to search for
+ * @return {Boolean} Found or not found
  *&#x2F;
 StringSet.prototype.contains = function( item ) {
 

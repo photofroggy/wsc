@@ -79,6 +79,8 @@
     
         <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
     
+        <li><a href="/wsc/api/classes/StringSet.html">StringSet</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -517,9 +519,9 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     if( member == undefined )
         return;
     
-    member[&#x27;conn&#x27;]--;
+    member.conn--;
     
-    if( member[&#x27;conn&#x27;] == 0 || !force) {
+    if( member.conn == 0 || force) {
         delete this.info.members[user];
     }
     

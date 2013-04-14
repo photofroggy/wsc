@@ -79,6 +79,8 @@
     
         <li><a href="/wsc/api/classes/jQuery.plugin.html">jQuery.plugin</a></li>
     
+        <li><a href="/wsc/api/classes/StringSet.html">StringSet</a></li>
+    
         <li><a href="/wsc/api/classes/template.html">template</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Channel.html">wsc.Channel</a></li>
@@ -121,7 +123,7 @@
  *&#x2F;
 var Chatterbox = {};
 
-Chatterbox.VERSION = &#x27;0.19.82&#x27;;
+Chatterbox.VERSION = &#x27;0.19.84&#x27;;
 Chatterbox.STATE = &#x27;beta&#x27;;
 
 &#x2F;**
@@ -144,8 +146,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        &#x27;themes&#x27;: [&#x27;wsct_default&#x27;, &#x27;wsct_dAmn&#x27;, &#x27;wsct_dark&#x27;],
-        &#x27;theme&#x27;: &#x27;wsct_default&#x27;,
+        &#x27;themes&#x27;: [ &#x27;wsct_dAmn&#x27;, &#x27;wsct_dark&#x27; ],
+        &#x27;theme&#x27;: &#x27;wsct_dark&#x27;,
         &#x27;monitor&#x27;: [&#x27;~Monitor&#x27;, true],
         &#x27;username&#x27;: &#x27;&#x27;,
         &#x27;domain&#x27;: &#x27;website.com&#x27;,

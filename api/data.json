@@ -233,7 +233,9 @@
         "src/lib.js": {
             "name": "src/lib.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "StringSet": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -321,6 +323,7 @@
                 "wsc.defaults.Extension": 1,
                 "EventEmitter": 1,
                 "wsc.Flow": 1,
+                "StringSet": 1,
                 "wsc.MessageString": 1,
                 "wsc.MessageParser": 1,
                 "wsc.Middleware": 1,
@@ -1102,6 +1105,29 @@
                     "name": "protocol",
                     "description": "Protocol object.",
                     "type": "Object"
+                }
+            ]
+        },
+        "StringSet": {
+            "name": "StringSet",
+            "shortname": "StringSet",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "wsc",
+            "namespace": "",
+            "file": "src/lib.js",
+            "line": 176,
+            "description": "Sets of unique strings.\n\nStrings in the set are stored lower case.",
+            "params": [
+                {
+                    "name": "items",
+                    "description": "Items to start with",
+                    "type": "Array",
+                    "optional": true,
+                    "optdefault": "["
                 }
             ]
         },
@@ -2550,7 +2576,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 919,
+            "line": 925,
             "description": "Handle the register user event.",
             "itemtype": "method",
             "name": "register_user",
@@ -2566,7 +2592,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 939,
+            "line": 945,
             "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
             "itemtype": "method",
             "name": "highlight",
@@ -2583,7 +2609,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 988,
+            "line": 994,
             "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
             "itemtype": "method",
             "name": "noise",
@@ -2592,7 +2618,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1024,
+            "line": 1030,
             "description": "Display a user info hover box.",
             "itemtype": "method",
             "name": "userinfo",
@@ -2612,7 +2638,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1084,
+            "line": 1090,
             "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
             "itemtype": "method",
             "name": "unhover_user",
@@ -2633,7 +2659,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1118,
+            "line": 1124,
             "description": "Hide messages from a given user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2649,7 +2675,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1133,
+            "line": 1139,
             "description": "Reveal messages received from a given user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2665,7 +2691,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1148,
+            "line": 1154,
             "description": "Remove a user's messages completely.",
             "itemtype": "method",
             "name": "clear_user",
@@ -3320,7 +3346,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 77,
+            "line": 78,
             "description": "Configure the main settings page of the settings popup.",
             "itemtype": "method",
             "name": "configure_page",
@@ -3336,7 +3362,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 153,
+            "line": 154,
             "description": "Get the height of the navigation bar.",
             "itemtype": "method",
             "name": "height",
@@ -3349,7 +3375,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 164,
+            "line": 165,
             "description": "Add a button to the top button row.",
             "itemtype": "method",
             "name": "add_button",
@@ -3358,7 +3384,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 199,
+            "line": 200,
             "description": "Add a channel tab to the navigation bar.",
             "itemtype": "method",
             "name": "add_tab",
@@ -3379,7 +3405,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 212,
+            "line": 213,
             "description": "Resize the tab bar.",
             "itemtype": "method",
             "name": "resize",
@@ -3388,7 +3414,7 @@
         },
         {
             "file": "src/ui/nav.js",
-            "line": 226,
+            "line": 227,
             "description": "Set or get the visibility of tab close buttons.",
             "itemtype": "method",
             "name": "closer",
@@ -5862,35 +5888,74 @@
             "file": "src/ignore.js",
             "line": 1,
             "description": "Ignore extension.\n\nImplements the ignore functionality.",
-            "class": "wsc.MessageString",
+            "class": "StringSet",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
-            "line": 176,
-            "description": "Sets. Yeah. Fun.",
-            "class": "wsc.MessageString",
-            "module": "wsc"
-        },
-        {
-            "file": "src/lib.js",
-            "line": 185,
+            "line": 189,
             "description": "Add an item.",
-            "class": "wsc.MessageString",
+            "itemtype": "method",
+            "name": "add",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Item to add to the set",
+                    "type": "String"
+                },
+                {
+                    "name": "unshift",
+                    "description": "Pass true to unshift instead of push when adding",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "false"
+                }
+            ],
+            "return": {
+                "description": "Success or failure",
+                "type": "Boolean"
+            },
+            "class": "StringSet",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
-            "line": 207,
+            "line": 215,
             "description": "Remove an item.",
-            "class": "wsc.MessageString",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Item to remove from the set",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Success or failure",
+                "type": "Boolean"
+            },
+            "class": "StringSet",
             "module": "wsc"
         },
         {
             "file": "src/lib.js",
-            "line": 225,
-            "description": "Contains an item?",
-            "class": "wsc.MessageString",
+            "line": 236,
+            "description": "Check if the set contains an item.",
+            "itemtype": "method",
+            "name": "contains",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Item to search for",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Found or not found",
+                "type": "Boolean"
+            },
+            "class": "StringSet",
             "module": "wsc"
         },
         {
@@ -6604,22 +6669,6 @@
         {
             "message": "Missing item type\nIgnore extension.\n\nImplements the ignore functionality.",
             "line": " src/ignore.js:1"
-        },
-        {
-            "message": "Missing item type\nSets. Yeah. Fun.",
-            "line": " src/lib.js:176"
-        },
-        {
-            "message": "Missing item type\nAdd an item.",
-            "line": " src/lib.js:185"
-        },
-        {
-            "message": "Missing item type\nRemove an item.",
-            "line": " src/lib.js:207"
-        },
-        {
-            "message": "Missing item type\nContains an item?",
-            "line": " src/lib.js:225"
         }
     ]
 }
