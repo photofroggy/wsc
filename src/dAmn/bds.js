@@ -42,6 +42,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('pkt.recv_part', handle.pcrp);
         client.bind('pkt.property', handle.pcp);
         client.bind('closed', handle.closed);
+        
+        // Filter BDS commands
+        client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
+        client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
     };
     
     var pkt_login = function( event ) {
@@ -92,6 +96,63 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Filter
+        filter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.ns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a message
+            var msg = data.message.match( /<span class="cmsg u-([^"]+)">(.*)<\/span>/ );
+            
+            if( !msg ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( msg[2].match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            
+            done( data );
+        },
+        
+        hfilter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.sns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            console.log( data );
+            // Find a BDS message
+            if( data.message.match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            done( data );
+        
+        },
+        
         // Connection closed.
         closed: function( event ) {
             client.remove_ns( settings.bds.mns );

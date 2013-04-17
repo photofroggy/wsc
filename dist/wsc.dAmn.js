@@ -1419,26 +1419,30 @@ wsc.Channel.prototype.recv_part = function( e ) {
  */
 wsc.Channel.prototype.recv_msg = function( e ) {
     
-    var u = this.client.settings['username'].toLowerCase();
+    var c = this;
     
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
+    this.client.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( c.ui != null) {
+            if( hlight ) {
+                c.ui.highlight( );
+            } else {
+                c.ui.highlight( false );
+            }
         }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
+        
+        c.client.trigger( 'pkt.recv_msg.highlighted', e );
+    }, e );
 
 };
 
@@ -3687,6 +3691,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -3698,6 +3704,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -3707,7 +3716,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -5354,6 +5364,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -5840,40 +5851,45 @@ Chatterbox.Channel.prototype.register_user = function( user ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var c = this;
     
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
@@ -10138,7 +10154,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.25';
+wsc.dAmn.VERSION = '0.9.26';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -10185,6 +10201,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('pkt.recv_part', handle.pcrp);
         client.bind('pkt.property', handle.pcp);
         client.bind('closed', handle.closed);
+        
+        // Filter BDS commands
+        client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
+        client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
     };
     
     var pkt_login = function( event ) {
@@ -10235,6 +10255,63 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Filter
+        filter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.ns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a message
+            var msg = data.message.match( /<span class="cmsg u-([^"]+)">(.*)<\/span>/ );
+            
+            if( !msg ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( msg[2].match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            
+            done( data );
+        },
+        
+        hfilter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.sns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            console.log( data );
+            // Find a BDS message
+            if( data.message.match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            done( data );
+        
+        },
+        
         // Connection closed.
         closed: function( event ) {
             client.remove_ns( settings.bds.mns );

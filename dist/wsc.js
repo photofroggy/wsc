@@ -1419,26 +1419,30 @@ wsc.Channel.prototype.recv_part = function( e ) {
  */
 wsc.Channel.prototype.recv_msg = function( e ) {
     
-    var u = this.client.settings['username'].toLowerCase();
+    var c = this;
     
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
+    this.client.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( c.ui != null) {
+            if( hlight ) {
+                c.ui.highlight( );
+            } else {
+                c.ui.highlight( false );
+            }
         }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
+        
+        c.client.trigger( 'pkt.recv_msg.highlighted', e );
+    }, e );
 
 };
 
@@ -3687,6 +3691,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -3698,6 +3704,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -3707,7 +3716,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -5354,6 +5364,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -5840,40 +5851,45 @@ Chatterbox.Channel.prototype.register_user = function( user ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var c = this;
     
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
