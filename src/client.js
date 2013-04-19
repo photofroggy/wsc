@@ -496,7 +496,12 @@ wsc.Client.prototype.format_ns = function( namespace ) {
 wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
     var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
-    chan.build();
+    this.trigger( 'ns.create', {
+        name: 'ns.create',
+        ns: namespace,
+        chan: chan,
+        client: this
+    });
 
 };
 
@@ -511,12 +516,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     if( !namespace )
         return;
     
-    var chan = this.channel(namespace);
-    if( !chan )
-        return;
-    
-    chan.remove();
-    delete this.channelo[chan.raw.toLowerCase()];
+    this.cascade(
+        'ns.remove',
+        function( data ) {
+            var chan = data.client.channel( data.ns );
+            
+            if( !chan )
+                return;
+            
+            delete data.client.channelo[chan.raw.toLowerCase()];
+        },
+        {
+            ns: namespace,
+            client: this
+        }
+    );
 
 };
 

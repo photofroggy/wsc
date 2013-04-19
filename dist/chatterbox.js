@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.86';
+Chatterbox.VERSION = '0.19.87';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -326,6 +326,23 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         ui.packet( event, client );
     
     } );
+    
+    // Channel removed from client.
+    this.client.middle(
+        'ns.remove',
+        function( data, done ) {
+            ui.remove_channel( data.ns );
+            done( data );
+        }
+    );
+    
+    this.client.bind(
+        'ns.create',
+        function( event, client ) {
+            ui.create_channel(event.chan.raw, event.chan.hidden);
+            event.chan.ui = ui.channel( event.ns );
+        }
+    );
     
 };
 
