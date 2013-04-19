@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.34';
+wsc.VERSION = '1.7.35';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.119';
+wsc.REVISION = '0.21.120';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -866,12 +866,16 @@ var chains = [["recv", "admin"]];
  * @constructor
  * @param data {String} Raw packet data
  * @param [separator='='] {String} Separator character used to delimit arguments
+ * @param [recurse=true] {Boolean} Should the parser recursively parse packets
  */
-wsc.Packet = function( data, separator ) {
+wsc.Packet = function( data, separator, recurse ) {
 
     if(!( data )) {
         return null;
     }
+    
+    if( recurse === undefined )
+        recurse = true;
     
     separator = separator || '=';
     var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
@@ -905,10 +909,10 @@ wsc.Packet = function( data, separator ) {
             pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || '';
         }
         
-        if( pkt.body != null ) {
+        if( pkt.body != null && recurse ) {
             subs = pkt.body.split('\n\n');
             for(var i in subs) {
-                sub = wsc.Packet( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator, false );
                 if( sub == null )
                     break;
                 sub.body = subs.slice(i + 1).join('\n\n');
