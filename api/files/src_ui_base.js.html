@@ -125,7 +125,7 @@
  *&#x2F;
 var Chatterbox = {};
 
-Chatterbox.VERSION = &#x27;0.19.85&#x27;;
+Chatterbox.VERSION = &#x27;0.19.86&#x27;;
 Chatterbox.STATE = &#x27;beta&#x27;;
 
 &#x2F;**
@@ -443,22 +443,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     &#x2F;&#x2F; Events for logging output.
     this.client.bind( &#x27;pkt&#x27;, function( event, client ) {
     
-        var msg = client.protocol.log( event );
-        
-        if( !msg )
-            return;
-        
-        event.html = msg.html();
-        
-        ui.cascade(
-            &#x27;log_message&#x27;,
-            function( data, done ) {
-                ui.chatbook.log_message( data.message, data.event );
-            }, {
-                message: msg,
-                event: event
-            }
-        );
+        ui.packet( event, client );
     
     } );
     
@@ -489,6 +474,41 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+&#x2F;**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ *&#x2F;
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( &#x27;&gt;&gt;&gt;&#x27;, event.sns, &#x27;|&#x27;, msg.text() );
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            &#x27;log_message&#x27;,
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 

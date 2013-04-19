@@ -1944,7 +1944,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 347,
+            "line": 332,
             "description": "Resize the UI to fit the containing element.",
             "itemtype": "method",
             "name": "resize",
@@ -1953,7 +1953,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 362,
+            "line": 347,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -1962,7 +1962,28 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 375,
+            "line": 360,
+            "description": "Handle a packet being received.",
+            "itemtype": "method",
+            "name": "packet",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Reference to the client",
+                    "type": "Object"
+                }
+            ],
+            "class": "Chatterbox",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 395,
             "description": "Create a screen for channel `ns` in the UI, and initialise data\nstructures or some shit idk.",
             "itemtype": "method",
             "name": "create_channel",
@@ -1983,7 +2004,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 387,
+            "line": 407,
             "description": "Remove a channel from the GUI.\nWe do this when we leave a channel for any reason.\nNote: last channel is never removed and when removing a channel\nwe switch to the last channel in the list before doing so.",
             "itemtype": "method",
             "name": "remove_channel",
@@ -1999,7 +2020,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 400,
+            "line": 420,
             "description": "Select which channel is currently being viewed.",
             "itemtype": "method",
             "name": "toggle_channel",
@@ -2015,7 +2036,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 410,
+            "line": 430,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -2041,7 +2062,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 422,
+            "line": 442,
             "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
             "itemtype": "method",
             "name": "channels",
@@ -2054,7 +2075,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 435,
+            "line": 455,
             "description": "Switch to the channel left of the current channel.",
             "itemtype": "method",
             "name": "channel_left",
@@ -2063,7 +2084,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 446,
+            "line": 466,
             "description": "Switch to the channel right of the current channel.",
             "itemtype": "method",
             "name": "channel_right",
@@ -2072,7 +2093,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 458,
+            "line": 478,
             "description": "Display a log message in the monitor channel.",
             "itemtype": "method",
             "name": "monitor",
@@ -2094,7 +2115,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 471,
+            "line": 491,
             "description": "Display a server message across all open channels.",
             "itemtype": "method",
             "name": "server_message",
@@ -2116,7 +2137,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 484,
+            "line": 504,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -2132,7 +2153,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 496,
+            "line": 516,
             "description": "Display a log message across all open channels.",
             "itemtype": "method",
             "name": "log",
@@ -2148,7 +2169,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 508,
+            "line": 528,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2164,7 +2185,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 532,
+            "line": 552,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2180,7 +2201,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 557,
+            "line": 577,
             "description": "Clear a user's messages from all channels.",
             "itemtype": "method",
             "name": "clear_user",
@@ -2196,7 +2217,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 571,
+            "line": 591,
             "description": "Set the theme for the UI.",
             "itemtype": "method",
             "name": "theme",
@@ -2212,7 +2233,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 595,
+            "line": 615,
             "description": "Add a new theme to the client.",
             "itemtype": "method",
             "name": "add_theme",
@@ -2228,7 +2249,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 610,
+            "line": 630,
             "description": "Toggle developer mode for the UI.",
             "itemtype": "method",
             "name": "developer",
@@ -2742,6 +2763,27 @@
             "module": "Chatterbox"
         },
         {
+            "file": "src/ui/channel.js",
+            "line": 1175,
+            "description": "Handle a recv_msg packet.",
+            "itemtype": "method",
+            "name": "pkt_recv_msg",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Reference to the client",
+                    "type": "Object"
+                }
+            ],
+            "class": "Chatterbox.Channel",
+            "module": "Chatterbox"
+        },
+        {
             "file": "src/ui/chatbook.js",
             "line": 22,
             "description": "Return the height of the chatbook.",
@@ -3035,6 +3077,27 @@
             "description": "Toggle the developer mode of each channel.",
             "itemtype": "method",
             "name": "developer",
+            "class": "Chatterbox.Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 401,
+            "description": "Handle a packet event.",
+            "itemtype": "method",
+            "name": "handle",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "Event data",
+                    "type": "Object"
+                },
+                {
+                    "name": "client",
+                    "description": "Reference to the client",
+                    "type": "Object"
+                }
+            ],
             "class": "Chatterbox.Chatbook",
             "module": "Chatterbox"
         },
@@ -4737,22 +4800,6 @@
         {
             "file": "src/channel.js",
             "line": 436,
-            "description": "Process a recv_msg event.",
-            "itemtype": "method",
-            "name": "recv_msg",
-            "params": [
-                {
-                    "name": "e",
-                    "description": "Event data for recv_msg packet.",
-                    "type": "Object"
-                }
-            ],
-            "class": "wsc.Channel",
-            "module": "wsc"
-        },
-        {
-            "file": "src/channel.js",
-            "line": 471,
             "description": "Process a recv_privchg event.",
             "itemtype": "method",
             "name": "recv_privchg",
@@ -4768,7 +4815,7 @@
         },
         {
             "file": "src/channel.js",
-            "line": 491,
+            "line": 456,
             "description": "Process a recv_kicked event.",
             "itemtype": "method",
             "name": "recv_kicked",

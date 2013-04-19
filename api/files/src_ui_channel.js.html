@@ -1292,6 +1292,39 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 
 };
 
+&#x2F;**
+ * Handle a recv_msg packet.
+ * @method pkt_recv_msg
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ *&#x2F;
+Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
+
+    var c = this;
+    
+    this.manager.cascade( &#x27;chan.recv_msg&#x27;, function( e, done ) {
+        var u = c.manager.client.settings[&#x27;username&#x27;].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e[&#x27;message&#x27;].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight &amp;&amp; e.sns[0] != &#x27;@&#x27; )
+            return;
+        
+        if( hlight ) {
+            c.highlight( );
+        } else {
+            c.highlight( false );
+        }
+        
+        c.trigger( &#x27;pkt.recv_msg.highlighted&#x27;, e );
+    }, event );
+
+};
+
 
 
     </pre>

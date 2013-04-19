@@ -518,6 +518,29 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
     } );
 };
 
+&#x2F;**
+ * Handle a packet event.
+ * @method handle
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ *&#x2F;
+Chatterbox.Chatbook.prototype.handle = function( event, client ) {
+
+    var ui = this.manager;
+    var chan = this.channel( event.ns );
+    
+    if( !chan )
+        return;
+    
+    var meth = &#x27;pkt_&#x27; + event.name;
+    
+    try {
+        chan[meth]( event, client );
+    } catch( err ) {}
+
+};
+
+
 
     </pre>
 </div>
