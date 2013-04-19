@@ -1218,6 +1218,13 @@
                     "type": "String",
                     "optional": true,
                     "optdefault": "'"
+                },
+                {
+                    "name": "recurse",
+                    "description": "Should the parser recursively parse packets",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "true"
                 }
             ]
         },

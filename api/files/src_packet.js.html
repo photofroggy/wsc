@@ -131,12 +131,16 @@ var chains = [[&quot;recv&quot;, &quot;admin&quot;]];
  * @constructor
  * @param data {String} Raw packet data
  * @param [separator=&#x27;=&#x27;] {String} Separator character used to delimit arguments
+ * @param [recurse=true] {Boolean} Should the parser recursively parse packets
  *&#x2F;
-wsc.Packet = function( data, separator ) {
+wsc.Packet = function( data, separator, recurse ) {
 
     if(!( data )) {
         return null;
     }
+    
+    if( recurse === undefined )
+        recurse = true;
     
     separator = separator || &#x27;=&#x27;;
     var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
@@ -170,10 +174,10 @@ wsc.Packet = function( data, separator ) {
             pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || &#x27;&#x27;;
         }
         
-        if( pkt.body != null ) {
+        if( pkt.body != null &amp;&amp; recurse ) {
             subs = pkt.body.split(&#x27;\n\n&#x27;);
             for(var i in subs) {
-                sub = wsc.Packet( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator, false );
                 if( sub == null )
                     break;
                 sub.body = subs.slice(i + 1).join(&#x27;\n\n&#x27;);
