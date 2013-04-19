@@ -1027,25 +1027,13 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-    this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(this.raw);
-};
-
-/**
- * Remove this channel from the screen entirely.
- * 
- * @method remove
- */
-wsc.Channel.prototype.remove = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.manager.remove_channel(this.raw);
 };
 
 /**
  * Hide the channel view in the UI.
  * 
  * @method hide
+ * @deprecated
  */
 wsc.Channel.prototype.hide = function( ) {
     if( this.ui == null )
@@ -1057,6 +1045,7 @@ wsc.Channel.prototype.hide = function( ) {
  * Show the channel view in the UI.
  * 
  * @method show
+ * @deprecated
  */
 wsc.Channel.prototype.show = function( ) {
     if( this.ui == null )
@@ -1068,6 +1057,7 @@ wsc.Channel.prototype.show = function( ) {
  * Display a log message.
  * 
  * @method log
+ * @deprecated
  * @param msg {String} Log message to display.
  */
 wsc.Channel.prototype.log = function( msg ) {
@@ -1080,6 +1070,7 @@ wsc.Channel.prototype.log = function( msg ) {
  * Send a message to the log window.
  * 
  * @method log_item
+ * @deprecated
  * @param msg {String} Message to send.
  */
 wsc.Channel.prototype.logItem = function( msg ) {
@@ -1092,6 +1083,7 @@ wsc.Channel.prototype.logItem = function( msg ) {
  * Send a server message to the log window.
  * 
  * @method server_message
+ * @deprecated
  * @param msg {String} Server message.
  * @param [info] {String} Extra information for the message.
  */
@@ -1105,6 +1097,7 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
  * Clear all log messages from the log window.
  * 
  * @method clear
+ * @deprecated
  */
 wsc.Channel.prototype.clear = function( user ) {
     if( this.ui == null )
@@ -1120,6 +1113,7 @@ wsc.Channel.prototype.clear = function( user ) {
  * Display a user's whois info.
  * 
  * @method log_whois
+ * @deprecated
  * @param data {Object} Object containing a user's information.
  */
 wsc.Channel.prototype.log_whois = function( data ) {
@@ -1132,6 +1126,7 @@ wsc.Channel.prototype.log_whois = function( data ) {
  * Display some information relating to a privilege class.
  * 
  * @method log_pc
+ * @deprecated
  * @param privileges {Boolean} Are we showing privileges or users?
  * @param data {Array} Array containing information.
  */
@@ -4028,7 +4023,12 @@ wsc.Client.prototype.format_ns = function( namespace ) {
 wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
     var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
-    chan.build();
+    this.trigger( 'ns.create', {
+        name: 'ns.create',
+        ns: namespace,
+        chan: chan,
+        client: this
+    });
 
 };
 
@@ -4043,12 +4043,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     if( !namespace )
         return;
     
-    var chan = this.channel(namespace);
-    if( !chan )
-        return;
-    
-    chan.remove();
-    delete this.channelo[chan.raw.toLowerCase()];
+    this.cascade(
+        'ns.remove',
+        function( data ) {
+            var chan = data.client.channel( data.ns );
+            
+            if( !chan )
+                return;
+            
+            delete data.client.channelo[chan.raw.toLowerCase()];
+        },
+        {
+            ns: namespace,
+            client: this
+        }
+    );
 
 };
 
@@ -4747,6 +4756,23 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         ui.packet( event, client );
     
     } );
+    
+    // Channel removed from client.
+    this.client.middle(
+        'ns.remove',
+        function( data, done ) {
+            ui.remove_channel( data.ns );
+            done( data );
+        }
+    );
+    
+    this.client.bind(
+        'ns.create',
+        function( event, client ) {
+            ui.create_channel(event.chan.raw, event.chan.hidden);
+            event.chan.ui = ui.channel( event.ns );
+        }
+    );
     
 };
 
