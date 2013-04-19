@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.35';
+wsc.VERSION = '1.7.36';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.120';
+wsc.REVISION = '0.21.121';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -1413,41 +1413,6 @@ wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
     
-};
-
-/**
- * Process a recv_msg event.
- * 
- * @method recv_msg
- * @param e {Object} Event data for recv_msg packet.
- */
-wsc.Channel.prototype.recv_msg = function( e ) {
-    
-    var c = this;
-    
-    this.client.cascade( 'chan.recv_msg', function( e, done ) {
-        var u = c.client.settings['username'].toLowerCase(); 
-        
-        if( u == e.user.toLowerCase() )
-            return;
-        
-        var msg = e['message'].toLowerCase();
-        var hlight = msg.indexOf(u) != -1;
-        
-        if( !hlight && e.sns[0] != '@' )
-            return;
-        
-        if( c.ui != null) {
-            if( hlight ) {
-                c.ui.highlight( );
-            } else {
-                c.ui.highlight( false );
-            }
-        }
-        
-        c.client.trigger( 'pkt.recv_msg.highlighted', e );
-    }, e );
-
 };
 
 /**
@@ -4461,7 +4426,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.85';
+Chatterbox.VERSION = '0.19.86';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4779,22 +4744,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     // Events for logging output.
     this.client.bind( 'pkt', function( event, client ) {
     
-        var msg = client.protocol.log( event );
-        
-        if( !msg )
-            return;
-        
-        event.html = msg.html();
-        
-        ui.cascade(
-            'log_message',
-            function( data, done ) {
-                ui.chatbook.log_message( data.message, data.event );
-            }, {
-                message: msg,
-                event: event
-            }
-        );
+        ui.packet( event, client );
     
     } );
     
@@ -4825,6 +4775,41 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+/**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 
@@ -6248,6 +6233,39 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 
 };
 
+/**
+ * Handle a recv_msg packet.
+ * @method pkt_recv_msg
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
+
+    var c = this;
+    
+    this.manager.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.manager.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( hlight ) {
+            c.highlight( );
+        } else {
+            c.highlight( false );
+        }
+        
+        c.trigger( 'pkt.recv_msg.highlighted', e );
+    }, event );
+
+};
+
 
 /**
  * Object for managing the chatbook portion of the UI.
@@ -6648,6 +6666,29 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
         chan.developer();
     } );
 };
+
+/**
+ * Handle a packet event.
+ * @method handle
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Chatbook.prototype.handle = function( event, client ) {
+
+    var ui = this.manager;
+    var chan = this.channel( event.ns );
+    
+    if( !chan )
+        return;
+    
+    var meth = 'pkt_' + event.name;
+    
+    try {
+        chan[meth]( event, client );
+    } catch( err ) {}
+
+};
+
 
 /**
  * This object provides an interface for the chat input panel.
