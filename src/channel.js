@@ -441,26 +441,30 @@ wsc.Channel.prototype.recv_part = function( e ) {
  */
 wsc.Channel.prototype.recv_msg = function( e ) {
     
-    var u = this.client.settings['username'].toLowerCase();
+    var c = this;
     
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
+    this.client.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( c.ui != null) {
+            if( hlight ) {
+                c.ui.highlight( );
+            } else {
+                c.ui.highlight( false );
+            }
         }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
+        
+        c.client.trigger( 'pkt.recv_msg.highlighted', e );
+    }, e );
 
 };
 

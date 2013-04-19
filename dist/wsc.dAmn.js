@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.33';
+wsc.VERSION = '1.7.34';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.118';
+wsc.REVISION = '0.21.119';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -617,7 +617,11 @@ function timeLengthString( length ) {
 }
 
 /**
- * Sets. Yeah. Fun.
+ * Sets of unique strings.
+ * 
+ * Strings in the set are stored lower case.
+ * @class StringSet
+ * @param [items=[]] {Array} Items to start with
  */
 function StringSet( items ) {
 
@@ -627,6 +631,10 @@ function StringSet( items ) {
 
 /**
  * Add an item.
+ * @method add
+ * @param item {String} Item to add to the set
+ * @param [unshift=false] {Boolean} Pass true to unshift instead of push when adding
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.add = function( item, unshift ) {
 
@@ -649,6 +657,9 @@ StringSet.prototype.add = function( item, unshift ) {
 
 /**
  * Remove an item.
+ * @method remove
+ * @param item {String} Item to remove from the set
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.remove = function( item ) {
 
@@ -666,7 +677,10 @@ StringSet.prototype.remove = function( item ) {
 };
 
 /**
- * Contains an item?
+ * Check if the set contains an item.
+ * @method contains
+ * @param item {String} Item to search for
+ * @return {Boolean} Found or not found
  */
 StringSet.prototype.contains = function( item ) {
 
@@ -1405,26 +1419,30 @@ wsc.Channel.prototype.recv_part = function( e ) {
  */
 wsc.Channel.prototype.recv_msg = function( e ) {
     
-    var u = this.client.settings['username'].toLowerCase();
+    var c = this;
     
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
+    this.client.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( c.ui != null) {
+            if( hlight ) {
+                c.ui.highlight( );
+            } else {
+                c.ui.highlight( false );
+            }
         }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
+        
+        c.client.trigger( 'pkt.recv_msg.highlighted', e );
+    }, e );
 
 };
 
@@ -1652,6 +1670,56 @@ wsc.Protocol = function( mparser ) {
         }
         
     };
+    
+    /**
+     * Messages object.
+     * 
+     * This object determines how each protocol packet should be rendered based
+     * data from an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of options for rendering and
+     * logging. The array is of the structure `[ renderers, monitor, global ]`.
+     * All items are optional, but positional. There are default options that
+     * can be used.
+     * 
+     * When `renderers` is present it must be an array. This array contains
+     * renderers for different kinds of formats. Renderers can be either a
+     * formatted string or a callback that returns a string. There must be at
+     * least one renderer, for text output. Otherwise the array should contain
+     * a renderer for text ouput, a renderer for HTML output, and a renderer
+     * for ANSI output. If a renderer is missing then everything falls back to
+     * text renderer.
+     * 
+     * The `monitor` option determines whether or not to display the log
+     * message in the monitor channel. The default for this is `false`.
+     * 
+     * The `global` option determines whether or not to display the log message
+     * in every open channel. The default for this is also `false`.
+     * 
+     * An example for an entry in this object:
+     *      
+     *      { 'join': [
+     *          [
+     *              '** Join {ns}: "{e}" *',
+     *              '<span class="servermsg">** Join {ns}: "{e}" *</span>'
+     *          ],
+     *          true
+     *      ] }
+     * 
+     * This shows how the join packet will render in the monitor channel. If a
+     * channel is set to display in the monitor channel, then it should not
+     * be displayed in the event channel.
+     *
+     * At the moment, we only have to render using HTML, so the `renderers`
+     * array in the entries are only HTML renderers at the moment. No array,
+     * just formatting strings.
+     * 
+     * To display absolutely nothing for an event, the whole entry can simply
+     * be `null`.
+     * @property messages
+     * @type Object
+     */
     //  'event': [ template, monitor, global ]
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
@@ -1898,38 +1966,142 @@ wsc.Protocol.prototype.render = function( event, format ) {
 
 };
 
+/**
+ * Produce a log message for an event.
+ * @method log
+ * @param event {Object} Event data to produce a log message with
+ * @return {Object} A log message object on success. Null if failed.
+ */
+wsc.Protocol.prototype.log = function( event ) {
 
-wsc.Protocol.prototype.log = function( client, event ) {
-
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
-        return;
+        return null;
     
-    if( event.s == '0' ) {
-        return;
-    }
+    return new wsc.Protocol.LogMessage( event, msgm );
+
+};
+
+
+/**
+ * Log message object represents a log message.
+ * @class wsc.Protocol.LogMessage
+ * @constructor
+ * @param event {Object} Event data
+ * @param options {Array} Log message options
+ */
+wsc.Protocol.LogMessage = function( event, options ) {
+
+    this.event = event;
+    this.template = options[0] || '';
+    this.monitor = options[1] || false;
+    this.global = options[2] || false;
+    this._html = false;
+    this._text = false;
+    this._ansi = false;
+
+};
+
+/**
+ * Get a text rendition.
+ * @method text
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.text = function(  ) {
+
+    if( this._text === false )
+        this._text = this.render( 0 );
     
-    event.html = this.render(event, 'html');
+    return this._text;
+
+};
+
+/**
+ * Get an HTML rendition.
+ * @method html
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.html = function(  ) {
+
+    if( this._html === false )
+        this._html = this.render( 1 );
+    
+    return this._html;
+
+};
+
+/**
+ * Get an ANSI rendition.
+ * @method ansi
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.ansi = function(  ) {
+
+    if( this._ansi === false )
+        this._ansi = this.render( 2 );
+    
+    return this._ansi;
+
+};
+
+/**
+ * Render a log message in the given format.
+ * 
+ * @method render
+ * @param [format=0] {Integer} What rendering format to use. 0 is text, 1 is
+ *      html, 2 is ansi.
+ * @return {String} Rendered event
+ */
+wsc.Protocol.LogMessage.prototype.render = function( format ) {
+    
+    if( format === undefined )
+        format = 0;
+    
+    /*
+    var render = this.render[ format ];
     
     try {
-        if( !msgm[2] ) {
-            if( !msgm[1] ) {
-                client.ui.channel(event.ns).log_item(event);
-            } else {
-                client.ui.channel(client.mns).log_item(event);
+        return render( this, this.event );
+    } catch( err ) {
+    */
+    
+    var render = this.template;
+    var d = '';
+    
+    for( var key in this.event ) {
+        if( !this.event.hasOwnProperty(key) || key == 'pkt' )
+            continue;
+        
+        d = this.event[key];
+        
+        if( key == 'ns' || key == 'sns' ) {
+            key = 'ns';
+            d = this.event['sns'];
+        }
+        
+        if( d.hasOwnProperty('_parser') ) {
+            switch(format) {
+                case 1:
+                    d = d.html();
+                    break;
+                case 2:
+                    d = d.ansi();
+                    break;
+                case 0:
+                default:
+                    d = d.text();
+                    break;
             }
-        } else {
-            client.ui.log_item(event);
         }
-    } catch(err) {
-        try {
-            client.ui.channel(client.mns).server_message('Failed to log for ' + event.sns, event.html);
-        } catch( err ) {
-            console.log('>> Failed to log message for ' + event.sns + '::');
-            console.log('>> ' + event.html);
-        }
+        render = replaceAll( render, '{' + key + '}', d );
     }
+    
+    return render;
+    
+    /*
+    }
+    */
 
 };
 
@@ -2000,7 +2172,7 @@ wsc.Flow.prototype.message = function( client, event ) {
         pevt.ns = client.mns;
     
     pevt.sns = client.deform_ns(pevt.ns);
-    this.protocol.log(client, pevt);
+    
     this.handle(client, pevt);
     
     client.trigger('pkt', pevt);
@@ -3673,6 +3845,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -3684,6 +3858,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -3693,7 +3870,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -4279,7 +4457,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.84';
+Chatterbox.VERSION = '0.19.85';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4592,6 +4770,28 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     $(window).blur( function(  ) {
         ui.viewing = false;
+    } );
+    
+    // Events for logging output.
+    this.client.bind( 'pkt', function( event, client ) {
+    
+        var msg = client.protocol.log( event );
+        
+        if( !msg )
+            return;
+        
+        event.html = msg.html();
+        
+        ui.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
     } );
     
 };
@@ -5340,6 +5540,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -5826,40 +6027,45 @@ Chatterbox.Channel.prototype.register_user = function( user ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var c = this;
     
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
@@ -6053,6 +6259,7 @@ Chatterbox.Chatbook = function( ui ) {
     this.chan = {};
     this.trail = [];
     this.current = null;
+    
     this.manager.on( 'tab.close.clicked', function( event, ui ) {
         ui.chatbook.remove_channel(event.ns);
     });
@@ -6381,6 +6588,35 @@ Chatterbox.Chatbook.prototype.log = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log(msg);
+    }
+
+};
+
+/**
+ * Handle a log message.
+ * @method log_message
+ * @param message {Object} Log message object
+ * @param event {Object} Event data
+ */
+Chatterbox.Chatbook.prototype.log_message = function( message, event ) {
+
+    try {
+        if( !message.global ) {
+            if( !message.monitor ) {
+                this.channel( event.ns ).log_item( event );
+            } else {
+                this.manager.monitoro.log_item( event );
+            }
+        } else {
+            this.log_item( event );
+        }
+    } catch( err ) {
+        try {
+            this.ui.monitoro.server_message( 'Failed to log for', event.sns, event.html );
+        } catch( err ) {
+            console.log( '>> Failed to log message for', event.sns, '::' );
+            console.log( '>>', event.html );
+        }
     }
 
 };
@@ -10124,7 +10360,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.25';
+wsc.dAmn.VERSION = '0.9.26';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -10168,8 +10404,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('CDS.LINK.REJECT', handle.clrj);
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
+        client.bind('pkt.recv_part', handle.pcrp);
         client.bind('pkt.property', handle.pcp);
         client.bind('closed', handle.closed);
+        
+        // Filter BDS commands
+        client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
+        client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
     };
     
     var pkt_login = function( event ) {
@@ -10220,6 +10461,63 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Filter
+        filter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.ns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a message
+            var msg = data.message.match( /<span class="cmsg u-([^"]+)">(.*)<\/span>/ );
+            
+            if( !msg ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( msg[2].match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            
+            done( data );
+        },
+        
+        hfilter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.sns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( data.message.match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            done( data );
+        
+        },
+        
         // Connection closed.
         closed: function( event ) {
             client.remove_ns( settings.bds.mns );
@@ -10340,10 +10638,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             var p = event.payload.split(',');
             var t = p.shift();
             p = p.join(',');
+            
             if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
+            
             if( !(user in pchats) )
                 return;
+            
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
@@ -10374,8 +10675,10 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             // Other guy is already here.
-            if( client.channel(event.ns).get_usernames().length == 2 )
+            if( client.channel(event.ns).get_usernames().length == 2 ) {
+                client.bds.channel.add( event.ns );
                 return;
+            }
             
             // Send notice...
             var user = event.sns.substr(1);
@@ -10398,10 +10701,20 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
             
+            client.bds.channel.add( event.ns );
+            
             if( !( event.user in pns ) )
                 return;
             
             client.ui.pager.remove_notice( pns[event.user] );
+        },
+        
+        // pchat recv_part
+        pcrp: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
+            client.bds.channel.remove( event.ns );
         }
     };
 

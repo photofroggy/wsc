@@ -65,7 +65,7 @@ wsc.Flow.prototype.message = function( client, event ) {
         pevt.ns = client.mns;
     
     pevt.sns = client.deform_ns(pevt.ns);
-    this.protocol.log(client, pevt);
+    
     this.handle(client, pevt);
     
     client.trigger('pkt', pevt);
