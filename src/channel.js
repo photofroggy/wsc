@@ -434,41 +434,6 @@ wsc.Channel.prototype.recv_part = function( e ) {
 };
 
 /**
- * Process a recv_msg event.
- * 
- * @method recv_msg
- * @param e {Object} Event data for recv_msg packet.
- */
-wsc.Channel.prototype.recv_msg = function( e ) {
-    
-    var c = this;
-    
-    this.client.cascade( 'chan.recv_msg', function( e, done ) {
-        var u = c.client.settings['username'].toLowerCase(); 
-        
-        if( u == e.user.toLowerCase() )
-            return;
-        
-        var msg = e['message'].toLowerCase();
-        var hlight = msg.indexOf(u) != -1;
-        
-        if( !hlight && e.sns[0] != '@' )
-            return;
-        
-        if( c.ui != null) {
-            if( hlight ) {
-                c.ui.highlight( );
-            } else {
-                c.ui.highlight( false );
-            }
-        }
-        
-        c.client.trigger( 'pkt.recv_msg.highlighted', e );
-    }, e );
-
-};
-
-/**
  * Process a recv_privchg event.
  * 
  * @method recv_privchg

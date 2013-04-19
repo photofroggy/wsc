@@ -323,22 +323,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     // Events for logging output.
     this.client.bind( 'pkt', function( event, client ) {
     
-        var msg = client.protocol.log( event );
-        
-        if( !msg )
-            return;
-        
-        event.html = msg.html();
-        
-        ui.cascade(
-            'log_message',
-            function( data, done ) {
-                ui.chatbook.log_message( data.message, data.event );
-            }, {
-                message: msg,
-                event: event
-            }
-        );
+        ui.packet( event, client );
     
     } );
     
@@ -369,6 +354,41 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+/**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 
