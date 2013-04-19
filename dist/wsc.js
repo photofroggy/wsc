@@ -1094,22 +1094,6 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
- * Clear all log messages from the log window.
- * 
- * @method clear
- * @deprecated
- */
-wsc.Channel.prototype.clear = function( user ) {
-    if( this.ui == null )
-        return;
-    if( !user ) {
-        this.ui.clear();
-    } else {
-        this.ui.clear_user( user );
-    }
-};
-
-/**
  * Display a user's whois info.
  * 
  * @method log_whois
@@ -2725,10 +2709,10 @@ wsc.defaults.Extension = function( client ) {
             for( var i in users ) {
                 if( !users.hasOwnProperty(i) )
                     continue;
-                client.channel(e.target).clear(users[i]);
+                client.ui.channel( e.target ).clear_user( users[i] );
             }
         } else {
-            client.channel(e.target).clear();
+            client.ui.channel( e.target ).clear();
         }
     };
     
@@ -2742,7 +2726,7 @@ wsc.defaults.Extension = function( client ) {
                 for( var i in users ) {
                     if( !users.hasOwnProperty(i) )
                         continue;
-                    channel.clear( users[i] );
+                    channel.clear_user( users[i] );
                 }
             };
         } else {
@@ -2751,7 +2735,7 @@ wsc.defaults.Extension = function( client ) {
             };
         }
         
-        client.each_channel( method, true );
+        client.ui.chatbook.each( method, true );
     };
     
     cmd.close = function( cmd ) {

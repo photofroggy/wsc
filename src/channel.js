@@ -112,22 +112,6 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 /**
- * Clear all log messages from the log window.
- * 
- * @method clear
- * @deprecated
- */
-wsc.Channel.prototype.clear = function( user ) {
-    if( this.ui == null )
-        return;
-    if( !user ) {
-        this.ui.clear();
-    } else {
-        this.ui.clear_user( user );
-    }
-};
-
-/**
  * Display a user's whois info.
  * 
  * @method log_whois
