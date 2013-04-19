@@ -142,7 +142,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 done( data );
                 return;
             }
-            console.log( data );
+            
             // Find a BDS message
             if( data.message.match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
             

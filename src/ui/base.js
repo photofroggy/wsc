@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.84';
+Chatterbox.VERSION = '0.19.85';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -318,6 +318,28 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     $(window).blur( function(  ) {
         ui.viewing = false;
+    } );
+    
+    // Events for logging output.
+    this.client.bind( 'pkt', function( event, client ) {
+    
+        var msg = client.protocol.log( event );
+        
+        if( !msg )
+            return;
+        
+        event.html = msg.html();
+        
+        ui.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
     } );
     
 };
