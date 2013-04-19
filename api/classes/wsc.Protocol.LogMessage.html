@@ -114,7 +114,7 @@
     </ul>
 </nav>
         <div class="content">
-            <h1>Chatterbox.Settings.Item.Form Class</h1>
+            <h1>wsc.Protocol.LogMessage Class</h1>
 
     <section class="main">
     
@@ -125,13 +125,13 @@
     
         
             <p>
-                Defined in: <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l801"><code>src&#x2F;ui&#x2F;settings.js:801</code></a>
+                Defined in: <a href="..&#x2F;files&#x2F;src_protocol.js.html#l425"><code>src&#x2F;protocol.js:425</code></a>
             </p>
         
     
         
             
-                <p>Module: <a href="../modules/Chatterbox.html">Chatterbox</a></p>
+                <p>Module: <a href="../modules/wsc.html">wsc</a></p>
             
         
         
@@ -141,18 +141,17 @@
     </article>
     
     <section class="intro">
-        <p>HTML form as a single settings page item.
-This item should be given settings items to use as form fields.</p>
+        <p>Log message object represents a log message.</p>
     </section>
     
     
         <article class="constructor">
             <h2>Constructor</h2>
             
-<div id="method_Chatterbox.Settings.Item.Form" class="method item">
+<div id="method_wsc.Protocol.LogMessage" class="method item">
     <header>
         <section class="signature">
-            <h3><code>Chatterbox.Settings.Item.Form</code></h3>
+            <h3><code>wsc.Protocol.LogMessage</code></h3>
 
         
             <section class="args">
@@ -160,7 +159,7 @@ This item should be given settings items to use as form fields.</p>
                 
                     <li class="arg">
                         
-                            <code>type</code>
+                            <code>event</code>
                         
                     </li>
                 
@@ -200,7 +199,7 @@ This item should be given settings items to use as form fields.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l801"><code>src&#x2F;ui&#x2F;settings.js:801</code></a>
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l425"><code>src&#x2F;protocol.js:425</code></a>
         
         </p>
 
@@ -221,14 +220,14 @@ This item should be given settings items to use as form fields.</p>
             
                 <li class="param">
                     
-                        <code class="name">type</code>
-                        <span class="type">String</span>
+                        <code class="name">event</code>
+                        <span class="type">Object</span>
                     
 
                     
 
                     <div class="description">
-                        <p>The type of item this item is.</p>
+                        <p>Event data</p>
                     </div>
 
                     
@@ -237,13 +236,13 @@ This item should be given settings items to use as form fields.</p>
                 <li class="param">
                     
                         <code class="name">options</code>
-                        <span class="type">Object</span>
+                        <span class="type">Array</span>
                     
 
                     
 
                     <div class="description">
-                        <p>Item options.</p>
+                        <p>Log message options</p>
                     </div>
 
                     
@@ -285,7 +284,7 @@ This item should be given settings items to use as form fields.</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_build">build</a>
+                                <a href="#method_ansi">ansi</a>
 
                                 
                                 
@@ -294,7 +293,7 @@ This item should be given settings items to use as form fields.</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_change">change</a>
+                                <a href="#method_html">html</a>
 
                                 
                                 
@@ -303,7 +302,7 @@ This item should be given settings items to use as form fields.</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_close">close</a>
+                                <a href="#method_render">render</a>
 
                                 
                                 
@@ -312,16 +311,7 @@ This item should be given settings items to use as form fields.</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_resize">resize</a>
-
-                                
-                                
-                            </li>
-                            
-                        
-                            
-                            <li class="index-item method">
-                                <a href="#method_save">save</a>
+                                <a href="#method_text">text</a>
 
                                 
                                 
@@ -344,346 +334,20 @@ This item should be given settings items to use as form fields.</p>
 
                 
                     
-<div id="method_build" class="method item">
+<div id="method_ansi" class="method item">
     <header>
         <section class="signature">
-            <h3><code>build</code></h3>
-
-        
-            <section class="args">
-                <span class="paren">(</span><ul class="args inline commas">
-                
-                    <li class="arg">
-                        
-                            <code>page</code>
-                        
-                    </li>
-                
-                </ul><span class="paren">)</span>
-            </section>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    </section>
-
-    <section class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l838"><code>src&#x2F;ui&#x2F;settings.js:838</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </section>
-    </header>
-    <section class="body">
-    
-    <section class="description">
-        <p>Build the form.</p>
-    </section>
-    
-
-    
-        <section class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params">
-            
-                <li class="param">
-                    
-                        <code class="name">page</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>Settings page object.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </section>
-    
-
-    
-
-    
-    </section>
-</div>
-
-
-                
-                    
-<div id="method_change" class="method item">
-    <header>
-        <section class="signature">
-            <h3><code>change</code></h3>
-
-        
-            <section class="args">
-                <span class="paren">(</span><ul class="args inline commas">
-                
-                    <li class="arg">
-                        
-                            <code>window</code>
-                        
-                    </li>
-                
-                    <li class="arg">
-                        
-                            <code>page</code>
-                        
-                    </li>
-                
-                </ul><span class="paren">)</span>
-            </section>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    </section>
-
-    <section class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l891"><code>src&#x2F;ui&#x2F;settings.js:891</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </section>
-    </header>
-    <section class="body">
-    
-    <section class="description">
-        <p>Called when there is a change in the form.</p>
-    </section>
-    
-
-    
-        <section class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params">
-            
-                <li class="param">
-                    
-                        <code class="name">window</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>The settings window.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="name">page</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>The settings page this item belongs to.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </section>
-    
-
-    
-
-    
-    </section>
-</div>
-
-
-                
-                    
-<div id="method_close" class="method item">
-    <header>
-        <section class="signature">
-            <h3><code>close</code></h3>
-
-        
-            <section class="args">
-                <span class="paren">(</span><ul class="args inline commas">
-                
-                    <li class="arg">
-                        
-                            <code>window</code>
-                        
-                    </li>
-                
-                    <li class="arg">
-                        
-                            <code>page</code>
-                        
-                    </li>
-                
-                </ul><span class="paren">)</span>
-            </section>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    </section>
-
-    <section class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l953"><code>src&#x2F;ui&#x2F;settings.js:953</code></a>
-        
-        </p>
-
-
-        
-
-        
-    </section>
-    </header>
-    <section class="body">
-    
-    <section class="description">
-        <p>Called when the settings window is closed.</p>
-    </section>
-    
-
-    
-        <section class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params">
-            
-                <li class="param">
-                    
-                        <code class="name">window</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>The settings window.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="name">page</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>The settings page this item belongs to.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </section>
-    
-
-    
-
-    
-    </section>
-</div>
-
-
-                
-                    
-<div id="method_resize" class="method item">
-    <header>
-        <section class="signature">
-            <h3><code>resize</code></h3>
+            <h3><code>ansi</code></h3>
 
         
             <span class="paren">()</span>
         
     
         
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
     
         
     
@@ -709,7 +373,7 @@ This item should be given settings items to use as form fields.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l876"><code>src&#x2F;ui&#x2F;settings.js:876</code></a>
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l472"><code>src&#x2F;protocol.js:472</code></a>
         
         </p>
 
@@ -722,12 +386,25 @@ This item should be given settings items to use as form fields.</p>
     <section class="body">
     
     <section class="description">
-        <p>Resize the settings window boxes stuff.</p>
+        <p>Get an ANSI rendition.</p>
     </section>
     
 
     
 
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered message
+                
+            </p>
+        </section>
     
 
     
@@ -737,31 +414,19 @@ This item should be given settings items to use as form fields.</p>
 
                 
                     
-<div id="method_save" class="method item">
+<div id="method_html" class="method item">
     <header>
         <section class="signature">
-            <h3><code>save</code></h3>
+            <h3><code>html</code></h3>
 
         
-            <section class="args">
-                <span class="paren">(</span><ul class="args inline commas">
-                
-                    <li class="arg">
-                        
-                            <code>window</code>
-                        
-                    </li>
-                
-                    <li class="arg">
-                        
-                            <code>page</code>
-                        
-                    </li>
-                
-                </ul><span class="paren">)</span>
-            </section>
+            <span class="paren">()</span>
         
     
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
         
     
         
@@ -788,7 +453,7 @@ This item should be given settings items to use as form fields.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_settings.js.html#l922"><code>src&#x2F;ui&#x2F;settings.js:922</code></a>
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l458"><code>src&#x2F;protocol.js:458</code></a>
         
         </p>
 
@@ -801,7 +466,97 @@ This item should be given settings items to use as form fields.</p>
     <section class="body">
     
     <section class="description">
-        <p>Save form data.</p>
+        <p>Get an HTML rendition.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered message
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_render" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>render</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[format=0]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l486"><code>src&#x2F;protocol.js:486</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Render a log message in the given format.</p>
     </section>
     
 
@@ -813,29 +568,16 @@ This item should be given settings items to use as form fields.</p>
             
                 <li class="param">
                     
-                        <code class="name">window</code>
-                        <span class="type">Object</span>
+                        <code class="name optional">[format=0]</code>
+                        <span class="type">Integer</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="description">
-                        <p>The settings window.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="name">page</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>The settings page this form belongs to.</p>
+                        <p>What rendering format to use. 0 is text, 1 is
+     html, 2 is ansi.</p>
                     </div>
 
                     
@@ -845,6 +587,99 @@ This item should be given settings items to use as form fields.</p>
         </section>
     
 
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered event
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_text" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>text</code></h3>
+
+        
+            <span class="paren">()</span>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">String</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_protocol.js.html#l444"><code>src&#x2F;protocol.js:444</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Get a text rendition.</p>
+    </section>
+    
+
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    Rendered message
+                
+            </p>
+        </section>
     
 
     

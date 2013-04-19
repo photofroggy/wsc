@@ -101,6 +101,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.Protocol.LogMessage.html">wsc.Protocol.LogMessage</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Storage.html">wsc.Storage</a></li>
@@ -226,6 +228,56 @@ wsc.Protocol = function( mparser ) {
         }
         
     };
+    
+    &#x2F;**
+     * Messages object.
+     * 
+     * This object determines how each protocol packet should be rendered based
+     * data from an &#x60;event object&#x60;. For each packet, there is an entry, where the key is the
+     * {{#crossLink &quot;wsc.Protocol&#x2F;event:method&quot;}}event name{{&#x2F;crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of options for rendering and
+     * logging. The array is of the structure &#x60;[ renderers, monitor, global ]&#x60;.
+     * All items are optional, but positional. There are default options that
+     * can be used.
+     * 
+     * When &#x60;renderers&#x60; is present it must be an array. This array contains
+     * renderers for different kinds of formats. Renderers can be either a
+     * formatted string or a callback that returns a string. There must be at
+     * least one renderer, for text output. Otherwise the array should contain
+     * a renderer for text ouput, a renderer for HTML output, and a renderer
+     * for ANSI output. If a renderer is missing then everything falls back to
+     * text renderer.
+     * 
+     * The &#x60;monitor&#x60; option determines whether or not to display the log
+     * message in the monitor channel. The default for this is &#x60;false&#x60;.
+     * 
+     * The &#x60;global&#x60; option determines whether or not to display the log message
+     * in every open channel. The default for this is also &#x60;false&#x60;.
+     * 
+     * An example for an entry in this object:
+     *      
+     *      { &#x27;join&#x27;: [
+     *          [
+     *              &#x27;** Join {ns}: &quot;{e}&quot; *&#x27;,
+     *              &#x27;&lt;span class=&quot;servermsg&quot;&gt;** Join {ns}: &quot;{e}&quot; *&lt;&#x2F;span&gt;&#x27;
+     *          ],
+     *          true
+     *      ] }
+     * 
+     * This shows how the join packet will render in the monitor channel. If a
+     * channel is set to display in the monitor channel, then it should not
+     * be displayed in the event channel.
+     *
+     * At the moment, we only have to render using HTML, so the &#x60;renderers&#x60;
+     * array in the entries are only HTML renderers at the moment. No array,
+     * just formatting strings.
+     * 
+     * To display absolutely nothing for an event, the whole entry can simply
+     * be &#x60;null&#x60;.
+     * @property messages
+     * @type Object
+     *&#x2F;
     &#x2F;&#x2F;  &#x27;event&#x27;: [ template, monitor, global ]
     this.messages = {
         &#x27;chatserver&#x27;: [&#x27;&lt;span class=&quot;servermsg&quot;&gt;** Connected to llama {version} *&lt;&#x2F;span&gt;&#x27;, false, true ],
@@ -472,38 +524,142 @@ wsc.Protocol.prototype.render = function( event, format ) {
 
 };
 
+&#x2F;**
+ * Produce a log message for an event.
+ * @method log
+ * @param event {Object} Event data to produce a log message with
+ * @return {Object} A log message object on success. Null if failed.
+ *&#x2F;
+wsc.Protocol.prototype.log = function( event ) {
 
-wsc.Protocol.prototype.log = function( client, event ) {
-
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
-        return;
+        return null;
     
-    if( event.s == &#x27;0&#x27; ) {
-        return;
-    }
+    return new wsc.Protocol.LogMessage( event, msgm );
+
+};
+
+
+&#x2F;**
+ * Log message object represents a log message.
+ * @class wsc.Protocol.LogMessage
+ * @constructor
+ * @param event {Object} Event data
+ * @param options {Array} Log message options
+ *&#x2F;
+wsc.Protocol.LogMessage = function( event, options ) {
+
+    this.event = event;
+    this.template = options[0] || &#x27;&#x27;;
+    this.monitor = options[1] || false;
+    this.global = options[2] || false;
+    this._html = false;
+    this._text = false;
+    this._ansi = false;
+
+};
+
+&#x2F;**
+ * Get a text rendition.
+ * @method text
+ * @return {String} Rendered message
+ *&#x2F;
+wsc.Protocol.LogMessage.prototype.text = function(  ) {
+
+    if( this._text === false )
+        this._text = this.render( 0 );
     
-    event.html = this.render(event, &#x27;html&#x27;);
+    return this._text;
+
+};
+
+&#x2F;**
+ * Get an HTML rendition.
+ * @method html
+ * @return {String} Rendered message
+ *&#x2F;
+wsc.Protocol.LogMessage.prototype.html = function(  ) {
+
+    if( this._html === false )
+        this._html = this.render( 1 );
+    
+    return this._html;
+
+};
+
+&#x2F;**
+ * Get an ANSI rendition.
+ * @method ansi
+ * @return {String} Rendered message
+ *&#x2F;
+wsc.Protocol.LogMessage.prototype.ansi = function(  ) {
+
+    if( this._ansi === false )
+        this._ansi = this.render( 2 );
+    
+    return this._ansi;
+
+};
+
+&#x2F;**
+ * Render a log message in the given format.
+ * 
+ * @method render
+ * @param [format=0] {Integer} What rendering format to use. 0 is text, 1 is
+ *      html, 2 is ansi.
+ * @return {String} Rendered event
+ *&#x2F;
+wsc.Protocol.LogMessage.prototype.render = function( format ) {
+    
+    if( format === undefined )
+        format = 0;
+    
+    &#x2F;*
+    var render = this.render[ format ];
     
     try {
-        if( !msgm[2] ) {
-            if( !msgm[1] ) {
-                client.ui.channel(event.ns).log_item(event);
-            } else {
-                client.ui.channel(client.mns).log_item(event);
+        return render( this, this.event );
+    } catch( err ) {
+    *&#x2F;
+    
+    var render = this.template;
+    var d = &#x27;&#x27;;
+    
+    for( var key in this.event ) {
+        if( !this.event.hasOwnProperty(key) || key == &#x27;pkt&#x27; )
+            continue;
+        
+        d = this.event[key];
+        
+        if( key == &#x27;ns&#x27; || key == &#x27;sns&#x27; ) {
+            key = &#x27;ns&#x27;;
+            d = this.event[&#x27;sns&#x27;];
+        }
+        
+        if( d.hasOwnProperty(&#x27;_parser&#x27;) ) {
+            switch(format) {
+                case 1:
+                    d = d.html();
+                    break;
+                case 2:
+                    d = d.ansi();
+                    break;
+                case 0:
+                default:
+                    d = d.text();
+                    break;
             }
-        } else {
-            client.ui.log_item(event);
         }
-    } catch(err) {
-        try {
-            client.ui.channel(client.mns).server_message(&#x27;Failed to log for &#x27; + event.sns, event.html);
-        } catch( err ) {
-            console.log(&#x27;&gt;&gt; Failed to log message for &#x27; + event.sns + &#x27;::&#x27;);
-            console.log(&#x27;&gt;&gt; &#x27; + event.html);
-        }
+        render = replaceAll( render, &#x27;{&#x27; + key + &#x27;}&#x27;, d );
     }
+    
+    return render;
+    
+    &#x2F;*
+    }
+    *&#x2F;
 
 };
 

@@ -101,6 +101,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.Protocol.LogMessage.html">wsc.Protocol.LogMessage</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Storage.html">wsc.Storage</a></li>
@@ -130,6 +132,7 @@ Chatterbox.Chatbook = function( ui ) {
     this.chan = {};
     this.trail = [];
     this.current = null;
+    
     this.manager.on( &#x27;tab.close.clicked&#x27;, function( event, ui ) {
         ui.chatbook.remove_channel(event.ns);
     });
@@ -458,6 +461,35 @@ Chatterbox.Chatbook.prototype.log = function( msg ) {
 
     for( ns in this.chan ) {
         this.chan[ns].log(msg);
+    }
+
+};
+
+&#x2F;**
+ * Handle a log message.
+ * @method log_message
+ * @param message {Object} Log message object
+ * @param event {Object} Event data
+ *&#x2F;
+Chatterbox.Chatbook.prototype.log_message = function( message, event ) {
+
+    try {
+        if( !message.global ) {
+            if( !message.monitor ) {
+                this.channel( event.ns ).log_item( event );
+            } else {
+                this.manager.monitoro.log_item( event );
+            }
+        } else {
+            this.log_item( event );
+        }
+    } catch( err ) {
+        try {
+            this.ui.monitoro.server_message( &#x27;Failed to log for&#x27;, event.sns, event.html );
+        } catch( err ) {
+            console.log( &#x27;&gt;&gt; Failed to log message for&#x27;, event.sns, &#x27;::&#x27; );
+            console.log( &#x27;&gt;&gt;&#x27;, event.html );
+        }
     }
 
 };

@@ -101,6 +101,8 @@
     
         <li><a href="/wsc/api/classes/wsc.Protocol.html">wsc.Protocol</a></li>
     
+        <li><a href="/wsc/api/classes/wsc.Protocol.LogMessage.html">wsc.Protocol.LogMessage</a></li>
+    
         <li><a href="/wsc/api/classes/wsc.SocketIO.html">wsc.SocketIO</a></li>
     
         <li><a href="/wsc/api/classes/wsc.Storage.html">wsc.Storage</a></li>
@@ -786,7 +788,7 @@ components can be reasonably swapped out, assuming they provide the same functio
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l702"><code>src&#x2F;client.js:702</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l708"><code>src&#x2F;client.js:708</code></a>
         
         </p>
 
@@ -999,7 +1001,7 @@ components can be reasonably swapped out, assuming they provide the same functio
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l813"><code>src&#x2F;client.js:813</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l819"><code>src&#x2F;client.js:819</code></a>
         
         </p>
 
@@ -1116,7 +1118,7 @@ components can be reasonably swapped out, assuming they provide the same functio
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l752"><code>src&#x2F;client.js:752</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l758"><code>src&#x2F;client.js:758</code></a>
         
         </p>
 
@@ -1370,7 +1372,29 @@ closing channel tabs.</p>
             <h3><code>cascade</code></h3>
 
         
-            <span class="paren">()</span>
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>event</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>callback</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>data</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
         
     
         
@@ -1399,7 +1423,7 @@ closing channel tabs.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l292"><code>src&#x2F;client.js:292</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l294"><code>src&#x2F;client.js:294</code></a>
         
         </p>
 
@@ -1416,6 +1440,59 @@ closing channel tabs.</p>
     </section>
     
 
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">event</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event to run middleware for</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Method to call after running middleware</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">data</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Input for the method/event</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
     
 
     
@@ -1482,7 +1559,7 @@ closing channel tabs.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l347"><code>src&#x2F;client.js:347</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l353"><code>src&#x2F;client.js:353</code></a>
         
         </p>
 
@@ -1611,7 +1688,7 @@ closing channel tabs.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l371"><code>src&#x2F;client.js:371</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l377"><code>src&#x2F;client.js:377</code></a>
         
         </p>
 
@@ -1807,7 +1884,7 @@ Channels with their tabs hidden are not counted.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l334"><code>src&#x2F;client.js:334</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l340"><code>src&#x2F;client.js:340</code></a>
         
         </p>
 
@@ -1996,7 +2073,7 @@ Channels with their tabs hidden are not counted.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l303"><code>src&#x2F;client.js:303</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l308"><code>src&#x2F;client.js:308</code></a>
         
         </p>
 
@@ -2009,8 +2086,9 @@ Channels with their tabs hidden are not counted.</p>
     <section class="body">
     
     <section class="description">
-        <p>Open a connection to the chat server.
-If the client if already connected, nothing happens.</p>
+        <p>Open a connection to the chat server.</p>
+
+<p>If the client is already connected, nothing happens.</p>
     </section>
     
 
@@ -2076,7 +2154,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l483"><code>src&#x2F;client.js:483</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l489"><code>src&#x2F;client.js:489</code></a>
         
         </p>
 
@@ -2191,7 +2269,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l419"><code>src&#x2F;client.js:419</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l425"><code>src&#x2F;client.js:425</code></a>
         
         </p>
 
@@ -2312,7 +2390,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l737"><code>src&#x2F;client.js:737</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l743"><code>src&#x2F;client.js:743</code></a>
         
         </p>
 
@@ -2429,7 +2507,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l873"><code>src&#x2F;client.js:873</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l879"><code>src&#x2F;client.js:879</code></a>
         
         </p>
 
@@ -2502,7 +2580,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l393"><code>src&#x2F;client.js:393</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l399"><code>src&#x2F;client.js:399</code></a>
         
         </p>
 
@@ -2602,7 +2680,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l455"><code>src&#x2F;client.js:455</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l461"><code>src&#x2F;client.js:461</code></a>
         
         </p>
 
@@ -2701,7 +2779,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l602"><code>src&#x2F;client.js:602</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l608"><code>src&#x2F;client.js:608</code></a>
         
         </p>
 
@@ -2774,7 +2852,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l638"><code>src&#x2F;client.js:638</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l644"><code>src&#x2F;client.js:644</code></a>
         
         </p>
 
@@ -2882,7 +2960,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l780"><code>src&#x2F;client.js:780</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l786"><code>src&#x2F;client.js:786</code></a>
         
         </p>
 
@@ -3015,7 +3093,7 @@ If the client if already connected, nothing happens.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l799"><code>src&#x2F;client.js:799</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l805"><code>src&#x2F;client.js:805</code></a>
         
         </p>
 
@@ -3134,7 +3212,7 @@ Only message network admins have access to this packet on the server.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l532"><code>src&#x2F;client.js:532</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l538"><code>src&#x2F;client.js:538</code></a>
         
         </p>
 
@@ -3235,7 +3313,7 @@ Only message network admins have access to this packet on the server.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l615"><code>src&#x2F;client.js:615</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l621"><code>src&#x2F;client.js:621</code></a>
         
         </p>
 
@@ -3334,7 +3412,23 @@ Maybe this is something that the UI lib should handle.</p>
             <h3><code>middle</code></h3>
 
         
-            <span class="paren">()</span>
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>event</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>callback</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
         
     
         
@@ -3380,6 +3474,44 @@ Maybe this is something that the UI lib should handle.</p>
     </section>
     
 
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">event</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Event to attach middleware to</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Method to call</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
     
 
     
@@ -3436,7 +3568,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l550"><code>src&#x2F;client.js:550</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l556"><code>src&#x2F;client.js:556</code></a>
         
         </p>
 
@@ -3532,7 +3664,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l562"><code>src&#x2F;client.js:562</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l568"><code>src&#x2F;client.js:568</code></a>
         
         </p>
 
@@ -3634,7 +3766,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l682"><code>src&#x2F;client.js:682</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l688"><code>src&#x2F;client.js:688</code></a>
         
         </p>
 
@@ -3745,7 +3877,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l650"><code>src&#x2F;client.js:650</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l656"><code>src&#x2F;client.js:656</code></a>
         
         </p>
 
@@ -3831,7 +3963,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l627"><code>src&#x2F;client.js:627</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l633"><code>src&#x2F;client.js:633</code></a>
         
         </p>
 
@@ -3916,7 +4048,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l722"><code>src&#x2F;client.js:722</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l728"><code>src&#x2F;client.js:728</code></a>
         
         </p>
 
@@ -4049,7 +4181,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l828"><code>src&#x2F;client.js:828</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l834"><code>src&#x2F;client.js:834</code></a>
         
         </p>
 
@@ -4160,7 +4292,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l497"><code>src&#x2F;client.js:497</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l503"><code>src&#x2F;client.js:503</code></a>
         
         </p>
 
@@ -4262,7 +4394,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l662"><code>src&#x2F;client.js:662</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l668"><code>src&#x2F;client.js:668</code></a>
         
         </p>
 
@@ -4373,7 +4505,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l517"><code>src&#x2F;client.js:517</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l523"><code>src&#x2F;client.js:523</code></a>
         
         </p>
 
@@ -4476,7 +4608,7 @@ should be deprecated...</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l588"><code>src&#x2F;client.js:588</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l594"><code>src&#x2F;client.js:594</code></a>
         
         </p>
 
@@ -4598,7 +4730,7 @@ should be deprecated...</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l841"><code>src&#x2F;client.js:841</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l847"><code>src&#x2F;client.js:847</code></a>
         
         </p>
 
@@ -4848,7 +4980,7 @@ should be deprecated...</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l766"><code>src&#x2F;client.js:766</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l772"><code>src&#x2F;client.js:772</code></a>
         
         </p>
 
@@ -4959,7 +5091,7 @@ should be deprecated...</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l574"><code>src&#x2F;client.js:574</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l580"><code>src&#x2F;client.js:580</code></a>
         
         </p>
 
@@ -5055,7 +5187,7 @@ should be deprecated...</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_client.js.html#l861"><code>src&#x2F;client.js:861</code></a>
+        <a href="..&#x2F;files&#x2F;src_client.js.html#l867"><code>src&#x2F;client.js:867</code></a>
         
         </p>
 
