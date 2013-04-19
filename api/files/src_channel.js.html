@@ -165,25 +165,13 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  *&#x2F;
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-    this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(this.raw);
-};
-
-&#x2F;**
- * Remove this channel from the screen entirely.
- * 
- * @method remove
- *&#x2F;
-wsc.Channel.prototype.remove = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.manager.remove_channel(this.raw);
 };
 
 &#x2F;**
  * Hide the channel view in the UI.
  * 
  * @method hide
+ * @deprecated
  *&#x2F;
 wsc.Channel.prototype.hide = function( ) {
     if( this.ui == null )
@@ -195,6 +183,7 @@ wsc.Channel.prototype.hide = function( ) {
  * Show the channel view in the UI.
  * 
  * @method show
+ * @deprecated
  *&#x2F;
 wsc.Channel.prototype.show = function( ) {
     if( this.ui == null )
@@ -206,6 +195,7 @@ wsc.Channel.prototype.show = function( ) {
  * Display a log message.
  * 
  * @method log
+ * @deprecated
  * @param msg {String} Log message to display.
  *&#x2F;
 wsc.Channel.prototype.log = function( msg ) {
@@ -218,6 +208,7 @@ wsc.Channel.prototype.log = function( msg ) {
  * Send a message to the log window.
  * 
  * @method log_item
+ * @deprecated
  * @param msg {String} Message to send.
  *&#x2F;
 wsc.Channel.prototype.logItem = function( msg ) {
@@ -230,6 +221,7 @@ wsc.Channel.prototype.logItem = function( msg ) {
  * Send a server message to the log window.
  * 
  * @method server_message
+ * @deprecated
  * @param msg {String} Server message.
  * @param [info] {String} Extra information for the message.
  *&#x2F;
@@ -240,24 +232,10 @@ wsc.Channel.prototype.server_message = function( msg, info ) {
 };
 
 &#x2F;**
- * Clear all log messages from the log window.
- * 
- * @method clear
- *&#x2F;
-wsc.Channel.prototype.clear = function( user ) {
-    if( this.ui == null )
-        return;
-    if( !user ) {
-        this.ui.clear();
-    } else {
-        this.ui.clear_user( user );
-    }
-};
-
-&#x2F;**
  * Display a user&#x27;s whois info.
  * 
  * @method log_whois
+ * @deprecated
  * @param data {Object} Object containing a user&#x27;s information.
  *&#x2F;
 wsc.Channel.prototype.log_whois = function( data ) {
@@ -270,6 +248,7 @@ wsc.Channel.prototype.log_whois = function( data ) {
  * Display some information relating to a privilege class.
  * 
  * @method log_pc
+ * @deprecated
  * @param privileges {Boolean} Are we showing privileges or users?
  * @param data {Array} Array containing information.
  *&#x2F;
