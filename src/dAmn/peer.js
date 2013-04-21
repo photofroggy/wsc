@@ -25,6 +25,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         client.bind( 'BDS.PEER.END', function( event, client ) { handle.signal.end( event, client ); } );
         client.bind( 'BDS.PEER.OFFER', function( event, client ) { handle.signal.offer( event, client ); } );
         client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.signal.answer( event, client ); } );
+        client.bind( 'BDS.PEER.CANDIDATE', function( event, client ) { handle.signal.candidate( event, client ); } );
         client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.signal.close( event, client ); } );
         // dAmn events.
         // client.bind('pkt.join', handler.join);
@@ -33,6 +34,95 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         // client.bind('pkt.recv_part', handler.recv_part);
 
     };
+    
+    
+    /**
+     * Implements outgoing BDS PEER commands.
+     * 
+     * Can be accessed using `client.bds.peer`
+     * @class wsc.bds.peer
+     */
+    settings.bds.peer = {
+    
+        /**
+         * Implements the BDS.PEER.REQUEST command.
+         * @method request
+         * @param something
+         */
+        request: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ACK command.
+         * @method ack
+         * @param something
+         */
+        ack: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.REJECT command.
+         * @method reject
+         * @param something
+         */
+        reject: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ACCEPT command.
+         * @method accept
+         * @param something
+         */
+        accept: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.LIST command.
+         * @method list
+         * @param something
+         */
+        list: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.OPEN command.
+         * @method open
+         * @param something
+         *
+        open: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.END command.
+         * @method end
+         * @param something
+         *
+        end: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.OFFER command.
+         * @method offer
+         * @param something
+         */
+        offer: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ANSWER command.
+         * @method answer
+         * @param something
+         */
+        answer: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.CANDIDATE command.
+         * @method candidate
+         * @param something
+         */
+        candidate: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.CLOSE command.
+         * @method close
+         * @param something
+         */
+        close: function(  ) {},
+    
+    };
+    
     
     /**
      * Handle events.
@@ -664,5 +754,20 @@ wsc.dAmn.BDS.Peer.Connection.prototype.answer_created = function( answer ) {
         function(  ) { pc.local_description_set(); },
         function( err ) { pc.onerror( err ); }
     );
+
+};
+
+
+/**
+ * Aggregate peer connection.
+ * 
+ * This class implements aggregate peer connections. This involves using a
+ * single signaling channel for multiple peer to peer connections.
+ * @class dAmn.BDS.Peer.Aggregate
+ * @constructor
+ */
+wsc.dAmn.BDS.Peer.Aggregate = function( host, remote_offer ) {
+
+    this.host = host;
 
 };
