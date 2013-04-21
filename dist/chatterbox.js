@@ -1869,6 +1869,34 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
 
 };
 
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString));
+            break;
+        case "privclasses":
+            // this.set_privclasses(e);
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
+
+};
+
 
 /**
  * Object for managing the chatbook portion of the UI.

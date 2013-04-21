@@ -86,7 +86,7 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.property = function( e ) {
-    var prop = e.pkt["arg"]["p"];
+    var prop = e.pkt.arg.p;
     
     switch(prop) {
         case "title":
@@ -94,7 +94,7 @@ wsc.Channel.prototype.property = function( e ) {
             // If we already had the title/topic for this channel, then it was changed. Output a message.
             if ( this.info[prop].content.length != 0 ) {
                 if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+                    this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
                 }
             }
                 
@@ -120,14 +120,11 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
+
     this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    
-    if( this.ui == null )
-        return;
-    
-    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+
 };
 
 /**

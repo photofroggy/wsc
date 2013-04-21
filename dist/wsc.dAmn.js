@@ -1068,7 +1068,7 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.property = function( e ) {
-    var prop = e.pkt["arg"]["p"];
+    var prop = e.pkt.arg.p;
     
     switch(prop) {
         case "title":
@@ -1076,7 +1076,7 @@ wsc.Channel.prototype.property = function( e ) {
             // If we already had the title/topic for this channel, then it was changed. Output a message.
             if ( this.info[prop].content.length != 0 ) {
                 if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
+                    this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
                 }
             }
                 
@@ -1102,14 +1102,11 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
+
     this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    
-    if( this.ui == null )
-        return;
-    
-    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+
 };
 
 /**
@@ -6241,6 +6238,34 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
         
         c.trigger( 'pkt.recv_msg.highlighted', e );
     }, event );
+
+};
+
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString));
+            break;
+        case "privclasses":
+            // this.set_privclasses(e);
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
 
 };
 
