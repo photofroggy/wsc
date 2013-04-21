@@ -228,7 +228,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger('ns.set.user.list', {
+    this.client.trigger('ns.user.list', {
         'name': 'set.userlist',
         'ns': this.namespace,
         'users': users
@@ -292,8 +292,9 @@ wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     if( suppress )
         return;
     
-    this.client.trigger(this.namespace + '.user.registered', {
-        name: this.namespace + '.user.registered',
+    this.client.trigger('ns.user.registered', {
+        name: 'ns.user.registered',
+        ns: this.namespace,
         user: un
     });
     
@@ -334,7 +335,10 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
         delete this.info.members[user];
     }
     
-    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
+    this.client.trigger('ns.user.remove', {
+        user: member.name,
+        ns: this.namespace
+    });
 };
 
 /**
@@ -369,7 +373,7 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_privchg = function( e ) {
     var c = this;
     
-    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+    this.client.cascade('ns.user.privchg', function( data ) {
         var member = c.info.members[data.user];
         
         if( !member )

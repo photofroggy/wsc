@@ -1210,7 +1210,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger('ns.set.user.list', {
+    this.client.trigger('ns.user.list', {
         'name': 'set.userlist',
         'ns': this.namespace,
         'users': users
@@ -1274,8 +1274,9 @@ wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     if( suppress )
         return;
     
-    this.client.trigger(this.namespace + '.user.registered', {
-        name: this.namespace + '.user.registered',
+    this.client.trigger('ns.user.registered', {
+        name: 'ns.user.registered',
+        ns: this.namespace,
         user: un
     });
     
@@ -1316,7 +1317,10 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
         delete this.info.members[user];
     }
     
-    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
+    this.client.trigger('ns.user.remove', {
+        user: member.name,
+        ns: this.namespace
+    });
 };
 
 /**
@@ -1351,7 +1355,7 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_privchg = function( e ) {
     var c = this;
     
-    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+    this.client.cascade('ns.user.privchg', function( data ) {
         var member = c.info.members[data.user];
         
         if( !member )
@@ -4708,11 +4712,30 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     );
     
     this.client.bind(
-        'ns.set.user.list',
+        'ns.user.list',
         function( event ) {
-            
             ui.channel(event.ns).set_user_list( event.users );
-        
+        }
+    );
+    
+    this.client.middle(
+        'ns.user.privchg',
+        function( data, done ) {
+            ui.channel(data.ns).privchg( data, done );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.remove',
+        function( event, client ) {
+            ui.channel(event.ns).remove_one_user( event.user );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.registered',
+        function( event ) {
+            ui.channel(event.ns).register_user( event.user );
         }
     );
     
@@ -5149,24 +5172,6 @@ Chatterbox.Channel.prototype.build = function( ) {
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
-    
-    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
-        
-        chan.privchg( data, done );
-    
-    });
-    
-    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
-    
-        chan.remove_one_user( data, done );
-    
-    } );
-    
-    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
-    
-        chan.register_user( event.user );
-    
-    } );
     
     if( this.namespace[0] == '@' ) {
         this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
@@ -5910,7 +5915,7 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
  * @method remove_one_user
  * @param user {String} Username
  */
-Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
 
     this.remove_user( user, true );
     
@@ -5918,12 +5923,10 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
     
     if( !member ) {
         this.reveal_user_list();
-        done( user );
         return;
     }
     
     this.set_user( member );
-    done( user );
 
 };
 

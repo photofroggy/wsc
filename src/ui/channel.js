@@ -121,24 +121,6 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
-    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
-        
-        chan.privchg( data, done );
-    
-    });
-    
-    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
-    
-        chan.remove_one_user( data, done );
-    
-    } );
-    
-    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
-    
-        chan.register_user( event.user );
-    
-    } );
-    
     if( this.namespace[0] == '@' ) {
         this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
     }
@@ -881,7 +863,7 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
  * @method remove_one_user
  * @param user {String} Username
  */
-Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
 
     this.remove_user( user, true );
     
@@ -889,12 +871,10 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
     
     if( !member ) {
         this.reveal_user_list();
-        done( user );
         return;
     }
     
     this.set_user( member );
-    done( user );
 
 };
 
