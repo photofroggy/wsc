@@ -30,7 +30,6 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
     this.client = client;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
-    this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);

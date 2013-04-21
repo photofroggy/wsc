@@ -340,7 +340,6 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         'ns.create',
         function( event, client ) {
             ui.create_channel(event.chan.raw, event.chan.hidden);
-            event.chan.ui = ui.channel( event.ns );
         }
     );
     
