@@ -45,99 +45,13 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-    this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(this.raw);
-};
-
-/**
- * Remove this channel from the screen entirely.
- * 
- * @method remove
- */
-wsc.Channel.prototype.remove = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.manager.remove_channel(this.raw);
-};
-
-/**
- * Hide the channel view in the UI.
- * 
- * @method hide
- */
-wsc.Channel.prototype.hide = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.hide();
-};
-
-/**
- * Show the channel view in the UI.
- * 
- * @method show
- */
-wsc.Channel.prototype.show = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.show();
-};
-
-/**
- * Display a log message.
- * 
- * @method log
- * @param msg {String} Log message to display.
- */
-wsc.Channel.prototype.log = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log(msg);
-};
-
-/**
- * Send a message to the log window.
- * 
- * @method log_item
- * @param msg {String} Message to send.
- */
-wsc.Channel.prototype.logItem = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_item(msg);
-};
-
-/**
- * Send a server message to the log window.
- * 
- * @method server_message
- * @param msg {String} Server message.
- * @param [info] {String} Extra information for the message.
- */
-wsc.Channel.prototype.server_message = function( msg, info ) {
-    if( this.ui == null )
-        return;
-    this.ui.server_message(msg, info);
-};
-
-/**
- * Clear all log messages from the log window.
- * 
- * @method clear
- */
-wsc.Channel.prototype.clear = function( user ) {
-    if( this.ui == null )
-        return;
-    if( !user ) {
-        this.ui.clear();
-    } else {
-        this.ui.clear_user( user );
-    }
 };
 
 /**
  * Display a user's whois info.
  * 
  * @method log_whois
+ * @deprecated
  * @param data {Object} Object containing a user's information.
  */
 wsc.Channel.prototype.log_whois = function( data ) {
@@ -150,6 +64,7 @@ wsc.Channel.prototype.log_whois = function( data ) {
  * Display some information relating to a privilege class.
  * 
  * @method log_pc
+ * @deprecated
  * @param privileges {Boolean} Are we showing privileges or users?
  * @param data {Array} Array containing information.
  */
@@ -431,37 +346,6 @@ wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
     
-};
-
-/**
- * Process a recv_msg event.
- * 
- * @method recv_msg
- * @param e {Object} Event data for recv_msg packet.
- */
-wsc.Channel.prototype.recv_msg = function( e ) {
-    
-    var u = this.client.settings['username'].toLowerCase();
-    
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
-        }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
-
 };
 
 /**

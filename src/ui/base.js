@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.84';
+Chatterbox.VERSION = '0.19.87';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -320,6 +320,30 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         ui.viewing = false;
     } );
     
+    // Events for logging output.
+    this.client.bind( 'pkt', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
+    // Channel removed from client.
+    this.client.middle(
+        'ns.remove',
+        function( data, done ) {
+            ui.remove_channel( data.ns );
+            done( data );
+        }
+    );
+    
+    this.client.bind(
+        'ns.create',
+        function( event, client ) {
+            ui.create_channel(event.chan.raw, event.chan.hidden);
+            event.chan.ui = ui.channel( event.ns );
+        }
+    );
+    
 };
 
 /**
@@ -348,6 +372,41 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+/**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 

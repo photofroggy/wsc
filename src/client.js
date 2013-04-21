@@ -282,6 +282,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -293,6 +295,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -302,7 +307,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -490,7 +496,12 @@ wsc.Client.prototype.format_ns = function( namespace ) {
 wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
     var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
-    chan.build();
+    this.trigger( 'ns.create', {
+        name: 'ns.create',
+        ns: namespace,
+        chan: chan,
+        client: this
+    });
 
 };
 
@@ -505,12 +516,21 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     if( !namespace )
         return;
     
-    var chan = this.channel(namespace);
-    if( !chan )
-        return;
-    
-    chan.remove();
-    delete this.channelo[chan.raw.toLowerCase()];
+    this.cascade(
+        'ns.remove',
+        function( data ) {
+            var chan = data.client.channel( data.ns );
+            
+            if( !chan )
+                return;
+            
+            delete data.client.channelo[chan.raw.toLowerCase()];
+        },
+        {
+            ns: namespace,
+            client: this
+        }
+    );
 
 };
 

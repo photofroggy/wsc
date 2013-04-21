@@ -478,6 +478,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -963,42 +964,46 @@ Chatterbox.Channel.prototype.register_user = function( user ) {
  *   message.
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
+
+    var c = this;
     
-    var tab = this.el.t.o[1];
-    
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-        this.manager.nav.noise( 2 );
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
@@ -1191,6 +1196,39 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
         return;
     this.el.l.w.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
+
+};
+
+/**
+ * Handle a recv_msg packet.
+ * @method pkt_recv_msg
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
+
+    var c = this;
+    
+    this.manager.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.manager.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( hlight ) {
+            c.highlight( );
+        } else {
+            c.highlight( false );
+        }
+        
+        c.trigger( 'pkt.recv_msg.highlighted', e );
+    }, event );
 
 };
 
