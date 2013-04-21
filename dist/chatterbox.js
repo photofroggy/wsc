@@ -1387,7 +1387,7 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
  * @param order {Array} Privilege class orders
  */
 Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
-
+    
     var uld = this.el.m.find('div.chatusers');
     var pc = '';
     var pcel = null;
@@ -1396,7 +1396,7 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
     
     for(var index in order) {
         var pc = names[order[index]];
-        uld.append('<div class="pc" id="' + pc + '"><h3>' + pc + '</h3><ul></ul>');
+        uld.append('<div class="pc" id="' + replaceAll( pc, ' ', '-' ) + '"><h3>' + pc + '</h3><ul></ul>');
         pcel = uld.find('.pc#' + pc);
         pcel.css('display', 'none');
     }
@@ -1465,7 +1465,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  */
 Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
-    var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
+    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
     var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
