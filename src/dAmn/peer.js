@@ -34,6 +34,269 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
 
     };
     
+    /**
+     * Handle events.
+     * @class dAmn.BDS.Peer.handle
+     */
+    var handle = {
+    
+        /**
+         * Handle BDS Peer events.
+         * @class dAmn.BDS.Peer.handle.signal
+         */
+        signal: {
+        
+            /**
+             * Handle a peer request.
+             * @method request
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            request: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                var user = event.param[0];
+                var pns = event.param[1];
+                
+                // Away or ignored
+                if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
+                    client.npmsg(event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',You have been blocked');
+                    return;
+                }
+                
+                if( client.away.on ) {
+                    client.npmsg(event.ns, 'BDS:PEER:REJECT:'+pns+','+user+',Away; ' + client.away.reason);
+                    return;
+                }
+                
+                if( phone.call != null ) {
+                    if( !phone.call.group ) {
+                        client.npmsg( event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',Already in a call' );
+                        return;
+                    }
+                }
+                
+                client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user);
+                
+                // Tell the user about the call.
+                phone.incoming( pns, user, event );
+            
+            },
+            
+            /**
+             * Handle an ack command.
+             * 
+             * Cancel any timers or anything here.
+             * @method ack
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            ack: function( event, client ) {},
+            
+            /**
+             * Handle a peer request being rejected.
+             * @method reject
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            reject: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                // dVideo.phone.call.close();
+                // dVideo.phone.call = null;
+            
+            },
+            
+            /**
+             * Handle a peer request being accepted.
+             * @method accept
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            accept: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                if( !phone.call )
+                    return;
+                
+                var call = dVideo.phone.call;
+                var pns = event.param[0];
+                var user = event.param[1];
+                var chan = event.param[2] || event.ns;
+                
+                if( user.toLowerCase() != client.settings.username.toLowerCase() )
+                    return;
+                
+                var peer = phone.call.new_peer( pns, event.user );
+                
+                if( !peer ) {
+                    return;
+                }
+                
+                peer.conn.ready(
+                    function(  ) {
+                        dVideo.signal.offer( peer );
+                    }
+                );
+            
+            },
+            
+            /**
+             * Handle a peer open command.
+             * @method open
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            open: function( event, client ) {},
+            
+            /**
+             * Handle a peer end command.
+             * @method end
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            end: function( event, client ) {},
+            
+            /**
+             * Handle a peer offer signal.
+             * @method offer
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            offer: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                if( !phone.call )
+                    return;
+                
+                var call = phone.call;
+                var pns = event.param[0];
+                var user = event.param[1];
+                var target = event.param[2];
+                var offer = new dVideo.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+                
+                if( target.toLowerCase() != client.settings.username.toLowerCase() )
+                    return;
+                
+                // Away or ignored
+                if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
+                    dVideo.signal.reject( user, 'You have been blocked' );
+                    return;
+                }
+                
+                if( client.away.on ) {
+                    dVideo.signal.reject( user, 'Away, reason: ' + client.away.reason );
+                    return;
+                }
+                
+                var peer = call.peer( user );
+                
+                if( !peer ) {
+                    if( !call.group )
+                        return;
+                    
+                    peer = call.new_peer( pns, user );
+                }
+                
+                peer.conn.ready(
+                    function(  ) {
+                        dVideo.signal.answer( peer );
+                        console.log('new peer',peer.user);
+                    },
+                    offer
+                );
+            
+            },
+            
+            /**
+             * Handle a peer answer signal.
+             * @method answer
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            answer: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                if( !phone.call )
+                    return;
+                
+                var call = phone.call;
+                var pns = event.param[0];
+                var user = event.param[1];
+                var target = event.param[2];
+                var offer = new dVideo.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+                
+                if( target.toLowerCase() != client.settings.username.toLowerCase() )
+                    return;
+                
+                var peer = call.peer( user );
+                
+                if( !peer )
+                    return;
+                
+                peer.conn.open(
+                    function(  ) {
+                        console.log('> connected to new peer ' + peer.user);
+                    },
+                    offer
+                );
+            
+            },
+            
+            /**
+             * Handle a peer candidate signal.
+             * @method candidate
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            candidate: function( event, client ) {
+                
+                if( event.sns[0] != '@' )
+                    return;
+                
+                if( !phone.call )
+                    return;
+                
+                var call = phone.call;
+                var pns = event.param[0];
+                var user = event.param[1];
+                var target = event.param[2];
+                var candidate = new dVideo.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+                
+                if( target.toLowerCase() != client.settings.username.toLowerCase() )
+                    return;
+                
+                var peer = call.peer( user );
+                
+                if( !peer )
+                    return;
+                
+                peer.conn.candidate( candidate );
+            
+            },
+            
+            /**
+             * Handle a peer close command.
+             * @method close
+             * @param event {Object} Event data
+             * @param client {Object} Reference to the client
+             */
+            close: function( event, client ) {},
+        
+        }
+    
+    };
+    
     init();
 
 };
@@ -45,6 +308,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
  * We could have Botdom doing this, but I dunno. Maybe a different bot would be 
  * a better idea.
  * @property bots
+ * @for dAmn.BDS.Peer
  * @type Array
  * @default [ 'botdom' , 'damnphone', ]
  */
