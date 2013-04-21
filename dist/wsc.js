@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.38';
+wsc.VERSION = '1.7.39';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.123';
+wsc.REVISION = '0.21.124';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -1012,7 +1012,6 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
     this.client = client;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
-    this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
@@ -1026,35 +1025,12 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  * @method build
  */
 wsc.Channel.prototype.build = function( ) {
+
     this.info.members = {};
-    this.set_privclasses( { pkt: { body: '' } } );
-};
-
-/**
- * Display a user's whois info.
- * 
- * @method log_whois
- * @deprecated
- * @param data {Object} Object containing a user's information.
- */
-wsc.Channel.prototype.log_whois = function( data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_whois(data);
-};
-
-/**
- * Display some information relating to a privilege class.
- * 
- * @method log_pc
- * @deprecated
- * @param privileges {Boolean} Are we showing privileges or users?
- * @param data {Array} Array containing information.
- */
-wsc.Channel.prototype.log_pc = function( privileges, data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_pc(privileges, data);
+    
+    if( this.namespace[0] == '@' )
+        this.set_privclasses( { pkt: { body: '' } } );
+    
 };
 
 /**
@@ -1064,18 +1040,11 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.property = function( e ) {
-    var prop = e.pkt["arg"]["p"];
+    var prop = e.pkt.arg.p;
     
     switch(prop) {
         case "title":
-        case "topic":            
-            // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 ) {
-                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
-                }
-            }
-                
+        case "topic":
             this.set_header(prop, e);
             break;
         case "privclasses":
@@ -1098,14 +1067,11 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
+
     this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    
-    if( this.ui == null )
-        return;
-    
-    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+
 };
 
 /**
@@ -1149,7 +1115,6 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
-    this.ui.build_user_list( names, orders );
 };
 
 /**
@@ -1210,9 +1175,9 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger(this.namespace + '.user.list', {
+    this.client.trigger('ns.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace'],
+        'ns': this.namespace,
         'users': users
     });
 };
@@ -1274,8 +1239,9 @@ wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     if( suppress )
         return;
     
-    this.client.trigger(this.namespace + '.user.registered', {
-        name: this.namespace + '.user.registered',
+    this.client.trigger('ns.user.registered', {
+        name: 'ns.user.registered',
+        ns: this.namespace,
         user: un
     });
     
@@ -1316,7 +1282,10 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
         delete this.info.members[user];
     }
     
-    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
+    this.client.trigger('ns.user.remove', {
+        user: member.name,
+        ns: this.namespace
+    });
 };
 
 /**
@@ -1351,7 +1320,7 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_privchg = function( e ) {
     var c = this;
     
-    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+    this.client.cascade('ns.user.privchg', function( data ) {
         var member = c.info.members[data.user];
         
         if( !member )
@@ -2734,7 +2703,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.log_whois(data);
+        client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -2774,7 +2743,7 @@ wsc.defaults.Extension = function( client ) {
             }
         }
         
-        chan.log_pc(event.p == 'privclass', pcs);
+        client.ui.chatbook.current.log_pc(event.p == 'privclass', pcs);
     
     };
     
@@ -4368,7 +4337,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.88';
+Chatterbox.VERSION = '0.19.89';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4703,7 +4672,34 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         'ns.create',
         function( event, client ) {
             ui.create_channel(event.chan.raw, event.chan.hidden);
-            event.chan.ui = ui.channel( event.ns );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.list',
+        function( event ) {
+            ui.channel(event.ns).set_user_list( event.users );
+        }
+    );
+    
+    this.client.middle(
+        'ns.user.privchg',
+        function( data, done ) {
+            ui.channel(data.ns).privchg( data, done );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.remove',
+        function( event, client ) {
+            ui.channel(event.ns).remove_one_user( event.user );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.registered',
+        function( event ) {
+            ui.channel(event.ns).register_user( event.user );
         }
     );
     
@@ -5082,17 +5078,21 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
+    
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
     this.el.t.c = this.el.t.o.find('.close');
+    
     // Draw
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
+    
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
@@ -5137,29 +5137,9 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
-    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
-        
-        chan.set_user_list( event.users );
-        
-    } );
-    
-    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
-        
-        chan.privchg( data, done );
-    
-    });
-    
-    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
-    
-        chan.remove_one_user( data, done );
-    
-    } );
-    
-    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
-    
-        chan.register_user( event.user );
-    
-    } );
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
+    }
     
     this.built = true;
 };
@@ -5704,14 +5684,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {Object} Content for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     
     head = head.toLowerCase();
     var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.el.h[head].html(content.html());
+    if( this.el.h[head].html() != '' ) {
+    
+        if ( content.html().length != 0 ) {
+            this.server_message( head + " set by " + by );
+        }
+    
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
@@ -5899,7 +5890,7 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
  * @method remove_one_user
  * @param user {String} Username
  */
-Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
 
     this.remove_user( user, true );
     
@@ -5907,12 +5898,10 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
     
     if( !member ) {
         this.reveal_user_list();
-        done( user );
         return;
     }
     
     this.set_user( member );
-    done( user );
 
 };
 
@@ -6193,6 +6182,20 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 };
 
 /**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
  * Handle a recv_msg packet.
  * @method pkt_recv_msg
  * @param event {Object} Event data
@@ -6222,6 +6225,35 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
         
         c.trigger( 'pkt.recv_msg.highlighted', e );
     }, event );
+
+};
+
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
+            break;
+        case "privclasses":
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
 
 };
 

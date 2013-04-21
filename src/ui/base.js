@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.88';
+Chatterbox.VERSION = '0.19.89';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -340,7 +340,34 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         'ns.create',
         function( event, client ) {
             ui.create_channel(event.chan.raw, event.chan.hidden);
-            event.chan.ui = ui.channel( event.ns );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.list',
+        function( event ) {
+            ui.channel(event.ns).set_user_list( event.users );
+        }
+    );
+    
+    this.client.middle(
+        'ns.user.privchg',
+        function( data, done ) {
+            ui.channel(data.ns).privchg( data, done );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.remove',
+        function( event, client ) {
+            ui.channel(event.ns).remove_one_user( event.user );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.registered',
+        function( event ) {
+            ui.channel(event.ns).register_user( event.user );
         }
     );
     
