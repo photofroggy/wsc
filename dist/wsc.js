@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.37';
+wsc.VERSION = '1.7.38';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.122';
+wsc.REVISION = '0.21.123';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -4368,7 +4368,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.87';
+Chatterbox.VERSION = '0.19.88';
 Chatterbox.STATE = 'beta';
 
 /**
