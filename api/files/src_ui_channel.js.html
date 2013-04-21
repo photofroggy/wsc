@@ -182,17 +182,21 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
+    
     &#x2F;&#x2F; Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find(&#x27;.tab&#x27;);
     this.el.t.c = this.el.t.o.find(&#x27;.close&#x27;);
+    
     &#x2F;&#x2F; Draw
     this.manager.chatbook.view.append(Chatterbox.render(&#x27;channel&#x27;, {&#x27;selector&#x27;: selector, &#x27;ns&#x27;: ns}));
+    
     &#x2F;&#x2F; Store
     this.el.m = this.window = this.manager.chatbook.view.find(&#x27;#&#x27; + selector + &#x27;-window&#x27;);
     this.el.l.p = this.el.m.find(&#x27;#&#x27; + selector + &quot;-log&quot;);
     this.el.l.w = this.el.l.p.find(&#x27;ul.logwrap&#x27;);
     this.el.u = this.el.m.find(&#x27;#&#x27; + selector + &quot;-users&quot;);
+    
     &#x2F;&#x2F; Max user list width;
     this.mulw = parseInt(this.el.u.css(&#x27;max-width&#x27;).slice(0,-2));
     var chan = this;
@@ -237,29 +241,9 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass(&#x27;hidden&#x27;);
     }
     
-    this.manager.client.bind( this.namespace + &#x27;.user.list&#x27;, function( event ) {
-        
-        chan.set_user_list( event.users );
-        
-    } );
-    
-    this.manager.client.middle( this.namespace + &#x27;.user.privchg&#x27;, function( data, done ) {
-        
-        chan.privchg( data, done );
-    
-    });
-    
-    this.manager.client.middle( this.namespace + &#x27;.user.remove&#x27;, function( data, done ) {
-    
-        chan.remove_one_user( data, done );
-    
-    } );
-    
-    this.manager.client.bind( this.namespace + &#x27;.user.registered&#x27;, function( event ) {
-    
-        chan.register_user( event.user );
-    
-    } );
+    if( this.namespace[0] == &#x27;@&#x27; ) {
+        this.build_user_list( { 100: &#x27;Room Members&#x27; }, [ 100 ] );
+    }
     
     this.built = true;
 };
@@ -804,14 +788,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * 
  * @method set_header
  * @param head {String} Should be &#x27;title&#x27; or &#x27;topic&#x27;.
- * @param content {Object} Content for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  *&#x2F;
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     
     head = head.toLowerCase();
     var edit = this.el.m.find(&#x27;header.&#x27; + head + &#x27; a[href=#edit]&#x27;);
+    &#x2F;&#x2F;var c = this.manager.client.channel( this.namespace );
     
-    this.el.h[head].html(content.html());
+    if( this.el.h[head].html() != &#x27;&#x27; ) {
+    
+        if ( content.html().length != 0 ) {
+            this.server_message( head + &quot; set by &quot; + by );
+        }
+    
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
@@ -999,7 +994,7 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
  * @method remove_one_user
  * @param user {String} Username
  *&#x2F;
-Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
 
     this.remove_user( user, true );
     
@@ -1007,12 +1002,10 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
     
     if( !member ) {
         this.reveal_user_list();
-        done( user );
         return;
     }
     
     this.set_user( member );
-    done( user );
 
 };
 
@@ -1293,6 +1286,20 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 };
 
 &#x2F;**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ *&#x2F;
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    this.set_header(&#x27;title&#x27;, (new wsc.MessageString(&#x27;&#x27;)), &#x27;&#x27;, &#x27;&#x27; );
+    this.set_header(&#x27;topic&#x27;, (new wsc.MessageString(&#x27;&#x27;)), &#x27;&#x27;, &#x27;&#x27; );
+
+};
+
+&#x2F;**
  * Handle a recv_msg packet.
  * @method pkt_recv_msg
  * @param event {Object} Event data
@@ -1322,6 +1329,35 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
         
         c.trigger( &#x27;pkt.recv_msg.highlighted&#x27;, e );
     }, event );
+
+};
+
+&#x2F;**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ *&#x2F;
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
+    
+    switch(prop) {
+        case &quot;title&quot;:
+        case &quot;topic&quot;:
+            this.set_header(prop, event.value || (new wsc.MessageString( &#x27;&#x27; )), event.by, event.ts );
+            break;
+        case &quot;privclasses&quot;:
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
+            break;
+        case &quot;members&quot;:
+            &#x2F;&#x2F; this.set_members(e);
+            break;
+        default:
+            &#x2F;&#x2F; this.server_message(&quot;Received unknown property &quot; + prop + &quot; received in &quot; + this.info[&quot;namespace&quot;] + &#x27;.&#x27;);
+            break;
+    }
 
 };
 
