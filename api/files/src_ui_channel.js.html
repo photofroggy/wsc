@@ -850,7 +850,7 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
  * @param order {Array} Privilege class orders
  *&#x2F;
 Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
-
+    
     var uld = this.el.m.find(&#x27;div.chatusers&#x27;);
     var pc = &#x27;&#x27;;
     var pcel = null;
@@ -859,7 +859,7 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
     
     for(var index in order) {
         var pc = names[order[index]];
-        uld.append(&#x27;&lt;div class=&quot;pc&quot; id=&quot;&#x27; + pc + &#x27;&quot;&gt;&lt;h3&gt;&#x27; + pc + &#x27;&lt;&#x2F;h3&gt;&lt;ul&gt;&lt;&#x2F;ul&gt;&#x27;);
+        uld.append(&#x27;&lt;div class=&quot;pc&quot; id=&quot;&#x27; + replaceAll( pc, &#x27; &#x27;, &#x27;-&#x27; ) + &#x27;&quot;&gt;&lt;h3&gt;&#x27; + pc + &#x27;&lt;&#x2F;h3&gt;&lt;ul&gt;&lt;&#x2F;ul&gt;&#x27;);
         pcel = uld.find(&#x27;.pc#&#x27; + pc);
         pcel.css(&#x27;display&#x27;, &#x27;none&#x27;);
     }
@@ -928,7 +928,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  *&#x2F;
 Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
-    var uld = this.el.m.find(&#x27;div.chatusers div.pc#&#x27; + user.pc);
+    var uld = this.el.m.find( &#x27;div.chatusers div.pc#&#x27; + replaceAll( user.pc, &#x27; &#x27;, &#x27;-&#x27; ) );
     var ull = uld.find(&#x27;ul&#x27;);
     var conn = user.conn == 1 ? &#x27;&#x27; : &#x27;[&#x27; + user.conn + &#x27;]&#x27;;
     var html = &#x27;&lt;li&gt;&lt;a target=&quot;_blank&quot; id=&quot;&#x27; + user.name + &#x27;&quot; href=&quot;http:&#x2F;&#x2F;&#x27; + user.name + &#x27;.&#x27; + this.manager.settings[&#x27;domain&#x27;] + &#x27;&quot;&gt;&lt;em&gt;&#x27; + user.symbol + &#x27;&lt;&#x2F;em&gt;&#x27; + user.name + &#x27;&lt;&#x2F;a&gt;&#x27; + conn + &#x27;&lt;&#x2F;li&gt;&#x27;;
