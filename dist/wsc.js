@@ -1035,33 +1035,6 @@ wsc.Channel.prototype.build = function( ) {
 };
 
 /**
- * Display a user's whois info.
- * 
- * @method log_whois
- * @deprecated
- * @param data {Object} Object containing a user's information.
- *
-wsc.Channel.prototype.log_whois = function( data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_whois(data);
-};
-
-/**
- * Display some information relating to a privilege class.
- * 
- * @method log_pc
- * @deprecated
- * @param privileges {Boolean} Are we showing privileges or users?
- * @param data {Array} Array containing information.
- *
-wsc.Channel.prototype.log_pc = function( privileges, data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_pc(privileges, data);
-};
-
-/**
  * Process a channel property packet.
  * 
  * @method property
@@ -1073,14 +1046,6 @@ wsc.Channel.prototype.property = function( e ) {
     switch(prop) {
         case "title":
         case "topic":
-            /* If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 ) {
-                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
-                }
-            }
-            */
-                
             this.set_header(prop, e);
             break;
         case "privclasses":
@@ -5734,7 +5699,7 @@ Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     if( this.el.h[head].html() != '' ) {
     
         if ( content.html().length != 0 ) {
-            this.server_message( prop + " set by " + by );
+            this.server_message( head + " set by " + by );
         }
     
     }
@@ -6219,6 +6184,20 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 };
 
 /**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
  * Handle a recv_msg packet.
  * @method pkt_recv_msg
  * @param event {Object} Event data
@@ -6265,7 +6244,7 @@ Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
     switch(prop) {
         case "title":
         case "topic":
-            this.set_header(prop, event.value || (new wsc.MessageString), event.by, event.ts );
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
             break;
         case "privclasses":
             this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );

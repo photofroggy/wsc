@@ -1366,7 +1366,7 @@ Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     if( this.el.h[head].html() != '' ) {
     
         if ( content.html().length != 0 ) {
-            this.server_message( prop + " set by " + by );
+            this.server_message( head + " set by " + by );
         }
     
     }
@@ -1851,6 +1851,20 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 };
 
 /**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
  * Handle a recv_msg packet.
  * @method pkt_recv_msg
  * @param event {Object} Event data
@@ -1897,7 +1911,7 @@ Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
     switch(prop) {
         case "title":
         case "topic":
-            this.set_header(prop, event.value || (new wsc.MessageString), event.by, event.ts );
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
             break;
         case "privclasses":
             this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );

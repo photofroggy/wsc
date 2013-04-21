@@ -64,14 +64,6 @@ wsc.Channel.prototype.property = function( e ) {
     switch(prop) {
         case "title":
         case "topic":
-            /* If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 ) {
-                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
-                }
-            }
-            */
-                
             this.set_header(prop, e);
             break;
         case "privclasses":
