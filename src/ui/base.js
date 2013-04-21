@@ -344,6 +344,15 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         }
     );
     
+    this.client.bind(
+        'ns.set.user.list',
+        function( event ) {
+            
+            ui.channel(event.ns).set_user_list( event.users );
+        
+        }
+    );
+    
 };
 
 /**

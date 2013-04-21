@@ -228,7 +228,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger(this.namespace + '.user.list', {
+    this.client.trigger('ns.set.user.list', {
         'name': 'set.userlist',
         'ns': this.namespace,
         'users': users

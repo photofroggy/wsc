@@ -1210,7 +1210,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger(this.namespace + '.user.list', {
+    this.client.trigger('ns.set.user.list', {
         'name': 'set.userlist',
         'ns': this.namespace,
         'users': users
@@ -4707,6 +4707,15 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         }
     );
     
+    this.client.bind(
+        'ns.set.user.list',
+        function( event ) {
+            
+            ui.channel(event.ns).set_user_list( event.users );
+        
+        }
+    );
+    
 };
 
 /**
@@ -5140,12 +5149,6 @@ Chatterbox.Channel.prototype.build = function( ) {
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
     }
-    
-    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
-        
-        chan.set_user_list( event.users );
-        
-    } );
     
     this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
         
