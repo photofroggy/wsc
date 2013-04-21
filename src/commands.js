@@ -400,7 +400,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.log_whois(data);
+        client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -440,7 +440,7 @@ wsc.defaults.Extension = function( client ) {
             }
         }
         
-        chan.log_pc(event.p == 'privclass', pcs);
+        client.ui.chatbook.current.log_pc(event.p == 'privclass', pcs);
     
     };
     

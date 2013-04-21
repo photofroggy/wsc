@@ -30,7 +30,6 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
     this.client = client;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
-    this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
@@ -44,35 +43,12 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  * @method build
  */
 wsc.Channel.prototype.build = function( ) {
+
     this.info.members = {};
-    this.set_privclasses( { pkt: { body: '' } } );
-};
-
-/**
- * Display a user's whois info.
- * 
- * @method log_whois
- * @deprecated
- * @param data {Object} Object containing a user's information.
- */
-wsc.Channel.prototype.log_whois = function( data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_whois(data);
-};
-
-/**
- * Display some information relating to a privilege class.
- * 
- * @method log_pc
- * @deprecated
- * @param privileges {Boolean} Are we showing privileges or users?
- * @param data {Array} Array containing information.
- */
-wsc.Channel.prototype.log_pc = function( privileges, data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_pc(privileges, data);
+    
+    if( this.namespace[0] == '@' )
+        this.set_privclasses( { pkt: { body: '' } } );
+    
 };
 
 /**
@@ -82,18 +58,11 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.property = function( e ) {
-    var prop = e.pkt["arg"]["p"];
+    var prop = e.pkt.arg.p;
     
     switch(prop) {
         case "title":
-        case "topic":            
-            // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 ) {
-                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
-                }
-            }
-                
+        case "topic":
             this.set_header(prop, e);
             break;
         case "privclasses":
@@ -116,14 +85,11 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
+
     this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    
-    if( this.ui == null )
-        return;
-    
-    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+
 };
 
 /**
@@ -167,7 +133,6 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
-    this.ui.build_user_list( names, orders );
 };
 
 /**
@@ -228,9 +193,9 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     }
     
-    this.client.trigger(this.namespace + '.user.list', {
+    this.client.trigger('ns.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace'],
+        'ns': this.namespace,
         'users': users
     });
 };
@@ -292,8 +257,9 @@ wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     if( suppress )
         return;
     
-    this.client.trigger(this.namespace + '.user.registered', {
-        name: this.namespace + '.user.registered',
+    this.client.trigger('ns.user.registered', {
+        name: 'ns.user.registered',
+        ns: this.namespace,
         user: un
     });
     
@@ -334,7 +300,10 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
         delete this.info.members[user];
     }
     
-    this.client.cascade( this.namespace + '.user.remove', function( user ) {}, member.name);
+    this.client.trigger('ns.user.remove', {
+        user: member.name,
+        ns: this.namespace
+    });
 };
 
 /**
@@ -369,7 +338,7 @@ wsc.Channel.prototype.recv_part = function( e ) {
 wsc.Channel.prototype.recv_privchg = function( e ) {
     var c = this;
     
-    this.client.cascade(this.namespace + '.user.privchg', function( data ) {
+    this.client.cascade('ns.user.privchg', function( data ) {
         var member = c.info.members[data.user];
         
         if( !member )

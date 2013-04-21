@@ -62,17 +62,21 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
+    
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
     this.el.t.c = this.el.t.o.find('.close');
+    
     // Draw
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
+    
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
@@ -117,29 +121,9 @@ Chatterbox.Channel.prototype.build = function( ) {
         this.el.t.o.toggleClass('hidden');
     }
     
-    this.manager.client.bind( this.namespace + '.user.list', function( event ) {
-        
-        chan.set_user_list( event.users );
-        
-    } );
-    
-    this.manager.client.middle( this.namespace + '.user.privchg', function( data, done ) {
-        
-        chan.privchg( data, done );
-    
-    });
-    
-    this.manager.client.middle( this.namespace + '.user.remove', function( data, done ) {
-    
-        chan.remove_one_user( data, done );
-    
-    } );
-    
-    this.manager.client.bind( this.namespace + '.user.registered', function( event ) {
-    
-        chan.register_user( event.user );
-    
-    } );
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
+    }
     
     this.built = true;
 };
@@ -684,14 +668,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {Object} Content for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     
     head = head.toLowerCase();
     var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.el.h[head].html(content.html());
+    if( this.el.h[head].html() != '' ) {
+    
+        if ( content.html().length != 0 ) {
+            this.server_message( head + " set by " + by );
+        }
+    
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
@@ -879,7 +874,7 @@ Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
  * @method remove_one_user
  * @param user {String} Username
  */
-Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
 
     this.remove_user( user, true );
     
@@ -887,12 +882,10 @@ Chatterbox.Channel.prototype.remove_one_user = function( user, done ) {
     
     if( !member ) {
         this.reveal_user_list();
-        done( user );
         return;
     }
     
     this.set_user( member );
-    done( user );
 
 };
 
@@ -1173,6 +1166,20 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 };
 
 /**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
  * Handle a recv_msg packet.
  * @method pkt_recv_msg
  * @param event {Object} Event data
@@ -1202,6 +1209,35 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
         
         c.trigger( 'pkt.recv_msg.highlighted', e );
     }, event );
+
+};
+
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
+            break;
+        case "privclasses":
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
 
 };
 
