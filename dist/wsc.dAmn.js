@@ -11922,7 +11922,7 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
  * connections with other clients. These connections can be used to stream
  * video, audio, and, in the future, data.
  * 
- * @class wsc.dAmn.BDS.Peer
+ * @class dAmn.BDS.Peer
  * @constructor
  * @param client {Object} Reference to the client
  * @param storage {Object} Reference to the dAmn extension storage
@@ -11943,10 +11943,10 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.signal.answer( event, client ); } );
         client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.signal.close( event, client ); } );
         // dAmn events.
-        client.bind('pkt.join', handler.join);
-        client.bind('pkt.part', handler.part);
-        client.bind('pkt.recv_join', handler.recv_join);
-        client.bind('pkt.recv_part', handler.recv_part);
+        // client.bind('pkt.join', handler.join);
+        // client.bind('pkt.part', handler.part);
+        // client.bind('pkt.recv_join', handler.recv_join);
+        // client.bind('pkt.recv_part', handler.recv_part);
 
     };
     
@@ -11984,11 +11984,25 @@ wsc.dAmn.BDS.Peer.peer_options = {
  * WebRTC Objects.
  * @property RTC
  * @type Object
- * @default { PeerConnection: null, SessionDescription: null, IceCandidate: null }
  */
 wsc.dAmn.BDS.Peer.RTC = {
+    
+    /**
+     * WebRTC Peer Connection class.
+     * @class dAmn.BDS.Peer.RTC.PeerConnection
+     */
     PeerConnection: null,
+    
+    /**
+     * WebRTC Session Description class.
+     * @class dAmn.BDS.Peer.RTC.SessionDescription
+     */
     SessionDescription: null,
+    
+    /**
+     * WebRTC Ice Candidate class.
+     * @class dAmn.BDS.Peer.RTC.IceCandidate
+     */
     IceCandidate: null,
 }
 
@@ -11997,6 +12011,7 @@ wsc.dAmn.BDS.Peer._gum = function() {};
 /**
  * Get a webcam and/or microphone stream.
  * @method getUserMedia
+ * @for dAmn.BDS.Peer
  * @param options {Object} Media options
  * @param [success] {Function} Callback to fire on success
  * @param [error] {Function} Callback to fire on failure
@@ -12051,9 +12066,11 @@ if( window.RTCSessionDescription ) {
 
 
 /**
- * lol
- *
  * Make a peer connection.
+ * @method connection
+ * @param user {String} User the connection is associated with
+ * @param [remote_offer=null] {String} Descriptor for a remote offer
+ * @return {Object} A dAmn.BDS.Peer.Connection object
  */
 wsc.dAmn.BDS.Peer.connection = function( user, remote ) {
 
@@ -12070,7 +12087,7 @@ wsc.dAmn.BDS.Peer.connection = function( user, remote ) {
  * 
  * Because boilerplate? Yeah, that.
  *
- * @class wsc.dAmn.BDS.Peer.PeerConnection
+ * @class dAmn.BDS.Peer.Connection
  * @constructor
  * @param user {String} User the connection is associated with
  * @param [remote_offer=null] {String} Descriptor for a remote offer.
