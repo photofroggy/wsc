@@ -318,11 +318,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             // Send notice...
             var user = event.sns.substr(1);
             var ns = event.ns;
-            client.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
+            client.ui.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
             client.npmsg( 'chat:datashare', 'CDS:LINK:REQUEST:' + user );
             pchats[user.toLowerCase()] = setTimeout(function() {
                 try {
-                    client.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+                    client.ui.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
                 } catch( err ) {}
             }, 10000);
         },

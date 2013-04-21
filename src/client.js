@@ -502,6 +502,7 @@ wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
         chan: chan,
         client: this
     });
+    chan.build();
 
 };
 
