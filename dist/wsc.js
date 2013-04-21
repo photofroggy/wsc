@@ -1026,8 +1026,12 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  * @method build
  */
 wsc.Channel.prototype.build = function( ) {
+
     this.info.members = {};
-    this.set_privclasses( { pkt: { body: '' } } );
+    
+    if( this.namespace[0] == '@' )
+        this.set_privclasses( { pkt: { body: '' } } );
+    
 };
 
 /**
@@ -1149,7 +1153,15 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
-    this.ui.build_user_list( names, orders );
+    this.client.trigger(
+        'ns.set.privclasses',
+        {
+            name: 'ns.set.privclasses',
+            ns: this.namespace,
+            names: names,
+            orders: orders
+        }
+    );
 };
 
 /**
@@ -1212,7 +1224,7 @@ wsc.Channel.prototype.set_user_list = function( ) {
     
     this.client.trigger(this.namespace + '.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace'],
+        'ns': this.namespace,
         'users': users
     });
 };
@@ -4704,6 +4716,13 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         function( event, client ) {
             ui.create_channel(event.chan.raw, event.chan.hidden);
             event.chan.ui = ui.channel( event.ns );
+        }
+    );
+    
+    this.client.bind(
+        'ns.set.privclasses',
+        function( event, client ) {
+            ui.channel( event.ns ).build_user_list( event.names, event.orders );
         }
     );
     
