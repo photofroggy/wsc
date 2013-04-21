@@ -45,70 +45,7 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-};
-
-/**
- * Hide the channel view in the UI.
- * 
- * @method hide
- * @deprecated
- */
-wsc.Channel.prototype.hide = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.hide();
-};
-
-/**
- * Show the channel view in the UI.
- * 
- * @method show
- * @deprecated
- */
-wsc.Channel.prototype.show = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.show();
-};
-
-/**
- * Display a log message.
- * 
- * @method log
- * @deprecated
- * @param msg {String} Log message to display.
- */
-wsc.Channel.prototype.log = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log(msg);
-};
-
-/**
- * Send a message to the log window.
- * 
- * @method log_item
- * @deprecated
- * @param msg {String} Message to send.
- */
-wsc.Channel.prototype.logItem = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_item(msg);
-};
-
-/**
- * Send a server message to the log window.
- * 
- * @method server_message
- * @deprecated
- * @param msg {String} Server message.
- * @param [info] {String} Extra information for the message.
- */
-wsc.Channel.prototype.server_message = function( msg, info ) {
-    if( this.ui == null )
-        return;
-    this.ui.server_message(msg, info);
+    this.set_privclasses( { pkt: { body: '' } } );
 };
 
 /**
@@ -196,28 +133,39 @@ wsc.Channel.prototype.set_header = function( head, e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_privclasses = function( e ) {
-    this.info["pc"] = {};
-    this.info["pc_order"] = [];
-    var lines = e.pkt["body"].split('\n');
-    var bits = [];
-    for(var i in lines) {
-        if( !lines.hasOwnProperty(i) )
-            continue;
-        bits = lines[i].split(":");
-        if( bits.length == 1 )
-            continue;
-        this.info["pc_order"].push(parseInt(bits[0]));
-        this.info["pc"][parseInt(bits[0])] = bits[1];
+
+    if( this.namespace[0] == '@' ) {
+    
+        this.info.pc = { 100: 'Room Members' };
+        this.info.pc_order = [ 100 ];
+    
+    } else {
+    
+        this.info["pc"] = {};
+        this.info["pc_order"] = [];
+        var lines = e.pkt["body"].split('\n');
+        var bits = [];
+        
+        for(var i in lines) {
+            
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            bits = lines[i].split(":");
+            
+            if( bits.length == 1 )
+                continue;
+            
+            this.info["pc_order"].push(parseInt(bits[0]));
+            this.info["pc"][parseInt(bits[0])] = bits[1];
+        }
+    
     }
+    
     this.info["pc_order"].sort(function(a, b){ return b - a });
     
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
-    
-    if( this.namespace[0] == '@' ) {
-        names[100] = 'Room Members';
-        orders.unshift( 'Room Members' );
-    }
     
     this.ui.build_user_list( names, orders );
 };
@@ -301,7 +249,7 @@ wsc.Channel.prototype.user_info = function( user ) {
     
     return {
         'name': user,
-        'pc': member['pc'],
+        'pc': member.pc || 'Room Members',
         'symbol': s,
         'conn': member.conn,
         'hover': {

@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.37';
+wsc.VERSION = '1.7.38';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.122';
+wsc.REVISION = '0.21.123';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -1027,70 +1027,7 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  */
 wsc.Channel.prototype.build = function( ) {
     this.info.members = {};
-};
-
-/**
- * Hide the channel view in the UI.
- * 
- * @method hide
- * @deprecated
- */
-wsc.Channel.prototype.hide = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.hide();
-};
-
-/**
- * Show the channel view in the UI.
- * 
- * @method show
- * @deprecated
- */
-wsc.Channel.prototype.show = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.show();
-};
-
-/**
- * Display a log message.
- * 
- * @method log
- * @deprecated
- * @param msg {String} Log message to display.
- */
-wsc.Channel.prototype.log = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log(msg);
-};
-
-/**
- * Send a message to the log window.
- * 
- * @method log_item
- * @deprecated
- * @param msg {String} Message to send.
- */
-wsc.Channel.prototype.logItem = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_item(msg);
-};
-
-/**
- * Send a server message to the log window.
- * 
- * @method server_message
- * @deprecated
- * @param msg {String} Server message.
- * @param [info] {String} Extra information for the message.
- */
-wsc.Channel.prototype.server_message = function( msg, info ) {
-    if( this.ui == null )
-        return;
-    this.ui.server_message(msg, info);
+    this.set_privclasses( { pkt: { body: '' } } );
 };
 
 /**
@@ -1178,28 +1115,39 @@ wsc.Channel.prototype.set_header = function( head, e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_privclasses = function( e ) {
-    this.info["pc"] = {};
-    this.info["pc_order"] = [];
-    var lines = e.pkt["body"].split('\n');
-    var bits = [];
-    for(var i in lines) {
-        if( !lines.hasOwnProperty(i) )
-            continue;
-        bits = lines[i].split(":");
-        if( bits.length == 1 )
-            continue;
-        this.info["pc_order"].push(parseInt(bits[0]));
-        this.info["pc"][parseInt(bits[0])] = bits[1];
+
+    if( this.namespace[0] == '@' ) {
+    
+        this.info.pc = { 100: 'Room Members' };
+        this.info.pc_order = [ 100 ];
+    
+    } else {
+    
+        this.info["pc"] = {};
+        this.info["pc_order"] = [];
+        var lines = e.pkt["body"].split('\n');
+        var bits = [];
+        
+        for(var i in lines) {
+            
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            bits = lines[i].split(":");
+            
+            if( bits.length == 1 )
+                continue;
+            
+            this.info["pc_order"].push(parseInt(bits[0]));
+            this.info["pc"][parseInt(bits[0])] = bits[1];
+        }
+    
     }
+    
     this.info["pc_order"].sort(function(a, b){ return b - a });
     
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
-    
-    if( this.namespace[0] == '@' ) {
-        names[100] = 'Room Members';
-        orders.unshift( 'Room Members' );
-    }
     
     this.ui.build_user_list( names, orders );
 };
@@ -1283,7 +1231,7 @@ wsc.Channel.prototype.user_info = function( user ) {
     
     return {
         'name': user,
-        'pc': member['pc'],
+        'pc': member.pc || 'Room Members',
         'symbol': s,
         'conn': member.conn,
         'hover': {
@@ -4013,6 +3961,7 @@ wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
         chan: chan,
         client: this
     });
+    chan.build();
 
 };
 
@@ -4419,7 +4368,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.87';
+Chatterbox.VERSION = '0.19.88';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5801,7 +5750,7 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
  * @param order {Array} Privilege class orders
  */
 Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
-
+    
     var uld = this.el.m.find('div.chatusers');
     var pc = '';
     var pcel = null;
@@ -5810,7 +5759,7 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
     
     for(var index in order) {
         var pc = names[order[index]];
-        uld.append('<div class="pc" id="' + pc + '"><h3>' + pc + '</h3><ul></ul>');
+        uld.append('<div class="pc" id="' + replaceAll( pc, ' ', '-' ) + '"><h3>' + pc + '</h3><ul></ul>');
         pcel = uld.find('.pc#' + pc);
         pcel.css('display', 'none');
     }
@@ -5879,7 +5828,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  */
 Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
-    var uld = this.el.m.find('div.chatusers div.pc#' + user.pc);
+    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
     var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
@@ -10738,11 +10687,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             // Send notice...
             var user = event.sns.substr(1);
             var ns = event.ns;
-            client.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
+            client.ui.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
             client.npmsg( 'chat:datashare', 'CDS:LINK:REQUEST:' + user );
             pchats[user.toLowerCase()] = setTimeout(function() {
                 try {
-                    client.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+                    client.ui.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
                 } catch( err ) {}
             }, 10000);
         },
