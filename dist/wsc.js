@@ -1040,7 +1040,7 @@ wsc.Channel.prototype.build = function( ) {
  * @method log_whois
  * @deprecated
  * @param data {Object} Object containing a user's information.
- */
+ *
 wsc.Channel.prototype.log_whois = function( data ) {
     if( this.ui == null )
         return;
@@ -1054,7 +1054,7 @@ wsc.Channel.prototype.log_whois = function( data ) {
  * @deprecated
  * @param privileges {Boolean} Are we showing privileges or users?
  * @param data {Array} Array containing information.
- */
+ *
 wsc.Channel.prototype.log_pc = function( privileges, data ) {
     if( this.ui == null )
         return;
@@ -1072,13 +1072,14 @@ wsc.Channel.prototype.property = function( e ) {
     
     switch(prop) {
         case "title":
-        case "topic":            
-            // If we already had the title/topic for this channel, then it was changed. Output a message.
+        case "topic":
+            /* If we already had the title/topic for this channel, then it was changed. Output a message.
             if ( this.info[prop].content.length != 0 ) {
                 if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
                     this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
                 }
             }
+            */
                 
             this.set_header(prop, e);
             break;
@@ -2738,7 +2739,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.log_whois(data);
+        client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -2778,7 +2779,7 @@ wsc.defaults.Extension = function( client ) {
             }
         }
         
-        chan.log_pc(event.p == 'privclass', pcs);
+        client.ui.chatbook.current.log_pc(event.p == 'privclass', pcs);
     
     };
     
@@ -5720,14 +5721,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {Object} Content for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     
     head = head.toLowerCase();
     var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.el.h[head].html(content.html());
+    if( this.el.h[head].html() != '' ) {
+    
+        if ( content.html().length != 0 ) {
+            this.server_message( prop + " set by " + by );
+        }
+    
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
@@ -6253,7 +6265,7 @@ Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
     switch(prop) {
         case "title":
         case "topic":
-            this.set_header(prop, event.value || (new wsc.MessageString));
+            this.set_header(prop, event.value || (new wsc.MessageString), event.by, event.ts );
             break;
         case "privclasses":
             this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );

@@ -668,14 +668,25 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {Object} Content for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
     
     head = head.toLowerCase();
     var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.el.h[head].html(content.html());
+    if( this.el.h[head].html() != '' ) {
+    
+        if ( content.html().length != 0 ) {
+            this.server_message( prop + " set by " + by );
+        }
+    
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
@@ -1201,7 +1212,7 @@ Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
     switch(prop) {
         case "title":
         case "topic":
-            this.set_header(prop, event.value || (new wsc.MessageString));
+            this.set_header(prop, event.value || (new wsc.MessageString), event.by, event.ts );
             break;
         case "privclasses":
             this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );

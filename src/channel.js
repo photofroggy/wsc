@@ -53,33 +53,6 @@ wsc.Channel.prototype.build = function( ) {
 };
 
 /**
- * Display a user's whois info.
- * 
- * @method log_whois
- * @deprecated
- * @param data {Object} Object containing a user's information.
- */
-wsc.Channel.prototype.log_whois = function( data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_whois(data);
-};
-
-/**
- * Display some information relating to a privilege class.
- * 
- * @method log_pc
- * @deprecated
- * @param privileges {Boolean} Are we showing privileges or users?
- * @param data {Array} Array containing information.
- */
-wsc.Channel.prototype.log_pc = function( privileges, data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_pc(privileges, data);
-};
-
-/**
  * Process a channel property packet.
  * 
  * @method property
@@ -90,13 +63,14 @@ wsc.Channel.prototype.property = function( e ) {
     
     switch(prop) {
         case "title":
-        case "topic":            
-            // If we already had the title/topic for this channel, then it was changed. Output a message.
+        case "topic":
+            /* If we already had the title/topic for this channel, then it was changed. Output a message.
             if ( this.info[prop].content.length != 0 ) {
                 if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
                     this.ui.server_message(prop + " set by " + e.pkt["arg"]["by"]);
                 }
             }
+            */
                 
             this.set_header(prop, e);
             break;
