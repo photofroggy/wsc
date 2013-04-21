@@ -168,15 +168,6 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
-    this.client.trigger(
-        'ns.set.privclasses',
-        {
-            name: 'ns.set.privclasses',
-            ns: this.namespace,
-            names: names,
-            orders: orders
-        }
-    );
 };
 
 /**

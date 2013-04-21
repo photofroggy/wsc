@@ -344,13 +344,6 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         }
     );
     
-    this.client.bind(
-        'ns.set.privclasses',
-        function( event, client ) {
-            ui.channel( event.ns ).build_user_list( event.names, event.orders );
-        }
-    );
-    
 };
 
 /**

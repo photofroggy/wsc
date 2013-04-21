@@ -1150,15 +1150,6 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
     var names = this.info.pc;
     var orders = this.info.pc_order.slice(0);
     
-    this.client.trigger(
-        'ns.set.privclasses',
-        {
-            name: 'ns.set.privclasses',
-            ns: this.namespace,
-            names: names,
-            orders: orders
-        }
-    );
 };
 
 /**
@@ -4716,13 +4707,6 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         }
     );
     
-    this.client.bind(
-        'ns.set.privclasses',
-        function( event, client ) {
-            ui.channel( event.ns ).build_user_list( event.names, event.orders );
-        }
-    );
-    
 };
 
 /**
@@ -5098,17 +5082,21 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
+    
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
     this.el.t.c = this.el.t.o.find('.close');
+    
     // Draw
     this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
+    
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
@@ -5176,6 +5164,10 @@ Chatterbox.Channel.prototype.build = function( ) {
         chan.register_user( event.user );
     
     } );
+    
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
+    }
     
     this.built = true;
 };
@@ -6250,6 +6242,7 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
 Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
 
     var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
     
     switch(prop) {
         case "title":
@@ -6257,7 +6250,7 @@ Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
             this.set_header(prop, event.value || (new wsc.MessageString));
             break;
         case "privclasses":
-            // this.set_privclasses(e);
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
             break;
         case "members":
             // this.set_members(e);
