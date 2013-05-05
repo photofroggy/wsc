@@ -4337,7 +4337,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.92';
+Chatterbox.VERSION = '0.19.93';
 Chatterbox.STATE = 'beta';
 
 /**
