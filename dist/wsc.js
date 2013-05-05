@@ -4750,6 +4750,12 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
             console.log( '>>>', event.sns, '|', msg.text() );
         }
         
+        // If the event is -shownotice, don't display it!
+        if( event.hasOwnProperty( 's' ) && event.s == '0' ) {
+            this.chatbook.handle( event, client );
+            return;
+        }
+        
         event.html = msg.html();
         
         this.cascade(
