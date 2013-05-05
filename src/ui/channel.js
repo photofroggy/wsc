@@ -16,6 +16,157 @@ Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
 Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
 
 /**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+    );
+    
+    // Store
+    this.el.l.p = this.el.m.find('#' + selector + "-log");
+    this.el.l.w = this.el.l.p.find('ul.logwrap');
+    this.el.u = this.el.m.find('#' + selector + "-users");
+    
+    // Max user list width;
+    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
+    var chan = this;
+    
+    // Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
+    
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    this.setup_header('title');
+    this.setup_header('topic');
+    
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
+    }
+    
+    this.built = true;
+};
+
+/**
+ * Set up a header so it can be edited in the UI.
+ * 
+ * @method setup_header
+ */
+Chatterbox.Channel.prototype.setup_header = function( head ) {
+    
+    var chan = this;
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    
+    this.el.h[head] = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
+            return;
+        }
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
+    } );
+    
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
+            return;
+        }
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+    } );
+    
+    h.e.click( function( e ) {
+        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
+        
+        h.t.css({
+            'display': 'block',
+            'width': chan.el.h[head].innerWidth() - 10,
+        });
+        
+        chan.el.h[head].css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
+        
+        chan.resize();
+        
+        return false;
+    } );
+    
+    var collapse = function(  ) {
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        chan.el.h[head].css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
+        
+        //setTimeout( function(  ) {
+            chan.resize();
+        //}, 100 );
+        
+        return val;
+    };
+    
+    h.s.click( function( e ) {
+        var val = collapse();
+        
+        chan.manager.trigger( head + '.save', {
+            ns: chan.raw,
+            value: val
+        } );
+        
+        h.t.text('');
+        return false;
+    } );
+    
+    h.c.click( function( e ) {
+        collapse();
+        return false;
+    } );
+    
+};
+
+/**
  * Scroll the log panel downwards.
  * 
  * @method scroll

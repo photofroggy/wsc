@@ -61,8 +61,9 @@ Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
  * Draw the channel on screen and store the different elements in attributes.
  * 
  * @method build
+ * @param [view] {String} HTML for the channel view
  */
-Chatterbox.BaseTab.prototype.build = function( ) {
+Chatterbox.BaseTab.prototype.build = function( view ) {
     
     if( !this.manager )
         return;
@@ -80,34 +81,12 @@ Chatterbox.BaseTab.prototype.build = function( ) {
     this.el.t.c = this.el.t.o.find('.close');
     
     // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    this.manager.chatbook.view.append( view || Chatterbox.render('basetab', {'selector': selector, 'ns': ns}) );
     
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.el.l.p = this.el.m.find('#' + selector + "-log");
-    this.el.l.w = this.el.l.p.find('ul.logwrap');
-    this.el.u = this.el.m.find('#' + selector + "-users");
     
-    // Max user list width;
-    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
-    
-    // Steal focus when someone clicks.
-    var click_evt = false;
-    
-    this.el.l.w.click( function(  ) {
-        if( !click_evt )
-            return;
-        chan.manager.control.focus();
-    } );
-    
-    this.el.l.w.mousedown( function(  ) {
-        click_evt = true;
-    } );
-    
-    this.el.l.w.mousemove( function(  ) {
-        click_evt = false;
-    } );
     
     // When someone clicks the tab link.
     this.el.t.l.click(function () {
@@ -125,15 +104,8 @@ Chatterbox.BaseTab.prototype.build = function( ) {
         return false;
     });
     
-    this.setup_header('title');
-    this.setup_header('topic');
-    
     if( this.hidden && !this.manager.settings.developer ) {
         this.el.t.o.toggleClass('hidden');
-    }
-    
-    if( this.namespace[0] == '@' ) {
-        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
     }
     
     this.built = true;
