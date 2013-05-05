@@ -4337,14 +4337,14 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.89';
+Chatterbox.VERSION = '0.19.92';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class Chatterbox
+ * @class Chatterbox.UI
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -4372,12 +4372,71 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    /**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the `click` sound, call `ui.sound.click()`.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the `add` method.
+     * @class Chatterbox.UI.sound
+     */
     this.sound = {
+        
+        /**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         */
+        bank: {
+            m: null
+        },
+        
+        /**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         */
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        /**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         */
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        /**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         */
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -4385,13 +4444,18 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        /**
+         * Shortcut for `sound.toggle( true )`
+         * @method mute
+         */
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        /**
+         * Shortcut for `sound.toggle( false )`
+         * @method unmute
+         */
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
     view.extend( this.settings, options );
@@ -4435,6 +4499,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/
@@ -4608,14 +4673,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
-    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
-    this.sound.bank.c.load();
-    
-    var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
+    this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
     // Mute button.
     var muted = false;
@@ -4748,6 +4806,12 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        // If the event is -shownotice, don't display it!
+        if( event.hasOwnProperty( 's' ) && event.s == '0' ) {
+            this.chatbook.handle( event, client );
+            return;
         }
         
         event.html = msg.html();
@@ -5014,27 +5078,28 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 };
 
 
+
 /**
- * Object for managing channel interfaces.
- * 
- * @class Chatterbox.Channel
+ * Implements a base for a channel view.
+ * @class Chatterbox.BaseTab
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
+    this.raw = ns;
+    this.selector = 't-' + (ns || 'chan').toLowerCase();
+    this.namespace = ns;
     this.visible = false;
     this.st = 0;
+    
     // UI elements.
     this.el = {
         t: {                        // Tab
@@ -5062,15 +5127,26 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             topic: [0, 0]           //      Topic [ width, height ]
         }
     };
+    
+    if( !ui )
+        return;
+    
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
 
 };
 
 /**
- * Draw channel on screen and store the different elements in attributes.
+ * Draw the channel on screen and store the different elements in attributes.
  * 
  * @method build
+ * @param [view] {String} HTML for the channel view
  */
-Chatterbox.Channel.prototype.build = function( ) {
+Chatterbox.BaseTab.prototype.build = function( view ) {
+    
+    if( !this.manager )
+        return;
     
     if( this.built )
         return;
@@ -5085,10 +5161,131 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.el.t.c = this.el.t.o.find('.close');
     
     // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    this.manager.chatbook.view.append( view || Chatterbox.render('basetab', {'selector': selector, 'ns': ns}) );
     
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
+    
+    var chan = this;
+    
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    // When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.raw,
+            'chan': chan,
+            'e': e
+        } );
+        return false;
+    });
+    
+    if( this.hidden && !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass('hidden');
+    }
+    
+    this.built = true;
+};
+
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
+Chatterbox.BaseTab.prototype.hide = function( ) {
+    this.el.m.css({'display': 'none'});
+    this.el.t.o.removeClass('active');
+    this.visible = false;
+};
+
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
+Chatterbox.BaseTab.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({'display': 'block'});
+    this.el.t.o.addClass('active');
+    this.el.t.o.removeClass('noise chatting tabbed fill');
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.BaseTab.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+Chatterbox.BaseTab.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
+
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class Chatterbox.Channel
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ */
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+    Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+};
+
+Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
+Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
+
+/**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+    );
+    
+    // Store
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
@@ -5120,22 +5317,8 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
-        chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.raw,
-            'chan': chan,
-            'e': e
-        } );
-        return false;
-    });
-    
     this.setup_header('title');
     this.setup_header('topic');
-    
-    if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
-    }
     
     if( this.namespace[0] == '@' ) {
         this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
@@ -5229,60 +5412,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return false;
     } );
     
-};
-
-/**
- * Hide the channel from view.
- * 
- * @method hide
- */
-Chatterbox.Channel.prototype.hide = function( ) {
-    this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
-    this.visible = false;
-};
-
-/**
- * Display the channel.
- * 
- * @method show
- */
-Chatterbox.Channel.prototype.show = function( ) {
-    this.visible = true;
-    this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
-    var c = this;
-    setTimeout( function(  ) {
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-        c.resize();
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 100);
-};
-
-/**
- * Display or hide the tab based on whether we are in developer mode or not.
- * 
- * @method developer
- */
-Chatterbox.Channel.prototype.developer = function(  ) {
-    if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
-        return;
-    }
-    if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
-    }
-};
-
-/**
- * Remove the channel from the UI.
- * 
- * @method remove
- */
-Chatterbox.Channel.prototype.remove = function(  ) {
-    this.el.t.o.remove();
-    this.el.m.remove();
 };
 
 /**
