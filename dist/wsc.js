@@ -10002,7 +10002,7 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @property basetab
  * @type String
  */
-Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>';
+Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></div>';
 
 /**
  * HTML template for a channel view.
