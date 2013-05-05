@@ -5078,105 +5078,145 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 };
 
 
+
 /**
- * Object for managing channel interfaces.
- * 
- * @class Chatterbox.Channel
+ * Implements a base for a channel view.
+ * @class Chatterbox.BaseTab
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-Chatterbox.Channel = function( ui, ns, hidden, monitor ) {};
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
 
-Chatterbox.Channel.prototype = new Chatterbox.Tab;
-
-/**
- * Set up a header so it can be edited in the UI.
- * 
- * @method setup_header
- */
-Chatterbox.Channel.prototype.setup_header = function( head ) {
+    this.manager = ui;
+    this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
+    this.built = false;
+    this.raw = ns;
+    this.selector = 't-' + (ns || 'chan').toLowerCase();
+    this.namespace = ns;
+    this.visible = false;
+    this.st = 0;
     
-    var chan = this;
-    var h = {};
-    h.m = this.el.m.find('header.' + head + ' div');
-    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    h.t = this.el.m.find('header.' + head + ' textarea');
-    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
-    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
-    
-    this.el.h[head] = h.m;
-    
-    h.m.parent().mouseover( function( e ) {
-        if( !h.editing ) {
-            h.e.css('display', 'block');
-            return;
+    // UI elements.
+    this.el = {
+        t: {                        // Tab
+            o: null,                //      Object..
+            l: null,                //      Link
+            c: null,                //      Close button
+        },                          //
+        m: null,                    // Main
+        l: {                        // Channel log
+            p: null,                //      Panel
+            w: null,                //      Wrap
+        },                          //
+        u: null,                    // User panel
+        h: {                        // Head
+            title: null,            //      Title
+            topic: null             //      Topic
         }
-        h.s.css('display', 'block');
-        h.c.css('display', 'block');
-    } );
-    
-    h.m.parent().mouseout( function( e ) {
-        if( !h.editing ) {
-            h.e.css('display', 'none');
-            return;
+    };
+    this.mulw = 0;
+    // Dimensions...
+    this.d = {
+        u: [0, 0],                  // User panel [ width, height ]
+        h: {                        // Header
+            title: [0, 0],          //      Title [ width, height ]
+            topic: [0, 0]           //      Topic [ width, height ]
         }
-        h.s.css('display', 'none');
-        h.c.css('display', 'none');
-    } );
-    
-    h.e.click( function( e ) {
-        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
-        
-        h.t.css({
-            'display': 'block',
-            'width': chan.el.h[head].innerWidth() - 10,
-        });
-        
-        chan.el.h[head].css('display', 'none');
-        h.e.css('display', 'none');
-        h.editing = true;
-        
-        chan.resize();
-        
-        return false;
-    } );
-    
-    var collapse = function(  ) {
-        var val = h.t.val();
-        h.t.text('');
-        h.t.css('display', 'none');
-        chan.el.h[head].css('display', 'block');
-        h.s.css('display', 'none');
-        h.c.css('display', 'none');
-        h.editing = false;
-        
-        //setTimeout( function(  ) {
-            chan.resize();
-        //}, 100 );
-        
-        return val;
     };
     
-    h.s.click( function( e ) {
-        var val = collapse();
-        
-        chan.manager.trigger( head + '.save', {
-            ns: chan.raw,
-            value: val
+    if( !ui )
+        return;
+    
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
+
+};
+
+/**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.BaseTab.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    // Tabs.
+    this.el.t.o = this.manager.nav.add_tab( selector, ns );
+    this.el.t.l = this.el.t.o.find('.tab');
+    this.el.t.c = this.el.t.o.find('.close');
+    
+    // Draw
+    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    
+    // Store
+    this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
+    this.el.l.p = this.el.m.find('#' + selector + "-log");
+    this.el.l.w = this.el.l.p.find('ul.logwrap');
+    this.el.u = this.el.m.find('#' + selector + "-users");
+    
+    // Max user list width;
+    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
+    var chan = this;
+    
+    // Steal focus when someone clicks.
+    var click_evt = false;
+    
+    this.el.l.w.click( function(  ) {
+        if( !click_evt )
+            return;
+        chan.manager.control.focus();
+    } );
+    
+    this.el.l.w.mousedown( function(  ) {
+        click_evt = true;
+    } );
+    
+    this.el.l.w.mousemove( function(  ) {
+        click_evt = false;
+    } );
+    
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    // When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.raw,
+            'chan': chan,
+            'e': e
         } );
-        
-        h.t.text('');
         return false;
-    } );
+    });
     
-    h.c.click( function( e ) {
-        collapse();
-        return false;
-    } );
+    this.setup_header('title');
+    this.setup_header('topic');
     
+    if( this.hidden && !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass('hidden');
+    }
+    
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
+    }
+    
+    this.built = true;
 };
 
 /**
@@ -5184,7 +5224,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
  * 
  * @method hide
  */
-Chatterbox.Channel.prototype.hide = function( ) {
+Chatterbox.BaseTab.prototype.hide = function( ) {
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -5195,7 +5235,7 @@ Chatterbox.Channel.prototype.hide = function( ) {
  * 
  * @method show
  */
-Chatterbox.Channel.prototype.show = function( ) {
+Chatterbox.BaseTab.prototype.show = function( ) {
     this.visible = true;
     this.el.m.css({'display': 'block'});
     this.el.t.o.addClass('active');
@@ -5213,7 +5253,7 @@ Chatterbox.Channel.prototype.show = function( ) {
  * 
  * @method developer
  */
-Chatterbox.Channel.prototype.developer = function(  ) {
+Chatterbox.BaseTab.prototype.developer = function(  ) {
     if( this.manager.settings.developer ) {
         this.el.t.o.removeClass('hidden');
         return;
@@ -5228,10 +5268,28 @@ Chatterbox.Channel.prototype.developer = function(  ) {
  * 
  * @method remove
  */
-Chatterbox.Channel.prototype.remove = function(  ) {
+Chatterbox.BaseTab.prototype.remove = function(  ) {
     this.el.t.o.remove();
     this.el.m.remove();
 };
+
+
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class Chatterbox.Channel
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ */
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+    Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+};
+
+Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
+Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
 
 /**
  * Scroll the log panel downwards.
@@ -9673,191 +9731,6 @@ Chatterbox.Settings.Item.Items.prototype.save = function(  ) {
 };
 
 
-
-
-
-/**
- * Implements a base for a channel view.
- * @class Chatterbox.Tab
- * @constructor
- * @param ui {Object} Chatterbox.UI object.
- * @param ns {String} The name of the channel this object will represent.
- * @param hidden {Boolean} Should the channel's tab be visible?
- * @param monitor {Boolean} Is this channel the monitor?
- */
-Chatterbox.Tab = function( ui, ns, hidden, monitor ) {
-
-    this.manager = ui;
-    this.hidden = hidden;
-    this.monitor = ( monitor == undefined ? false : monitor );
-    this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
-    this.visible = false;
-    this.st = 0;
-    // UI elements.
-    this.el = {
-        t: {                        // Tab
-            o: null,                //      Object..
-            l: null,                //      Link
-            c: null,                //      Close button
-        },                          //
-        m: null,                    // Main
-        l: {                        // Channel log
-            p: null,                //      Panel
-            w: null,                //      Wrap
-        },                          //
-        u: null,                    // User panel
-        h: {                        // Head
-            title: null,            //      Title
-            topic: null             //      Topic
-        }
-    };
-    this.mulw = 0;
-    // Dimensions...
-    this.d = {
-        u: [0, 0],                  // User panel [ width, height ]
-        h: {                        // Header
-            title: [0, 0],          //      Title [ width, height ]
-            topic: [0, 0]           //      Topic [ width, height ]
-        }
-    };
-
-};
-
-/**
- * Draw the channel on screen and store the different elements in attributes.
- * 
- * @method build
- */
-Chatterbox.Tab.prototype.build = function( ) {
-    
-    if( this.built )
-        return;
-    
-    var selector = this.selector;
-    var ns = this.namespace;
-    var raw = this.raw;
-    
-    // Tabs.
-    this.el.t.o = this.manager.nav.add_tab( selector, ns );
-    this.el.t.l = this.el.t.o.find('.tab');
-    this.el.t.c = this.el.t.o.find('.close');
-    
-    // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
-    
-    // Store
-    this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
-    this.el.l.p = this.el.m.find('#' + selector + "-log");
-    this.el.l.w = this.el.l.p.find('ul.logwrap');
-    this.el.u = this.el.m.find('#' + selector + "-users");
-    
-    // Max user list width;
-    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
-    var chan = this;
-    
-    // Steal focus when someone clicks.
-    var click_evt = false;
-    
-    this.el.l.w.click( function(  ) {
-        if( !click_evt )
-            return;
-        chan.manager.control.focus();
-    } );
-    
-    this.el.l.w.mousedown( function(  ) {
-        click_evt = true;
-    } );
-    
-    this.el.l.w.mousemove( function(  ) {
-        click_evt = false;
-    } );
-    
-    // When someone clicks the tab link.
-    this.el.t.l.click(function () {
-        chan.manager.toggle_channel(raw);
-        return false;
-    });
-    
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
-        chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.raw,
-            'chan': chan,
-            'e': e
-        } );
-        return false;
-    });
-    
-    this.setup_header('title');
-    this.setup_header('topic');
-    
-    if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
-    }
-    
-    if( this.namespace[0] == '@' ) {
-        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
-    }
-    
-    this.built = true;
-};
-
-/**
- * Hide the channel from view.
- * 
- * @method hide
- */
-Chatterbox.Tab.prototype.hide = function( ) {
-    this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
-    this.visible = false;
-};
-
-/**
- * Display the channel.
- * 
- * @method show
- */
-Chatterbox.Tab.prototype.show = function( ) {
-    this.visible = true;
-    this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
-    var c = this;
-    setTimeout( function(  ) {
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-        c.resize();
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 100);
-};
-
-/**
- * Display or hide the tab based on whether we are in developer mode or not.
- * 
- * @method developer
- */
-Chatterbox.Tab.prototype.developer = function(  ) {
-    if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
-        return;
-    }
-    if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
-    }
-};
-
-/**
- * Remove the channel from the UI.
- * 
- * @method remove
- */
-Chatterbox.Tab.prototype.remove = function(  ) {
-    this.el.t.o.remove();
-    this.el.m.remove();
-};
 
 
 /**

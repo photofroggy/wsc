@@ -1,24 +1,25 @@
 
 /**
  * Implements a base for a channel view.
- * @class Chatterbox.Tab
+ * @class Chatterbox.BaseTab
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-Chatterbox.Tab = function( ui, ns, hidden, monitor ) {
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
+    this.raw = ns;
+    this.selector = 't-' + (ns || 'chan').toLowerCase();
+    this.namespace = ns;
     this.visible = false;
     this.st = 0;
+    
     // UI elements.
     this.el = {
         t: {                        // Tab
@@ -46,6 +47,13 @@ Chatterbox.Tab = function( ui, ns, hidden, monitor ) {
             topic: [0, 0]           //      Topic [ width, height ]
         }
     };
+    
+    if( !ui )
+        return;
+    
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
 
 };
 
@@ -54,7 +62,10 @@ Chatterbox.Tab = function( ui, ns, hidden, monitor ) {
  * 
  * @method build
  */
-Chatterbox.Tab.prototype.build = function( ) {
+Chatterbox.BaseTab.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
     
     if( this.built )
         return;
@@ -133,7 +144,7 @@ Chatterbox.Tab.prototype.build = function( ) {
  * 
  * @method hide
  */
-Chatterbox.Tab.prototype.hide = function( ) {
+Chatterbox.BaseTab.prototype.hide = function( ) {
     this.el.m.css({'display': 'none'});
     this.el.t.o.removeClass('active');
     this.visible = false;
@@ -144,7 +155,7 @@ Chatterbox.Tab.prototype.hide = function( ) {
  * 
  * @method show
  */
-Chatterbox.Tab.prototype.show = function( ) {
+Chatterbox.BaseTab.prototype.show = function( ) {
     this.visible = true;
     this.el.m.css({'display': 'block'});
     this.el.t.o.addClass('active');
@@ -162,7 +173,7 @@ Chatterbox.Tab.prototype.show = function( ) {
  * 
  * @method developer
  */
-Chatterbox.Tab.prototype.developer = function(  ) {
+Chatterbox.BaseTab.prototype.developer = function(  ) {
     if( this.manager.settings.developer ) {
         this.el.t.o.removeClass('hidden');
         return;
@@ -177,7 +188,7 @@ Chatterbox.Tab.prototype.developer = function(  ) {
  * 
  * @method remove
  */
-Chatterbox.Tab.prototype.remove = function(  ) {
+Chatterbox.BaseTab.prototype.remove = function(  ) {
     this.el.t.o.remove();
     this.el.m.remove();
 };
