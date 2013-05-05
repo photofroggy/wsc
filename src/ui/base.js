@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.92';
+Chatterbox.VERSION = '0.19.94';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -227,18 +227,28 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @param ns {String} Channel namespace to deform.
+ * @param namespace {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
-Chatterbox.UI.prototype.deform_ns = function( ns ) {
-    if(ns.indexOf("chat:") == 0)
-        return '#' + ns.slice(5);
+Chatterbox.UI.prototype.deform_ns = function( namespace ) {
     
-    if(ns.indexOf("server:") == 0)
-        return '~' + ns.slice(7);
+    if( namespace[0] in [ '#', '@', '~', '+' ] )
+        return namespace;
     
-    if(ns.indexOf("pchat:") == 0) {
-        var names = ns.split(":");
+    if( namespace.indexOf("chat:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf("server:") == 0 )
+        return '~' + namespace.slice(7);
+    
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
+        var names = namespace.split(":");
         names.shift();
         for(i in names) {
             name = names[i];
@@ -248,39 +258,54 @@ Chatterbox.UI.prototype.deform_ns = function( ns ) {
         }
     }
     
-    if( ns.indexOf('login:') == 0 )
-        return '@' + ns.slice(6);
+    return '#' + namespace;
     
-    if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
-        return '#' + ns;
-    
-    return ns;
 };
 
 /**
  * Format a channel namespace.
  *
  * @method format_ns
- * @param ns {String} Channel namespace to format.
- * @return {String} ns formatted as a channel namespace.
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} namespace formatted as a channel namespace.
  */
-Chatterbox.UI.prototype.format_ns = function( ns ) {
-    if(ns.indexOf('#') == 0) {
-        return 'chat:' + ns.slice(1);
-    }
-    if(ns.indexOf('@') == 0) {
-        var names = [ns.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(ns.indexOf('~') == 0) {
-        return "server:" + ns.slice(1);
-    }
-    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
-        return 'chat:' + ns;
+Chatterbox.UI.prototype.format_ns = function( namespace ) {
     
-    return ns;
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + n;
+            break;
+    }
+    
+    return namespace;
+    
 };
 
 /**
