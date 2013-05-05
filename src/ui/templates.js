@@ -139,6 +139,14 @@ Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="bu
 Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
 
 /**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ */
+Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>';
+
+/**
  * HTML template for a channel view.
  * 
  * @property channel
