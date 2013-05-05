@@ -67,9 +67,12 @@
                 "Chatterbox": 1
             },
             "classes": {
-                "Chatterbox": 1
+                "Chatterbox.UI": 1,
+                "Chatterbox.UI.sound": 1
             },
-            "fors": {},
+            "fors": {
+                "Chatterbox.UI": 1
+            },
             "namespaces": {}
         },
         "src/ui/channel.js": {
@@ -361,7 +364,8 @@
             "name": "Chatterbox",
             "submodules": {},
             "classes": {
-                "Chatterbox": 1,
+                "Chatterbox.UI": 1,
+                "Chatterbox.UI.sound": 1,
                 "Chatterbox.Channel": 1,
                 "Chatterbox.Chatbook": 1,
                 "Chatterbox.Control": 1,
@@ -382,7 +386,9 @@
                 "Chatterbox.Settings.Item.Items": 1,
                 "template": 1
             },
-            "fors": {},
+            "fors": {
+                "Chatterbox.UI": 1
+            },
             "namespaces": {},
             "tag": "module",
             "file": "src/ui/templates.js",
@@ -482,9 +488,9 @@
             "extends": "wsc.MessageParser",
             "is_constructor": 1
         },
-        "Chatterbox": {
-            "name": "Chatterbox",
-            "shortname": "Chatterbox",
+        "Chatterbox.UI": {
+            "name": "Chatterbox.UI",
+            "shortname": "Chatterbox.UI",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -524,6 +530,20 @@
                     "optional": true
                 }
             ]
+        },
+        "Chatterbox.UI.sound": {
+            "name": "Chatterbox.UI.sound",
+            "shortname": "Chatterbox.UI.sound",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/base.js",
+            "line": 44,
+            "description": "Sound bank.\n\nPlay and manage UI sounds. So far, Chatterbox includes these sounds:\n\n     * click\n\nTo play a sound clip, call the method of the same name. For example, to\nplay the `click` sound, call `ui.sound.click()`.\n\nNote that the sound methods are not documented as they are created on\nthe fly by the `add` method."
         },
         "Chatterbox.Channel": {
             "name": "Chatterbox.Channel",
@@ -1766,7 +1786,92 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 102,
+            "line": 60,
+            "description": "Holds references to audio objects.",
+            "itemtype": "property",
+            "name": "bank",
+            "type": "Object",
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 69,
+            "description": "Add a sound to the sound bank.",
+            "itemtype": "method",
+            "name": "add",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name to use for the sound and corresponding method",
+                    "type": "String"
+                },
+                {
+                    "name": "sound",
+                    "description": "Audio DOM object",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Success or fail",
+                "type": "Boolean"
+            },
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 90,
+            "description": "Play an audio file.\n\nDo not use this method directly.",
+            "itemtype": "method",
+            "name": "play",
+            "params": [
+                {
+                    "name": "sound",
+                    "description": "Audio DOM object",
+                    "type": "Object"
+                }
+            ],
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 103,
+            "description": "Mute or unmute the UI.",
+            "itemtype": "method",
+            "name": "toggle",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "True is muted, false is unmuted",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 116,
+            "description": "Shortcut for `sound.toggle( true )`",
+            "itemtype": "method",
+            "name": "mute",
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 122,
+            "description": "Shortcut for `sound.toggle( false )`",
+            "itemtype": "method",
+            "name": "unmute",
+            "class": "Chatterbox.UI.sound",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/base.js",
+            "line": 166,
             "description": "Used to trigger events.",
             "itemtype": "method",
             "name": "trigger",
@@ -1782,12 +1887,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 115,
+            "line": 180,
             "description": "Bind an event thingy.",
             "itemtype": "method",
             "name": "on",
@@ -1803,39 +1908,39 @@
                     "type": "Method"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 128,
+            "line": 193,
             "description": "Add a piece of middleware for something.",
             "itemtype": "method",
             "name": "middle",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 139,
+            "line": 204,
             "description": "Run a method with middleware.",
             "itemtype": "method",
             "name": "cascade",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 150,
+            "line": 215,
             "description": "Remove all of the event bindings.",
             "itemtype": "method",
             "name": "remove_listeners",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 161,
+            "line": 226,
             "description": "Deform a channel namespace.",
             "itemtype": "method",
             "name": "deform_ns",
@@ -1850,12 +1955,12 @@
                 "description": "The deformed namespace.",
                 "type": "String"
             },
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 195,
+            "line": 260,
             "description": "Format a channel namespace.",
             "itemtype": "method",
             "name": "format_ns",
@@ -1870,12 +1975,12 @@
                 "description": "ns formatted as a channel namespace.",
                 "type": "String"
             },
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 221,
+            "line": 286,
             "description": "Set the event emitter object in use by the UI lib.",
             "itemtype": "method",
             "name": "set_events",
@@ -1886,12 +1991,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 231,
+            "line": 296,
             "description": "Set the clock to 24 hour or 12 hour. Or get the current mode.\nTrue means 24 hour, false means 12 hour.",
             "itemtype": "method",
             "name": "clock",
@@ -1907,12 +2012,12 @@
                 "description": "The mode of the clock.",
                 "type": "Boolean"
             },
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 251,
+            "line": 316,
             "description": "Build the GUI.",
             "itemtype": "method",
             "name": "build",
@@ -1939,30 +2044,30 @@
                     "optdefault": "Chatterbox.Chatbook"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 376,
+            "line": 434,
             "description": "Resize the UI to fit the containing element.",
             "itemtype": "method",
             "name": "resize",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 391,
+            "line": 449,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 404,
+            "line": 462,
             "description": "Handle a packet being received.",
             "itemtype": "method",
             "name": "packet",
@@ -1978,12 +2083,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 439,
+            "line": 503,
             "description": "Create a screen for channel `ns` in the UI, and initialise data\nstructures or some shit idk.",
             "itemtype": "method",
             "name": "create_channel",
@@ -1999,12 +2104,12 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 451,
+            "line": 515,
             "description": "Remove a channel from the GUI.\nWe do this when we leave a channel for any reason.\nNote: last channel is never removed and when removing a channel\nwe switch to the last channel in the list before doing so.",
             "itemtype": "method",
             "name": "remove_channel",
@@ -2015,12 +2120,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 464,
+            "line": 528,
             "description": "Select which channel is currently being viewed.",
             "itemtype": "method",
             "name": "toggle_channel",
@@ -2031,12 +2136,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 474,
+            "line": 538,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -2057,12 +2162,12 @@
                 "description": "The channel object representing the channel defined by `namespace`",
                 "type": "Object"
             },
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 486,
+            "line": 550,
             "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
             "itemtype": "method",
             "name": "channels",
@@ -2070,30 +2175,30 @@
                 "description": "Number of channels open in the ui.",
                 "type": "Integer"
             },
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 499,
+            "line": 563,
             "description": "Switch to the channel left of the current channel.",
             "itemtype": "method",
             "name": "channel_left",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 510,
+            "line": 574,
             "description": "Switch to the channel right of the current channel.",
             "itemtype": "method",
             "name": "channel_right",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 522,
+            "line": 586,
             "description": "Display a log message in the monitor channel.",
             "itemtype": "method",
             "name": "monitor",
@@ -2110,12 +2215,12 @@
                     "optional": true
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 535,
+            "line": 599,
             "description": "Display a server message across all open channels.",
             "itemtype": "method",
             "name": "server_message",
@@ -2132,12 +2237,12 @@
                     "optional": true
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 548,
+            "line": 612,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -2148,12 +2253,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 560,
+            "line": 624,
             "description": "Display a log message across all open channels.",
             "itemtype": "method",
             "name": "log",
@@ -2164,12 +2269,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 572,
+            "line": 636,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2180,12 +2285,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 596,
+            "line": 660,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2196,12 +2301,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 621,
+            "line": 685,
             "description": "Clear a user's messages from all channels.",
             "itemtype": "method",
             "name": "clear_user",
@@ -2212,12 +2317,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 635,
+            "line": 699,
             "description": "Set the theme for the UI.",
             "itemtype": "method",
             "name": "theme",
@@ -2228,12 +2333,12 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 659,
+            "line": 723,
             "description": "Add a new theme to the client.",
             "itemtype": "method",
             "name": "add_theme",
@@ -2244,16 +2349,16 @@
                     "type": "String"
                 }
             ],
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/base.js",
-            "line": 674,
+            "line": 738,
             "description": "Toggle developer mode for the UI.",
             "itemtype": "method",
             "name": "developer",
-            "class": "Chatterbox",
+            "class": "Chatterbox.UI",
             "module": "Chatterbox"
         },
         {

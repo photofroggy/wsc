@@ -27,8 +27,6 @@
     <h3>Classes</h3>
     <ul>
     
-        <li><a href="/wsc/api/classes/Chatterbox.html">Chatterbox</a></li>
-    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
@@ -64,6 +62,10 @@
         <li><a href="/wsc/api/classes/Chatterbox.Settings.Item.Radio.html">Chatterbox.Settings.Item.Radio</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Settings.Page.html">Chatterbox.Settings.Page</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.UI.html">Chatterbox.UI</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.UI.sound.html">Chatterbox.UI.sound</a></li>
     
         <li><a href="/wsc/api/classes/dAmn.avatar.html">dAmn.avatar</a></li>
     
@@ -125,14 +127,14 @@
  *&#x2F;
 var Chatterbox = {};
 
-Chatterbox.VERSION = &#x27;0.19.89&#x27;;
+Chatterbox.VERSION = &#x27;0.19.91&#x27;;
 Chatterbox.STATE = &#x27;beta&#x27;;
 
 &#x2F;**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class Chatterbox
+ * @class Chatterbox.UI
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -160,12 +162,71 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    &#x2F;**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the &#x60;click&#x60; sound, call &#x60;ui.sound.click()&#x60;.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the &#x60;add&#x60; method.
+     * @class Chatterbox.UI.sound
+     *&#x2F;
     this.sound = {
+        
+        &#x2F;**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         *&#x2F;
+        bank: {
+            m: null
+        },
+        
+        &#x2F;**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         *&#x2F;
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        &#x2F;**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         *&#x2F;
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        &#x2F;**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         *&#x2F;
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -173,13 +234,18 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        &#x2F;**
+         * Shortcut for &#x60;sound.toggle( true )&#x60;
+         * @method mute
+         *&#x2F;
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        &#x2F;**
+         * Shortcut for &#x60;sound.toggle( false )&#x60;
+         * @method unmute
+         *&#x2F;
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
     view.extend( this.settings, options );
@@ -223,6 +289,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **&#x2F;
@@ -396,14 +463,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     &#x2F;&#x2F; Sound bank
     this.sound.bank.m = this.view.find(&#x27;div.soundbank&#x27;);
-    this.sound.bank.c = this.sound.bank.m.find(&#x27;audio.click&#x27;)[0];
-    this.sound.bank.c.load();
-    
-    var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
+    this.sound.add( &#x27;click&#x27;, this.sound.bank.m.find(&#x27;audio.click&#x27;)[0] );
     
     &#x2F;&#x2F; Mute button.
     var muted = false;
@@ -536,6 +596,12 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( &#x27;&gt;&gt;&gt;&#x27;, event.sns, &#x27;|&#x27;, msg.text() );
+        }
+        
+        &#x2F;&#x2F; If the event is -shownotice, don&#x27;t display it!
+        if( event.hasOwnProperty( &#x27;s&#x27; ) &amp;&amp; event.s == &#x27;0&#x27; ) {
+            this.chatbook.handle( event, client );
+            return;
         }
         
         event.html = msg.html();

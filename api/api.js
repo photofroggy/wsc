@@ -1,7 +1,6 @@
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
-        "Chatterbox",
         "Chatterbox.Channel",
         "Chatterbox.Chatbook",
         "Chatterbox.Control",
@@ -20,6 +19,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "Chatterbox.Settings.Item.Items",
         "Chatterbox.Settings.Item.Radio",
         "Chatterbox.Settings.Page",
+        "Chatterbox.UI",
+        "Chatterbox.UI.sound",
         "EventEmitter",
         "StringSet",
         "dAmn.Extension",
