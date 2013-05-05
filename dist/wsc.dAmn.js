@@ -4372,12 +4372,63 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    /**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds.
+     * @class Chatterbox.UI.sound
+     */
     this.sound = {
+        
+        /**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         */
+        bank: {
+            m: null
+        },
+        
+        /**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         */
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        /**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         */
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        /**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         */
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -4385,13 +4436,18 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        /**
+         * Shortcut for `sound.toggle( true )`
+         * @method mute
+         */
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        /**
+         * Shortcut for `sound.toggle( false )`
+         * @method unmute
+         */
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
     view.extend( this.settings, options );
@@ -4608,14 +4664,7 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
-    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
-    this.sound.bank.c.load();
-    
-    var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
+    this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
     // Mute button.
     var muted = false;
