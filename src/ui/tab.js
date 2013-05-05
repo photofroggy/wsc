@@ -128,4 +128,58 @@ Chatterbox.Tab.prototype.build = function( ) {
     this.built = true;
 };
 
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
+Chatterbox.Tab.prototype.hide = function( ) {
+    this.el.m.css({'display': 'none'});
+    this.el.t.o.removeClass('active');
+    this.visible = false;
+};
+
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
+Chatterbox.Tab.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({'display': 'block'});
+    this.el.t.o.addClass('active');
+    this.el.t.o.removeClass('noise chatting tabbed fill');
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.Tab.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+Chatterbox.Tab.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
 
