@@ -4337,14 +4337,14 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.90';
+Chatterbox.VERSION = '0.19.91';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class Chatterbox
+ * @class Chatterbox.UI
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -4376,7 +4376,15 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     /**
      * Sound bank.
      * 
-     * Play and manage UI sounds.
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the `click` sound, call `ui.sound.click()`.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the `add` method.
      * @class Chatterbox.UI.sound
      */
     this.sound = {
@@ -4491,6 +4499,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/

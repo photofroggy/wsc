@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.90';
+Chatterbox.VERSION = '0.19.91';
 Chatterbox.STATE = 'beta';
 
 /**
