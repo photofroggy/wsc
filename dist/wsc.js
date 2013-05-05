@@ -6190,6 +6190,9 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
  */
 Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
 
+    if( event.e != 'ok' )
+        return;
+    
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
 
