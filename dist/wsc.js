@@ -7655,9 +7655,10 @@ Chatterbox.Feed.prototype.build = function( ) {
  * Resize the feed reader
  * @method resize
  */
-Chatterbox.Feed.prototype.resize = function(  ) {
+Chatterbox.Feed.prototype.resize = function( width, height ) {
 
     // TODO: Figure out what we should actually be doing here.
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
 
 };
 
