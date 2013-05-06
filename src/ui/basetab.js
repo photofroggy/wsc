@@ -166,3 +166,28 @@ Chatterbox.BaseTab.prototype.remove = function(  ) {
 };
 
 
+/**
+ * Resize the view window to fill the space available.
+ * @method resize
+ */
+Chatterbox.BaseTab.prototype.resize = function( width, height ) {
+
+    this.el.m.css( {
+        height: height || this.manager.chatbook.height(),
+        width: ( width || this.manager.chatbook.width() ) - 10
+    } );
+
+};
+
+/**
+ * This method is run on the main loop event. Having this allows channels to do
+ * some maintenance autonomously.
+ * @method loop
+ */
+Chatterbox.BaseTab.prototype.loop = function(  ) {
+
+
+
+};
+
+
