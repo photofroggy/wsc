@@ -4363,7 +4363,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.94';
+Chatterbox.VERSION = '0.19.95';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -5303,6 +5303,31 @@ Chatterbox.BaseTab.prototype.remove = function(  ) {
 
 
 /**
+ * Resize the view window to fill the space available.
+ * @method resize
+ */
+Chatterbox.BaseTab.prototype.resize = function( width, height ) {
+
+    this.el.m.css( {
+        height: height || this.manager.chatbook.height(),
+        width: ( width || this.manager.chatbook.width() ) - 10
+    } );
+
+};
+
+/**
+ * This method is run on the main loop event. Having this allows channels to do
+ * some maintenance autonomously.
+ * @method loop
+ */
+Chatterbox.BaseTab.prototype.loop = function(  ) {
+
+
+
+};
+
+
+/**
  * Object for managing channel interfaces.
  * 
  * @class Chatterbox.Channel
@@ -5515,6 +5540,8 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
     
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+    
     var heads = {
         'title': {
             m: this.el.m.find( 'header div.title' ),
@@ -5531,9 +5558,6 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
     var wh = height;
-    this.el.m.height(wh);
-    // Width.
-    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
