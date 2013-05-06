@@ -5,11 +5,35 @@
  * @class Chatterbox.Feed
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
- * @param ns {String} The name of the feed this object will represent.
+ * @param ns {String} The name of the feed this object will represent
+ * @param type {String} The type of feed this view represents
+ * @param [actions] {String} A string describing the feed
  */
-Chatterbox.Feed = function( ui, ns ) {
+Chatterbox.Feed = function( ui, ns, type, description ) {
+    
     Chatterbox.BaseTab.call( this, ui, ns );
+    
+    /**
+     * The name of the feed.
+     * @property name
+     * @type String
+     */
     this.name = this.namespace.substr(1);
+    
+    /**
+     * The type of feed this channel represents
+     * @property type
+     * @type String
+     */
+    this.type = type;
+    
+    /**
+     * The description for the channel.
+     * @property description
+     * @type String
+     */
+    this.description = description || '';
+    
 };
 
 Chatterbox.Feed.prototype = new Chatterbox.BaseTab;
@@ -40,7 +64,7 @@ Chatterbox.Feed.prototype.build = function( ) {
                 'selector': selector,
                 'type': 'quiet',
                 'name': this.name,
-                'info': 'This is a test of how things will look. You are registered as a <em>Publisher</em>. You can <em>read</em> and <em>post messages</em>.',
+                'info': this.description,
             }
         )
     );
@@ -67,3 +91,29 @@ Chatterbox.Feed.prototype.resize = function( width, height ) {
 
 };
 
+/**
+ * Add a feed item to the interface.
+ * @method add_item
+ * @param item {Object} Object representing a feed item
+ * @return {Object} Object representing the item in the UI
+ */
+Chatterbox.Feed.prototype.add_item = function( item ) {
+
+    item = Object.extend( {
+        ref: 'item0001',
+        icon: '',
+        title: 'Feed Item 0001',
+        content: '<p>This is a feed item</p>'
+    }, item );
+    
+    var ihtml = Chatterbox.render( 'feedmsg', item );
+    
+    this.el.l.w.prepend( ihtml );
+    
+    var iui = this.el.l.w.find( 'li#' + item.ref );
+    
+    // Add some event hooks to close/remove items!
+    
+    return iui;
+
+};

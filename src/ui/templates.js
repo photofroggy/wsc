@@ -154,19 +154,34 @@ Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></
  */
 Chatterbox.template.feed = '<div class="chatwindow feed" id="{selector}-window">\
                     <header class="info">\
-                        <h2>{name}<span class="type">{type}</span></h2>\
+                        <h2>{name}<span class="type">{type} feed</span></h2>\
                         <p>{info}</p>\
+                        <ul class="control">\
+                            <li><a href="#post" class="button iconic pen" title="Post a message on"></a></li>\
+                            <li><a href="#refresh" class="button iconic spin" title="Get updates"></a></li>\
+                            <li><a href="#close" class="button iconic x" title="Close feed reader"></a></li>\
+                        </ul>\
                     </header>\
                     <div class="log" id="{selector}-log">\
-                        <header class="control">\
-                            <a href="#post" class="button iconic pen" title="Post a message on"></a>\
-                            <a href="#refresh" class="button iconic spin" title="Get updates"></a>\
-                            <a href="#close" class="button iconic x" title="Close feed reader"></a>\
-                        </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
                     <div class="users" id="{selector}-users"></div>\
                 </div>';
+/**
+ * HTML template for a feed message.
+ * @property feedmsg
+ * @type String
+ */
+Chatterbox.template.feedmsg = '<li id="{ref}">\
+                                <article>\
+                                    <a href="#close" class="iconic x" title="Remove feed message"></a>\
+                                    <section class="label">{icon}</section>\
+                                    <section class="content">\
+                                        <h3>{title}</h3>\
+                                        {content}\
+                                    </section>\
+                                </article>\
+                            </li>';
 
 /**
  * HTML template for a channel view.

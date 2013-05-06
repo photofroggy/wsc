@@ -135,11 +135,14 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * Create a feed in the UI.
  * 
  * @method create_feed
- * @param ns {String} Namespace of the feed to create.
+ * @param ns {String} Namespace of the feed to create
+ * @param type {String} The type of feed this view represents
+ * @param priv {Integer} The privilege level the user has for this feed
+ * @param [actions] {String} A string describing the actions the user can perform on this feed
  * @return {Object} WscUIChannel object.
  */
-Chatterbox.Chatbook.prototype.create_feed = function( ns ) {
-    var chan = this.channel(ns, this.feed_object(ns));
+Chatterbox.Chatbook.prototype.create_feed = function( ns, type, priv, actions ) {
+    var chan = this.channel(ns, this.feed_object(ns, type, priv, actions));
     chan.build();
     // Update the paper trail.
     if( this.trail.indexOf(chan.namespace) == -1 ) {
@@ -170,11 +173,14 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
  * Override this method to use a different type of channel object.
  * 
  * @method feed_object
- * @param ns {String} Namespace of the channel.
+ * @param ns {String} Namespace of the feed
+ * @param type {String} The type of feed this view represents
+ * @param priv {Integer} The privilege level the user has for this feed
+ * @param [actions] {String} A string describing the actions the user can perform on this feed
  * @return {Object} An object representing a feed UI.
  */
-Chatterbox.Chatbook.prototype.feed_object = function( ns ) {
-    return new Chatterbox.Feed( this.manager, ns );
+Chatterbox.Chatbook.prototype.feed_object = function( ns, type, priv, actions ) {
+    return new Chatterbox.Feed( this.manager, ns, type, priv, actions );
 };
 
 /**

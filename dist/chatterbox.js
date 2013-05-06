@@ -2249,11 +2249,14 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * Create a feed in the UI.
  * 
  * @method create_feed
- * @param ns {String} Namespace of the feed to create.
+ * @param ns {String} Namespace of the feed to create
+ * @param type {String} The type of feed this view represents
+ * @param priv {Integer} The privilege level the user has for this feed
+ * @param [actions] {String} A string describing the actions the user can perform on this feed
  * @return {Object} WscUIChannel object.
  */
-Chatterbox.Chatbook.prototype.create_feed = function( ns ) {
-    var chan = this.channel(ns, this.feed_object(ns));
+Chatterbox.Chatbook.prototype.create_feed = function( ns, type, priv, actions ) {
+    var chan = this.channel(ns, this.feed_object(ns, type, priv, actions));
     chan.build();
     // Update the paper trail.
     if( this.trail.indexOf(chan.namespace) == -1 ) {
@@ -2284,11 +2287,14 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
  * Override this method to use a different type of channel object.
  * 
  * @method feed_object
- * @param ns {String} Namespace of the channel.
+ * @param ns {String} Namespace of the feed
+ * @param type {String} The type of feed this view represents
+ * @param priv {Integer} The privilege level the user has for this feed
+ * @param [actions] {String} A string describing the actions the user can perform on this feed
  * @return {Object} An object representing a feed UI.
  */
-Chatterbox.Chatbook.prototype.feed_object = function( ns ) {
-    return new Chatterbox.Feed( this.manager, ns );
+Chatterbox.Chatbook.prototype.feed_object = function( ns, type, priv, actions ) {
+    return new Chatterbox.Feed( this.manager, ns, type, priv, actions );
 };
 
 /**
@@ -3242,11 +3248,35 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
  * @class Chatterbox.Feed
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
- * @param ns {String} The name of the feed this object will represent.
+ * @param ns {String} The name of the feed this object will represent
+ * @param type {String} The type of feed this view represents
+ * @param [actions] {String} A string describing the feed
  */
-Chatterbox.Feed = function( ui, ns ) {
+Chatterbox.Feed = function( ui, ns, type, description ) {
+    
     Chatterbox.BaseTab.call( this, ui, ns );
+    
+    /**
+     * The name of the feed.
+     * @property name
+     * @type String
+     */
     this.name = this.namespace.substr(1);
+    
+    /**
+     * The type of feed this channel represents
+     * @property type
+     * @type String
+     */
+    this.type = type;
+    
+    /**
+     * The description for the channel.
+     * @property description
+     * @type String
+     */
+    this.description = description || '';
+    
 };
 
 Chatterbox.Feed.prototype = new Chatterbox.BaseTab;
@@ -3277,7 +3307,7 @@ Chatterbox.Feed.prototype.build = function( ) {
                 'selector': selector,
                 'type': 'quiet',
                 'name': this.name,
-                'info': 'This is a test of how things will look. You are registered as a <em>Publisher</em>. You can <em>read</em> and <em>post messages</em>.',
+                'info': this.description,
             }
         )
     );
@@ -3304,6 +3334,32 @@ Chatterbox.Feed.prototype.resize = function( width, height ) {
 
 };
 
+/**
+ * Add a feed item to the interface.
+ * @method add_item
+ * @param item {Object} Object representing a feed item
+ * @return {Object} Object representing the item in the UI
+ */
+Chatterbox.Feed.prototype.add_item = function( item ) {
+
+    item = Object.extend( {
+        ref: 'item0001',
+        icon: '',
+        title: 'Feed Item 0001',
+        content: '<p>This is a feed item</p>'
+    }, item );
+    
+    var ihtml = Chatterbox.render( 'feedmsg', item );
+    
+    this.el.l.w.prepend( ihtml );
+    
+    var iui = this.el.l.w.find( 'li#' + item.ref );
+    
+    // Add some event hooks to close/remove items!
+    
+    return iui;
+
+};
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
@@ -5836,19 +5892,34 @@ Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></
  */
 Chatterbox.template.feed = '<div class="chatwindow feed" id="{selector}-window">\
                     <header class="info">\
-                        <h2>{name}<span class="type">{type}</span></h2>\
+                        <h2>{name}<span class="type">{type} feed</span></h2>\
                         <p>{info}</p>\
+                        <ul class="control">\
+                            <li><a href="#post" class="button iconic pen" title="Post a message on"></a></li>\
+                            <li><a href="#refresh" class="button iconic spin" title="Get updates"></a></li>\
+                            <li><a href="#close" class="button iconic x" title="Close feed reader"></a></li>\
+                        </ul>\
                     </header>\
                     <div class="log" id="{selector}-log">\
-                        <header class="control">\
-                            <a href="#post" class="button iconic pen" title="Post a message on"></a>\
-                            <a href="#refresh" class="button iconic spin" title="Get updates"></a>\
-                            <a href="#close" class="button iconic x" title="Close feed reader"></a>\
-                        </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
                     <div class="users" id="{selector}-users"></div>\
                 </div>';
+/**
+ * HTML template for a feed message.
+ * @property feedmsg
+ * @type String
+ */
+Chatterbox.template.feedmsg = '<li id="{ref}">\
+                                <article>\
+                                    <a href="#close" class="iconic x" title="Remove feed message"></a>\
+                                    <section class="label">{icon}</section>\
+                                    <section class="content">\
+                                        <h3>{title}</h3>\
+                                        {content}\
+                                    </section>\
+                                </article>\
+                            </li>';
 
 /**
  * HTML template for a channel view.
