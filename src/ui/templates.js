@@ -147,6 +147,28 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
 Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></div>';
 
 /**
+ * HTML template for a feed view.
+ * 
+ * @property channel
+ * @type String
+ */
+Chatterbox.template.feed = '<div class="chatwindow feed" id="{selector}-window">\
+                    <header class="info">\
+                        <h2>{name}<span class="type">{type}</span></h2>\
+                        <p>{info}</p>\
+                    </header>\
+                    <div class="log" id="{selector}-log">\
+                        <header class="control">\
+                            <a href="#post" class="button iconic pen" title="Post a message on"></a>\
+                            <a href="#refresh" class="button iconic spin" title="Get updates"></a>\
+                            <a href="#close" class="button iconic x" title="Close feed reader"></a>\
+                        </header>\
+                        <ul class="logwrap"></ul>\
+                    </div>\
+                    <div class="users" id="{selector}-users"></div>\
+                </div>';
+
+/**
  * HTML template for a channel view.
  * 
  * @property channel

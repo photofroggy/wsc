@@ -132,16 +132,51 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
 };
 
 /**
+ * Create a feed in the UI.
+ * 
+ * @method create_feed
+ * @param ns {String} Namespace of the feed to create.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @param monitor {Boolean} Is this channel the monitor?
+ * @return {Object} WscUIChannel object.
+ */
+Chatterbox.Chatbook.prototype.create_feed = function( ns, monitor ) {
+    var chan = this.channel(ns, this.feed_object(ns, hidden, monitor));
+    chan.build();
+    // Update the paper trail.
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
+    this.manager.resize();
+    return chan;
+};
+
+/**
  * Create a new channel panel object.
  * Override this method to use a different type of channel object.
  * 
  * @method channel_object
  * @param ns {String} Namespace of the channel.
- * @param hidden {Boolean} Should the tab be hidden?
  * @return {Object} An object representing a channel UI.
  */
-Chatterbox.Chatbook.prototype.channel_object = function( ns, hidden ) {
-    return new Chatterbox.Channel( this.manager, ns, hidden );
+Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
+    return new Chatterbox.Channel( this.manager, ns );
+};
+
+/**
+ * Create a new feed panel object.
+ * Override this method to use a different type of channel object.
+ * 
+ * @method feed_object
+ * @param ns {String} Namespace of the channel.
+ * @return {Object} An object representing a feed UI.
+ */
+Chatterbox.Chatbook.prototype.feed_object = function( ns ) {
+    return new Chatterbox.Feed( this.manager );
 };
 
 /**

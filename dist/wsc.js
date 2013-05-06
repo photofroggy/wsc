@@ -6570,16 +6570,51 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
 };
 
 /**
+ * Create a feed in the UI.
+ * 
+ * @method create_feed
+ * @param ns {String} Namespace of the feed to create.
+ * @param hidden {Boolean} Should the tab be hidden?
+ * @param monitor {Boolean} Is this channel the monitor?
+ * @return {Object} WscUIChannel object.
+ */
+Chatterbox.Chatbook.prototype.create_feed = function( ns, monitor ) {
+    var chan = this.channel(ns, this.feed_object(ns, hidden, monitor));
+    chan.build();
+    // Update the paper trail.
+    if( this.trail.indexOf(chan.namespace) == -1 ) {
+        this.trail.push(chan.namespace);
+    }
+    
+    if( !chan.visible )
+        this.toggle_channel(ns);
+    
+    this.manager.resize();
+    return chan;
+};
+
+/**
  * Create a new channel panel object.
  * Override this method to use a different type of channel object.
  * 
  * @method channel_object
  * @param ns {String} Namespace of the channel.
- * @param hidden {Boolean} Should the tab be hidden?
  * @return {Object} An object representing a channel UI.
  */
-Chatterbox.Chatbook.prototype.channel_object = function( ns, hidden ) {
-    return new Chatterbox.Channel( this.manager, ns, hidden );
+Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
+    return new Chatterbox.Channel( this.manager, ns );
+};
+
+/**
+ * Create a new feed panel object.
+ * Override this method to use a different type of channel object.
+ * 
+ * @method feed_object
+ * @param ns {String} Namespace of the channel.
+ * @return {Object} An object representing a feed UI.
+ */
+Chatterbox.Chatbook.prototype.feed_object = function( ns ) {
+    return new Chatterbox.Feed( this.manager );
 };
 
 /**
@@ -7523,6 +7558,74 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
             'content': '"' + cmdn + '" is not a command.'
         }, false, 5000 );
     }
+
+};
+
+
+/**
+ * Object for managing feed interfaces.
+ * 
+ * @class Chatterbox.Feed
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the feed this object will represent.
+ */
+Chatterbox.Feed = function( ui, ns ) {
+    Chatterbox.BaseTab.call( this, ui, ns );
+    this.name = this.namespace.substr(1);
+};
+
+Chatterbox.Feed.prototype = new Chatterbox.BaseTab;
+Chatterbox.Feed.prototype.constructor = Chatterbox.Feed;
+
+/**
+ * Draw the feed on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.Feed.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render(
+            'feed',
+            {
+                'selector': selector,
+                'type': 'quiet',
+                'name': this.name,
+                'info': 'This is a test of how things will look. You are registered as a <em>Publisher</em>. You can <em>read</em> and <em>post messages</em>.',
+            }
+        )
+    );
+    
+    // Store
+    this.el.l.p = this.el.m.find('#' + selector + "-log");
+    this.el.l.w = this.el.l.p.find('ul.logwrap');
+    this.el.u = this.el.m.find('#' + selector + "-users");
+    
+    // Max user list width;
+    this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
+    
+    this.built = true;
+};
+
+/**
+ * Resize the feed reader
+ * @method resize
+ */
+Chatterbox.Feed.prototype.resize = function(  ) {
+
+    // TODO: Figure out what we should actually be doing here.
 
 };
 
@@ -10049,6 +10152,28 @@ Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="
  * @type String
  */
 Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></div>';
+
+/**
+ * HTML template for a feed view.
+ * 
+ * @property channel
+ * @type String
+ */
+Chatterbox.template.feed = '<div class="chatwindow feed" id="{selector}-window">\
+                    <header class="info">\
+                        <h2>{name}<span class="type">{type}</span></h2>\
+                        <p>{info}</p>\
+                    </header>\
+                    <div class="log" id="{selector}-log">\
+                        <header class="control">\
+                            <a href="#post" class="button iconic pen" title="Post a message on"></a>\
+                            <a href="#refresh" class="button iconic spin" title="Get updates"></a>\
+                            <a href="#close" class="button iconic x" title="Close feed reader"></a>\
+                        </header>\
+                        <ul class="logwrap"></ul>\
+                    </div>\
+                    <div class="users" id="{selector}-users"></div>\
+                </div>';
 
 /**
  * HTML template for a channel view.
