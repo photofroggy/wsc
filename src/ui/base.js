@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.96';
+Chatterbox.VERSION = '0.19.97';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -305,7 +305,7 @@ Chatterbox.UI.prototype.format_ns = function( namespace ) {
                 || namespace.indexOf('server:') == 0
                 || namespace.indexOf('feed:') == 0 )
                     break;
-            namespace = 'chat:' + n;
+            namespace = 'chat:' + namespace;
             break;
     }
     

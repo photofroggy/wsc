@@ -504,7 +504,7 @@ wsc.Client.prototype.format_ns = function( namespace ) {
                 || namespace.indexOf('server:') == 0
                 || namespace.indexOf('feed:') == 0 )
                     break;
-            namespace = 'chat:' + n;
+            namespace = 'chat:' + namespace;
             break;
     }
     

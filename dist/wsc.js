@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.41';
+wsc.VERSION = '1.7.42';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.126';
+wsc.REVISION = '0.21.127';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -3932,7 +3932,7 @@ wsc.Client.prototype.format_ns = function( namespace ) {
                 || namespace.indexOf('server:') == 0
                 || namespace.indexOf('feed:') == 0 )
                     break;
-            namespace = 'chat:' + n;
+            namespace = 'chat:' + namespace;
             break;
     }
     
@@ -4363,7 +4363,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.96';
+Chatterbox.VERSION = '0.19.97';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4663,7 +4663,7 @@ Chatterbox.UI.prototype.format_ns = function( namespace ) {
                 || namespace.indexOf('server:') == 0
                 || namespace.indexOf('feed:') == 0 )
                     break;
-            namespace = 'chat:' + n;
+            namespace = 'chat:' + namespace;
             break;
     }
     
