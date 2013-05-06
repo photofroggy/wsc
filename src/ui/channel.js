@@ -211,6 +211,8 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
     
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+    
     var heads = {
         'title': {
             m: this.el.m.find( 'header div.title' ),
@@ -227,9 +229,6 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
     var wh = height;
-    this.el.m.height(wh);
-    // Width.
-    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
