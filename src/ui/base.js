@@ -231,9 +231,14 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * @return {String} The deformed namespace.
  **/
 Chatterbox.UI.prototype.deform_ns = function( namespace ) {
+
+    var sym = namespace[0];
     
-    if( namespace[0] in [ '#', '@', '~', '+' ] )
-        return namespace;
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
     
     if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);

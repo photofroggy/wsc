@@ -231,9 +231,14 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * @return {String} The deformed namespace.
  **/
 Chatterbox.UI.prototype.deform_ns = function( namespace ) {
+
+    var sym = namespace[0];
     
-    if( namespace[0] in [ '#', '@', '~', '+' ] )
-        return namespace;
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
     
     if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);
@@ -2221,12 +2226,10 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * 
  * @method create_feed
  * @param ns {String} Namespace of the feed to create.
- * @param hidden {Boolean} Should the tab be hidden?
- * @param monitor {Boolean} Is this channel the monitor?
  * @return {Object} WscUIChannel object.
  */
-Chatterbox.Chatbook.prototype.create_feed = function( ns, monitor ) {
-    var chan = this.channel(ns, this.feed_object(ns, hidden, monitor));
+Chatterbox.Chatbook.prototype.create_feed = function( ns ) {
+    var chan = this.channel(ns, this.feed_object(ns));
     chan.build();
     // Update the paper trail.
     if( this.trail.indexOf(chan.namespace) == -1 ) {
@@ -2261,7 +2264,7 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
  * @return {Object} An object representing a feed UI.
  */
 Chatterbox.Chatbook.prototype.feed_object = function( ns ) {
-    return new Chatterbox.Feed( this.manager );
+    return new Chatterbox.Feed( this.manager, ns );
 };
 
 /**
