@@ -4363,7 +4363,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.97';
+Chatterbox.VERSION = '0.19.98';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4730,6 +4730,8 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
     this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
+    
+    var sound = this.sound;
     
     // Mute button.
     var muted = false;
