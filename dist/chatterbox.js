@@ -373,6 +373,8 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     this.sound.bank.m = this.view.find('div.soundbank');
     this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
+    var sound = this.sound;
+    
     // Mute button.
     var muted = false;
     var mute = this.nav.add_button({
