@@ -10618,7 +10618,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.26';
+wsc.dAmn.VERSION = '0.9.27';
 wsc.dAmn.STATE = 'alpha';
 
 
