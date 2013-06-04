@@ -11369,7 +11369,6 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
 
     var d = {
         'id': data[0],
-        //'user': data[2],
         'thumb': data[4],
         'server': parseInt(data[3]),
         'flags': data[5].split(':'),
@@ -11386,7 +11385,6 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     var isgif = d.thumb.match( /\.gif$/i );
     var dim = data[2].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
     var tw, th;
-    //var lu = d.user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
     // Deviation title.
     var ut = (d.otitle.replace(/[^A-Za-z0-9]+/g, '-')
         .replace(/^-+/, '')
