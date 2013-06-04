@@ -209,7 +209,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
-        '&thumb\t': [ 7,
+        '&thumb\t': [ 6,
             ':thumb{0}:',
             wsc.dAmn.Emotes.Tablumps
         ],
