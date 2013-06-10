@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.42';
+wsc.VERSION = '1.7.43';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.127';
+wsc.REVISION = '0.21.128';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -2991,7 +2991,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('tabbed', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
@@ -3121,6 +3121,10 @@ wsc.defaults.Extension.Away = function( client ) {
     };
     
     var cmd_setback = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
         settings.on = false;
         var method = client.say;
         var announce = settings.format.setback;
@@ -3137,7 +3141,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state('away');
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;
@@ -4363,7 +4367,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.98';
+Chatterbox.VERSION = '0.19.99';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6437,7 +6441,7 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
             c.highlight( false );
         }
         
-        c.trigger( 'pkt.recv_msg.highlighted', e );
+        c.manager.trigger( 'tabbed', e );
     }, event );
 
 };

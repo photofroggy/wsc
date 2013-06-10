@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.42';
+wsc.VERSION = '1.7.43';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.127';
+wsc.REVISION = '0.21.128';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -2991,7 +2991,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('tabbed', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
@@ -3121,6 +3121,10 @@ wsc.defaults.Extension.Away = function( client ) {
     };
     
     var cmd_setback = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
         settings.on = false;
         var method = client.say;
         var announce = settings.format.setback;
@@ -3137,7 +3141,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state('away');
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;
@@ -4363,7 +4367,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.98';
+Chatterbox.VERSION = '0.19.99';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -6437,7 +6441,7 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
             c.highlight( false );
         }
         
-        c.trigger( 'pkt.recv_msg.highlighted', e );
+        c.manager.trigger( 'tabbed', e );
     }, event );
 
 };
@@ -10813,7 +10817,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.26';
+wsc.dAmn.VERSION = '0.9.29';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -10985,7 +10989,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.pkt.arg.e != 'ok' )
                 return;
             
-            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+            //client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
         
         // Botcheck
@@ -10994,6 +10998,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
+            
+            if( event.ns.toLowerCase() == settings.bds.gate && client.channel( settings.bds.mns ) != null ) {
+                return;
+            }
+            
             var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
@@ -11011,7 +11020,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
-                client.join( settings.bds.mns );
+                if( client.channel( settings.bds.mns ) == null)
+                    client.join( settings.bds.mns );
+                
                 return;
             }
             
@@ -11564,10 +11575,9 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
 
     var d = {
         'id': data[0],
-        'user': data[2],
-        'thumb': data[5],
-        'server': parseInt(data[4]),
-        'flags': data[6].split(':'),
+        'thumb': data[4],
+        'server': parseInt(data[3]),
+        'flags': data[5].split(':'),
         'dimensions': '',
         'title': '',
         'anchor': '',
@@ -11579,17 +11589,16 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     d.flags[2] = parseInt(d.flags[2]);
     
     var isgif = d.thumb.match( /\.gif$/i );
-    var dim = data[3].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
+    var dim = data[2].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
     var tw, th;
-    var lu = d.user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
     // Deviation title.
     var ut = (d.otitle.replace(/[^A-Za-z0-9]+/g, '-')
         .replace(/^-+/, '')
         .replace(/-+$/, '') || '-') + '-' + d.id;
     
     // Deviation link tag. First segment only.
-    d.title = d.otitle + ' by ' + d.user + ', ' + w + 'x' + h;
-    d.anchor = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + d.title + '">';
+    d.title = d.otitle + ', ' + w + 'x' + h;
+    d.anchor = '<a target="_blank" href="http://www.deviantart.com/art/' + ut + '" title="' + d.title + '">';
     
     if( w/h > 1) {
         th = parseInt((h * 100) / w);
@@ -12727,7 +12736,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
-        '&thumb\t': [ 7,
+        '&thumb\t': [ 6,
             ':thumb{0}:',
             wsc.dAmn.Emotes.Tablumps
         ],

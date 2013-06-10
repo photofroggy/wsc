@@ -270,10 +270,9 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
 
     var d = {
         'id': data[0],
-        'user': data[2],
-        'thumb': data[5],
-        'server': parseInt(data[4]),
-        'flags': data[6].split(':'),
+        'thumb': data[4],
+        'server': parseInt(data[3]),
+        'flags': data[5].split(':'),
         'dimensions': '',
         'title': '',
         'anchor': '',
@@ -285,17 +284,16 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     d.flags[2] = parseInt(d.flags[2]);
     
     var isgif = d.thumb.match( /\.gif$/i );
-    var dim = data[3].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
+    var dim = data[2].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
     var tw, th;
-    var lu = d.user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
     // Deviation title.
     var ut = (d.otitle.replace(/[^A-Za-z0-9]+/g, '-')
         .replace(/^-+/, '')
         .replace(/-+$/, '') || '-') + '-' + d.id;
     
     // Deviation link tag. First segment only.
-    d.title = d.otitle + ' by ' + d.user + ', ' + w + 'x' + h;
-    d.anchor = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + d.title + '">';
+    d.title = d.otitle + ', ' + w + 'x' + h;
+    d.anchor = '<a target="_blank" href="http://www.deviantart.com/art/' + ut + '" title="' + d.title + '">';
     
     if( w/h > 1) {
         th = parseInt((h * 100) / w);

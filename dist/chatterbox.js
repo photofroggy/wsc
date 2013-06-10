@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.98';
+Chatterbox.VERSION = '0.19.99';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -2079,7 +2079,7 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
             c.highlight( false );
         }
         
-        c.trigger( 'pkt.recv_msg.highlighted', e );
+        c.manager.trigger( 'tabbed', e );
     }, event );
 
 };
