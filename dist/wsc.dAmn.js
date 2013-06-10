@@ -2991,7 +2991,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('tabbed', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
@@ -3137,7 +3137,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state('away');
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;
@@ -6437,7 +6437,7 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
             c.highlight( false );
         }
         
-        c.trigger( 'pkt.recv_msg.highlighted', e );
+        c.manager.trigger( 'tabbed', e );
     }, event );
 
 };
