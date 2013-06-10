@@ -10622,7 +10622,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.28';
+wsc.dAmn.VERSION = '0.9.29';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -10825,7 +10825,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
-                client.join( settings.bds.mns );
+                if( client.channel( settings.bds.mns ) == null)
+                    client.join( settings.bds.mns );
+                
                 return;
             }
             
