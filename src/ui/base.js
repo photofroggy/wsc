@@ -1,34 +1,35 @@
 /**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.76';
+Chatterbox.VERSION = '0.19.99';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class Chatterbox.UI
  * @constructor
+ * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( view, options, mozilla, events ) {
+Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
+    this.client = client;
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_dAmn'],
-        'theme': 'wsct_default',
+        'themes': [ 'wsct_dAmn', 'wsct_dark' ],
+        'theme': 'wsct_dark',
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
@@ -39,12 +40,71 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    /**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the `click` sound, call `ui.sound.click()`.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the `add` method.
+     * @class Chatterbox.UI.sound
+     */
     this.sound = {
+        
+        /**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         */
+        bank: {
+            m: null
+        },
+        
+        /**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         */
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        /**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         */
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        /**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         */
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -52,13 +112,18 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        /**
+         * Shortcut for `sound.toggle( true )`
+         * @method mute
+         */
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        /**
+         * Shortcut for `sound.toggle( false )`
+         * @method unmute
+         */
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
     view.extend( this.settings, options );
@@ -102,6 +167,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/
@@ -161,18 +227,33 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @param ns {String} Channel namespace to deform.
+ * @param namespace {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
-Chatterbox.UI.prototype.deform_ns = function( ns ) {
-    if(ns.indexOf("chat:") == 0)
-        return '#' + ns.slice(5);
+Chatterbox.UI.prototype.deform_ns = function( namespace ) {
     
-    if(ns.indexOf("server:") == 0)
-        return '~' + ns.slice(7);
+    var sym = namespace[0];
     
-    if(ns.indexOf("pchat:") == 0) {
-        var names = ns.split(":");
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf("server:") == 0 )
+        return '~' + namespace.slice(7);
+    
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
+        var names = namespace.split(":");
         names.shift();
         for(i in names) {
             name = names[i];
@@ -182,39 +263,54 @@ Chatterbox.UI.prototype.deform_ns = function( ns ) {
         }
     }
     
-    if( ns.indexOf('login:') == 0 )
-        return '@' + ns.slice(6);
+    return '#' + namespace;
     
-    if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
-        return '#' + ns;
-    
-    return ns;
 };
 
 /**
  * Format a channel namespace.
  *
  * @method format_ns
- * @param ns {String} Channel namespace to format.
- * @return {String} ns formatted as a channel namespace.
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} namespace formatted as a channel namespace.
  */
-Chatterbox.UI.prototype.format_ns = function( ns ) {
-    if(ns.indexOf('#') == 0) {
-        return 'chat:' + ns.slice(1);
-    }
-    if(ns.indexOf('@') == 0) {
-        var names = [ns.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(ns.indexOf('~') == 0) {
-        return "server:" + ns.slice(1);
-    }
-    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
-        return 'chat:' + ns;
+Chatterbox.UI.prototype.format_ns = function( namespace ) {
     
-    return ns;
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
+    }
+    
+    return namespace;
+    
 };
 
 /**
@@ -275,14 +371,9 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
-    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
-    this.sound.bank.c.load();
+    this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
     var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
     
     // Mute button.
     var muted = false;
@@ -319,6 +410,57 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         ui.viewing = false;
     } );
     
+    // Events for logging output.
+    this.client.bind( 'pkt', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
+    // Channel removed from client.
+    this.client.middle(
+        'ns.remove',
+        function( data, done ) {
+            ui.remove_channel( data.ns );
+            done( data );
+        }
+    );
+    
+    this.client.bind(
+        'ns.create',
+        function( event, client ) {
+            ui.create_channel(event.chan.raw, event.chan.hidden);
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.list',
+        function( event ) {
+            ui.channel(event.ns).set_user_list( event.users );
+        }
+    );
+    
+    this.client.middle(
+        'ns.user.privchg',
+        function( data, done ) {
+            ui.channel(data.ns).privchg( data, done );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.remove',
+        function( event, client ) {
+            ui.channel(event.ns).remove_one_user( event.user );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.registered',
+        function( event ) {
+            ui.channel(event.ns).register_user( event.user );
+        }
+    );
+    
 };
 
 /**
@@ -346,6 +488,47 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+/**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        // If the event is -shownotice, don't display it!
+        if( event.hasOwnProperty( 's' ) && event.s == '0' ) {
+            this.chatbook.handle( event, client );
+            return;
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 
@@ -554,13 +737,18 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
         return this.settings.theme;
+    
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
             return this.settings.theme;
     }
+    
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    
+    this.trigger('theme.set', { name: 'theme.set', theme: theme });
+    
     return this.settings.theme;
 };
 

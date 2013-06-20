@@ -4,11 +4,23 @@
 
 var chains = [["recv", "admin"]];
 
-wsc.Packet = function( data, separator ) {
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ * @param [recurse=true] {Boolean} Should the parser recursively parse packets
+ */
+wsc.Packet = function( data, separator, recurse ) {
 
     if(!( data )) {
         return null;
     }
+    
+    if( recurse === undefined )
+        recurse = true;
     
     separator = separator || '=';
     var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
@@ -18,6 +30,7 @@ wsc.Packet = function( data, separator ) {
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
+        
         if( idx > -1 ) {
             pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
@@ -41,10 +54,10 @@ wsc.Packet = function( data, separator ) {
             pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || '';
         }
         
-        if( pkt.body != null ) {
+        if( pkt.body != null && recurse ) {
             subs = pkt.body.split('\n\n');
             for(var i in subs) {
-                sub = wsc.Packet( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator, false );
                 if( sub == null )
                     break;
                 sub.body = subs.slice(i + 1).join('\n\n');

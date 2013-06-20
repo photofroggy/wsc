@@ -95,7 +95,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </div>\
         <div class="pager">\
         </div>\
-        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+        <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs"></ul></div>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -137,6 +137,14 @@ Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="bu
  * @type String
  */
 Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
+
+/**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ */
+Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></div>';
 
 /**
  * HTML template for a channel view.
@@ -280,8 +288,6 @@ Chatterbox.template.pager = {
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\

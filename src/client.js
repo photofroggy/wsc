@@ -1,11 +1,14 @@
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -14,14 +17,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -36,7 +49,6 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
-        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
@@ -71,7 +83,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
@@ -175,14 +187,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( 'channel.selected', function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
-    } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
@@ -276,6 +282,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -287,6 +295,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -296,7 +307,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -350,8 +362,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] && channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -414,13 +431,27 @@ wsc.Client.prototype.each_channel = function( method, include ) {
  */
 wsc.Client.prototype.deform_ns = function( namespace ) {
 
-    if(namespace.indexOf("chat:") == 0)
+    var sym = namespace[0];
+    
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);
     
-    if(namespace.indexOf("server:") == 0)
+    if( namespace.indexOf("server:") == 0 )
         return '~' + namespace.slice(7);
     
-    if(namespace.indexOf("pchat:") == 0) {
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
         var names = namespace.split(":");
         names.shift();
         for(i in names) {
@@ -431,13 +462,7 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
         }
     }
     
-    if( namespace.indexOf('login:') == 0 )
-        return '@' + namespace.slice(6);
-    
-    if(namespace[0] != '#' && namespace[0] != '@' && namespace[0] != '~')
-        return '#' + namespace;
-    
-    return namespace;
+    return '#' + namespace;
 
 };
 
@@ -450,20 +475,38 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  */
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(namespace.indexOf('#') == 0) {
-        return 'chat:' + namespace.slice(1);
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
     }
-    if(namespace.indexOf('@') == 0) {
-        var names = [namespace.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(namespace.indexOf('~') == 0) {
-        return "server:" + namespace.slice(1);
-    }
-    if(namespace.indexOf('chat:') != 0 && namespace.indexOf('server:') != 0 && namespace.indexOf('pchat:') != 0)
-        return 'chat:' + namespace;
     
     return namespace;
 
@@ -479,6 +522,12 @@ wsc.Client.prototype.format_ns = function( namespace ) {
 wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
     var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
+    this.trigger( 'ns.create', {
+        name: 'ns.create',
+        ns: namespace,
+        chan: chan,
+        client: this
+    });
     chan.build();
 
 };
@@ -494,12 +543,36 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     if( !namespace )
         return;
     
-    var chan = this.channel(namespace);
-    if( !chan )
-        return;
-    
-    chan.remove();
-    delete this.channelo[chan.raw.toLowerCase()];
+    this.cascade(
+        'ns.remove',
+        function( data ) {
+            var chan = data.client.channel( data.ns );
+            
+            if( !chan )
+                return;
+            
+            delete data.client.channelo[chan.raw.toLowerCase()];
+        },
+        {
+            ns: namespace,
+            client: this
+        }
+    );
+
+};
+
+/**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ */
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(ns) || this.cchannel;
 
 };
 
@@ -823,7 +896,6 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.trigger( 'send.set.before', e );
     var c = this;
     this.cascade( 'send.set',
         function( data ) {

@@ -4,12 +4,12 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.5.28';
+wsc.VERSION = '1.7.43';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.19.113';
+wsc.REVISION = '0.21.128';
 wsc.defaults = {};
-wsc.defaults.theme = 'wsct_default';
-wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
+wsc.defaults.theme = 'wsct_dark';
+wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
 // Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
@@ -20,6 +20,13 @@ wsc.defaults.themes = [ 'wsct_default', 'wsct_dAmn' ];
  * @class EventEmitter
  * @constructor
  **/
+
+/**
+ * Event emitter object emits events and stuff.
+ * 
+ * @class EventEmitter
+ * @constructor
+ */
 function EventEmitter() {
     var events = {}, self = this;
 
@@ -84,11 +91,13 @@ _doProcessBlock:function(g,k){for(var b=0;16>b;b++){var h=k+b,w=g[h];g[h]=(w<<8|
 c=p(c,d,e,f,v,7,a[8]),f=p(f,c,d,e,x,12,a[9]),e=p(e,f,c,d,y,17,a[10]),d=p(d,e,f,c,z,22,a[11]),c=p(c,d,e,f,A,7,a[12]),f=p(f,c,d,e,B,12,a[13]),e=p(e,f,c,d,C,17,a[14]),d=p(d,e,f,c,D,22,a[15]),c=m(c,d,e,f,w,5,a[16]),f=m(f,c,d,e,t,9,a[17]),e=m(e,f,c,d,z,14,a[18]),d=m(d,e,f,c,h,20,a[19]),c=m(c,d,e,f,s,5,a[20]),f=m(f,c,d,e,y,9,a[21]),e=m(e,f,c,d,D,14,a[22]),d=m(d,e,f,c,r,20,a[23]),c=m(c,d,e,f,x,5,a[24]),f=m(f,c,d,e,C,9,a[25]),e=m(e,f,c,d,q,14,a[26]),d=m(d,e,f,c,v,20,a[27]),c=m(c,d,e,f,B,5,a[28]),f=m(f,c,
 d,e,j,9,a[29]),e=m(e,f,c,d,u,14,a[30]),d=m(d,e,f,c,A,20,a[31]),c=l(c,d,e,f,s,4,a[32]),f=l(f,c,d,e,v,11,a[33]),e=l(e,f,c,d,z,16,a[34]),d=l(d,e,f,c,C,23,a[35]),c=l(c,d,e,f,w,4,a[36]),f=l(f,c,d,e,r,11,a[37]),e=l(e,f,c,d,u,16,a[38]),d=l(d,e,f,c,y,23,a[39]),c=l(c,d,e,f,B,4,a[40]),f=l(f,c,d,e,h,11,a[41]),e=l(e,f,c,d,q,16,a[42]),d=l(d,e,f,c,t,23,a[43]),c=l(c,d,e,f,x,4,a[44]),f=l(f,c,d,e,A,11,a[45]),e=l(e,f,c,d,D,16,a[46]),d=l(d,e,f,c,j,23,a[47]),c=n(c,d,e,f,h,6,a[48]),f=n(f,c,d,e,u,10,a[49]),e=n(e,f,c,d,
 C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53]),e=n(e,f,c,d,y,15,a[54]),d=n(d,e,f,c,w,21,a[55]),c=n(c,d,e,f,v,6,a[56]),f=n(f,c,d,e,D,10,a[57]),e=n(e,f,c,d,t,15,a[58]),d=n(d,e,f,c,B,21,a[59]),c=n(c,d,e,f,r,6,a[60]),f=n(f,c,d,e,z,10,a[61]),e=n(e,f,c,d,j,15,a[62]),d=n(d,e,f,c,x,21,a[63]);b[0]=b[0]+c|0;b[1]=b[1]+d|0;b[2]=b[2]+e|0;b[3]=b[3]+f|0},_doFinalize:function(){var a=this._data,k=a.words,b=8*this._nDataBytes,h=8*a.sigBytes;k[h>>>5]|=128<<24-h%32;var l=s.floor(b/
-4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);/**
+4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);
+
+/**
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
- * @class Transport
+ * @class wsc.Transport
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.Transport.sopen] {Method} This method will be called when
@@ -219,7 +228,7 @@ wsc.Transport.prototype.close = function(  ) {};
 /**
  * WebSocket transport object.
  * 
- * @class WebSocket
+ * @class wsc.WebSocket
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
@@ -326,7 +335,7 @@ wsc.WebSocket.prototype.close = function(  ) {
 /**
  * SocketIO wrapper.
  * 
- * @class SocketIO
+ * @class wsc.SocketIO
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when
@@ -608,7 +617,11 @@ function timeLengthString( length ) {
 }
 
 /**
- * Sets. Yeah. Fun.
+ * Sets of unique strings.
+ * 
+ * Strings in the set are stored lower case.
+ * @class StringSet
+ * @param [items=[]] {Array} Items to start with
  */
 function StringSet( items ) {
 
@@ -618,6 +631,10 @@ function StringSet( items ) {
 
 /**
  * Add an item.
+ * @method add
+ * @param item {String} Item to add to the set
+ * @param [unshift=false] {Boolean} Pass true to unshift instead of push when adding
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.add = function( item, unshift ) {
 
@@ -640,6 +657,9 @@ StringSet.prototype.add = function( item, unshift ) {
 
 /**
  * Remove an item.
+ * @method remove
+ * @param item {String} Item to remove from the set
+ * @return {Boolean} Success or failure
  */
 StringSet.prototype.remove = function( item ) {
 
@@ -657,7 +677,10 @@ StringSet.prototype.remove = function( item ) {
 };
 
 /**
- * Contains an item?
+ * Check if the set contains an item.
+ * @method contains
+ * @param item {String} Item to search for
+ * @return {Boolean} Found or not found
  */
 StringSet.prototype.contains = function( item ) {
 
@@ -671,6 +694,8 @@ StringSet.prototype.contains = function( item ) {
 /**
  * Middleware management and execution.
  * 
+ * @class wsc.Middleware
+ * @constructor
  */
 wsc.Middleware = function(  ) {
 
@@ -716,17 +741,46 @@ wsc.Middleware.prototype.run = function( event, method, data ) {
 };
 /**
  * Storage object.
- * Allows you to save stuffs yo.
+ * 
+ * This class is a light wrapper around localStorage. Keys are given namespaces, to avoid
+ * interfering with the data of other applications. This feature also allows us to create
+ * "folders".
+ * 
+ * @class wsc.Storage
+ * @constructor
+ * @param namespace {String} Storage namespace to apply to keys
+ * @param parent {Object} Parent storage object
  */
 wsc.Storage = function( namespace, parent ) {
 
+    /**
+     * The namespace for this storage object.
+     * 
+     * @property namespace
+     * @type String
+     * @default null
+     */
     this.ns = namespace || null;
+    
+    /**
+     * Parent storage object. As if it is a containing folder.
+     * 
+     * @property parent
+     * @type Object
+     * @default null
+     */
     this.parent = parent || null;
 
 };
 
 /**
- * Get a "folder".
+ * Create a storage "folder".
+ * 
+ * This method creates a storage object with a namespace `this.namespace + '.' + namespace`.
+ * 
+ * @method folder
+ * @param namespace
+ * @return {Object} A storage object.
  */
 wsc.Storage.prototype.folder = function( namespace ) {
 
@@ -739,6 +793,11 @@ wsc.Storage.prototype.folder = function( namespace ) {
 
 /**
  * Get an item from storage.
+ * 
+ * @method get
+ * @param key {String} Key of the entry to retrieve
+ * @param default_val {String} Value to return if the entry is not found
+ * @return {String} The corresponding value
  */
 wsc.Storage.prototype.get = function( key, default_val ) {
 
@@ -757,6 +816,10 @@ wsc.Storage.prototype.get = function( key, default_val ) {
 
 /**
  * Store an item.
+ * 
+ * @method set
+ * @param key {String} Key to store the value under
+ * @param value {Mixed} Item to store
  */
 wsc.Storage.prototype.set = function( key, value ) {
 
@@ -770,7 +833,11 @@ wsc.Storage.prototype.set = function( key, value ) {
 };
 
 /**
- * Remove an item.
+ * Remove an item from localStorage.
+ * 
+ * @method remove
+ * @param key {String} Entry to remove
+ * @param {Boolean} Success or failure
  */
 wsc.Storage.prototype.remove = function( key ) {
 
@@ -792,11 +859,23 @@ wsc.Storage.prototype.remove = function( key ) {
 
 var chains = [["recv", "admin"]];
 
-wsc.Packet = function( data, separator ) {
+/**
+ * Parses a raw packet into a usable object.
+ * 
+ * @class wsc.Packet
+ * @constructor
+ * @param data {String} Raw packet data
+ * @param [separator='='] {String} Separator character used to delimit arguments
+ * @param [recurse=true] {Boolean} Should the parser recursively parse packets
+ */
+wsc.Packet = function( data, separator, recurse ) {
 
     if(!( data )) {
         return null;
     }
+    
+    if( recurse === undefined )
+        recurse = true;
     
     separator = separator || '=';
     var pkt = { cmd: null, param: null, arg: {}, body: null, sub: [], raw: data };
@@ -806,6 +885,7 @@ wsc.Packet = function( data, separator ) {
     try {
         // Crop the body.
         idx = data.indexOf('\n\n');
+        
         if( idx > -1 ) {
             pkt.body = data.substr(idx + 2);
             data = data.substr( 0, idx );
@@ -829,10 +909,10 @@ wsc.Packet = function( data, separator ) {
             pkt.arg[arg.substr( 0, idx )] = arg.substr( idx + separator.length ) || '';
         }
         
-        if( pkt.body != null ) {
+        if( pkt.body != null && recurse ) {
             subs = pkt.body.split('\n\n');
             for(var i in subs) {
-                sub = wsc.Packet( subs[i], separator );
+                sub = wsc.Packet( subs[i], separator, false );
                 if( sub == null )
                     break;
                 sub.body = subs.slice(i + 1).join('\n\n');
@@ -905,7 +985,7 @@ function packetEvtName( pkt ) {
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
  * 
- * @class Channel
+ * @class wsc.Channel
  * @constructor
  * @param client {Object} Wsc chat client object.
  * @param ns {String} Channel namespace.
@@ -932,7 +1012,6 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
     this.client = client;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
-    this.ui = null;
     this.raw = client.format_ns(ns);
     this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + client.deform_ns(ns).slice(1).toLowerCase();
     this.namespace = client.deform_ns(ns);
@@ -946,119 +1025,12 @@ wsc.Channel = function( client, ns, hidden, monitor ) {
  * @method build
  */
 wsc.Channel.prototype.build = function( ) {
+
     this.info.members = {};
-    this.client.ui.create_channel(this.raw, this.hidden);
-    this.ui = this.client.ui.channel(this.raw);
-};
-
-/**
- * Remove this channel from the screen entirely.
- * 
- * @method remove
- */
-wsc.Channel.prototype.remove = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.manager.remove_channel(this.raw);
-};
-
-/**
- * Hide the channel view in the UI.
- * 
- * @method hide
- */
-wsc.Channel.prototype.hide = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.hide();
-};
-
-/**
- * Show the channel view in the UI.
- * 
- * @method show
- */
-wsc.Channel.prototype.show = function( ) {
-    if( this.ui == null )
-        return;
-    this.ui.show();
-};
-
-/**
- * Display a log message.
- * 
- * @method log
- * @param msg {String} Log message to display.
- */
-wsc.Channel.prototype.log = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log(msg);
-};
-
-/**
- * Send a message to the log window.
- * 
- * @method log_item
- * @param msg {String} Message to send.
- */
-wsc.Channel.prototype.logItem = function( msg ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_item(msg);
-};
-
-/**
- * Send a server message to the log window.
- * 
- * @method server_message
- * @param msg {String} Server message.
- * @param [info] {String} Extra information for the message.
- */
-wsc.Channel.prototype.server_message = function( msg, info ) {
-    if( this.ui == null )
-        return;
-    this.ui.server_message(msg, info);
-};
-
-/**
- * Clear all log messages from the log window.
- * 
- * @method clear
- */
-wsc.Channel.prototype.clear = function( user ) {
-    if( this.ui == null )
-        return;
-    if( !user ) {
-        this.ui.clear();
-    } else {
-        this.ui.clear_user( user );
-    }
-};
-
-/**
- * Display a user's whois info.
- * 
- * @method log_whois
- * @param data {Object} Object containing a user's information.
- */
-wsc.Channel.prototype.log_whois = function( data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_whois(data);
-};
-
-/**
- * Display some information relating to a privilege class.
- * 
- * @method log_pc
- * @param privileges {Boolean} Are we showing privileges or users?
- * @param data {Array} Array containing information.
- */
-wsc.Channel.prototype.log_pc = function( privileges, data ) {
-    if( this.ui == null )
-        return;
-    this.ui.log_pc(privileges, data);
+    
+    if( this.namespace[0] == '@' )
+        this.set_privclasses( { pkt: { body: '' } } );
+    
 };
 
 /**
@@ -1068,18 +1040,11 @@ wsc.Channel.prototype.log_pc = function( privileges, data ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.property = function( e ) {
-    var prop = e.pkt["arg"]["p"];
+    var prop = e.pkt.arg.p;
     
     switch(prop) {
         case "title":
-        case "topic":            
-            // If we already had the title/topic for this channel, then it was changed. Output a message.
-            if ( this.info[prop].content.length != 0 ) {
-                if ( ( e.pkt.arg.ts - this.info[prop].ts ) != 0 ) {
-                    this.server_message(prop + " set by " + e.pkt["arg"]["by"]);
-                }
-            }
-                
+        case "topic":
             this.set_header(prop, e);
             break;
         case "privclasses":
@@ -1102,14 +1067,11 @@ wsc.Channel.prototype.property = function( e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_header = function( head, e ) {
+
     this.info[head]["content"] = e.value.text() || '';
     this.info[head]["by"] = e.by;
     this.info[head]["ts"] = e.ts;
-    
-    if( this.ui == null )
-        return;
-    
-    this.ui.set_header(head, e.value || (new wsc.MessageString) );
+
 };
 
 /**
@@ -1119,20 +1081,40 @@ wsc.Channel.prototype.set_header = function( head, e ) {
  * @param e {Object} Event data for the property packet.
  */
 wsc.Channel.prototype.set_privclasses = function( e ) {
-    this.info["pc"] = {};
-    this.info["pc_order"] = [];
-    var lines = e.pkt["body"].split('\n');
-    var bits = [];
-    for(var i in lines) {
-        if( !lines.hasOwnProperty(i) )
-            continue;
-        bits = lines[i].split(":");
-        if( bits.length == 1 )
-            continue;
-        this.info["pc_order"].push(parseInt(bits[0]));
-        this.info["pc"][parseInt(bits[0])] = bits[1];
+
+    if( this.namespace[0] == '@' ) {
+    
+        this.info.pc = { 100: 'Room Members' };
+        this.info.pc_order = [ 100 ];
+    
+    } else {
+    
+        this.info["pc"] = {};
+        this.info["pc_order"] = [];
+        var lines = e.pkt["body"].split('\n');
+        var bits = [];
+        
+        for(var i in lines) {
+            
+            if( !lines.hasOwnProperty(i) )
+                continue;
+            
+            bits = lines[i].split(":");
+            
+            if( bits.length == 1 )
+                continue;
+            
+            this.info["pc_order"].push(parseInt(bits[0]));
+            this.info["pc"][parseInt(bits[0])] = bits[1];
+        }
+    
     }
+    
     this.info["pc_order"].sort(function(a, b){ return b - a });
+    
+    var names = this.info.pc;
+    var orders = this.info.pc_order.slice(0);
+    
 };
 
 /**
@@ -1140,6 +1122,7 @@ wsc.Channel.prototype.set_privclasses = function( e ) {
  * 
  * @method get_privclass_order
  * @param name {String} Name of the privilege class to get the order of.
+ * @return {Integer} The order of the privilege class.
  */
 wsc.Channel.prototype.get_privclass_order = function( name ) {
     name = name.toLowerCase();
@@ -1163,7 +1146,7 @@ wsc.Channel.prototype.set_members = function( e ) {
     for( var i in e.pkt.sub ) {
         if( !e.pkt.sub.hasOwnProperty(i) )
             continue;
-        this.register_user(e.pkt.sub[i]);
+        this.register_user(e.pkt.sub[i], true);
     }
     
     this.set_user_list();
@@ -1175,76 +1158,73 @@ wsc.Channel.prototype.set_members = function( e ) {
  * @method set_user_list
  */
 wsc.Channel.prototype.set_user_list = function( ) {
+    
     if( Object.size(this.info.members) == 0 )
         return;
     
     var names = this.get_usernames();
-    var pcs = {};
+    var users = [];
+    var uinfo = null;
     
     for( var i in names ) {
+        
         if( !names.hasOwnProperty(i) )
             continue;
-        var un = names[i];
-        var member = this.info.members[un];
         
-        if( !(member['pc'] in pcs) )
-            pcs[member['pc']] = {'name': member['pc'], 'users': []};
-        
-        var conn = member['conn'] == 1 ? '' : '[' + member['conn'] + ']';
-        var s = member.symbol;
-        uinfo = {
-            'name': un,
-            'symbol': s,
-            'conn': member.conn,
-            'hover': {
-                'member': member,
-                'name': un,
-                'avatar': '<img class="avatar" src="" height="50" width="50" />',
-                'link': s + '<a target="_blank" href="http://' + un + '.'+ this.client.settings['domain'] + '/">' + un + '</a>',
-                'info': []
-            }
-        };
-        
-        pcs[member['pc']].users.push(uinfo);
+        users.push( this.info.members[names[i]] );
+    
     }
     
-    var ulist = [];
-    
-    for(var index in this.info["pc_order"]) {
-        var pc = this.info['pc'][this.info["pc_order"][index]];
-        
-        if( !( pc in pcs ) )
-            continue;
-        
-        ulist.push(pcs[pc]);
-    }
-    
-    if( 'Room Members' in pcs )
-        ulist.push(pcs['Room Members']);
-    
-    if( this.ui != null ) {
-        this.ui.set_user_list(ulist);
-    }
-    
-    this.client.trigger('set.userlist', {
+    this.client.trigger('ns.user.list', {
         'name': 'set.userlist',
-        'ns': this.info['namespace']
+        'ns': this.namespace,
+        'users': users
     });
+};
+
+/**
+ * Generate user info for the user list.
+ * 
+ * @method user_info
+ * @param user {String} User name
+ * @return {Object} User info
+ */
+wsc.Channel.prototype.user_info = function( user ) {
+        
+    var member = this.info.members[user];
+    var s = member.symbol;
+    
+    return {
+        'name': user,
+        'pc': member.pc || 'Room Members',
+        'symbol': s,
+        'conn': member.conn,
+        'hover': {
+            'member': member,
+            'name': user,
+            'avatar': '<img class="avatar" src="" height="50" width="50" />',
+            'link': s + '<a target="_blank" href="http://' + user + '.'+ this.client.settings['domain'] + '/">' + user + '</a>',
+            'info': []
+        }
+    };
+
 };
 
 /**
  * Register a user with the channel.
  * 
  * @method register_user
- * @param pkt {Object} User data.
+ * @param pkt {Object} User data
+ * @param suppress {Boolean} Set to true to suppress events
  */
-wsc.Channel.prototype.register_user = function( pkt ) {
+wsc.Channel.prototype.register_user = function( pkt, suppress ) {
     var un = pkt["param"];
     
     if(this.info.members[un] == undefined) {
         this.info.members[un] = pkt["arg"];
         this.info.members[un]["username"] = un;
         this.info.members[un]["conn"] = 1;
+        this.info.members[un] = this.user_info( un );
     } else {
         for( i in pkt.arg ) {
             this.info.members[un][i] = pkt.arg[i];
@@ -1253,6 +1233,18 @@ wsc.Channel.prototype.register_user = function( pkt ) {
     }
     if( !('pc' in this.info.members[un]) ) 
         this.info.members[un]['pc'] = 'Room Members';
+    
+    suppress = suppress || false;
+    
+    if( suppress )
+        return;
+    
+    this.client.trigger('ns.user.registered', {
+        name: 'ns.user.registered',
+        ns: this.namespace,
+        user: un
+    });
+    
 };
 
 /**
@@ -1284,12 +1276,16 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
     if( member == undefined )
         return;
     
-    member['conn']--;
+    member.conn--;
     
-    if( member['conn'] > 0 && !force)
-        return;
+    if( member.conn == 0 || force) {
+        delete this.info.members[user];
+    }
     
-    delete this.info.members[user];
+    this.client.trigger('ns.user.remove', {
+        user: member.name,
+        ns: this.namespace
+    });
 };
 
 /**
@@ -1301,7 +1297,6 @@ wsc.Channel.prototype.remove_user = function( user, force ) {
 wsc.Channel.prototype.recv_join = function( e ) {
     var info = new wsc.Packet('user ' + e.user + '\n' + e['info']);
     this.register_user( info );
-    this.set_user_list();
 };
 
 /**
@@ -1313,39 +1308,7 @@ wsc.Channel.prototype.recv_join = function( e ) {
 wsc.Channel.prototype.recv_part = function( e ) {
     
     this.remove_user(e.user);
-    this.set_user_list();
     
-};
-
-/**
- * Process a recv_msg event.
- * 
- * @method recv_msg
- * @param e {Object} Event data for recv_msg packet.
- */
-wsc.Channel.prototype.recv_msg = function( e ) {
-    
-    var u = this.client.settings['username'].toLowerCase();
-    
-    if( u == e.user.toLowerCase() )
-        return;
-    
-    var msg = e['message'].toLowerCase();
-    var hlight = msg.indexOf(u) != -1;
-    
-    if( !hlight && e.sns[0] != '@' )
-        return;
-    
-    if( this.ui != null) {
-        if( hlight ) {
-            this.ui.highlight( );
-        } else {
-            this.ui.highlight( false );
-        }
-    }
-    
-    this.client.trigger( 'pkt.recv_msg.highlighted', e );
-
 };
 
 /**
@@ -1355,13 +1318,17 @@ wsc.Channel.prototype.recv_msg = function( e ) {
  * @param e {Object} Event data for recv_privhcg packet.
  */
 wsc.Channel.prototype.recv_privchg = function( e ) {
-    var member = this.info.members[e.user];
+    var c = this;
     
-    if( !member )
-        return;
+    this.client.cascade('ns.user.privchg', function( data ) {
+        var member = c.info.members[data.user];
+        
+        if( !member )
+            return;
+        
+        member['pc'] = data.pc;
+    }, e);
     
-    member['pc'] = e.pc;
-    this.set_user_list();
 };
 
 /**
@@ -1379,6 +1346,11 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
 
 /**
  * Rendered message object.
+ * 
+ * @class wsc.MessageString
+ * @constructor
+ * @param data {String} Unparsed message.
+ * @param [parser=wsc.MessageParser] {Object} Object used to parse messages.
  */
 wsc.MessageString = function( data, parser ) {
     this._parser = parser || new wsc.MessageParser();
@@ -1390,40 +1362,61 @@ with(wsc.MessageString.prototype = new String) {
     toString = valueOf = function() { return this.raw; };
 }
 
+/**
+ * Render the message in HTML where possible.
+ * @method html
+ * @return {String} The message rendered as an HTML string
+ */
 wsc.MessageString.prototype.html = function(  ) {
     return this.raw;
 };
 
 /**
- * @function text
- *
- * Render the tablumps in plain text where possible. Some tablumps appear as
- * HTML entities even through this.
+ * Render the message in plain text where possible.
+ * @method text
+ * @return {String} The message rendered as a plain text string
  */
 wsc.MessageString.prototype.text = function() {
     return this.raw;
 };
 
 /**
- * @function ansi
- * 
- * Render the tablumps with ANSI escape sequences.
- * 
- * For this rendering method to really be worth it, I'll actually have to move
- * away from the simple regex.
+ * Render the message with ANSI escape sequences.
+ * @method ansi
+ * @return {String} The message rendered as an ANSI-formatted string
  */
 wsc.MessageString.prototype.ansi = function() {
     return this.raw;
 };
 
+
+/**
+ * A parser for formatted messages.
+ * 
+ * @class wsc.MessageParser
+ * @constructor
+ */
 wsc.MessageParser = function(  ) {};
 
+/**
+ * Parse a given message.
+ * @method parse
+ * @param data {String} Raw message data
+ * @return {Object} Message string object.
+ */
 wsc.MessageParser.prototype.parse = function( data ) {
 
     return new wsc.MessageString(data, this);
 
 };
 
+/**
+ * Render a given message string.
+ * @method render
+ * @param mode {Integer} Determine how the message should be rendered
+ * @param data {Object} Message string to render
+ * @return {String} Rendered message
+ */
 wsc.MessageParser.prototype.render = function( mode, data ) {
 
     return data.raw;
@@ -1435,7 +1428,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 /**
  * Parser for dAmn-like protocols.
  * 
- * @class Protocol
+ * @class wsc.Protocol
  * @constructor
  * @param [mparser=wsc.MessageParser] {Object} Message parser instance.
  */
@@ -1444,7 +1437,63 @@ wsc.Protocol = function( mparser ) {
     this.mparser = mparser || new wsc.MessageParser;
     this.chains = [["recv", "admin"]];
     
-    // Mappings for every packet.
+    /**
+     * Mapping object.
+     * 
+     * This object determines how each protocol packet should be mapped from a `packet object`
+     * to an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of names under which to store packet data.
+     * The array is of the structure `[ param, args, body ]`. All items are optional, but
+     * positional. To discard a particular piece of data, `null` can be used.
+     * 
+     * When `args` is present it must be an array. This array names the arguments to store.
+     * Each item in the `args` array can be a string or a pair of strings. For strings,
+     * the corresponding packet argument is stored using its own name. For pairs, the packet
+     * argument named by the first string is stored using the second string as the key.
+     * 
+     * When `body` is present, it can either be a string or an array. If a string is provided,
+     * the entire body is stored using the string as the key. If an array is provided, it
+     * treated as another mapping array. This is handled recursively.
+     * 
+     * Keys in the mapping array can start with an asterisks (`*`). This indicates that the
+     * value is a formatted string and needs to be parsed using a
+     * {{#crossLink "wsc.MessageParser"}}message parser{{/crossLink}}. The asterisks is
+     * removed from the key in the final object.
+     * 
+     * As an example, property packets use this mapping array:
+     * 
+     *      this.maps['property'] = ['ns', ['p', 'by', 'ts'], '*value' ];
+     * 
+     * When mapping a property packet, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "property",
+     *          "ns": pkt.param,
+     *          "p": pkt.arg.p,
+     *          "by": pkt.arg.by,
+     *          "ts": pkt.arg.ts,
+     *          "value": pkt.body
+     *      }
+     * 
+     * For an example of arguments being mapped to different keys, kick
+     * (error) packets use this mapping array:
+     * 
+     *      this.maps['kick'] = ['ns', [['u', 'user'], 'e']];
+     * 
+     * For this array, the returned object looks like the following:
+     *      
+     *      {
+     *          "name": "kick",
+     *          "ns": pkt.param,
+     *          "user": pkt.arg.u,
+     *          "e": pkt.body
+     *      }
+     *
+     * @property maps
+     * @type Object
+     */
     this.maps = {
         'chatserver': ['version'],
         'login': ['username', ['e'], 'data'],
@@ -1486,6 +1535,56 @@ wsc.Protocol = function( mparser ) {
         }
         
     };
+    
+    /**
+     * Messages object.
+     * 
+     * This object determines how each protocol packet should be rendered based
+     * data from an `event object`. For each packet, there is an entry, where the key is the
+     * {{#crossLink "wsc.Protocol/event:method"}}event name{{/crossLink}} of the packet.
+     * 
+     * Each entry is an array. The array consists of options for rendering and
+     * logging. The array is of the structure `[ renderers, monitor, global ]`.
+     * All items are optional, but positional. There are default options that
+     * can be used.
+     * 
+     * When `renderers` is present it must be an array. This array contains
+     * renderers for different kinds of formats. Renderers can be either a
+     * formatted string or a callback that returns a string. There must be at
+     * least one renderer, for text output. Otherwise the array should contain
+     * a renderer for text ouput, a renderer for HTML output, and a renderer
+     * for ANSI output. If a renderer is missing then everything falls back to
+     * text renderer.
+     * 
+     * The `monitor` option determines whether or not to display the log
+     * message in the monitor channel. The default for this is `false`.
+     * 
+     * The `global` option determines whether or not to display the log message
+     * in every open channel. The default for this is also `false`.
+     * 
+     * An example for an entry in this object:
+     *      
+     *      { 'join': [
+     *          [
+     *              '** Join {ns}: "{e}" *',
+     *              '<span class="servermsg">** Join {ns}: "{e}" *</span>'
+     *          ],
+     *          true
+     *      ] }
+     * 
+     * This shows how the join packet will render in the monitor channel. If a
+     * channel is set to display in the monitor channel, then it should not
+     * be displayed in the event channel.
+     *
+     * At the moment, we only have to render using HTML, so the `renderers`
+     * array in the entries are only HTML renderers at the moment. No array,
+     * just formatting strings.
+     * 
+     * To display absolutely nothing for an event, the whole entry can simply
+     * be `null`.
+     * @property messages
+     * @type Object
+     */
     //  'event': [ template, monitor, global ]
     this.messages = {
         'chatserver': ['<span class="servermsg">** Connected to llama {version} *</span>', false, true ],
@@ -1629,6 +1728,8 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
         
         var key = mapping[i];
         var skey = key;
+        var k = '', val = '';
+        
         switch(parseInt(i)) {
             // e.<map[event][0]> = packet.param
             case 0:
@@ -1683,9 +1784,9 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
  * Render a protocol message in the given format.
  * 
  * @method render
- * @param format {String} Format to render the event in.
- * @param event {Object} Event data.
- * @return {String} Rendered event.
+ * @param format {String} Format to render the event in
+ * @param event {Object} Event data
+ * @return {String} Rendered event
  */
 wsc.Protocol.prototype.render = function( event, format ) {
 
@@ -1730,45 +1831,150 @@ wsc.Protocol.prototype.render = function( event, format ) {
 
 };
 
+/**
+ * Produce a log message for an event.
+ * @method log
+ * @param event {Object} Event data to produce a log message with
+ * @return {Object} A log message object on success. Null if failed.
+ */
+wsc.Protocol.prototype.log = function( event ) {
 
-wsc.Protocol.prototype.log = function( client, event ) {
-
-    msgm = this.messages[event.name];
+    var msgm = this.messages[event.name];
     
     if( !msgm )
-        return;
+        return null;
     
-    if( event.s == '0' ) {
-        return;
-    }
-    
-    event.html = this.render(event, 'html');
-    
-    try {
-        if( !msgm[2] ) {
-            if( !msgm[1] ) {
-                client.ui.channel(event.ns).log_item(event);
-            } else {
-                client.ui.channel(client.mns).log_item(event);
-            }
-        } else {
-            client.ui.log_item(event);
-        }
-    } catch(err) {
-        try {
-            client.ui.channel(client.mns).server_message('Failed to log for ' + event.sns, event.html);
-        } catch( err ) {
-            console.log('>> Failed to log message for ' + event.sns + '::');
-            console.log('>> ' + event.html);
-        }
-    }
+    return new wsc.Protocol.LogMessage( event, msgm );
+
+};
+
+
+/**
+ * Log message object represents a log message.
+ * @class wsc.Protocol.LogMessage
+ * @constructor
+ * @param event {Object} Event data
+ * @param options {Array} Log message options
+ */
+wsc.Protocol.LogMessage = function( event, options ) {
+
+    this.event = event;
+    this.template = options[0] || '';
+    this.monitor = options[1] || false;
+    this.global = options[2] || false;
+    this._html = false;
+    this._text = false;
+    this._ansi = false;
 
 };
 
 /**
- * Control the client's program flow in relation to the chat this.
+ * Get a text rendition.
+ * @method text
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.text = function(  ) {
+
+    if( this._text === false )
+        this._text = this.render( 0 );
+    
+    return this._text;
+
+};
+
+/**
+ * Get an HTML rendition.
+ * @method html
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.html = function(  ) {
+
+    if( this._html === false )
+        this._html = this.render( 1 );
+    
+    return this._html;
+
+};
+
+/**
+ * Get an ANSI rendition.
+ * @method ansi
+ * @return {String} Rendered message
+ */
+wsc.Protocol.LogMessage.prototype.ansi = function(  ) {
+
+    if( this._ansi === false )
+        this._ansi = this.render( 2 );
+    
+    return this._ansi;
+
+};
+
+/**
+ * Render a log message in the given format.
  * 
- * @class Flow
+ * @method render
+ * @param [format=0] {Integer} What rendering format to use. 0 is text, 1 is
+ *      html, 2 is ansi.
+ * @return {String} Rendered event
+ */
+wsc.Protocol.LogMessage.prototype.render = function( format ) {
+    
+    if( format === undefined )
+        format = 0;
+    
+    /*
+    var render = this.render[ format ];
+    
+    try {
+        return render( this, this.event );
+    } catch( err ) {
+    */
+    
+    var render = this.template;
+    var d = '';
+    
+    for( var key in this.event ) {
+        if( !this.event.hasOwnProperty(key) || key == 'pkt' )
+            continue;
+        
+        d = this.event[key];
+        
+        if( key == 'ns' || key == 'sns' ) {
+            key = 'ns';
+            d = this.event['sns'];
+        }
+        
+        if( d.hasOwnProperty('_parser') ) {
+            switch(format) {
+                case 1:
+                    d = d.html();
+                    break;
+                case 2:
+                    d = d.ansi();
+                    break;
+                case 0:
+                default:
+                    d = d.text();
+                    break;
+            }
+        }
+        render = replaceAll( render, '{' + key + '}', d );
+    }
+    
+    return render;
+    
+    /*
+    }
+    */
+
+};
+
+/**
+ * Control the client's program flow. This object determines how the client responds to
+ * certain events.
+ * 
+ * @class wsc.Flow
  * @constructor
  * @param protocol {Object} Protocol object.
  */
@@ -1831,7 +2037,7 @@ wsc.Flow.prototype.message = function( client, event ) {
         pevt.ns = client.mns;
     
     pevt.sns = client.deform_ns(pevt.ns);
-    this.protocol.log(client, pevt);
+    
     this.handle(client, pevt);
     
     client.trigger('pkt', pevt);
@@ -1885,12 +2091,13 @@ wsc.Flow.prototype.chatserver = function( event, client ) {
  */
 wsc.Flow.prototype.login = function( event, client ) {
     
-    if(event.pkt["arg"]["e"] == "ok") {
+    if(event.pkt.arg.e == "ok") {
         // Use the username returned by the server!
-        info = new wsc.Packet('info\n' + event.data);
+        var info = event.pkt.sub[0];
         client.settings["username"] = event.pkt["param"];
         client.settings['symbol'] = info.arg.symbol;
         client.settings['userinfo'] = info.arg;
+        
         // Autojoin!
         if ( client.fresh ) {
             client.join(client.settings["autojoin"]);
@@ -2098,6 +2305,8 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 
 /**
  * This extension implements most of the default commands for wsc.
+ * @class wsc.defaults.Extension
+ * @constructor
  */
 wsc.defaults.Extension = function( client ) {
 
@@ -2117,34 +2326,34 @@ wsc.defaults.Extension = function( client ) {
     
     var init = function(  ) {
         // Commands.
-        client.bind('cmd.connect', cmd_connection );
-        client.bind('cmd.set', cmd_setter );
+        client.bind('cmd.connect', cmd.connection );
+        client.bind('cmd.set', cmd.setter );
         
         // standard dAmn commands.
-        client.bind('cmd.join', cmd_join );
-        client.bind('cmd.chat', cmd_pjoin );
-        client.bind('cmd.part', cmd_part );
+        client.bind('cmd.join', cmd.join );
+        client.bind('cmd.chat', cmd.pjoin );
+        client.bind('cmd.part', cmd.part );
         // send ...
-        client.bind('cmd.say', cmd_say );
-        client.bind('cmd.npmsg', cmd_npmsg );
-        client.bind('cmd.me', cmd_action );
-        client.bind('cmd.promote', cmd_chgpriv );
-        client.bind('cmd.demote', cmd_chgpriv );
-        client.bind('cmd.ban', cmd_ban );
-        client.bind('cmd.unban', cmd_ban );
-        client.bind('cmd.kick', cmd_killk );
-        //client.bind('cmd.get', cmd_get );
-        client.bind('cmd.whois', cmd_whois );
-        client.bind('cmd.title', cmd_title );
-        client.bind('cmd.topic', cmd_title );
-        client.bind('cmd.admin', cmd_admin );
-        client.bind('cmd.disconnect', cmd_connection );
-        client.bind('cmd.kill', cmd_killk );
-        client.bind('cmd.raw', cmd_raw );
+        client.bind('cmd.say', cmd.say );
+        client.bind('cmd.npmsg', cmd.npmsg );
+        client.bind('cmd.me', cmd.action );
+        client.bind('cmd.promote', cmd.chgpriv );
+        client.bind('cmd.demote', cmd.chgpriv );
+        client.bind('cmd.ban', cmd.ban );
+        client.bind('cmd.unban', cmd.ban );
+        client.bind('cmd.kick', cmd.killk );
+        //client.bind('cmd.get', cmd.get );
+        client.bind('cmd.whois', cmd.whois );
+        client.bind('cmd.title', cmd.title );
+        client.bind('cmd.topic', cmd.title );
+        client.bind('cmd.admin', cmd.admin );
+        client.bind('cmd.disconnect', cmd.connection );
+        client.bind('cmd.kill', cmd.killk );
+        client.bind('cmd.raw', cmd.raw );
         
-        client.bind('cmd.clear', cmd_clear );
-        client.bind('cmd.clearall', cmd_clearall );
-        client.bind('cmd.close', cmd_close );
+        client.bind('cmd.clear', cmd.clear );
+        client.bind('cmd.clearall', cmd.clearall );
+        client.bind('cmd.close', cmd.close );
         
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.recv_admin_show', pkt_admin_show );
@@ -2153,11 +2362,11 @@ wsc.defaults.Extension = function( client ) {
         
         
         // Non-standard commands.
-        client.bind('cmd.gettitle', cmd_gett);
-        client.bind('cmd.gettopic', cmd_gett);
+        client.bind('cmd.gettitle', cmd.gett);
+        client.bind('cmd.gettopic', cmd.gett);
         
         // lol themes
-        client.bind('cmd.theme', cmd_theme);
+        client.bind('cmd.theme', cmd.theme);
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
@@ -2265,17 +2474,26 @@ wsc.defaults.Extension = function( client ) {
     
     };
     
-    var cmd_theme = function( e, client) {
+    /**
+     * Holds all of the command handling methods.
+     * 
+     * @property cmd
+     * @type Object
+     */
+    var cmd = {};
+    
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(' ').shift());
     };
         
     /**
-     * @function setter
-     * @cmd set set configuration options
      * This command allows the user to change the settings for the client through
      * the input box.
+     * 
+     * @method cmd.setter
+     * @param cmd {Object} Command event data.
      */
-    var cmd_setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(' ');
         var setting = data.shift().toLowerCase();
         var data = data.join(' ');
@@ -2291,20 +2509,19 @@ wsc.defaults.Extension = function( client ) {
         
         client.settings[setting] = data;
         client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        client.control.setLabel();
         
     };
     
     /**
-     * @function connect
      * This command allows the user to force the client to connect to the server.
+     * @method cmd.connection
      */
-    var cmd_connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     // Join a channel
-    var cmd_join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2319,7 +2536,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Join a channel
-    var cmd_pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -2334,7 +2551,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Leave a channel
-    var cmd_part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(' ');
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -2349,18 +2566,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Set the title
-    var cmd_title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     // Promote or demote user
-    var cmd_chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(' ');
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     // Ban user
-    var cmd_ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(' ');
         var user = args.shift();
         var cmd = e.cmd;
@@ -2371,17 +2588,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send a /me action thingy.
-    var cmd_action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     // Send a raw packet.
-    var cmd_raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
     
     // Kick or kill someone.
-    var cmd_killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(' ');
         var u = d.shift();
         var r = d.length > 0 ? d.join(' ') : null;
@@ -2392,32 +2609,32 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Say something.
-    var cmd_say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     // Say something without emotes and shit. Zomg.
-    var cmd_npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     // Clear the channel's log.
-    var cmd_clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length > 0 ) {
             var users = e.args.split(' ');
             for( var i in users ) {
                 if( !users.hasOwnProperty(i) )
                     continue;
-                client.channel(e.target).clear(users[i]);
+                client.ui.channel( e.target ).clear_user( users[i] );
             }
         } else {
-            client.channel(e.target).clear();
+            client.ui.channel( e.target ).clear();
         }
     };
     
     // Clear all channel logs.
-    var cmd_clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length > 0 ) {
@@ -2426,7 +2643,7 @@ wsc.defaults.Extension = function( client ) {
                 for( var i in users ) {
                     if( !users.hasOwnProperty(i) )
                         continue;
-                    channel.clear( users[i] );
+                    channel.clear_user( users[i] );
                 }
             };
         } else {
@@ -2435,33 +2652,33 @@ wsc.defaults.Extension = function( client ) {
             };
         }
         
-        client.each_channel( method, true );
+        client.ui.chatbook.each( method, true );
     };
     
-    var cmd_close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.
-    var cmd_whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
     };
     
     // Send an admin packet.
-    var cmd_admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     // Send an disconnect packet.
-    var cmd_disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     // Get the title or topic.
-    var cmd_gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
-        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+        client.ui.control.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.
@@ -2486,7 +2703,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.log_whois(data);
+        client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -2526,13 +2743,31 @@ wsc.defaults.Extension = function( client ) {
             }
         }
         
-        chan.log_pc(event.p == 'privclass', pcs);
+        client.ui.chatbook.current.log_pc(event.p == 'privclass', pcs);
     
     };
     
     init();
+    
+    /**
+     * Implements the ignore feature.
+     * 
+     * @method Ignore
+     */
     wsc.defaults.Extension.Ignore(client);
+    
+    /**
+     * Implements away messages.
+     * 
+     * @method Away
+     */
     wsc.defaults.Extension.Away(client);
+    
+    /**
+     * Implements autojoin channels.
+     * 
+     * @method Autojoin
+     */
     wsc.defaults.Extension.Autojoin(client);
 
 };
@@ -2756,7 +2991,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('tabbed', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
@@ -2886,6 +3121,10 @@ wsc.defaults.Extension.Away = function( client ) {
     };
     
     var cmd_setback = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
         settings.on = false;
         var method = client.say;
         var announce = settings.format.setback;
@@ -2902,7 +3141,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state('away');
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;
@@ -3192,13 +3431,16 @@ wsc.defaults.Extension.Ignore = function( client ) {
 };
 
 /**
- * Chat client.
+ * An entire chat client. Instances of this object orchestrate the operation of
+ * the client. Other objects are loaded in to control different parts of the client. These
+ * components can be reasonably swapped out, assuming they provide the same functionality.
  *
- * @class Client
+ * @class wsc.Client
  * @constructor
  * @param view {Object} The client's container element.
  * @param options {Object} Configuration options for the client.
  * @param mozilla {Object} Is firefox being used?
+ * @since 0.0.1
  */
 wsc.Client = function( view, options, mozilla ) {
 
@@ -3207,14 +3449,24 @@ wsc.Client = function( view, options, mozilla ) {
     this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
+    
     this.fresh = true;
     this.attempts = 0;
     this.connected = false;
+    
+    /**
+     * An instance of a protocol parser.
+     *
+     * @property protocol
+     * @type {Object}
+     * @default wsc.Protocol
+     */
     this.protocol = null;
     this.flow = null;
     this.ui = null;
     this.events = new EventEmitter();
     this.conn = null;
+    
     this.channelo = {};
     this.cchannel = null;
     this.cmds = [];
@@ -3229,7 +3481,6 @@ wsc.Client = function( view, options, mozilla ) {
         "monitor": ['~Monitor', true],
         "welcome": "Welcome to the wsc web client!",
         "autojoin": "chat:channel",
-        "control": wsc.Control,
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
@@ -3264,7 +3515,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
-    this.ui = new this.settings.ui_object( view, {
+    this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
         'monitor': this.settings.monitor,
@@ -3368,14 +3619,8 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     this.ui.build();
-    this.control = new this.settings.control( this );
     this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
     var client = this;
-    
-    this.ui.on( 'channel.selected', function( event, ui ) {
-        client.cchannel = client.channel(event.ns);
-        client.control.cache_input(event);
-    } );
     
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
@@ -3469,6 +3714,8 @@ wsc.Client.prototype.trigger = function( event, data ) {
  * Add a middleware method.
  * 
  * @method middle
+ * @param event {String} Event to attach middleware to
+ * @param callback {Function} Method to call
  */
 wsc.Client.prototype.middle = function( event, callback ) {
 
@@ -3480,6 +3727,9 @@ wsc.Client.prototype.middle = function( event, callback ) {
  * Run a method with middleware.
  *
  * @method cascade
+ * @param event {String} Event to run middleware for
+ * @param callback {Function} Method to call after running middleware
+ * @param data {Object} Input for the method/event
  */
 wsc.Client.prototype.cascade = function( event, callback, data ) {
 
@@ -3489,7 +3739,8 @@ wsc.Client.prototype.cascade = function( event, callback, data ) {
 
 /**
  * Open a connection to the chat server.
- * If the client if already connected, nothing happens.
+ * 
+ * If the client is already connected, nothing happens.
  * 
  * @method connect
  */
@@ -3543,8 +3794,13 @@ wsc.Client.prototype.channel = function( namespace, channel ) {
 
     namespace = this.format_ns(namespace).toLowerCase();
     
-    if( !this.channelo[namespace] && channel )
-        this.channelo[namespace] = channel;
+    if( !this.channelo[namespace] ) {
+        if( channel ) {
+            this.channelo[namespace] = channel;
+                return channel;
+        }
+        return null;
+    }
     
     return this.channelo[namespace];
 
@@ -3607,13 +3863,27 @@ wsc.Client.prototype.each_channel = function( method, include ) {
  */
 wsc.Client.prototype.deform_ns = function( namespace ) {
 
-    if(namespace.indexOf("chat:") == 0)
+    var sym = namespace[0];
+    
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);
     
-    if(namespace.indexOf("server:") == 0)
+    if( namespace.indexOf("server:") == 0 )
         return '~' + namespace.slice(7);
     
-    if(namespace.indexOf("pchat:") == 0) {
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
         var names = namespace.split(":");
         names.shift();
         for(i in names) {
@@ -3624,13 +3894,7 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
         }
     }
     
-    if( namespace.indexOf('login:') == 0 )
-        return '@' + namespace.slice(6);
-    
-    if(namespace[0] != '#' && namespace[0] != '@' && namespace[0] != '~')
-        return '#' + namespace;
-    
-    return namespace;
+    return '#' + namespace;
 
 };
 
@@ -3643,20 +3907,38 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  */
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(namespace.indexOf('#') == 0) {
-        return 'chat:' + namespace.slice(1);
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
     }
-    if(namespace.indexOf('@') == 0) {
-        var names = [namespace.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(namespace.indexOf('~') == 0) {
-        return "server:" + namespace.slice(1);
-    }
-    if(namespace.indexOf('chat:') != 0 && namespace.indexOf('server:') != 0 && namespace.indexOf('pchat:') != 0)
-        return 'chat:' + namespace;
     
     return namespace;
 
@@ -3672,6 +3954,12 @@ wsc.Client.prototype.format_ns = function( namespace ) {
 wsc.Client.prototype.create_ns = function( namespace, hidden, monitor ) {
 
     var chan = this.channel(namespace, new wsc.Channel(this, namespace, hidden, monitor));
+    this.trigger( 'ns.create', {
+        name: 'ns.create',
+        ns: namespace,
+        chan: chan,
+        client: this
+    });
     chan.build();
 
 };
@@ -3687,12 +3975,36 @@ wsc.Client.prototype.remove_ns = function( namespace ) {
     if( !namespace )
         return;
     
-    var chan = this.channel(namespace);
-    if( !chan )
-        return;
-    
-    chan.remove();
-    delete this.channelo[chan.raw.toLowerCase()];
+    this.cascade(
+        'ns.remove',
+        function( data ) {
+            var chan = data.client.channel( data.ns );
+            
+            if( !chan )
+                return;
+            
+            delete data.client.channelo[chan.raw.toLowerCase()];
+        },
+        {
+            ns: namespace,
+            client: this
+        }
+    );
+
+};
+
+/**
+ * Focus the client on a particular channel, for some reason.
+ * 
+ * If the UI is managing everything to do with the channel being used, maybe this
+ * should be deprecated...
+ *
+ * @method select_ns
+ * @param ns {String} Namespace of the channel to select
+ */
+wsc.Client.prototype.select_ns = function( ns ) {
+
+    this.cchannel = this.channel(ns) || this.cchannel;
 
 };
 
@@ -4016,7 +4328,6 @@ wsc.Client.prototype.property = function( namespace, property ) {
  */
 wsc.Client.prototype.set = function( namespace, property, value ) {
 
-    this.trigger( 'send.set.before', e );
     var c = this;
     this.cascade( 'send.set',
         function( data ) {
@@ -4050,426 +4361,37 @@ wsc.Client.prototype.disconnect = function(  ) {
 };
 
 /**
- * Controls the input panel of the client.
- * 
- * @class Control
- * @constructor
- * @param client {Object} wsc.Client object.
- */
-wsc.Control = function( client ) {
-
-    this.client = client;
-    this.ui = this.client.ui.control;
-    this.history = {};
-    this.tab = {
-        hit: false,
-        cache: '',
-        matched: [],
-        index: -1,
-        type: 0,
-        prefix: ['', '/', ''],
-    };
-    
-    this.set_input();
-
-};
-
-/**
- * Steal the lime light. Brings the cursor to the input panel.
- *
- * @method focus
- */
-wsc.Control.prototype.focus = function(  ) {
-
-    this.ui.focus();
-
-};
-
-/**
- * Set the input handlers for the input panel.
- * 
- * @method set_input
- */
-wsc.Control.prototype.set_input = function(  ) {
-
-    var o = this;
-    
-    this.ui.set_handlers(
-        function( event ) {
-            return o.keypress(event);
-        },
-        function( event ) {
-            return o.submit(event);
-        }
-    );
-
-};
-
-/**
- * Save current input in a cache.
- * 
- * @method cache_input
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.cache_input = function( event ) {
-
-    h = this.get_history( event.prev.namespace );
-    
-    if( h.index > -1 )
-        return;
-    
-    h.tmp = this.ui.get_text();
-    this.ui.set_text(this.get_history( event.chan.namespace ).tmp);
-
-};
-
-/**
- * Get a channel's input history object.
- * If no history object exists for the given channel, a new object is created
- * and stored.
- * 
- * @method get_history
- * @param [namespace] {String} Channel to get the history of. If not given, the
- *   channel currently being viewed is used.
- * @return history {Object} Channel's input history data.
- */
-wsc.Control.prototype.get_history = function( namespace ) {
-
-    if( !namespace ) {
-        if( !this.client.cchannel ) {
-             namespace = '~monitor';
-        }
-    }
-    
-    namespace = namespace || this.client.cchannel.namespace;
-    
-    if( !this.history[namespace] )
-        this.history[namespace] = { index: -1, list: [], tmp: '' };
-    
-    return this.history[namespace];
-
-};
-
-/**
- * Append an item to the current channel's input history.
- * 
- * @method append_history
- * @param data {String} Input string to store.
- */
-wsc.Control.prototype.append_history = function( data ) {
-
-    if( !data )
-        return;
-    
-    var h = this.get_history();
-    h.list.unshift(data);
-    h.index = -1;
-    
-    if( h.list.length > 100 )
-        h.list.pop();
-
-};
-
-/**
- * Scroll through the current channel's input history.
- * 
- * @method scroll_history
- * @param up {Boolean} Scroll up?
- */
-wsc.Control.prototype.scroll_history = function( up ) {
-
-    var history = this.get_history();
-    var data = this.ui.get_text();
-    
-    if( history.index == -1 )
-        if( data )
-            history.tmp = data;
-    else
-        history.list[history.index] = data;
-    
-    if( up ) {
-        if( history.list.length > 0 && history.index < (history.list.length - 1) )
-            history.index++;
-    } else {
-        if( history.index > -1)
-            history.index--;
-    }
-    
-    this.ui.set_text(history.list[history.index] || history.tmp);
-
-};
-
-/**
- * Handle the tab character being pressed.
- * 
- * @method tab_item
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.tab_item = function( event ) {
-
-    if( !this.tab.hit )
-        this.start_tab(event);
-    
-    this.ui.chomp();
-    this.tab.index++;
-    
-    if( this.tab.index >= this.tab.matched.length )
-        this.tab.index = -1;
-    
-    if( this.tab.index == -1 ) {
-        this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
-        return;
-    }
-    
-    suf = this.ui.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
-    this.ui.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
-
-};
-
-/**
- * Start tab complete capabilities by compiling a list of items that match the
- * current user input.
- * 
- * @method start_tab
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.start_tab = function( event ) {
-
-    this.tab.hit = true;
-    this.tab.index = -1;
-    this.tab.matched = [];
-    this.tab.type = 0;
-    
-    // We only tab the last word in the input. Slice!
-    var needle = this.ui.chomp();
-    this.ui.unchomp(needle);
-    
-    // Check if we's dealing with commands here
-    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
-        this.tab.type = needle[0] == '/' ? 1 : 2;
-        if( needle[0] == '/' )
-            needle = needle.slice(1);
-    } else {
-        this.tab.type = 0;
-    }
-    
-    this.tab.cache = needle;
-    needle = needle.toLowerCase();
-    
-    // Nows we have to find our matches. Fun.
-    // Lets start with matching users.
-    this.tab.matched = [];
-    if( this.tab.type == 0 ) {
-        for( user in this.client.cchannel.info['members'] )
-            if( user.toLowerCase().indexOf(needle) == 0 )
-                this.tab.matched.push(user);
-    } else if( this.tab.type == 1 ) {
-        // Matching with commands.
-        for( var i in this.client.cmds ) {
-            cmd = this.client.cmds[i];
-            if( cmd.indexOf(needle) == 0 )
-                this.tab.matched.push(cmd);
-        }
-    } else if( this.tab.type == 2 ) {
-        // Matching with channels.
-        var ctrl = this;
-        this.client.each_channel( function( ns, chan ) {
-            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
-                ctrl.tab.matched.push(chan.namespace);
-        } );
-    }
-
-};
-
-/**
- * Clear the tabbing cache.
- * 
- * @method end_tab
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.end_tab = function( event ) {
-
-    this.tab.hit = false;
-    this.tab.matched = [];
-    this.tab.cache = '';
-    this.tab.index = -1;
-
-};
-
-/**
- * Handle the send button being pressed.
- * 
- * @method submit
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.submit = function( event ) {
-
-    msg = this.ui.get_text();
-    this.append_history(msg);
-    this.ui.set_text('');
-    this.handle(event, msg);
-    return false;
-
-};
-/**
- * A keypress happened. Process the keypress biatch.
- * 
- * @method keypress
- * @param event {Object} Event data.
- */
-wsc.Control.prototype.keypress = function( event ) {
-
-    var key = event.which || event.keyCode;
-    var ut = this.tab.hit;
-    var bubble = false;
-    
-    switch( key ) {
-        case 13: // Enter
-            if( !this.ui.multiline() ) {
-                this.submit(event);
-            } else {
-                if( event.shiftKey ) {
-                    this.submit(event);
-                } else {
-                    bubble = true;
-                }
-            }
-            break;
-        case 38: // Up
-            if( !this.ui.multiline() ) {
-                this.scroll_history(true);
-                break;
-            }
-            bubble = true;
-            break;
-        case 40: // Down
-            if( !this.ui.multiline() ) {
-                this.scroll_history(false);
-                break;
-            }
-            bubble = true;
-            break;
-        case 9: // Tab
-            if( event.shiftKey ) {
-                this.client.ui.channel_right();
-            } else {
-                this.tab_item( event );
-                ut = false;
-            }
-            break;
-        case 219: // [
-            if( event.ctrlKey ) {
-                this.client.ui.channel_left();
-            } else {
-                bubble = true;
-            }
-            break;
-        case 221: // ] (using instead of +)
-            if( event.ctrlKey ) {
-                this.client.ui.channel_right();
-            } else {
-                bubble = true;
-            }
-            break;
-        default:
-            bubble = true;
-            break;
-    }
-    
-    if( ut )
-        this.end_tab( event );
-    
-    return bubble;
-
-};
-
-/**
- * Handle some user input.
- * 
- * @method handle
- * @param event {Object} Event data.
- * @param data {String} Input message given by the user.
- */
-wsc.Control.prototype.handle = function( event, data ) {
-
-    if( data == '' )
-        return;
-    
-    if( !this.client.cchannel )
-        return;
-    
-    var autocmd = false;
-    
-    if( data[0] != '/' ) {
-        autocmd = true;
-    }
-    
-    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
-    data = data.slice(1);
-    var bits = data.split(' ');
-    var cmdn = bits.shift().toLowerCase();
-    var ens = this.client.cchannel.namespace;
-    var etarget = ens;
-    
-    if( !autocmd && bits[0] ) {
-        var hash = bits[0][0];
-        if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
-            etarget = this.client.format_ns(bits.shift());
-        }
-    }
-    
-    var arg = bits.join(' ');
-    
-    var fired = this.client.trigger('cmd.' + cmdn, {
-        name: 'cmd',
-        cmd: cmdn,
-        args: arg,
-        target: etarget,
-        ns: ens
-    });
-    
-    if( fired == 0 ) {
-        this.client.ui.pager.notice({
-            'ref': 'cmd-fail',
-            'heading': 'Command failed',
-            'content': '"' + cmdn + '" is not a command.'
-        }, false, 5000 );
-    }
-
-};
-
-
-/**
- * This is an alternate thing for the UI module.
- * Chatterbox is basically a thing.
+ * Chatterbox is wsc's default UI library.
  * 
  * @module Chatterbox
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.16.76';
+Chatterbox.VERSION = '0.19.99';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class UI
+ * @class Chatterbox.UI
  * @constructor
+ * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
  * @param options {Object} Custom settings to use for the UI.
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( view, options, mozilla, events ) {
+Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
+    this.client = client;
     this.events = events || new EventEmitter();
     this.mozilla = mozilla;
     this.umuted = [];
     this.viewing = true;
     this.settings = {
-        'themes': ['wsct_default', 'wsct_dAmn'],
-        'theme': 'wsct_default',
+        'themes': [ 'wsct_dAmn', 'wsct_dark' ],
+        'theme': 'wsct_dark',
         'monitor': ['~Monitor', true],
         'username': '',
         'domain': 'website.com',
@@ -4480,12 +4402,71 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    /**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the `click` sound, call `ui.sound.click()`.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the `add` method.
+     * @class Chatterbox.UI.sound
+     */
     this.sound = {
+        
+        /**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         */
+        bank: {
+            m: null
+        },
+        
+        /**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         */
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        /**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         */
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        /**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         */
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -4493,13 +4474,18 @@ Chatterbox.UI = function( view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        /**
+         * Shortcut for `sound.toggle( true )`
+         * @method mute
+         */
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        /**
+         * Shortcut for `sound.toggle( false )`
+         * @method unmute
+         */
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
     view.extend( this.settings, options );
@@ -4543,6 +4529,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/
@@ -4602,18 +4589,33 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @param ns {String} Channel namespace to deform.
+ * @param namespace {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
-Chatterbox.UI.prototype.deform_ns = function( ns ) {
-    if(ns.indexOf("chat:") == 0)
-        return '#' + ns.slice(5);
+Chatterbox.UI.prototype.deform_ns = function( namespace ) {
     
-    if(ns.indexOf("server:") == 0)
-        return '~' + ns.slice(7);
+    var sym = namespace[0];
     
-    if(ns.indexOf("pchat:") == 0) {
-        var names = ns.split(":");
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf("server:") == 0 )
+        return '~' + namespace.slice(7);
+    
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
+        var names = namespace.split(":");
         names.shift();
         for(i in names) {
             name = names[i];
@@ -4623,39 +4625,54 @@ Chatterbox.UI.prototype.deform_ns = function( ns ) {
         }
     }
     
-    if( ns.indexOf('login:') == 0 )
-        return '@' + ns.slice(6);
+    return '#' + namespace;
     
-    if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
-        return '#' + ns;
-    
-    return ns;
 };
 
 /**
  * Format a channel namespace.
  *
  * @method format_ns
- * @param ns {String} Channel namespace to format.
- * @return {String} ns formatted as a channel namespace.
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} namespace formatted as a channel namespace.
  */
-Chatterbox.UI.prototype.format_ns = function( ns ) {
-    if(ns.indexOf('#') == 0) {
-        return 'chat:' + ns.slice(1);
-    }
-    if(ns.indexOf('@') == 0) {
-        var names = [ns.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(ns.indexOf('~') == 0) {
-        return "server:" + ns.slice(1);
-    }
-    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
-        return 'chat:' + ns;
+Chatterbox.UI.prototype.format_ns = function( namespace ) {
     
-    return ns;
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
+    }
+    
+    return namespace;
+    
 };
 
 /**
@@ -4716,14 +4733,9 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
-    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
-    this.sound.bank.c.load();
+    this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
     var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
     
     // Mute button.
     var muted = false;
@@ -4760,6 +4772,57 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
         ui.viewing = false;
     } );
     
+    // Events for logging output.
+    this.client.bind( 'pkt', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
+    // Channel removed from client.
+    this.client.middle(
+        'ns.remove',
+        function( data, done ) {
+            ui.remove_channel( data.ns );
+            done( data );
+        }
+    );
+    
+    this.client.bind(
+        'ns.create',
+        function( event, client ) {
+            ui.create_channel(event.chan.raw, event.chan.hidden);
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.list',
+        function( event ) {
+            ui.channel(event.ns).set_user_list( event.users );
+        }
+    );
+    
+    this.client.middle(
+        'ns.user.privchg',
+        function( data, done ) {
+            ui.channel(data.ns).privchg( data, done );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.remove',
+        function( event, client ) {
+            ui.channel(event.ns).remove_one_user( event.user );
+        }
+    );
+    
+    this.client.bind(
+        'ns.user.registered',
+        function( event ) {
+            ui.channel(event.ns).register_user( event.user );
+        }
+    );
+    
 };
 
 /**
@@ -4787,6 +4850,47 @@ Chatterbox.UI.prototype.resize = function() {
 Chatterbox.UI.prototype.loop = function(  ) {
 
     this.chatbook.loop();
+
+};
+
+/**
+ * Handle a packet being received.
+ * @method packet
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.UI.prototype.packet = function( event, client ) {
+
+    var ui = this;
+    var msg = client.protocol.log( event );
+    
+    if( msg ) {
+        
+        if( this.settings.developer ) {
+            console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        // If the event is -shownotice, don't display it!
+        if( event.hasOwnProperty( 's' ) && event.s == '0' ) {
+            this.chatbook.handle( event, client );
+            return;
+        }
+        
+        event.html = msg.html();
+        
+        this.cascade(
+            'log_message',
+            function( data, done ) {
+                ui.chatbook.log_message( data.message, data.event );
+            }, {
+                message: msg,
+                event: event
+            }
+        );
+    
+    }
+    
+    this.chatbook.handle( event, client );
 
 };
 
@@ -4995,13 +5099,18 @@ Chatterbox.UI.prototype.clear_user = function( user ) {
 Chatterbox.UI.prototype.theme = function( theme ) {
     if( this.settings.theme == theme )
         return this.settings.theme;
+    
     if( this.settings.themes.indexOf(theme) == -1 ) {
         theme = 'wsct_' + theme;
         if( this.settings.themes.indexOf(theme) == -1 )
             return this.settings.theme;
     }
+    
     this.view.removeClass( this.settings.theme ).addClass( theme );
     this.settings.theme = theme;
+    
+    this.trigger('theme.set', { name: 'theme.set', theme: theme });
+    
     return this.settings.theme;
 };
 
@@ -5031,27 +5140,28 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 };
 
 
+
 /**
- * Object for managing channel interfaces.
- * 
- * @class Channel
+ * Implements a base for a channel view.
+ * @class Chatterbox.BaseTab
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
+    this.raw = ns;
+    this.selector = 't-' + (ns || 'chan').toLowerCase();
+    this.namespace = ns;
     this.visible = false;
     this.st = 0;
+    
     // UI elements.
     this.el = {
         t: {                        // Tab
@@ -5065,23 +5175,9 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             w: null,                //      Wrap
         },                          //
         u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
+        h: {                        // Head
+            title: null,            //      Title
+            topic: null             //      Topic
         }
     };
     this.mulw = 0;
@@ -5093,25 +5189,26 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             topic: [0, 0]           //      Topic [ width, height ]
         }
     };
-    this.head = {
-        title: {
-            text: '',
-            html: ''
-        },
-        topic: {
-            text: '',
-            html: ''
-        }
-    };
+    
+    if( !ui )
+        return;
+    
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
 
 };
 
 /**
- * Draw channel on screen and store the different elements in attributes.
+ * Draw the channel on screen and store the different elements in attributes.
  * 
  * @method build
+ * @param [view] {String} HTML for the channel view
  */
-Chatterbox.Channel.prototype.build = function( ) {
+Chatterbox.BaseTab.prototype.build = function( view ) {
+    
+    if( !this.manager )
+        return;
     
     if( this.built )
         return;
@@ -5119,17 +5216,167 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
+    
     // Tabs.
     this.el.t.o = this.manager.nav.add_tab( selector, ns );
     this.el.t.l = this.el.t.o.find('.tab');
     this.el.t.c = this.el.t.o.find('.close');
+    
     // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    this.manager.chatbook.view.append( view || Chatterbox.render('basetab', {'selector': selector, 'ns': ns}) );
+    
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
+    
+    var chan = this;
+    
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    // When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.raw,
+            'chan': chan,
+            'e': e
+        } );
+        return false;
+    });
+    
+    if( this.hidden && !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass('hidden');
+    }
+    
+    this.built = true;
+};
+
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
+Chatterbox.BaseTab.prototype.hide = function( ) {
+    this.el.m.css({'display': 'none'});
+    this.el.t.o.removeClass('active');
+    this.visible = false;
+};
+
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
+Chatterbox.BaseTab.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({'display': 'block'});
+    this.el.t.o.addClass('active');
+    this.el.t.o.removeClass('noise chatting tabbed fill');
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.BaseTab.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+Chatterbox.BaseTab.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
+
+/**
+ * Resize the view window to fill the space available.
+ * @method resize
+ */
+Chatterbox.BaseTab.prototype.resize = function( width, height ) {
+
+    this.el.m.css( {
+        height: height || this.manager.chatbook.height(),
+        width: ( width || this.manager.chatbook.width() ) - 10
+    } );
+
+};
+
+/**
+ * This method is run on the main loop event. Having this allows channels to do
+ * some maintenance autonomously.
+ * @method loop
+ */
+Chatterbox.BaseTab.prototype.loop = function(  ) {
+
+
+
+};
+
+
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class Chatterbox.Channel
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ */
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+    Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+};
+
+Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
+Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
+
+/**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+    );
+    
+    // Store
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
+    
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
@@ -5157,21 +5404,11 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
-        chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.raw,
-            'chan': chan,
-            'e': e
-        } );
-        return false;
-    });
-    
     this.setup_header('title');
     this.setup_header('topic');
     
-    if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
     }
     
     this.built = true;
@@ -5185,41 +5422,44 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    this.el.h[head] = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': chan.el.h[head].innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        chan.el.h[head].css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -5227,13 +5467,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        chan.el.h[head].css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -5242,7 +5482,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -5250,69 +5490,15 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
     
-};
-
-/**
- * Hide the channel from view.
- * 
- * @method hide
- */
-Chatterbox.Channel.prototype.hide = function( ) {
-    this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
-    this.visible = false;
-};
-
-/**
- * Display the channel.
- * 
- * @method show
- */
-Chatterbox.Channel.prototype.show = function( ) {
-    this.visible = true;
-    this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
-    var c = this;
-    setTimeout( function(  ) {
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-        c.resize();
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 100);
-};
-
-/**
- * Display or hide the tab based on whether we are in developer mode or not.
- * 
- * @method developer
- */
-Chatterbox.Channel.prototype.developer = function(  ) {
-    if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
-        return;
-    }
-    if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
-    }
-};
-
-/**
- * Remove the channel from the UI.
- * 
- * @method remove
- */
-Chatterbox.Channel.prototype.remove = function(  ) {
-    this.el.t.o.remove();
-    this.el.m.remove();
 };
 
 /**
@@ -5341,7 +5527,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -5359,14 +5545,25 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * @method resize
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
     var wh = height;
-    this.el.m.height(wh);
-    // Width.
-    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -5383,7 +5580,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -5398,15 +5595,15 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.u.css({height: this.d.u[1]});
     
     // Make sure edit buttons are in the right place.
-    for( var head in this.head ) {
-        if( !this.head.hasOwnProperty( head ) )
+    for( var head in heads ) {
+        if( !heads.hasOwnProperty( head ) )
             continue;
         
-        if( this.head[head].text.length == 0 )
+        if( heads[head].m.html().length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -5419,7 +5616,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -5486,6 +5683,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -5696,37 +5894,45 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 
 /**
  * Set the channel header.
+ * 
  * This can be the title or topic, determined by `head`.
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {String} HTML to use for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
+    
     head = head.toLowerCase();
+    var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.head[head].text = content.text();
-    this.head[head].html = content.html();
+    if( this.el.h[head].html() != '' ) {
     
-    this.el.h[head].m.replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
-    );
+        if ( content.html().length != 0 ) {
+            this.server_message( head + " set by " + by );
+        }
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
     setTimeout( function(  ) {
-        if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+        if( content.text().length > 0 ) {
+            chan.el.h[head].css( { display: 'block' } );
+            var tline = (chan.el.h[head].outerHeight(true) - 5) * (-1);
+            edit.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            chan.el.h[head].css( { display: 'none' } );
         }
             
         chan.resize();
     }, 100 );
+    
 };
 
 /**
@@ -5743,48 +5949,222 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
 };
 
 /**
+ * Build the user list.
+ * 
+ * @method build_user_list
+ * @param names {Object} Privilege class names
+ * @param order {Array} Privilege class orders
+ */
+Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
+    
+    var uld = this.el.m.find('div.chatusers');
+    var pc = '';
+    var pcel = null;
+    
+    uld.html('');
+    
+    for(var index in order) {
+        var pc = names[order[index]];
+        uld.append('<div class="pc" id="' + replaceAll( pc, ' ', '-' ) + '"><h3>' + pc + '</h3><ul></ul>');
+        pcel = uld.find('.pc#' + pc);
+        pcel.css('display', 'none');
+    }
+
+};
+
+/**
+ * Reveal or hide the userlist depending on the number of users present.
+ * 
+ * @method reveal_user_list
+ */
+Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var total = 0;
+    var count = 0;
+    var pc = null;
+    
+    uld.find('div.pc').each( function( i, el ) {
+        pc = uld.find(this);
+        count = pc.find('ul li').length;
+        total+= count;
+        pc.css('display', ( count == 0 ? 'none' : 'block' ));
+    } );
+    
+    uld.css('display', ( total == 0 ? 'none' : 'block' ));
+    
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
- * @param userlist {Array} Listing of users in the channel.
+ * @param users {Array} Listing of users in the channel.
  */
-Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
-    if( Object.size(userlist) == 0 )
+    if( Object.size(users) == 0 )
         return;
     
-    var infoboxes = [];
-    var html = '';
-    var pc = {};
-    var conn = '';
-    var user = '';
+    var uld = this.el.m.find('div.chatusers');
+    var user = null;
     
-    for( var order in userlist ) {
-        pc = userlist[order];
-        html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
-        for( var un in pc.users ) {
-            user = pc.users[un];
-            conn = user.conn == 1 ? '' : '[' + user.conn + ']';
-            html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
-            if( user.hover )
-                infoboxes.push(user.hover);
-        }
-        html+= '</ul></div>';
+    for( var index in users ) {
+        
+        user = users[index];
+        this.set_user( user, true );
+    
     }
     
-    this.el.m.find('div.chatusers').html(html);
-    this.el.u = this.el.m.find('div.chatusers');
-    this.el.u.css({display: 'block'});
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
+    this.reveal_user_list();
     
-    for( var index in infoboxes ) {
-        this.userinfo(infoboxes[index]);
+};
+
+/**
+ * Set a user in the user list.
+ * 
+ * @method set_user
+ * @param user {Object} Information about the user
+ * @param noreveal {Boolean} Do not run the reveal method
+ */
+Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
+
+    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
+    var ull = uld.find('ul');
+    var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
+    
+    if( ull.find('a#' + user.name).length == 1 )
+        return;
+    
+    if( ull.find('li').length == 0 ) {
+        ull.append( html );
+    } else {
+    
+        var mname = user.name.toLowerCase();
+        var link = null;
+        var done = false;
+        
+        ull.find('li a').each( function(  ) {
+            
+            if( done )
+                return;
+            
+            link = ull.find(this);
+            
+            if( mname < link.prop('id').toLowerCase() ) {
+                link.parent().before( html );
+                done = true;
+            }
+            
+        } );
+        
+        if( !done )
+            ull.append( html );
+    
     }
-    this.resize();
     
+    var c = this;
+    this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+        
+
+};
+
+/**
+ * Remove a user from the user list.
+ * 
+ * @method remove_user
+ * @param user to remove
+ */
+Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
+
+    this.el
+        .m.find('div.chatusers div.pc ul li a#' + user)
+        .parent().remove();
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+
+};
+
+/**
+ * Remove a single instance of a user from the user list.
+ * 
+ * @method remove_one_user
+ * @param user {String} Username
+ */
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
+
+    this.remove_user( user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
+};
+
+/**
+ * Move a user from one privclass to another.
+ * 
+ * @method privchg
+ * @param event {Object} recv_privchg event data
+ * @param done {Function} Next method
+ */
+Chatterbox.Channel.prototype.privchg = function( data, done ) {
+
+    this.remove_user( data.user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[data.user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        done( data );
+        return;
+    }
+    
+    member = Object.extend( member, {} );
+    member.pc = data.pc;
+    
+    this.set_user( member );
+    done( data );
+
+};
+
+/**
+ * Handle the register user event.
+ * 
+ * @method register_user
+ * @param user {String} Name of the user to register
+ */
+Chatterbox.Channel.prototype.register_user = function( user ) {
+
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
 };
 
 /**
@@ -5799,40 +6179,45 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var c = this;
     
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
@@ -5889,45 +6274,46 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     var chan = this;
     var box = null;
     
-    link.hover(
-        function( e ) {
-            user.info = [];
-            var ed = { 'ns': chan.namespace, 'user': user };
-            chan.manager.trigger( 'userinfo.before', ed );
-            user = ed.user;
-            var infoli = '';
-            
-            for( index in user.info ) {
-                infoli+= '<li>' + user.info[index] + '</li>';
-            }
-            
-            chan.window.append(Chatterbox.render('userinfo', {
-                'username': user.name,
-                'avatar': user.avatar,
-                'link': user.link,
-                'info': infoli}));
-            
-            box = chan.window.find('.userinfo#'+user.name);
-            chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            var pos = link.offset();
-            box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
-            box.find('.info').height(box.height());
-            
-            box.hover(
-                function(){ box.data('hover', 1); },
-                function( e ) {
-                    box.data('hover', 0);
-                    chan.unhover_user( box, e );
-                }
-            );
-            
-            box.data('hover', 0);
-        },
-        function( e ) {
-            link.data('hover', 0);
-            chan.unhover_user(box, e);
+    var menter = function( e ) {
+        var infoli = '';
+        
+        for( index in user.info ) {
+            infoli+= '<li>' + user.info[index] + '</li>';
         }
-    );
+        
+        chan.window.append(Chatterbox.render('userinfo', {
+            'username': user.name,
+            'avatar': user.avatar,
+            'link': user.link,
+            'info': infoli}));
+        
+        box = chan.window.find('.userinfo#'+user.name);
+        chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
+        var pos = link.offset();
+        box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+        box.find('.info').height(box.height());
+        
+        box.hover(
+            function(){ box.data('hover', 1); },
+            function( e ) {
+                box.data('hover', 0);
+                chan.unhover_user( box, e );
+            }
+        );
+        
+        box.data('hover', 0);
+    };
+    
+    var mleave = function( e ) {
+        link.data('hover', 0);
+        chan.unhover_user(box, e);
+    };
+    
+    link.off( 'mouseenter', menter );
+    link.off( 'mouseleave', mleave );
+    
+    link.on( 'mouseenter', menter );
+    link.on( 'mouseleave', mleave );
 
 };
 
@@ -6010,11 +6396,90 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
 
 };
 
+/**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    if( event.e != 'ok' )
+        return;
+    
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
+ * Handle a recv_msg packet.
+ * @method pkt_recv_msg
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
+
+    var c = this;
+    
+    this.manager.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.manager.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( hlight ) {
+            c.highlight( );
+        } else {
+            c.highlight( false );
+        }
+        
+        c.manager.trigger( 'tabbed', e );
+    }, event );
+
+};
+
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
+            break;
+        case "privclasses":
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
+
+};
+
 
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6025,6 +6490,7 @@ Chatterbox.Chatbook = function( ui ) {
     this.chan = {};
     this.trail = [];
     this.current = null;
+    
     this.manager.on( 'tab.close.clicked', function( event, ui ) {
         ui.chatbook.remove_channel(event.ns);
     });
@@ -6057,10 +6523,12 @@ Chatterbox.Chatbook.prototype.width = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
     var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
         chan.resize( width, height );
     }
@@ -6192,12 +6660,15 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**
@@ -6353,6 +6824,35 @@ Chatterbox.Chatbook.prototype.log = function( msg ) {
 };
 
 /**
+ * Handle a log message.
+ * @method log_message
+ * @param message {Object} Log message object
+ * @param event {Object} Event data
+ */
+Chatterbox.Chatbook.prototype.log_message = function( message, event ) {
+
+    try {
+        if( !message.global ) {
+            if( !message.monitor ) {
+                this.channel( event.ns ).log_item( event );
+            } else {
+                this.manager.monitoro.log_item( event );
+            }
+        } else {
+            this.log_item( event );
+        }
+    } catch( err ) {
+        try {
+            this.ui.monitoro.server_message( 'Failed to log for', event.sns, event.html );
+        } catch( err ) {
+            console.log( '>> Failed to log message for', event.sns, '::' );
+            console.log( '>>', event.html );
+        }
+    }
+
+};
+
+/**
  * Rewrite timestamps for all open channels.
  * 
  * @method retime
@@ -6377,9 +6877,32 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
 };
 
 /**
+ * Handle a packet event.
+ * @method handle
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Chatbook.prototype.handle = function( event, client ) {
+
+    var ui = this.manager;
+    var chan = this.channel( event.ns );
+    
+    if( !chan )
+        return;
+    
+    var meth = 'pkt_' + event.name;
+    
+    try {
+        chan[meth]( event, client );
+    } catch( err ) {}
+
+};
+
+
+/**
  * This object provides an interface for the chat input panel.
  * 
- * @class Control
+ * @class Chatterbox.Control
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6389,6 +6912,16 @@ Chatterbox.Control = function( ui ) {
     this.manager.view.append( Chatterbox.template.control );
     this.view = this.manager.view.find('div.chatcontrol');
     this.ml = false;
+    
+    this.history = {};
+    this.tab = {
+        hit: false,
+        cache: '',
+        matched: [],
+        index: -1,
+        type: 0,
+        prefix: ['', '/', ''],
+    };
     
     /**
      * UI elements
@@ -6415,6 +6948,11 @@ Chatterbox.Control = function( ui ) {
         ctrl.multiline( !ctrl.multiline() );
         return false;
     });
+    
+    // Input handling.
+    this.el.i.s.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.i.m.keydown( function( event ) { return ctrl.keypress( event ); } );
+    this.el.form.submit( function( event ) { return ctrl.submit( event ); } );
     
     // FORMATTING BUTTONS
     
@@ -6470,8 +7008,15 @@ Chatterbox.Control = function( ui ) {
 
 };
 
-// Lifted from superdAmn.
-// SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+/**
+ * Lifted from superdAmn.
+ *
+ * SURROUNDTEXT: Adds text around selected text (from deviantPlus)
+ * @method surroundtext
+ * @param tf
+ * @param left
+ * @param right
+ */
 Chatterbox.Control.prototype.surroundtext = function(tf, left, right){
     // Thanks, Zikes
     var tmpScroll     = tf.scrollTop;
@@ -6520,22 +7065,6 @@ Chatterbox.Control.prototype.height = function( ) {
     return h;
 };
 
-
-/**
- * Set the handlers for the UI input.
- *
- * @method set_handlers
- * @param [onkeypress=this._onkeypress] {Method} Method to call on input event
- *   `keypress`.
- * @param [onsubmite=this._onsubmit] {Method} Method to call on input even
- *   `submit`.
- */
-Chatterbox.Control.prototype.set_handlers = function( onkeypress, onsubmit ) {
-    this.el.i.s.keydown( onkeypress || this._onkeypress );
-    this.el.i.m.keydown( onkeypress || this._onkeypress );
-    this.el.form.submit( onsubmit || this._onsubmit );
-};
-
 /**
  * Set or get multiline input mode.
  * 
@@ -6560,6 +7089,13 @@ Chatterbox.Control.prototype.multiline = function( on ) {
 
 };
 
+/**
+ * Add a button to the control panel button row.
+ * 
+ * @method add_button
+ * @param options {Object} Configuration options for the button.
+ * @return {Object} DOM element or something.
+ */
 Chatterbox.Control.prototype.add_button = function( options ) {
 
     options = Object.extend( {
@@ -6588,6 +7124,12 @@ Chatterbox.Control.prototype.add_button = function( options ) {
 
 };
 
+/**
+ * Add status text to the control panel button row.
+ * 
+ * @method add_state
+ * @param options {Object} Status configuration options
+ */
 Chatterbox.Control.prototype.add_state = function( options ) {
 
     options = Object.extend( {
@@ -6607,14 +7149,17 @@ Chatterbox.Control.prototype.add_state = function( options ) {
 
 };
 
+/**
+ * Remove a status item from the control panel button row.
+ * 
+ * @method rem_state
+ * @param ref {String} Reference ID for the button
+ */
 Chatterbox.Control.prototype.rem_state = function( ref ) {
 
     return this.el.brow.s.find( 'li#' + ref ).remove();
 
 };
-
-Chatterbox.Control.prototype._onkeypress = function( event ) {};
-Chatterbox.Control.prototype._onsubmit = function( event ) {};
 
 /**
  * Get the last word from the input box.
@@ -6682,9 +7227,349 @@ Chatterbox.Control.prototype.set_text = function( text ) {
 };
 
 /**
+ * Save current input in a cache.
+ * 
+ * @method cache_input
+ * @param previous {Object} Channel to cache input for.
+ * @param chan {Object} Newly selected channel
+ */
+Chatterbox.Control.prototype.cache_input = function( previous, chan ) {
+
+    var h = this.get_history( previous.namespace );
+    
+    if( h.index > -1 )
+        return;
+    
+    h.tmp = this.get_text();
+    this.set_text(this.get_history( chan.namespace ).tmp);
+
+};
+
+/**
+ * Get a channel's input history object.
+ * 
+ * If no history object exists for the given channel, a new object is created
+ * and stored.
+ * 
+ * @method get_history
+ * @param [namespace] {String} Channel to get the history of. If not given, the
+ *   channel currently being viewed is used.
+ * @return history {Object} Channel's input history data.
+ */
+Chatterbox.Control.prototype.get_history = function( namespace ) {
+
+    if( !namespace ) {
+        if( !this.manager.chatbook.current ) {
+             namespace = '~monitor';
+        }
+    }
+    
+    namespace = namespace || this.manager.chatbook.current.namespace;
+    
+    if( !this.history[namespace] )
+        this.history[namespace] = { index: -1, list: [], tmp: '' };
+    
+    return this.history[namespace];
+
+};
+
+/**
+ * Append an item to the current channel's input history.
+ * 
+ * @method append_history
+ * @param data {String} Input string to store.
+ */
+Chatterbox.Control.prototype.append_history = function( data ) {
+
+    if( !data )
+        return;
+    
+    var h = this.get_history();
+    h.list.unshift(data);
+    h.index = -1;
+    
+    if( h.list.length > 100 )
+        h.list.pop();
+
+};
+
+/**
+ * Scroll through the current channel's input history.
+ * 
+ * @method scroll_history
+ * @param up {Boolean} Scroll up?
+ */
+Chatterbox.Control.prototype.scroll_history = function( up ) {
+
+    var history = this.get_history();
+    var data = this.get_text();
+    
+    if( history.index == -1 )
+        if( data )
+            history.tmp = data;
+    else
+        history.list[history.index] = data;
+    
+    if( up ) {
+        if( history.list.length > 0 && history.index < (history.list.length - 1) )
+            history.index++;
+    } else {
+        if( history.index > -1)
+            history.index--;
+    }
+    
+    this.set_text(history.list[history.index] || history.tmp);
+
+};
+
+/**
+ * Handle the tab character being pressed.
+ * 
+ * @method tab_item
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.tab_item = function( event ) {
+
+    if( !this.tab.hit )
+        this.start_tab(event);
+    
+    this.chomp();
+    this.tab.index++;
+    
+    if( this.tab.index >= this.tab.matched.length )
+        this.tab.index = -1;
+    
+    if( this.tab.index == -1 ) {
+        this.unchomp(this.tab.prefix[this.tab.type] + this.tab.cache);
+        return;
+    }
+    
+    var suf = this.get_text() == '' ? ( this.tab.type == 0 ? ': ' : ' ' ) : '';
+    this.unchomp(this.tab.prefix[this.tab.type] + this.tab.matched[this.tab.index] + suf);
+
+};
+
+/**
+ * Start tab complete capabilities by compiling a list of items that match the
+ * current user input.
+ * 
+ * TODO: make this actually work in its new found home
+ * 
+ * @method start_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.start_tab = function( event ) {
+
+    this.tab.hit = true;
+    this.tab.index = -1;
+    this.tab.matched = [];
+    this.tab.type = 0;
+    
+    // We only tab the last word in the input. Slice!
+    var needle = this.chomp();
+    this.unchomp(needle);
+    
+    // Check if we's dealing with commands here
+    if( needle[0] == "/" || needle[0] == "#" || needle[0] == '@' ) {
+        this.tab.type = needle[0] == '/' ? 1 : 2;
+        if( needle[0] == '/' )
+            needle = needle.slice(1);
+    } else {
+        this.tab.type = 0;
+    }
+    
+    this.tab.cache = needle;
+    needle = needle.toLowerCase();
+    
+    // Nows we have to find our matches. Fun.
+    // Lets start with matching users.
+    this.tab.matched = [];
+    if( this.tab.type == 0 ) {
+        var c = this.manager.client.channel( this.manager.chatbook.current.namespace );
+        for( var user in c.info['members'] ) {
+            if( user.toLowerCase().indexOf(needle) == 0 )
+                this.tab.matched.push(user);
+        }
+    } else if( this.tab.type == 1 ) {
+        // Matching with commands.
+        var cmd = '';
+        for( var i in this.manager.client.cmds ) {
+            cmd = this.manager.client.cmds[i];
+            if( cmd.indexOf(needle) == 0 )
+                this.tab.matched.push(cmd);
+        }
+    } else if( this.tab.type == 2 ) {
+        // Matching with channels.
+        var ctrl = this;
+        this.manager.client.each_channel( function( ns, chan ) {
+            if( chan.namespace.toLowerCase().indexOf(needle) == 0 )
+                ctrl.tab.matched.push(chan.namespace);
+        } );
+    }
+
+};
+
+/**
+ * Clear the tabbing cache.
+ * 
+ * @method end_tab
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.end_tab = function( event ) {
+
+    this.tab.hit = false;
+    this.tab.matched = [];
+    this.tab.cache = '';
+    this.tab.index = -1;
+
+};
+
+/**
+ * Handle the send button being pressed.
+ * 
+ * @method submit
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.submit = function( event ) {
+
+    var msg = this.get_text();
+    this.append_history(msg);
+    this.set_text('');
+    this.handle(event, msg);
+    return false;
+
+};
+/**
+ * Processes a key being typed in the input area.
+ * 
+ * @method keypress
+ * @param event {Object} Event data.
+ */
+Chatterbox.Control.prototype.keypress = function( event ) {
+
+    var key = event.which || event.keyCode;
+    var ut = this.tab.hit;
+    var bubble = false;
+    
+    switch( key ) {
+        case 13: // Enter
+            if( !this.multiline() ) {
+                this.submit(event);
+            } else {
+                if( event.shiftKey ) {
+                    this.submit(event);
+                } else {
+                    bubble = true;
+                }
+            }
+            break;
+        case 38: // Up
+            if( !this.multiline() ) {
+                this.scroll_history(true);
+                break;
+            }
+            bubble = true;
+            break;
+        case 40: // Down
+            if( !this.multiline() ) {
+                this.scroll_history(false);
+                break;
+            }
+            bubble = true;
+            break;
+        case 9: // Tab
+            if( event.shiftKey ) {
+                this.manager.channel_right();
+            } else {
+                this.tab_item( event );
+                ut = false;
+            }
+            break;
+        case 219: // [
+            if( event.ctrlKey ) {
+                this.manager.channel_left();
+            } else {
+                bubble = true;
+            }
+            break;
+        case 221: // ] (using instead of +)
+            if( event.ctrlKey ) {
+                this.manager.channel_right();
+            } else {
+                bubble = true;
+            }
+            break;
+        default:
+            bubble = true;
+            break;
+    }
+    
+    if( ut )
+        this.end_tab( event );
+    
+    return bubble;
+
+};
+
+/**
+ * Handle some user input.
+ * 
+ * @method handle
+ * @param event {Object} Event data.
+ * @param data {String} Input message given by the user.
+ */
+Chatterbox.Control.prototype.handle = function( event, data ) {
+
+    if( data == '' )
+        return;
+    
+    if( !this.manager.chatbook.current )
+        return;
+    
+    var autocmd = false;
+    
+    if( data[0] != '/' ) {
+        autocmd = true;
+    }
+    
+    data = (event.shiftKey ? '/npmsg ' : ( data[0] == '/' ? '' : '/say ' )) + data;
+    data = data.slice(1);
+    var bits = data.split(' ');
+    var cmdn = bits.shift().toLowerCase();
+    var ens = this.manager.chatbook.current.namespace;
+    var etarget = ens;
+    
+    if( !autocmd && bits[0] ) {
+        var hash = bits[0][0];
+        if( (hash == '#' || hash == '@') && bits[0].length > 1 ) {
+            etarget = this.manager.format_ns(bits.shift());
+        }
+    }
+    
+    var arg = bits.join(' ');
+    
+    var fired = this.manager.client.trigger('cmd.' + cmdn, {
+        name: 'cmd',
+        cmd: cmdn,
+        args: arg,
+        target: etarget,
+        ns: ens
+    });
+    
+    if( fired == 0 ) {
+        this.manager.pager.notice({
+            'ref': 'cmd-fail',
+            'heading': 'Command failed',
+            'content': '"' + cmdn + '" is not a command.'
+        }, false, 5000 );
+    }
+
+};
+
+/**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -6700,6 +7585,7 @@ Chatterbox.Navigation = function( ui ) {
      */
     this.el = {
         n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        tw: this.manager.view.find('nav.tabs div.tabwrap'),
         t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
         b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
         l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
@@ -6899,7 +7785,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }
@@ -6938,6 +7824,10 @@ Chatterbox.Navigation.prototype.closer = function( visible ) {
  * Pager
  * 
  * Used for giving the user notifications.
+ * 
+ * @class Chatterbox.Pager
+ * @constructor
+ * @param ui {Object} Main UI object.
  */
 Chatterbox.Pager = function( ui ) {
 
@@ -7097,6 +7987,7 @@ Chatterbox.Pager.prototype.find_notice = function( reference ) {
 };
 /**
  * Popup window base class.
+ *
  * Should allow people to easily create popups... or something.
  * Subclasses of the popups should provide a way of closing the popup, or
  * maybe I could change things around a bit so there's always a close button in
@@ -7104,7 +7995,7 @@ Chatterbox.Pager.prototype.find_notice = function( reference ) {
  * close button at the bottom. Maybe make that configurable. Use a flag to
  * determine whether or not this class applies the close function or not?
  * 
- * @class Popup
+ * @class Chatterbox.Popup
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -7462,7 +8353,7 @@ Chatterbox.Popup.ItemPicker.Page.prototype.hide = function(  ) {
  * Settings popup window.
  * Provides stuff for doing things. Yay.
  *
- * @class Settings
+ * @class Chatterbox.Settings
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param config {Object} Chatterbox.Settings.Config object.
@@ -7616,7 +8507,7 @@ Chatterbox.Settings.prototype.close = function(  ) {
  * Settings options object.
  * Extensions can configure the settings window with this shit yo.
  * 
- * @class Settings.Config
+ * @class Chatterbox.Settings.Config
  * @constructor
  */
 Chatterbox.Settings.Config = function( ui ) {
@@ -7768,7 +8659,7 @@ Chatterbox.Settings.Config.prototype.close = function( window ) {
 /**
  * Settings page config object.
  * 
- * @class Settings.Page
+ * @class Chatterbox.Settings.Page
  * @constructor
  * @param name {String} Name of the page.
  */
@@ -7970,7 +8861,7 @@ Chatterbox.Settings.Page.prototype.close = function( window ) {
 /**
  * A base class for settings page items.
  * 
- * @class Settings.Item
+ * @class Chatterbox.Settings.Item
  * @constructor
  * @param type {String} Determines the type of the item.
  * @param options {Object} Options for the item.
@@ -8262,7 +9153,7 @@ Chatterbox.Settings.Item.get = function( type, options, ui, base, defaultc ) {
  * HTML form as a single settings page item.
  * This item should be given settings items to use as form fields.
  * 
- * @class Form
+ * @class Chatterbox.Settings.Item.Form
  * @constructor
  * @param type {String} The type of item this item is.
  * @param options {Object} Item options.
@@ -8445,7 +9336,7 @@ Chatterbox.Settings.Item.Form.prototype.close = function( window, page ) {
 /**
  * Base class for form fields.
  * 
- * @class Field
+ * @class Chatterbox.Settings.Item.Form.Field
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8527,7 +9418,7 @@ Chatterbox.Settings.Item.Form.Field.prototype.get = function(  ) {
 /**
  * Form radio field.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Form.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8616,7 +9507,7 @@ Chatterbox.Settings.Item.Form.Radio.prototype.get = function(  ) {
 /**
  * Form checkbox field.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Form.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8696,7 +9587,7 @@ Chatterbox.Settings.Item.Form.Checkbox.prototype.resize = function(  ) {
 /**
  * Form colour field.
  * 
- * @class Colour
+ * @class Chatterbox.Settings.Item.Form.Colour
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8738,7 +9629,7 @@ Chatterbox.Settings.Item.Form.Colour.prototype.resize = function(  ) {
 /**
  * Radio box item.
  * 
- * @class Radio
+ * @class Chatterbox.Settings.Item.Radio
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8783,7 +9674,7 @@ Chatterbox.Settings.Item.Radio.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Check
+ * @class Chatterbox.Settings.Item.Checkbox
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -8834,7 +9725,7 @@ Chatterbox.Settings.Item.Checkbox.prototype.build = function( page ) {
 /**
  * Check box item.
  * 
- * @class Items
+ * @class Chatterbox.Settings.Item.Items
  * @constructor
  * @param type {String} The type of field this field is.
  * @param options {Object} Field options.
@@ -9148,7 +10039,7 @@ Chatterbox.template.ui = '<div class="soundbank">\
         </div>\
         <div class="pager">\
         </div>\
-        <nav class="tabs"><ul id="chattabs" class="tabs"></ul>\
+        <nav class="tabs"><div class="tabwrap"><ul id="chattabs" class="tabs"></ul></div>\
         <ul id="tabnav">\
             <li><a href="#left" class="button iconic arrow_left"></a></li>\
             <li><a href="#right" class="button iconic arrow_right"></a></li>\
@@ -9190,6 +10081,14 @@ Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="bu
  * @type String
  */
 Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
+
+/**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ */
+Chatterbox.template.basetab = '<div class="chatwindow" id="{selector}-window"></div>';
 
 /**
  * HTML template for a channel view.
@@ -9333,8 +10232,6 @@ Chatterbox.template.pager = {
 
 /**
  * Settings stuff.
- *
- * @class settings
  */
 Chatterbox.template.settings = {};
 Chatterbox.template.settings.main = '<div class="bookwrap">\
@@ -9717,12 +10614,15 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
 
 
 
-/*
- * wsc - photofroggy
- * jQuery plugin allowing an HTML5/CSS chat client to connect to llama-like
- * chat servers and interact with them.
+/**
+ * jQuery plugin.
+ * 
+ * Wrapper for implementing the plugin.
+ * 
+ * @class jQuery.plugin
+ * @constructor
+ * @param $ {Object} jQuery instance
  */
-
 (function( $ ) {
     
     $('*').hover(
@@ -9734,9 +10634,21 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
         }
     );
     
+    /**
+     * Implements the wsc client as a jQuery plugin.
+     * 
+     * To create a new client, pass `"init"` as the method, as follows:
+     *      
+     *      $('div.container').wsc( 'init', options );
+     * 
+     * @method wsc
+     * @param method {String} Method to call
+     * @param options {Object} Method input options
+     * @return {Object} Instance of wsc
+     */
     $.fn.wsc = function( method, options ) {
         
-        client = $(window).data('wscclient');
+        var client = $(window).data('wscclient');
         
         if( method == 'init' || client === undefined ) {
             if( client == undefined ) {

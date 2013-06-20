@@ -1,6 +1,9 @@
 
 /**
- * Extension to handle stash links posted in the chat.
+ * Extension to handle stash links posted in the chat. Provides some helper functions
+ * to meet this end as well.
+ *
+ * @class dAmn.Stash
  */
 wsc.dAmn.Stash = function( client, storage, settings ) {
 

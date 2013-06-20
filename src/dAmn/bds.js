@@ -39,7 +39,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('CDS.LINK.REJECT', handle.clrj);
         client.bind('CDS.LINK.ACK', handle.clra);
         client.bind('pkt.recv_join', handle.pcrj);
+        client.bind('pkt.recv_part', handle.pcrp);
         client.bind('pkt.property', handle.pcp);
+        client.bind('closed', handle.closed);
+        
+        // Filter BDS commands
+        client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
+        client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
     };
     
     var pkt_login = function( event ) {
@@ -90,6 +96,69 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     };
     
     var handle = {
+        // Filter
+        filter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.ns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a message
+            var msg = data.message.match( /<span class="cmsg u-([^"]+)">(.*)<\/span>/ );
+            
+            if( !msg ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( msg[2].match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            
+            done( data );
+        },
+        
+        hfilter: function( data, done ) {
+            
+            // Are we in developer mode?
+            if( client.settings.developer ) {
+                done( data );
+                return;
+            }
+            
+            // Is this a private chat?
+            if( data.sns[0] != '@' ) {
+                done( data );
+                return;
+            }
+            
+            // Find a BDS message
+            if( data.message.match( /^([A-Z0-9-_]+):([A-Z0-9-_]+):([A-Z0-9-_]+)(:.*|)$/ ) ) {
+            
+                return;
+            
+            }
+            done( data );
+        
+        },
+        
+        // Connection closed.
+        closed: function( event ) {
+            client.remove_ns( settings.bds.mns );
+            client.remove_ns( settings.bds.gate );
+        },
+        
         // Provider
         join: function( event ) {
             if( event.ns.toLowerCase() != settings.bds.mns )
@@ -98,7 +167,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.pkt.arg.e != 'ok' )
                 return;
             
-            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+            //client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
         
         // Botcheck
@@ -107,6 +176,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
+            
+            if( event.ns.toLowerCase() == settings.bds.gate && client.channel( settings.bds.mns ) != null ) {
+                return;
+            }
+            
             var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
@@ -124,7 +198,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
-                client.join( settings.bds.mns );
+                if( client.channel( settings.bds.mns ) == null)
+                    client.join( settings.bds.mns );
+                
                 return;
             }
             
@@ -204,10 +280,13 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             var p = event.payload.split(',');
             var t = p.shift();
             p = p.join(',');
+            
             if( t.toLowerCase() != client.settings.username.toLowerCase() )
                 return;
+            
             if( !(user in pchats) )
                 return;
+            
             clearTimeout( pchats[user] );
             client.channel( '@' + user ).server_message('Chat request rejected', p);
         },
@@ -238,17 +317,19 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             }
             
             // Other guy is already here.
-            if( client.channel(event.ns).get_usernames().length == 2 )
+            if( client.channel(event.ns).get_usernames().length == 2 ) {
+                client.bds.channel.add( event.ns );
                 return;
+            }
             
             // Send notice...
             var user = event.sns.substr(1);
             var ns = event.ns;
-            client.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
+            client.ui.channel(ns).server_message(user + ' has not yet joined', 'Sending them a notice...');
             client.npmsg( 'chat:datashare', 'CDS:LINK:REQUEST:' + user );
             pchats[user.toLowerCase()] = setTimeout(function() {
                 try {
-                    client.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
+                    client.ui.channel(ns).server_message( 'Notification failed', user + ' does not seem to be using a client that supports pchat notices.' );
                 } catch( err ) {}
             }, 10000);
         },
@@ -262,10 +343,20 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 clearTimeout( pchats[event.user.toLowerCase()] );
             } catch(err) {}
             
+            client.bds.channel.add( event.ns );
+            
             if( !( event.user in pns ) )
                 return;
             
             client.ui.pager.remove_notice( pns[event.user] );
+        },
+        
+        // pchat recv_part
+        pcrp: function( event ) {
+            if( event.sns[0] != '@' )
+                return;
+            
+            client.bds.channel.remove( event.ns );
         }
     };
 

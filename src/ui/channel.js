@@ -1,7 +1,7 @@
 /**
  * Object for managing channel interfaces.
  * 
- * @class Channel
+ * @class Chatterbox.Channel
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
@@ -9,76 +9,21 @@
  * @param monitor {Boolean} Is this channel the monitor?
  */
 Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
-
-    this.manager = ui;
-    this.hidden = hidden;
-    this.monitor = ( monitor == undefined ? false : monitor );
-    this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
-    this.visible = false;
-    this.st = 0;
-    // UI elements.
-    this.el = {
-        t: {                        // Tab
-            o: null,                //      Object..
-            l: null,                //      Link
-            c: null,                //      Close button
-        },                          //
-        m: null,                    // Main
-        l: {                        // Channel log
-            p: null,                //      Panel
-            w: null,                //      Wrap
-        },                          //
-        u: null,                    // User panel
-        h: {                        // Header
-            title: {                //      Title
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            },
-            topic: {                //      Topic
-                m: null,
-                t: null,
-                e: null,
-                s: null,
-                c: null,
-                editing: false
-            }
-        }
-    };
-    this.mulw = 0;
-    // Dimensions...
-    this.d = {
-        u: [0, 0],                  // User panel [ width, height ]
-        h: {                        // Header
-            title: [0, 0],          //      Title [ width, height ]
-            topic: [0, 0]           //      Topic [ width, height ]
-        }
-    };
-    this.head = {
-        title: {
-            text: '',
-            html: ''
-        },
-        topic: {
-            text: '',
-            html: ''
-        }
-    };
-
+    Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
 };
 
+Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
+Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
+
 /**
- * Draw channel on screen and store the different elements in attributes.
+ * Draw the channel on screen and store the different elements in attributes.
  * 
  * @method build
  */
 Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
     
     if( this.built )
         return;
@@ -86,17 +31,17 @@ Chatterbox.Channel.prototype.build = function( ) {
     var selector = this.selector;
     var ns = this.namespace;
     var raw = this.raw;
-    // Tabs.
-    this.el.t.o = this.manager.nav.add_tab( selector, ns );
-    this.el.t.l = this.el.t.o.find('.tab');
-    this.el.t.c = this.el.t.o.find('.close');
-    // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+    );
+    
     // Store
-    this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
+    
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
     var chan = this;
@@ -124,21 +69,11 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
-        chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.raw,
-            'chan': chan,
-            'e': e
-        } );
-        return false;
-    });
-    
     this.setup_header('title');
     this.setup_header('topic');
     
-    if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
+    if( this.namespace[0] == '@' ) {
+        this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
     }
     
     this.built = true;
@@ -152,41 +87,44 @@ Chatterbox.Channel.prototype.build = function( ) {
 Chatterbox.Channel.prototype.setup_header = function( head ) {
     
     var chan = this;
-    this.el.h[head].m = this.el.m.find('header.' + head + ' div');
-    this.el.h[head].e = this.el.m.find('header.' + head + ' a[href=#edit]');
-    this.el.h[head].t = this.el.m.find('header.' + head + ' textarea');
-    this.el.h[head].s = this.el.m.find('header.' + head + ' a[href=#save]');
-    this.el.h[head].c = this.el.m.find('header.' + head + ' a[href=#cancel]');
+    var h = {};
+    h.m = this.el.m.find('header.' + head + ' div');
+    h.e = this.el.m.find('header.' + head + ' a[href=#edit]');
+    h.t = this.el.m.find('header.' + head + ' textarea');
+    h.s = this.el.m.find('header.' + head + ' a[href=#save]');
+    h.c = this.el.m.find('header.' + head + ' a[href=#cancel]');
     
-    this.el.h[head].m.parent().mouseover( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'block');
+    this.el.h[head] = h.m;
+    
+    h.m.parent().mouseover( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'block');
             return;
         }
-        chan.el.h[head].s.css('display', 'block');
-        chan.el.h[head].c.css('display', 'block');
+        h.s.css('display', 'block');
+        h.c.css('display', 'block');
     } );
     
-    this.el.h[head].m.parent().mouseout( function( e ) {
-        if( !chan.el.h[head].editing ) {
-            chan.el.h[head].e.css('display', 'none');
+    h.m.parent().mouseout( function( e ) {
+        if( !h.editing ) {
+            h.e.css('display', 'none');
             return;
         }
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
     } );
     
-    this.el.h[head].e.click( function( e ) {
-        chan.el.h[head].t.text(chan.head[head].text);
+    h.e.click( function( e ) {
+        h.t.text(chan.manager.client.channel(chan.namespace).info[head].content);
         
-        chan.el.h[head].t.css({
+        h.t.css({
             'display': 'block',
-            'width': chan.el.h[head].m.innerWidth() - 10,
+            'width': chan.el.h[head].innerWidth() - 10,
         });
         
-        chan.el.h[head].m.css('display', 'none');
-        chan.el.h[head].e.css('display', 'none');
-        chan.el.h[head].editing = true;
+        chan.el.h[head].css('display', 'none');
+        h.e.css('display', 'none');
+        h.editing = true;
         
         chan.resize();
         
@@ -194,13 +132,13 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
     } );
     
     var collapse = function(  ) {
-        var val = chan.el.h[head].t.val();
-        chan.el.h[head].t.text('');
-        chan.el.h[head].t.css('display', 'none');
-        chan.el.h[head].m.css('display', 'block');
-        chan.el.h[head].s.css('display', 'none');
-        chan.el.h[head].c.css('display', 'none');
-        chan.el.h[head].editing = false;
+        var val = h.t.val();
+        h.t.text('');
+        h.t.css('display', 'none');
+        chan.el.h[head].css('display', 'block');
+        h.s.css('display', 'none');
+        h.c.css('display', 'none');
+        h.editing = false;
         
         //setTimeout( function(  ) {
             chan.resize();
@@ -209,7 +147,7 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
         return val;
     };
     
-    this.el.h[head].s.click( function( e ) {
+    h.s.click( function( e ) {
         var val = collapse();
         
         chan.manager.trigger( head + '.save', {
@@ -217,69 +155,15 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
             value: val
         } );
         
-        chan.el.h[head].t.text('');
+        h.t.text('');
         return false;
     } );
     
-    this.el.h[head].c.click( function( e ) {
+    h.c.click( function( e ) {
         collapse();
         return false;
     } );
     
-};
-
-/**
- * Hide the channel from view.
- * 
- * @method hide
- */
-Chatterbox.Channel.prototype.hide = function( ) {
-    this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
-    this.visible = false;
-};
-
-/**
- * Display the channel.
- * 
- * @method show
- */
-Chatterbox.Channel.prototype.show = function( ) {
-    this.visible = true;
-    this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
-    var c = this;
-    setTimeout( function(  ) {
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-        c.resize();
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 100);
-};
-
-/**
- * Display or hide the tab based on whether we are in developer mode or not.
- * 
- * @method developer
- */
-Chatterbox.Channel.prototype.developer = function(  ) {
-    if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
-        return;
-    }
-    if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
-    }
-};
-
-/**
- * Remove the channel from the UI.
- * 
- * @method remove
- */
-Chatterbox.Channel.prototype.remove = function(  ) {
-    this.el.t.o.remove();
-    this.el.m.remove();
 };
 
 /**
@@ -308,7 +192,7 @@ Chatterbox.Channel.prototype.pad = function ( ) {
     // Add padding.
     this.el.l.w.css({'padding-top': 0, 'height': 'auto'});
     var wh = this.el.l.w.innerHeight();
-    var lh = this.el.l.p.innerHeight() - this.el.h.topic.m.parent().outerHeight();
+    var lh = this.el.l.p.innerHeight() - this.el.h.topic.parent().outerHeight();
     var pad = lh - wh;
     
     if( pad > 0 )
@@ -326,14 +210,25 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  * @method resize
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
+    
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+    
+    var heads = {
+        'title': {
+            m: this.el.m.find( 'header div.title' ),
+            e: this.el.m.find('header.title a[href=#edit]')
+        },
+        'topic': {
+            m: this.el.m.find( 'header div.topic' ),
+            e: this.el.m.find('header.topic a[href=#edit]')
+        }
+    };
+    
     this.el.l.w.css({'padding-top': 0});
     // Height.
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
     var wh = height;
-    this.el.m.height(wh);
-    // Width.
-    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -350,7 +245,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     cw = cw - this.d.u[0];
     
     // Account for channel title in height.
-    wh = wh - this.el.h.title.m.parent().outerHeight();
+    wh = wh - heads.title.m.parent().outerHeight();
         
     // Log panel dimensions
     this.el.l.p.css({
@@ -365,15 +260,15 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     this.el.u.css({height: this.d.u[1]});
     
     // Make sure edit buttons are in the right place.
-    for( var head in this.head ) {
-        if( !this.head.hasOwnProperty( head ) )
+    for( var head in heads ) {
+        if( !heads.hasOwnProperty( head ) )
             continue;
         
-        if( this.head[head].text.length == 0 )
+        if( heads[head].m.html().length == 0 )
             continue;
         
-        var tline = (this.el.h[head].m.outerHeight(true) - 5) * (-1);
-        this.el.h[head].e.css('top', tline);
+        var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
+        heads[head].e.css('top', tline);
     }
 };
 
@@ -386,7 +281,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
  */
 Chatterbox.Channel.prototype.loop = function(  ) {
 
-    msgs = this.el.l.p.find( '.logmsg' );
+    var msgs = this.el.l.p.find( '.logmsg' );
     
     if( msgs.length < 200 )
         return;
@@ -453,6 +348,7 @@ Chatterbox.Channel.prototype.log_item = function( item ) {
             chan.scroll();
             chan.noise();
         }, {
+            'ns': this.namespace,
             'ts': ts,
             'ms': date.getTime(),
             'message': item.html,
@@ -663,37 +559,45 @@ Chatterbox.Channel.prototype.log_pc = function( privileges, data ) {
 
 /**
  * Set the channel header.
+ * 
  * This can be the title or topic, determined by `head`.
  * 
  * @method set_header
  * @param head {String} Should be 'title' or 'topic'.
- * @param content {String} HTML to use for the header.
+ * @param content {Object} Content for the header
+ * @param by {String} Username of the person who set the header
+ * @param ts {String} Timestamp for when the header was set
  */
-Chatterbox.Channel.prototype.set_header = function( head, content ) {
+Chatterbox.Channel.prototype.set_header = function( head, content, by, ts ) {
+    
     head = head.toLowerCase();
+    var edit = this.el.m.find('header.' + head + ' a[href=#edit]');
+    //var c = this.manager.client.channel( this.namespace );
     
-    this.head[head].text = content.text();
-    this.head[head].html = content.html();
+    if( this.el.h[head].html() != '' ) {
     
-    this.el.h[head].m.replaceWith(
-        Chatterbox.render('header', {'head': head, 'content': this.head[head].html})
-    );
+        if ( content.html().length != 0 ) {
+            this.server_message( head + " set by " + by );
+        }
     
-    this.el.h[head].m = this.el.m.find('header div.' + head);
+    }
+    
+    this.el.h[head].html( content.html() );
     
     var chan = this;
     
     setTimeout( function(  ) {
-        if( chan.head[head].text.length > 0 ) {
-            chan.el.h[head].m.css( { display: 'block' } );
-            var tline = (chan.el.h[head].m.outerHeight(true) - 5) * (-1);
-            chan.el.h[head].e.css('top', tline);
+        if( content.text().length > 0 ) {
+            chan.el.h[head].css( { display: 'block' } );
+            var tline = (chan.el.h[head].outerHeight(true) - 5) * (-1);
+            edit.css('top', tline);
         } else {
-            chan.el.h[head].m.css( { display: 'none' } );
+            chan.el.h[head].css( { display: 'none' } );
         }
             
         chan.resize();
     }, 100 );
+    
 };
 
 /**
@@ -710,48 +614,222 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
 };
 
 /**
+ * Build the user list.
+ * 
+ * @method build_user_list
+ * @param names {Object} Privilege class names
+ * @param order {Array} Privilege class orders
+ */
+Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
+    
+    var uld = this.el.m.find('div.chatusers');
+    var pc = '';
+    var pcel = null;
+    
+    uld.html('');
+    
+    for(var index in order) {
+        var pc = names[order[index]];
+        uld.append('<div class="pc" id="' + replaceAll( pc, ' ', '-' ) + '"><h3>' + pc + '</h3><ul></ul>');
+        pcel = uld.find('.pc#' + pc);
+        pcel.css('display', 'none');
+    }
+
+};
+
+/**
+ * Reveal or hide the userlist depending on the number of users present.
+ * 
+ * @method reveal_user_list
+ */
+Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
+
+    var uld = this.el.m.find('div.chatusers');
+    var total = 0;
+    var count = 0;
+    var pc = null;
+    
+    uld.find('div.pc').each( function( i, el ) {
+        pc = uld.find(this);
+        count = pc.find('ul li').length;
+        total+= count;
+        pc.css('display', ( count == 0 ? 'none' : 'block' ));
+    } );
+    
+    uld.css('display', ( total == 0 ? 'none' : 'block' ));
+    
+    var c = this;
+    setTimeout( function( ) {
+        c.resize();
+    }, 100);
+
+};
+
+/**
  * Set the channel user list.
  * 
  * @method set_user_list
- * @param userlist {Array} Listing of users in the channel.
+ * @param users {Array} Listing of users in the channel.
  */
-Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
+Chatterbox.Channel.prototype.set_user_list = function( users ) {
     
-    if( Object.size(userlist) == 0 )
+    if( Object.size(users) == 0 )
         return;
     
-    var infoboxes = [];
-    var html = '';
-    var pc = {};
-    var conn = '';
-    var user = '';
+    var uld = this.el.m.find('div.chatusers');
+    var user = null;
     
-    for( var order in userlist ) {
-        pc = userlist[order];
-        html += '<div class="pc"><h3>' + pc.name + '</h3><ul>';
-        for( var un in pc.users ) {
-            user = pc.users[un];
-            conn = user.conn == 1 ? '' : '[' + user.conn + ']';
-            html+= '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>'
-            if( user.hover )
-                infoboxes.push(user.hover);
-        }
-        html+= '</ul></div>';
+    for( var index in users ) {
+        
+        user = users[index];
+        this.set_user( user, true );
+    
     }
     
-    this.el.m.find('div.chatusers').html(html);
-    this.el.u = this.el.m.find('div.chatusers');
-    this.el.u.css({display: 'block'});
-    this.d.u = [
-        this.el.u.outerWidth(),
-        this.el.u.outerHeight()
-    ];
+    this.reveal_user_list();
     
-    for( var index in infoboxes ) {
-        this.userinfo(infoboxes[index]);
+};
+
+/**
+ * Set a user in the user list.
+ * 
+ * @method set_user
+ * @param user {Object} Information about the user
+ * @param noreveal {Boolean} Do not run the reveal method
+ */
+Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
+
+    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
+    var ull = uld.find('ul');
+    var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
+    var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
+    
+    if( ull.find('a#' + user.name).length == 1 )
+        return;
+    
+    if( ull.find('li').length == 0 ) {
+        ull.append( html );
+    } else {
+    
+        var mname = user.name.toLowerCase();
+        var link = null;
+        var done = false;
+        
+        ull.find('li a').each( function(  ) {
+            
+            if( done )
+                return;
+            
+            link = ull.find(this);
+            
+            if( mname < link.prop('id').toLowerCase() ) {
+                link.parent().before( html );
+                done = true;
+            }
+            
+        } );
+        
+        if( !done )
+            ull.append( html );
+    
     }
-    this.resize();
     
+    var c = this;
+    this.manager.cascade( 'user.hover', function( data ) { c.userinfo( data ); }, user.hover);
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+        
+
+};
+
+/**
+ * Remove a user from the user list.
+ * 
+ * @method remove_user
+ * @param user to remove
+ */
+Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
+
+    this.el
+        .m.find('div.chatusers div.pc ul li a#' + user)
+        .parent().remove();
+    
+    noreveal = noreveal || false;
+    
+    if( !( noreveal ) )
+        this.reveal_user_list();
+
+};
+
+/**
+ * Remove a single instance of a user from the user list.
+ * 
+ * @method remove_one_user
+ * @param user {String} Username
+ */
+Chatterbox.Channel.prototype.remove_one_user = function( user ) {
+
+    this.remove_user( user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
+};
+
+/**
+ * Move a user from one privclass to another.
+ * 
+ * @method privchg
+ * @param event {Object} recv_privchg event data
+ * @param done {Function} Next method
+ */
+Chatterbox.Channel.prototype.privchg = function( data, done ) {
+
+    this.remove_user( data.user, true );
+    
+    var member = this.manager.client.channel(this.namespace).info.members[data.user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        done( data );
+        return;
+    }
+    
+    member = Object.extend( member, {} );
+    member.pc = data.pc;
+    
+    this.set_user( member );
+    done( data );
+
+};
+
+/**
+ * Handle the register user event.
+ * 
+ * @method register_user
+ * @param user {String} Name of the user to register
+ */
+Chatterbox.Channel.prototype.register_user = function( user ) {
+
+    this.remove_user( user, true );
+    var member = this.manager.client.channel(this.namespace).info.members[user];
+    
+    if( !member ) {
+        this.reveal_user_list();
+        return;
+    }
+    
+    this.set_user( member );
+
 };
 
 /**
@@ -766,40 +844,45 @@ Chatterbox.Channel.prototype.set_user_list = function( userlist ) {
  */
 Chatterbox.Channel.prototype.highlight = function( message ) {
     
-    var tab = this.el.t.o;
+    var c = this;
     
-    if( message !== false ) {
-        ( message || this.el.l.w.find('.logmsg').last() ).addClass('highlight');
-    }
-    
-    if( tab.hasClass('active') ) {
-        if( !this.manager.viewing )
-            this.manager.sound.click();
-        return;
-    }
-    
-    if( !this.hidden ) {
-        this.manager.sound.click();
-    }
-    
-    if( tab.hasClass('tabbed') )
-        return;
-    
-    if( tab.hasClass('chatting') )
-        tab.removeClass('chatting');
-    
-    var runs = 0;
-    tab.addClass('tabbed');
-    
-    function toggles() {
-        runs++;
-        tab.toggleClass('fill');
-        if( runs == 6 )
+    this.manager.cascade( 'highlight', function( data, done ) {
+        var tab = c.el.t.o;
+        var message = data.message;
+        
+        if( message !== false ) {
+            ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
+        }
+        
+        if( tab.hasClass('active') ) {
+            if( !c.manager.viewing )
+                c.manager.sound.click();
             return;
-        setTimeout( toggles, 1000 );
-    }
-    
-    toggles();
+        }
+        
+        if( !c.hidden ) {
+            c.manager.sound.click();
+        }
+        
+        if( tab.hasClass('tabbed') )
+            return;
+        
+        if( tab.hasClass('chatting') )
+            tab.removeClass('chatting');
+        
+        var runs = 0;
+        tab.addClass('tabbed');
+        
+        function toggles() {
+            runs++;
+            tab.toggleClass('fill');
+            if( runs == 6 )
+                return;
+            setTimeout( toggles, 1000 );
+        }
+        
+        toggles();
+    }, { 'c': c, 'message': message } );
     
 };
 
@@ -856,45 +939,46 @@ Chatterbox.Channel.prototype.userinfo = function( user ) {
     var chan = this;
     var box = null;
     
-    link.hover(
-        function( e ) {
-            user.info = [];
-            var ed = { 'ns': chan.namespace, 'user': user };
-            chan.manager.trigger( 'userinfo.before', ed );
-            user = ed.user;
-            var infoli = '';
-            
-            for( index in user.info ) {
-                infoli+= '<li>' + user.info[index] + '</li>';
-            }
-            
-            chan.window.append(Chatterbox.render('userinfo', {
-                'username': user.name,
-                'avatar': user.avatar,
-                'link': user.link,
-                'info': infoli}));
-            
-            box = chan.window.find('.userinfo#'+user.name);
-            chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
-            var pos = link.offset();
-            box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
-            box.find('.info').height(box.height());
-            
-            box.hover(
-                function(){ box.data('hover', 1); },
-                function( e ) {
-                    box.data('hover', 0);
-                    chan.unhover_user( box, e );
-                }
-            );
-            
-            box.data('hover', 0);
-        },
-        function( e ) {
-            link.data('hover', 0);
-            chan.unhover_user(box, e);
+    var menter = function( e ) {
+        var infoli = '';
+        
+        for( index in user.info ) {
+            infoli+= '<li>' + user.info[index] + '</li>';
         }
-    );
+        
+        chan.window.append(Chatterbox.render('userinfo', {
+            'username': user.name,
+            'avatar': user.avatar,
+            'link': user.link,
+            'info': infoli}));
+        
+        box = chan.window.find('.userinfo#'+user.name);
+        chan.window.find('div.userinfo:not(\'#' + user.name + '\')').remove();
+        var pos = link.offset();
+        box.css({ 'top': (pos.top - link.height()) + 10, 'left': (pos.left - (box.width())) - 6 });
+        box.find('.info').height(box.height());
+        
+        box.hover(
+            function(){ box.data('hover', 1); },
+            function( e ) {
+                box.data('hover', 0);
+                chan.unhover_user( box, e );
+            }
+        );
+        
+        box.data('hover', 0);
+    };
+    
+    var mleave = function( e ) {
+        link.data('hover', 0);
+        chan.unhover_user(box, e);
+    };
+    
+    link.off( 'mouseenter', menter );
+    link.off( 'mouseleave', mleave );
+    
+    link.on( 'mouseenter', menter );
+    link.on( 'mouseleave', mleave );
 
 };
 
@@ -974,6 +1058,85 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
         return;
     this.el.l.w.find('li.logmsg.u-' + user.toLowerCase()).remove();
     this.scroll();
+
+};
+
+/**
+ * When we have just joined a channel we want to reset certain things like
+ * the topic and title. We will be receiving these from the server again soon.
+ * @method pkt_join
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
+
+    if( event.e != 'ok' )
+        return;
+    
+    this.set_header('title', (new wsc.MessageString('')), '', '' );
+    this.set_header('topic', (new wsc.MessageString('')), '', '' );
+
+};
+
+/**
+ * Handle a recv_msg packet.
+ * @method pkt_recv_msg
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
+
+    var c = this;
+    
+    this.manager.cascade( 'chan.recv_msg', function( e, done ) {
+        var u = c.manager.client.settings['username'].toLowerCase(); 
+        
+        if( u == e.user.toLowerCase() )
+            return;
+        
+        var msg = e['message'].toLowerCase();
+        var hlight = msg.indexOf(u) != -1;
+        
+        if( !hlight && e.sns[0] != '@' )
+            return;
+        
+        if( hlight ) {
+            c.highlight( );
+        } else {
+            c.highlight( false );
+        }
+        
+        c.manager.trigger( 'tabbed', e );
+    }, event );
+
+};
+
+/**
+ * Handle a property packet.
+ * @method pkt_property
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Channel.prototype.pkt_property = function( event, client ) {
+
+    var prop = event.pkt.arg.p;
+    var c = client.channel( this.namespace );
+    
+    switch(prop) {
+        case "title":
+        case "topic":
+            this.set_header(prop, event.value || (new wsc.MessageString( '' )), event.by, event.ts );
+            break;
+        case "privclasses":
+            this.build_user_list( c.info.pc, c.info.pc_order.slice(0) );
+            break;
+        case "members":
+            // this.set_members(e);
+            break;
+        default:
+            // this.server_message("Received unknown property " + prop + " received in " + this.info["namespace"] + '.');
+            break;
+    }
 
 };
 

@@ -10,10 +10,11 @@
  *     console.log(msg.html()); // 'hey, check <b><a href="http://google.com">google</a></b> for answers.'
  *     console.log(msg.ansi()); // 'hey, check \x1b[1m[link:http://google.com]google[/link]\x1b[22m for answers.'
  * 
- * @class TablumpString
+ * @class dAmn.TablumpString
+ * @extends wsc.MessageString
  * @constructor
  * @param data {String} String possibly containing tablumps.
- * @param parser {Object} A reference to a tablumps parser. Not required.
+ * @param [parser] {Object} A reference to a tablumps parser.
  */
 wsc.dAmn.TablumpString = function(data, parser) {
     this._parser = parser || new wsc.dAmn.Tablumps();
@@ -81,12 +82,32 @@ wsc.dAmn.PARSE = {
 
 
 /**
- * @object wsc.dAmn.TablumpParser
- *
- * Constructor for the tablumps parser.
+ * Parser for dAmn Tablumps.
+ * 
+ * @class dAmn.TablumpParser
+ * @extends wsc.MessageParser
+ * @constructor
  */
 wsc.dAmn.TablumpParser = function(  ) {
 
+    /**
+     * This object holds each tablump's parsing and rendering rules. For each tablump,
+     * there is a key, which is the tablump's head, or "tag". The entry is an array
+     * with the number of arguments in the tablump, followed by different renderers.
+     * As a generalisation, it looks like this:
+     *
+     *      this.lumps[tag] = [ arguments, render_text, render_html, render_ansi ];
+     * 
+     * Renderers can be formatting strings or functions. All renderers other than the
+     * first one are optional. If a particular render is not available, the rendering step
+     * falls back to the first renderer in the Array. As a brief example, this is what the
+     * img tag's entry looks like:
+     *      
+     *      this.lumps['&img\t'] = [ 3, '<img src="{0}" alt="{1}" title="{2}" />'];
+     * 
+     * @property lumps
+     * @type Object
+     */
     this.lumps = this.defaultMap();
 
 };
@@ -95,18 +116,17 @@ wsc.dAmn.TablumpParser.prototype = new wsc.MessageParser;
 wsc.dAmn.TablumpParser.prototype.constructor = wsc.dAmn.TablumpParser;
 
 /**
- * @function registerMap
- *
  * I should probably deprecate this. Sets the rendering map to the given map.
+ * @method registerMap
+ * @deprecated
  */
 wsc.dAmn.TablumpParser.prototype.registerMap = function( map ) {
     this.lumps = map;
 };
 
 /**
- * @function extend
- *
  * Add the given rendering items to the parser's render map.
+ * @method extend
  */
 wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
     for(index in map) {
@@ -115,9 +135,8 @@ wsc.dAmn.TablumpParser.prototype.extend = function( map ) {
 };
 
 /**
- * @function defaultMap
- * 
  * Get all the default nonsense.
+ * @method defaultMap
  */
 wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     /* Tablumps formatting rules.
@@ -190,7 +209,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
-        '&thumb\t': [ 7,
+        '&thumb\t': [ 6,
             ':thumb{0}:',
             wsc.dAmn.Emotes.Tablumps
         ],
@@ -201,9 +220,12 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
 
 
 /**
- * @function parse
+ * Parse a message into tokens and return it as a
+ * {{#crossLink "dAmn.TablumpString"}}{{/crossLink}} object.
  *
- * Create a wsc.dAmn.TablumpString obejct and return it.
+ * @method parse
+ * @param data {String} Message to parse
+ * @return {Object} Parsed tablump string
  */
 wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
     data = replaceAll(data, '<', '&lt;');
@@ -212,9 +234,11 @@ wsc.dAmn.TablumpParser.prototype.parse = function( data, sep ) {
 };
 
 /**
- * @function tokenise
- * 
  * Parse a message possibly containing tablumps into tokens.
+ * 
+ * @method tokenise
+ * @param data {String} Message to parse
+ * @return {Array} Tokens
  */
 wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 
@@ -310,8 +334,6 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
 };
 
 /**
- * @function render
- *
  * Render tablumps in a given format.
  * 
  * Here, the flag should be a number, and defines the index of the renderer
@@ -322,6 +344,11 @@ wsc.dAmn.TablumpParser.prototype.tokenise = function( data ) {
  * Setting `flag` to 1 causes the parser to render tablumps as HTML elements
  * where possible. Setting `flag` to 2 causes the parser to render tablumps as
  * ANSI escape sequence formatted strings where possible.
+ * 
+ * @method render
+ * @param flag {Integer} Determines how the message should be rendered
+ * @param data {Object} TablumpString to be rendered
+ * @return {String} Rendered tablump string
  */
 wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
     if( !data )
@@ -354,8 +381,12 @@ wsc.dAmn.TablumpParser.prototype.render = function( flag, data ) {
 };
 
 /**
- * @function renderOne
  * Render a single tablump.
+ * @method renderOne
+ * @param type {Integer} Type of renderer to use
+ * @param tag {String} Name of the tablump tag
+ * @param tokens {Array} Tablump arguments
+ * @return {String} The rendered tablump
  */
 wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
     var lump = this.lumps[tag];

@@ -2,7 +2,7 @@
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
- * @class Transport
+ * @class wsc.Transport
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.Transport.sopen] {Method} This method will be called when
@@ -133,7 +133,7 @@ wsc.Transport.prototype.close = function(  ) {};
 /**
  * WebSocket transport object.
  * 
- * @class WebSocket
+ * @class wsc.WebSocket
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.WebSocket.sopen] {Method} This method will be called when
@@ -240,7 +240,7 @@ wsc.WebSocket.prototype.close = function(  ) {
 /**
  * SocketIO wrapper.
  * 
- * @class SocketIO
+ * @class wsc.SocketIO
  * @constructor
  * @param server {String} Address for the server to connect to.
  * @param [open=wsc.SocketIO.sopen] {Method} This method will be called when

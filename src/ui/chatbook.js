@@ -1,7 +1,7 @@
 /**
  * Object for managing the chatbook portion of the UI.
  *
- * @class Chatbook
+ * @class Chatterbox.Chatbook
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -12,6 +12,7 @@ Chatterbox.Chatbook = function( ui ) {
     this.chan = {};
     this.trail = [];
     this.current = null;
+    
     this.manager.on( 'tab.close.clicked', function( event, ui ) {
         ui.chatbook.remove_channel(event.ns);
     });
@@ -44,10 +45,12 @@ Chatterbox.Chatbook.prototype.width = function() {
  */
 Chatterbox.Chatbook.prototype.resize = function( height ) {
     height = height || 600;
-    this.view.height(height);
     var width = this.view.innerWidth();
     
-    for( select in this.chan ) {
+    for( var select in this.chan ) {
+        if( !this.chan.hasOwnProperty( select ) )
+            continue;
+        
         var chan = this.chan[select];
         chan.resize( width, height );
     }
@@ -179,12 +182,15 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
     this.manager.control.focus();
     this.current = chan;
     this.manager.resize();
+    this.manager.control.cache_input( prev, chan );
     
     this.manager.trigger( 'channel.selected', {
         'ns': chan.raw,
         'chan': chan,
         'prev': prev
     } );
+    
+    this.manager.client.select_ns( chan.raw );
 };
 
 /**
@@ -340,6 +346,35 @@ Chatterbox.Chatbook.prototype.log = function( msg ) {
 };
 
 /**
+ * Handle a log message.
+ * @method log_message
+ * @param message {Object} Log message object
+ * @param event {Object} Event data
+ */
+Chatterbox.Chatbook.prototype.log_message = function( message, event ) {
+
+    try {
+        if( !message.global ) {
+            if( !message.monitor ) {
+                this.channel( event.ns ).log_item( event );
+            } else {
+                this.manager.monitoro.log_item( event );
+            }
+        } else {
+            this.log_item( event );
+        }
+    } catch( err ) {
+        try {
+            this.ui.monitoro.server_message( 'Failed to log for', event.sns, event.html );
+        } catch( err ) {
+            console.log( '>> Failed to log message for', event.sns, '::' );
+            console.log( '>>', event.html );
+        }
+    }
+
+};
+
+/**
  * Rewrite timestamps for all open channels.
  * 
  * @method retime
@@ -362,4 +397,27 @@ Chatterbox.Chatbook.prototype.developer = function(  ) {
         chan.developer();
     } );
 };
+
+/**
+ * Handle a packet event.
+ * @method handle
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+Chatterbox.Chatbook.prototype.handle = function( event, client ) {
+
+    var ui = this.manager;
+    var chan = this.channel( event.ns );
+    
+    if( !chan )
+        return;
+    
+    var meth = 'pkt_' + event.name;
+    
+    try {
+        chan[meth]( event, client );
+    } catch( err ) {}
+
+};
+
 

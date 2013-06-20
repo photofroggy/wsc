@@ -1,10 +1,11 @@
 /**
- * dAmn module lolol.
+ * This module holds the dAmn extension.
+ *
  * 
  * @module wsc
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.24';
+wsc.dAmn.VERSION = '0.9.29';
 wsc.dAmn.STATE = 'alpha';
 

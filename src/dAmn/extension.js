@@ -1,8 +1,9 @@
 
 /**
- * dAmn extension makes the client work with dAmn.
+ * The dAmn extension makes the client work with dAmn. This extension also implements
+ * various other features to improve on the user experience.
  * 
- * @class Extension
+ * @class dAmn.Extension
  * @constructor
  */
 wsc.dAmn.Extension = function( client ) {
@@ -67,14 +68,16 @@ wsc.dAmn.Extension = function( client ) {
     client.exclude.add( 'chat:devart' );
     client.exclude.add( 'chat:damnidlers' );
     
-    client.ui.on( 'userinfo.before', function( event, ui ) {
-        event.user.avatar = wsc.dAmn.avatar.link(event.user.name, event.user.member.usericon);
+    client.ui.middle( 'user.hover', function( data, done ) {
+        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
-        if( event.user.member.realname )
-            event.user.info.push(event.user.member.realname);
+        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
+            data.info.push(data.member.realname);
         
-        if( event.user.member.typename )
-            event.user.info.push(event.user.member.typename);
+        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
+            data.info.push(data.member.typename);
+        
+        done( data );
     });
     
     client.ui.on( 'settings.save', settings.save );
@@ -91,10 +94,40 @@ wsc.dAmn.Extension = function( client ) {
             event.info.push(event.raw.typename);
     } );
     
+    /**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     */
     wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     */
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    /**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     */
     wsc.dAmn.Colours( client, storage.colours, settings );
+    
+    /**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
     wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };

@@ -1,7 +1,7 @@
 /**
  * Navigation UI element. Provides helpers for controlling the chat navigation.
  *
- * @class Navigation
+ * @class Chatterbox.Navigation
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  */
@@ -17,6 +17,7 @@ Chatterbox.Navigation = function( ui ) {
      */
     this.el = {
         n: this.manager.view.find('nav.tabs'),                            // Navigation bar
+        tw: this.manager.view.find('nav.tabs div.tabwrap'),
         t: this.manager.view.find('nav.tabs #chattabs'),                  // Tabs
         b: this.manager.view.find('nav.tabs #tabnav'),                    // Buttons
         l: this.manager.view.find('nav.tabs #tabnav .arrow_left'),        // Tab left navigation button
@@ -216,7 +217,7 @@ Chatterbox.Navigation.prototype.add_tab = function( selector, ns ) {
  */
 Chatterbox.Navigation.prototype.resize = function(  ) {
 
-    this.el.t.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
+    this.el.tw.width( this.el.n.width() - this.el.b.outerWidth() - 20 );
     if( this.settings.open ) {
         this.settings.window.resize();
     }

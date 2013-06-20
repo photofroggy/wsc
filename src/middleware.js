@@ -2,6 +2,8 @@
 /**
  * Middleware management and execution.
  * 
+ * @class wsc.Middleware
+ * @constructor
  */
 wsc.Middleware = function(  ) {
 

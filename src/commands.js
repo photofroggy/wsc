@@ -2,6 +2,8 @@
 
 /**
  * This extension implements most of the default commands for wsc.
+ * @class wsc.defaults.Extension
+ * @constructor
  */
 wsc.defaults.Extension = function( client ) {
 
@@ -21,34 +23,34 @@ wsc.defaults.Extension = function( client ) {
     
     var init = function(  ) {
         // Commands.
-        client.bind('cmd.connect', cmd_connection );
-        client.bind('cmd.set', cmd_setter );
+        client.bind('cmd.connect', cmd.connection );
+        client.bind('cmd.set', cmd.setter );
         
         // standard dAmn commands.
-        client.bind('cmd.join', cmd_join );
-        client.bind('cmd.chat', cmd_pjoin );
-        client.bind('cmd.part', cmd_part );
+        client.bind('cmd.join', cmd.join );
+        client.bind('cmd.chat', cmd.pjoin );
+        client.bind('cmd.part', cmd.part );
         // send ...
-        client.bind('cmd.say', cmd_say );
-        client.bind('cmd.npmsg', cmd_npmsg );
-        client.bind('cmd.me', cmd_action );
-        client.bind('cmd.promote', cmd_chgpriv );
-        client.bind('cmd.demote', cmd_chgpriv );
-        client.bind('cmd.ban', cmd_ban );
-        client.bind('cmd.unban', cmd_ban );
-        client.bind('cmd.kick', cmd_killk );
-        //client.bind('cmd.get', cmd_get );
-        client.bind('cmd.whois', cmd_whois );
-        client.bind('cmd.title', cmd_title );
-        client.bind('cmd.topic', cmd_title );
-        client.bind('cmd.admin', cmd_admin );
-        client.bind('cmd.disconnect', cmd_connection );
-        client.bind('cmd.kill', cmd_killk );
-        client.bind('cmd.raw', cmd_raw );
+        client.bind('cmd.say', cmd.say );
+        client.bind('cmd.npmsg', cmd.npmsg );
+        client.bind('cmd.me', cmd.action );
+        client.bind('cmd.promote', cmd.chgpriv );
+        client.bind('cmd.demote', cmd.chgpriv );
+        client.bind('cmd.ban', cmd.ban );
+        client.bind('cmd.unban', cmd.ban );
+        client.bind('cmd.kick', cmd.killk );
+        //client.bind('cmd.get', cmd.get );
+        client.bind('cmd.whois', cmd.whois );
+        client.bind('cmd.title', cmd.title );
+        client.bind('cmd.topic', cmd.title );
+        client.bind('cmd.admin', cmd.admin );
+        client.bind('cmd.disconnect', cmd.connection );
+        client.bind('cmd.kill', cmd.killk );
+        client.bind('cmd.raw', cmd.raw );
         
-        client.bind('cmd.clear', cmd_clear );
-        client.bind('cmd.clearall', cmd_clearall );
-        client.bind('cmd.close', cmd_close );
+        client.bind('cmd.clear', cmd.clear );
+        client.bind('cmd.clearall', cmd.clearall );
+        client.bind('cmd.close', cmd.close );
         
         client.bind('pkt.property', pkt_property );
         client.bind('pkt.recv_admin_show', pkt_admin_show );
@@ -57,11 +59,11 @@ wsc.defaults.Extension = function( client ) {
         
         
         // Non-standard commands.
-        client.bind('cmd.gettitle', cmd_gett);
-        client.bind('cmd.gettopic', cmd_gett);
+        client.bind('cmd.gettitle', cmd.gett);
+        client.bind('cmd.gettopic', cmd.gett);
         
         // lol themes
-        client.bind('cmd.theme', cmd_theme);
+        client.bind('cmd.theme', cmd.theme);
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
@@ -169,17 +171,26 @@ wsc.defaults.Extension = function( client ) {
     
     };
     
-    var cmd_theme = function( e, client) {
+    /**
+     * Holds all of the command handling methods.
+     * 
+     * @property cmd
+     * @type Object
+     */
+    var cmd = {};
+    
+    cmd.theme = function( e, client) {
         client.ui.theme(e.args.split(' ').shift());
     };
         
     /**
-     * @function setter
-     * @cmd set set configuration options
      * This command allows the user to change the settings for the client through
      * the input box.
+     * 
+     * @method cmd.setter
+     * @param cmd {Object} Command event data.
      */
-    var cmd_setter = function( e ) {
+    cmd.setter = function( e ) {
         var data = e.args.split(' ');
         var setting = data.shift().toLowerCase();
         var data = data.join(' ');
@@ -195,20 +206,19 @@ wsc.defaults.Extension = function( client ) {
         
         client.settings[setting] = data;
         client.cchannel.serverMessage('Changed ' + setting + ' setting', 'value: ' + data);
-        client.control.setLabel();
         
     };
     
     /**
-     * @function connect
      * This command allows the user to force the client to connect to the server.
+     * @method cmd.connection
      */
-    var cmd_connection = function( e ) {
+    cmd.connection = function( e ) {
         client[e.cmd]();
     };
     
     // Join a channel
-    var cmd_join = function( e ) {
+    cmd.join = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -223,7 +233,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Join a channel
-    var cmd_pjoin = function( e ) {
+    cmd.pjoin = function( e ) {
         var chans = e.args.split(' ');
         var chans = chans.toString() == '' ? [] : chans;
         
@@ -238,7 +248,7 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Leave a channel
-    var cmd_part = function( e ) {
+    cmd.part = function( e ) {
         var chans = e.args.split(' ');
         if( e.ns != e.target )
             chans.unshift(e.target);
@@ -253,18 +263,18 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Set the title
-    var cmd_title = function( e ) {
+    cmd.title = function( e ) {
         client.set(e.target, e.cmd, e.args);
     };
     
     // Promote or demote user
-    var cmd_chgpriv = function( e ) {
+    cmd.chgpriv = function( e ) {
         var bits = e.args.split(' ');
         client[e.cmd.toLowerCase()](e.target, bits[0], bits[1]);
     };
     
     // Ban user
-    var cmd_ban = function( e, client ) {
+    cmd.ban = function( e, client ) {
         var args = e.args.split(' ');
         var user = args.shift();
         var cmd = e.cmd;
@@ -275,17 +285,17 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Send a /me action thingy.
-    var cmd_action = function( e ) {
+    cmd.action = function( e ) {
         client.action(e.target, e.args);
     };
     
     // Send a raw packet.
-    var cmd_raw = function( e ) {
+    cmd.raw = function( e ) {
         client.send( e.args.replace(/\\n/gm, "\n") );
     };
     
     // Kick or kill someone.
-    var cmd_killk = function( e, client ) {
+    cmd.killk = function( e, client ) {
         var d = e.args.split(' ');
         var u = d.shift();
         var r = d.length > 0 ? d.join(' ') : null;
@@ -296,32 +306,32 @@ wsc.defaults.Extension = function( client ) {
     };
     
     // Say something.
-    var cmd_say = function( e ) {
+    cmd.say = function( e ) {
         if( client.channel(e.target).monitor ) return;
         client.say( e.target, e.args );
     };
     
     // Say something without emotes and shit. Zomg.
-    var cmd_npmsg = function( e ) {
+    cmd.npmsg = function( e ) {
         client.npmsg( e.target, e.args );
     };
     
     // Clear the channel's log.
-    var cmd_clear = function( e, client ) {
+    cmd.clear = function( e, client ) {
         if( e.args.length > 0 ) {
             var users = e.args.split(' ');
             for( var i in users ) {
                 if( !users.hasOwnProperty(i) )
                     continue;
-                client.channel(e.target).clear(users[i]);
+                client.ui.channel( e.target ).clear_user( users[i] );
             }
         } else {
-            client.channel(e.target).clear();
+            client.ui.channel( e.target ).clear();
         }
     };
     
     // Clear all channel logs.
-    var cmd_clearall = function( e, client ) {
+    cmd.clearall = function( e, client ) {
         var method = null;
         
         if( e.args.length > 0 ) {
@@ -330,7 +340,7 @@ wsc.defaults.Extension = function( client ) {
                 for( var i in users ) {
                     if( !users.hasOwnProperty(i) )
                         continue;
-                    channel.clear( users[i] );
+                    channel.clear_user( users[i] );
                 }
             };
         } else {
@@ -339,33 +349,33 @@ wsc.defaults.Extension = function( client ) {
             };
         }
         
-        client.each_channel( method, true );
+        client.ui.chatbook.each( method, true );
     };
     
-    var cmd_close = function( cmd ) {
+    cmd.close = function( cmd ) {
         client.part(cmd.target);
         client.remove_ns(cmd.target);
     };
     
     // Send a whois thingy.
-    var cmd_whois = function( event, client ) {
+    cmd.whois = function( event, client ) {
         client.whois( event.args.split(' ')[0] );
     };
     
     // Send an admin packet.
-    var cmd_admin = function( event, client ) {
+    cmd.admin = function( event, client ) {
         client.admin( event.target, event.args );
     };
     
     // Send an disconnect packet.
-    var cmd_disconnect = function( event, client ) {
+    cmd.disconnect = function( event, client ) {
         client.disconnect(  );
     };
     
     // Get the title or topic.
-    var cmd_gett = function( event, client ) {
+    cmd.gett = function( event, client ) {
         var which = event.cmd.indexOf('title') > -1 ? 'title' : 'topic';
-        client.control.ui.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
+        client.ui.control.set_text('/' + which + ' ' + client.channel(event.target).info[which].content);
     };
     
     // Process a property packet, hopefully retreive whois info.
@@ -390,7 +400,7 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.cchannel.log_whois(data);
+        client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
@@ -430,13 +440,31 @@ wsc.defaults.Extension = function( client ) {
             }
         }
         
-        chan.log_pc(event.p == 'privclass', pcs);
+        client.ui.chatbook.current.log_pc(event.p == 'privclass', pcs);
     
     };
     
     init();
+    
+    /**
+     * Implements the ignore feature.
+     * 
+     * @method Ignore
+     */
     wsc.defaults.Extension.Ignore(client);
+    
+    /**
+     * Implements away messages.
+     * 
+     * @method Away
+     */
     wsc.defaults.Extension.Away(client);
+    
+    /**
+     * Implements autojoin channels.
+     * 
+     * @method Autojoin
+     */
     wsc.defaults.Extension.Autojoin(client);
 
 };
