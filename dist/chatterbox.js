@@ -5,7 +5,7 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.99';
+Chatterbox.VERSION = '0.19.100';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -126,7 +126,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
         unmute: function(  ) { ui.sound.toggle( false ); },
     };
     
-    view.extend( this.settings, options );
+    this.settings = view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
     this.mw = new wsc.Middleware();
