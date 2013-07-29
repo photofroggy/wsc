@@ -4367,7 +4367,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.99';
+Chatterbox.VERSION = '0.19.100';
 Chatterbox.STATE = 'beta';
 
 /**
@@ -4488,7 +4488,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
         unmute: function(  ) { ui.sound.toggle( false ); },
     };
     
-    view.extend( this.settings, options );
+    this.settings = view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
     this.mw = new wsc.Middleware();
@@ -6718,6 +6718,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     var chan = this.channel(ns);
+    
+    if( !chan )
+        return;
     
     if( this.channels() == 0 && !chan.hidden ) 
         return;

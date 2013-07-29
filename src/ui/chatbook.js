@@ -241,6 +241,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     var chan = this.channel(ns);
     
+    if( !chan )
+        return;
+    
     if( this.channels() == 0 && !chan.hidden ) 
         return;
     
