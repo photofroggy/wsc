@@ -120,195 +120,132 @@
     </ul>
 </nav>
         <div class="content">
-            <h1>wsc Module</h1>
-    
-<section class="main">
-    <article class="meta">
-        
-    
-        
-    
-        
-            <p>
-                Defined in: <a href="..&#x2F;files&#x2F;src_wsc.js.html#l1"><code>src&#x2F;wsc.js:1</code></a>
-            </p>
-        
-    
-        
-    
-        
-    </article>
-    
-    <section class="intro">
-        <p>WebSocket Chat client module.</p>
-    </section>
-    
-    
-</section>
-<section class="items">
-    
-        <section class="left">
-            <h3>Classes</h3>
-    
-            <ul>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.avatar.html">
-                        dAmn.avatar
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.Extension.html">
-                        dAmn.Extension
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.Stash.html">
-                        dAmn.Stash
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.TablumpParser.html">
-                        dAmn.TablumpParser
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.TablumpString.html">
-                        dAmn.TablumpString
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/EventEmitter.html">
-                        EventEmitter
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/jQuery.plugin.html">
-                        jQuery.plugin
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/StringSet.html">
-                        StringSet
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Channel.html">
-                        wsc.Channel
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Client.html">
-                        wsc.Client
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.defaults.Extension.html">
-                        wsc.defaults.Extension
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Flow.html">
-                        wsc.Flow
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.MessageParser.html">
-                        wsc.MessageParser
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.MessageString.html">
-                        wsc.MessageString
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Middleware.html">
-                        wsc.Middleware
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Packet.html">
-                        wsc.Packet
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Protocol.html">
-                        wsc.Protocol
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Protocol.LogMessage.html">
-                        wsc.Protocol.LogMessage
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.SocketIO.html">
-                        wsc.SocketIO
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Storage.html">
-                        wsc.Storage
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Transport.html">
-                        wsc.Transport
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.WebSocket.html">
-                        wsc.WebSocket
-                    </a>
-                </li>
-            
-            </ul>
-        </section>
-    
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;feed.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+&#x2F;**
+ * Object for managing feed interfaces.
+ * 
+ * @class Chatterbox.Feed
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the feed this object will represent
+ * @param type {String} The type of feed this view represents
+ * @param [actions] {String} A string describing the feed
+ *&#x2F;
+Chatterbox.Feed = function( ui, ns, type, description ) {
     
-        <section class="right">
-            <h3>Submodules</h3>
+    Chatterbox.BaseTab.call( this, ui, ns );
     
-            <ul>
-            
-                <li>
-                    <a href="/wsc/api/modules/dAmn.html">
-                        dAmn
-                    </a>
+    &#x2F;**
+     * The name of the feed.
+     * @property name
+     * @type String
+     *&#x2F;
+    this.name = this.namespace.substr(1);
     
-                    <div class="description">
-                        This module holds the dAmn extension.
-                    </div>
-                </li>
-            
-            </ul>
-        </section>
+    &#x2F;**
+     * The type of feed this channel represents
+     * @property type
+     * @type String
+     *&#x2F;
+    this.type = type;
     
-        
-</section>
+    &#x2F;**
+     * The description for the channel.
+     * @property description
+     * @type String
+     *&#x2F;
+    this.description = description || &#x27;&#x27;;
+    
+};
+
+Chatterbox.Feed.prototype = new Chatterbox.BaseTab;
+Chatterbox.Feed.prototype.constructor = Chatterbox.Feed;
+
+&#x2F;**
+ * Draw the feed on screen and store the different elements in attributes.
+ * 
+ * @method build
+ *&#x2F;
+Chatterbox.Feed.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render(
+            &#x27;feed&#x27;,
+            {
+                &#x27;selector&#x27;: selector,
+                &#x27;type&#x27;: &#x27;quiet&#x27;,
+                &#x27;name&#x27;: this.name,
+                &#x27;info&#x27;: this.description,
+            }
+        )
+    );
+    
+    &#x2F;&#x2F; Store
+    this.el.l.p = this.el.m.find(&#x27;#&#x27; + selector + &quot;-log&quot;);
+    this.el.l.w = this.el.l.p.find(&#x27;ul.logwrap&#x27;);
+    this.el.u = this.el.m.find(&#x27;#&#x27; + selector + &quot;-users&quot;);
+    
+    &#x2F;&#x2F; Max user list width;
+    this.mulw = parseInt(this.el.u.css(&#x27;max-width&#x27;).slice(0,-2));
+    
+    this.built = true;
+};
+
+&#x2F;**
+ * Resize the feed reader
+ * @method resize
+ *&#x2F;
+Chatterbox.Feed.prototype.resize = function( width, height ) {
+
+    &#x2F;&#x2F; TODO: Figure out what we should actually be doing here.
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+
+};
+
+&#x2F;**
+ * Add a feed item to the interface.
+ * @method add_item
+ * @param item {Object} Object representing a feed item
+ * @return {Object} Object representing the item in the UI
+ *&#x2F;
+Chatterbox.Feed.prototype.add_item = function( item ) {
+
+    item = Object.extend( {
+        ref: &#x27;item0001&#x27;,
+        icon: &#x27;&#x27;,
+        title: &#x27;Feed Item 0001&#x27;,
+        content: &#x27;&lt;p&gt;This is a feed item&lt;&#x2F;p&gt;&#x27;
+    }, item );
+    
+    var ihtml = Chatterbox.render( &#x27;feedmsg&#x27;, item );
+    
+    this.el.l.w.prepend( ihtml );
+    
+    var iui = this.el.l.w.find( &#x27;li#&#x27; + item.ref );
+    
+    &#x2F;&#x2F; Add some event hooks to close&#x2F;remove items!
+    
+    return iui;
+
+};
+
+    </pre>
+</div>
 
         </div>
     </div>

@@ -27,11 +27,15 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.BaseTab.html">Chatterbox.BaseTab</a></li>
+    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Feed.html">Chatterbox.Feed</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
     
@@ -147,7 +151,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind(&#x27;cmd.setaway&#x27;, cmd_setaway);
         client.bind(&#x27;cmd.setback&#x27;, cmd_setback);
-        client.bind(&#x27;pkt.recv_msg.highlighted&#x27;, pkt_highlighted);
+        client.ui.on(&#x27;tabbed&#x27;, pkt_highlighted);
         client.ui.on(&#x27;settings.open&#x27;, settings.page);
     
     };
@@ -277,6 +281,10 @@ wsc.defaults.Extension.Away = function( client ) {
     };
     
     var cmd_setback = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
         settings.on = false;
         var method = client.say;
         var announce = settings.format.setback;
@@ -293,7 +301,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state(&#x27;away&#x27;);
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;

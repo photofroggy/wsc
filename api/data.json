@@ -75,6 +75,15 @@
             },
             "namespaces": {}
         },
+        "src/ui/basetab.js": {
+            "name": "src/ui/basetab.js",
+            "modules": {},
+            "classes": {
+                "Chatterbox.BaseTab": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/ui/channel.js": {
             "name": "src/ui/channel.js",
             "modules": {},
@@ -98,6 +107,15 @@
             "modules": {},
             "classes": {
                 "Chatterbox.Control": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/ui/feed.js": {
+            "name": "src/ui/feed.js",
+            "modules": {},
+            "classes": {
+                "Chatterbox.Feed": 1
             },
             "fors": {},
             "namespaces": {}
@@ -366,9 +384,11 @@
             "classes": {
                 "Chatterbox.UI": 1,
                 "Chatterbox.UI.sound": 1,
+                "Chatterbox.BaseTab": 1,
                 "Chatterbox.Channel": 1,
                 "Chatterbox.Chatbook": 1,
                 "Chatterbox.Control": 1,
+                "Chatterbox.Feed": 1,
                 "Chatterbox.Navigation": 1,
                 "Chatterbox.Pager": 1,
                 "Chatterbox.Popup": 1,
@@ -545,6 +565,43 @@
             "line": 44,
             "description": "Sound bank.\n\nPlay and manage UI sounds. So far, Chatterbox includes these sounds:\n\n     * click\n\nTo play a sound clip, call the method of the same name. For example, to\nplay the `click` sound, call `ui.sound.click()`.\n\nNote that the sound methods are not documented as they are created on\nthe fly by the `add` method."
         },
+        "Chatterbox.BaseTab": {
+            "name": "Chatterbox.BaseTab",
+            "shortname": "Chatterbox.BaseTab",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/basetab.js",
+            "line": 2,
+            "description": "Implements a base for a channel view.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "ns",
+                    "description": "The name of the channel this object will represent.",
+                    "type": "String"
+                },
+                {
+                    "name": "hidden",
+                    "description": "Should the channel's tab be visible?",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "monitor",
+                    "description": "Is this channel the monitor?",
+                    "type": "Boolean"
+                }
+            ]
+        },
         "Chatterbox.Channel": {
             "name": "Chatterbox.Channel",
             "shortname": "Chatterbox.Channel",
@@ -623,6 +680,44 @@
                     "name": "ui",
                     "description": "Chatterbox.UI object.",
                     "type": "Object"
+                }
+            ]
+        },
+        "Chatterbox.Feed": {
+            "name": "Chatterbox.Feed",
+            "shortname": "Chatterbox.Feed",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Chatterbox",
+            "namespace": "",
+            "file": "src/ui/feed.js",
+            "line": 2,
+            "description": "Object for managing feed interfaces.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "ui",
+                    "description": "Chatterbox.UI object.",
+                    "type": "Object"
+                },
+                {
+                    "name": "ns",
+                    "description": "The name of the feed this object will represent",
+                    "type": "String"
+                },
+                {
+                    "name": "type",
+                    "description": "The type of feed this view represents",
+                    "type": "String"
+                },
+                {
+                    "name": "actions",
+                    "description": "A string describing the feed",
+                    "type": "String",
+                    "optional": true
                 }
             ]
         },
@@ -1481,7 +1576,7 @@
     "classitems": [
         {
             "file": "src/dAmn/emotes.js",
-            "line": 375,
+            "line": 373,
             "description": "Emote picker.\nThis should be used for retrieving input from the user.",
             "class": "dAmn.Extension",
             "module": "wsc"
@@ -1946,7 +2041,7 @@
             "name": "deform_ns",
             "params": [
                 {
-                    "name": "ns",
+                    "name": "namespace",
                     "description": "Channel namespace to deform.",
                     "type": "String"
                 }
@@ -1960,19 +2055,19 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 260,
+            "line": 270,
             "description": "Format a channel namespace.",
             "itemtype": "method",
             "name": "format_ns",
             "params": [
                 {
-                    "name": "ns",
+                    "name": "namespace",
                     "description": "Channel namespace to format.",
                     "type": "String"
                 }
             ],
             "return": {
-                "description": "ns formatted as a channel namespace.",
+                "description": "namespace formatted as a channel namespace.",
                 "type": "String"
             },
             "class": "Chatterbox.UI",
@@ -1980,7 +2075,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 286,
+            "line": 316,
             "description": "Set the event emitter object in use by the UI lib.",
             "itemtype": "method",
             "name": "set_events",
@@ -1996,7 +2091,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 296,
+            "line": 326,
             "description": "Set the clock to 24 hour or 12 hour. Or get the current mode.\nTrue means 24 hour, false means 12 hour.",
             "itemtype": "method",
             "name": "clock",
@@ -2017,7 +2112,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 316,
+            "line": 346,
             "description": "Build the GUI.",
             "itemtype": "method",
             "name": "build",
@@ -2049,7 +2144,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 434,
+            "line": 466,
             "description": "Resize the UI to fit the containing element.",
             "itemtype": "method",
             "name": "resize",
@@ -2058,7 +2153,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 449,
+            "line": 481,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2067,7 +2162,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 462,
+            "line": 494,
             "description": "Handle a packet being received.",
             "itemtype": "method",
             "name": "packet",
@@ -2088,7 +2183,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 503,
+            "line": 535,
             "description": "Create a screen for channel `ns` in the UI, and initialise data\nstructures or some shit idk.",
             "itemtype": "method",
             "name": "create_channel",
@@ -2109,7 +2204,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 515,
+            "line": 547,
             "description": "Remove a channel from the GUI.\nWe do this when we leave a channel for any reason.\nNote: last channel is never removed and when removing a channel\nwe switch to the last channel in the list before doing so.",
             "itemtype": "method",
             "name": "remove_channel",
@@ -2125,7 +2220,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 528,
+            "line": 560,
             "description": "Select which channel is currently being viewed.",
             "itemtype": "method",
             "name": "toggle_channel",
@@ -2141,7 +2236,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 538,
+            "line": 570,
             "description": "Get or set the channel object associated with the given namespace.",
             "itemtype": "method",
             "name": "channel",
@@ -2167,7 +2262,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 550,
+            "line": 582,
             "description": "Determine how many channels the ui has open. Hidden channels are\nnot included in this, and we don't include the first channel because\nthere should always be at least one non-hidden channel present in the\nui.",
             "itemtype": "method",
             "name": "channels",
@@ -2180,7 +2275,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 563,
+            "line": 595,
             "description": "Switch to the channel left of the current channel.",
             "itemtype": "method",
             "name": "channel_left",
@@ -2189,7 +2284,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 574,
+            "line": 606,
             "description": "Switch to the channel right of the current channel.",
             "itemtype": "method",
             "name": "channel_right",
@@ -2198,7 +2293,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 586,
+            "line": 618,
             "description": "Display a log message in the monitor channel.",
             "itemtype": "method",
             "name": "monitor",
@@ -2220,7 +2315,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 599,
+            "line": 631,
             "description": "Display a server message across all open channels.",
             "itemtype": "method",
             "name": "server_message",
@@ -2242,7 +2337,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 612,
+            "line": 644,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -2258,7 +2353,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 624,
+            "line": 656,
             "description": "Display a log message across all open channels.",
             "itemtype": "method",
             "name": "log",
@@ -2274,7 +2369,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 636,
+            "line": 668,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2290,7 +2385,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 660,
+            "line": 692,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2306,7 +2401,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 685,
+            "line": 717,
             "description": "Clear a user's messages from all channels.",
             "itemtype": "method",
             "name": "clear_user",
@@ -2322,7 +2417,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 699,
+            "line": 731,
             "description": "Set the theme for the UI.",
             "itemtype": "method",
             "name": "theme",
@@ -2338,7 +2433,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 723,
+            "line": 755,
             "description": "Add a new theme to the client.",
             "itemtype": "method",
             "name": "add_theme",
@@ -2354,7 +2449,7 @@
         },
         {
             "file": "src/ui/base.js",
-            "line": 738,
+            "line": 770,
             "description": "Toggle developer mode for the UI.",
             "itemtype": "method",
             "name": "developer",
@@ -2362,9 +2457,80 @@
             "module": "Chatterbox"
         },
         {
+            "file": "src/ui/basetab.js",
+            "line": 60,
+            "description": "Draw the channel on screen and store the different elements in attributes.",
+            "itemtype": "method",
+            "name": "build",
+            "params": [
+                {
+                    "name": "view",
+                    "description": "HTML for the channel view",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 114,
+            "description": "Hide the channel from view.",
+            "itemtype": "method",
+            "name": "hide",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 125,
+            "description": "Display the channel.",
+            "itemtype": "method",
+            "name": "show",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 143,
+            "description": "Display or hide the tab based on whether we are in developer mode or not.",
+            "itemtype": "method",
+            "name": "developer",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 158,
+            "description": "Remove the channel from the UI.",
+            "itemtype": "method",
+            "name": "remove",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 169,
+            "description": "Resize the view window to fill the space available.",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/basetab.js",
+            "line": 182,
+            "description": "This method is run on the main loop event. Having this allows channels to do\nsome maintenance autonomously.",
+            "itemtype": "method",
+            "name": "loop",
+            "class": "Chatterbox.BaseTab",
+            "module": "Chatterbox"
+        },
+        {
             "file": "src/ui/channel.js",
-            "line": 52,
-            "description": "Draw channel on screen and store the different elements in attributes.",
+            "line": 18,
+            "description": "Draw the channel on screen and store the different elements in attributes.",
             "itemtype": "method",
             "name": "build",
             "class": "Chatterbox.Channel",
@@ -2372,7 +2538,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 131,
+            "line": 82,
             "description": "Set up a header so it can be edited in the UI.",
             "itemtype": "method",
             "name": "setup_header",
@@ -2381,43 +2547,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 218,
-            "description": "Hide the channel from view.",
-            "itemtype": "method",
-            "name": "hide",
-            "class": "Chatterbox.Channel",
-            "module": "Chatterbox"
-        },
-        {
-            "file": "src/ui/channel.js",
-            "line": 229,
-            "description": "Display the channel.",
-            "itemtype": "method",
-            "name": "show",
-            "class": "Chatterbox.Channel",
-            "module": "Chatterbox"
-        },
-        {
-            "file": "src/ui/channel.js",
-            "line": 247,
-            "description": "Display or hide the tab based on whether we are in developer mode or not.",
-            "itemtype": "method",
-            "name": "developer",
-            "class": "Chatterbox.Channel",
-            "module": "Chatterbox"
-        },
-        {
-            "file": "src/ui/channel.js",
-            "line": 262,
-            "description": "Remove the channel from the UI.",
-            "itemtype": "method",
-            "name": "remove",
-            "class": "Chatterbox.Channel",
-            "module": "Chatterbox"
-        },
-        {
-            "file": "src/ui/channel.js",
-            "line": 272,
+            "line": 169,
             "description": "Scroll the log panel downwards.",
             "itemtype": "method",
             "name": "scroll",
@@ -2426,7 +2556,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 288,
+            "line": 185,
             "description": "Add padding to the channel log's wrapping ul.\nThis is done to make sure messages always appear at the bottom first.",
             "itemtype": "method",
             "name": "pad",
@@ -2435,7 +2565,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 310,
+            "line": 207,
             "description": "Fix the dimensions of the log window.",
             "itemtype": "method",
             "name": "resize",
@@ -2444,7 +2574,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 379,
+            "line": 275,
             "description": "Called every now and then.\nDoes stuff like clear channels of excess log messages.\nMaybe this is something that the UI lib should handle.",
             "itemtype": "method",
             "name": "loop",
@@ -2453,7 +2583,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 398,
+            "line": 294,
             "description": "Display a log message.",
             "itemtype": "method",
             "name": "log",
@@ -2469,7 +2599,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 419,
+            "line": 315,
             "description": "Send a message to the log window.",
             "itemtype": "method",
             "name": "log_item",
@@ -2485,7 +2615,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 464,
+            "line": 360,
             "description": "Rewrite time signatures for all messages. Woo.",
             "itemtype": "method",
             "name": "retime",
@@ -2494,7 +2624,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 490,
+            "line": 386,
             "description": "Send a server message to the log window.",
             "itemtype": "method",
             "name": "server_message",
@@ -2516,7 +2646,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 511,
+            "line": 407,
             "description": "Clear all log messages from the log window.",
             "itemtype": "method",
             "name": "clear",
@@ -2525,7 +2655,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 523,
+            "line": 419,
             "description": "Display an info box in the channel log.",
             "itemtype": "method",
             "name": "log_info",
@@ -2541,7 +2671,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 555,
+            "line": 451,
             "description": "Display a user's whois info.",
             "itemtype": "method",
             "name": "show_whois",
@@ -2557,7 +2687,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 629,
+            "line": 525,
             "description": "Display some information relating to a privilege class.",
             "itemtype": "method",
             "name": "log_pc",
@@ -2578,7 +2708,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 664,
+            "line": 560,
             "description": "Set the channel header.\n\nThis can be the title or topic, determined by `head`.",
             "itemtype": "method",
             "name": "set_header",
@@ -2609,7 +2739,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 707,
+            "line": 603,
             "description": "Get a channel header's contents.",
             "itemtype": "method",
             "name": "get_header",
@@ -2629,7 +2759,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 720,
+            "line": 616,
             "description": "Build the user list.",
             "itemtype": "method",
             "name": "build_user_list",
@@ -2650,7 +2780,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 744,
+            "line": 640,
             "description": "Reveal or hide the userlist depending on the number of users present.",
             "itemtype": "method",
             "name": "reveal_user_list",
@@ -2659,7 +2789,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 772,
+            "line": 668,
             "description": "Set the channel user list.",
             "itemtype": "method",
             "name": "set_user_list",
@@ -2675,7 +2805,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 797,
+            "line": 693,
             "description": "Set a user in the user list.",
             "itemtype": "method",
             "name": "set_user",
@@ -2696,7 +2826,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 852,
+            "line": 748,
             "description": "Remove a user from the user list.",
             "itemtype": "method",
             "name": "remove_user",
@@ -2711,7 +2841,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 871,
+            "line": 767,
             "description": "Remove a single instance of a user from the user list.",
             "itemtype": "method",
             "name": "remove_one_user",
@@ -2727,7 +2857,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 892,
+            "line": 788,
             "description": "Move a user from one privclass to another.",
             "itemtype": "method",
             "name": "privchg",
@@ -2748,7 +2878,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 919,
+            "line": 815,
             "description": "Handle the register user event.",
             "itemtype": "method",
             "name": "register_user",
@@ -2764,7 +2894,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 939,
+            "line": 835,
             "description": "The user has been highlighted in this channel.\nHighlights the last log message in the channel's log and animates the\nchannel tab if the channel is not visible.",
             "itemtype": "method",
             "name": "highlight",
@@ -2781,7 +2911,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 993,
+            "line": 889,
             "description": "There has been activity in this channel.\nModifies the channel tab slightly, if the channel is not currently being\nviewed.",
             "itemtype": "method",
             "name": "noise",
@@ -2790,7 +2920,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1029,
+            "line": 925,
             "description": "Display a user info hover box.",
             "itemtype": "method",
             "name": "userinfo",
@@ -2810,7 +2940,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1089,
+            "line": 985,
             "description": "This method tries to get rid of the given user information box.\nThe information box can only be removed if the cursor is outside the\nbounds of the information box AND outside of the bounds of the user link in\nthe user list.",
             "itemtype": "method",
             "name": "unhover_user",
@@ -2831,7 +2961,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1123,
+            "line": 1019,
             "description": "Hide messages from a given user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -2847,7 +2977,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1138,
+            "line": 1034,
             "description": "Reveal messages received from a given user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -2863,7 +2993,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1153,
+            "line": 1049,
             "description": "Remove a user's messages completely.",
             "itemtype": "method",
             "name": "clear_user",
@@ -2879,7 +3009,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1168,
+            "line": 1064,
             "description": "When we have just joined a channel we want to reset certain things like\nthe topic and title. We will be receiving these from the server again soon.",
             "itemtype": "method",
             "name": "pkt_join",
@@ -2900,7 +3030,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1182,
+            "line": 1081,
             "description": "Handle a recv_msg packet.",
             "itemtype": "method",
             "name": "pkt_recv_msg",
@@ -2921,7 +3051,7 @@
         },
         {
             "file": "src/ui/channel.js",
-            "line": 1215,
+            "line": 1114,
             "description": "Handle a property packet.",
             "itemtype": "method",
             "name": "pkt_property",
@@ -3056,6 +3186,42 @@
         {
             "file": "src/ui/chatbook.js",
             "line": 134,
+            "description": "Create a feed in the UI.",
+            "itemtype": "method",
+            "name": "create_feed",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the feed to create",
+                    "type": "String"
+                },
+                {
+                    "name": "type",
+                    "description": "The type of feed this view represents",
+                    "type": "String"
+                },
+                {
+                    "name": "priv",
+                    "description": "The privilege level the user has for this feed",
+                    "type": "Integer"
+                },
+                {
+                    "name": "actions",
+                    "description": "A string describing the actions the user can perform on this feed",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "WscUIChannel object.",
+                "type": "Object"
+            },
+            "class": "Chatterbox.Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 159,
             "description": "Create a new channel panel object.\nOverride this method to use a different type of channel object.",
             "itemtype": "method",
             "name": "channel_object",
@@ -3064,11 +3230,6 @@
                     "name": "ns",
                     "description": "Namespace of the channel.",
                     "type": "String"
-                },
-                {
-                    "name": "hidden",
-                    "description": "Should the tab be hidden?",
-                    "type": "Boolean"
                 }
             ],
             "return": {
@@ -3080,7 +3241,43 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 147,
+            "line": 171,
+            "description": "Create a new feed panel object.\nOverride this method to use a different type of channel object.",
+            "itemtype": "method",
+            "name": "feed_object",
+            "params": [
+                {
+                    "name": "ns",
+                    "description": "Namespace of the feed",
+                    "type": "String"
+                },
+                {
+                    "name": "type",
+                    "description": "The type of feed this view represents",
+                    "type": "String"
+                },
+                {
+                    "name": "priv",
+                    "description": "The privilege level the user has for this feed",
+                    "type": "Integer"
+                },
+                {
+                    "name": "actions",
+                    "description": "A string describing the actions the user can perform on this feed",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "An object representing a feed UI.",
+                "type": "Object"
+            },
+            "class": "Chatterbox.Chatbook",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/chatbook.js",
+            "line": 186,
             "description": "Select which channel is currently being viewed.",
             "itemtype": "method",
             "name": "toggle_channel",
@@ -3096,7 +3293,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 196,
+            "line": 235,
             "description": "Remove a channel from the UI.",
             "itemtype": "method",
             "name": "remove_channel",
@@ -3112,7 +3309,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 218,
+            "line": 260,
             "description": "Switch to the channel left of the current channel.",
             "itemtype": "method",
             "name": "channel_left",
@@ -3121,7 +3318,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 251,
+            "line": 293,
             "description": "Switch to the channel right of the current channel.",
             "itemtype": "method",
             "name": "channel_right",
@@ -3130,7 +3327,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 283,
+            "line": 325,
             "description": "Iterate through the different channels.",
             "itemtype": "method",
             "name": "each",
@@ -3146,7 +3343,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 305,
+            "line": 347,
             "description": "Display a server message across all open channels.",
             "itemtype": "method",
             "name": "server_message",
@@ -3168,7 +3365,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 320,
+            "line": 362,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -3184,7 +3381,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 334,
+            "line": 376,
             "description": "Display a log item across all open channels.",
             "itemtype": "method",
             "name": "log_item",
@@ -3200,7 +3397,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 348,
+            "line": 390,
             "description": "Handle a log message.",
             "itemtype": "method",
             "name": "log_message",
@@ -3221,7 +3418,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 377,
+            "line": 419,
             "description": "Rewrite timestamps for all open channels.",
             "itemtype": "method",
             "name": "retime",
@@ -3230,7 +3427,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 390,
+            "line": 432,
             "description": "Toggle the developer mode of each channel.",
             "itemtype": "method",
             "name": "developer",
@@ -3239,7 +3436,7 @@
         },
         {
             "file": "src/ui/chatbook.js",
-            "line": 401,
+            "line": 443,
             "description": "Handle a packet event.",
             "itemtype": "method",
             "name": "handle",
@@ -3619,6 +3816,74 @@
                 }
             ],
             "class": "Chatterbox.Control",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 16,
+            "description": "The name of the feed.",
+            "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "Chatterbox.Feed",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 23,
+            "description": "The type of feed this channel represents",
+            "itemtype": "property",
+            "name": "type",
+            "type": "String",
+            "class": "Chatterbox.Feed",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 30,
+            "description": "The description for the channel.",
+            "itemtype": "property",
+            "name": "description",
+            "type": "String",
+            "class": "Chatterbox.Feed",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 42,
+            "description": "Draw the feed on screen and store the different elements in attributes.",
+            "itemtype": "method",
+            "name": "build",
+            "class": "Chatterbox.Feed",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 83,
+            "description": "Resize the feed reader",
+            "itemtype": "method",
+            "name": "resize",
+            "class": "Chatterbox.Feed",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/feed.js",
+            "line": 94,
+            "description": "Add a feed item to the interface.",
+            "itemtype": "method",
+            "name": "add_item",
+            "params": [
+                {
+                    "name": "item",
+                    "description": "Object representing a feed item",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Object representing the item in the UI",
+                "type": "Object"
+            },
+            "class": "Chatterbox.Feed",
             "module": "Chatterbox"
         },
         {
@@ -4522,6 +4787,36 @@
         {
             "file": "src/ui/templates.js",
             "line": 141,
+            "description": "HTML template for a base channel view.",
+            "itemtype": "property",
+            "name": "basetab",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 149,
+            "description": "HTML template for a feed view.",
+            "itemtype": "property",
+            "name": "channel",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 170,
+            "description": "HTML template for a feed message.",
+            "itemtype": "property",
+            "name": "feedmsg",
+            "type": "String",
+            "class": "template",
+            "module": "Chatterbox"
+        },
+        {
+            "file": "src/ui/templates.js",
+            "line": 186,
             "description": "HTML template for a channel view.",
             "itemtype": "property",
             "name": "channel",
@@ -4531,7 +4826,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 169,
+            "line": 214,
             "description": "Channel header HTML template.",
             "itemtype": "property",
             "name": "header",
@@ -4541,7 +4836,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 177,
+            "line": 222,
             "description": "Log message template.",
             "itemtype": "property",
             "name": "logmsg",
@@ -4551,7 +4846,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 185,
+            "line": 230,
             "description": "Simple log template.",
             "itemtype": "property",
             "name": "logitem",
@@ -4561,7 +4856,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 193,
+            "line": 238,
             "description": "Server message template.",
             "itemtype": "property",
             "name": "servermsg",
@@ -4571,7 +4866,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 201,
+            "line": 246,
             "description": "User message template.",
             "itemtype": "property",
             "name": "usermsg",
@@ -4581,7 +4876,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 209,
+            "line": 254,
             "description": "User info box (userlist hover)",
             "itemtype": "property",
             "name": "userinfo",
@@ -4591,7 +4886,7 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 235,
+            "line": 280,
             "description": "Container for popup shit.",
             "itemtype": "property",
             "name": "popup",
@@ -4601,14 +4896,14 @@
         },
         {
             "file": "src/ui/templates.js",
-            "line": 261,
+            "line": 306,
             "description": "Pager notices and such.",
             "class": "template",
             "module": "Chatterbox"
         },
         {
             "file": "src/ui/templates.js",
-            "line": 281,
+            "line": 326,
             "description": "Settings stuff.",
             "class": "template",
             "module": "Chatterbox"
@@ -5129,7 +5424,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 461,
+            "line": 469,
             "description": "Format a channel namespace in its longhand form.",
             "itemtype": "method",
             "name": "format_ns",
@@ -5149,7 +5444,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 489,
+            "line": 515,
             "description": "Create a channel object for the client.",
             "itemtype": "method",
             "name": "create_ns",
@@ -5170,7 +5465,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 509,
+            "line": 535,
             "description": "Remove a channel object from the client.",
             "itemtype": "method",
             "name": "remove_ns",
@@ -5186,7 +5481,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 538,
+            "line": 564,
             "description": "Focus the client on a particular channel, for some reason.\n\nIf the UI is managing everything to do with the channel being used, maybe this\nshould be deprecated...",
             "itemtype": "method",
             "name": "select_ns",
@@ -5202,7 +5497,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 553,
+            "line": 579,
             "description": "Write a log message to a channel's log view.",
             "itemtype": "method",
             "name": "log",
@@ -5223,7 +5518,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 571,
+            "line": 597,
             "description": "Write a message to the client monitor.",
             "itemtype": "method",
             "name": "monitor",
@@ -5239,7 +5534,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 583,
+            "line": 609,
             "description": "Mute a user.",
             "itemtype": "method",
             "name": "mute_user",
@@ -5255,7 +5550,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 595,
+            "line": 621,
             "description": "Unmute a user.",
             "itemtype": "method",
             "name": "unmute_user",
@@ -5271,7 +5566,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 609,
+            "line": 635,
             "description": "Send a packet to the server.",
             "itemtype": "method",
             "name": "send",
@@ -5291,7 +5586,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 623,
+            "line": 649,
             "description": "Send a handshake packet.",
             "itemtype": "method",
             "name": "handshake",
@@ -5300,7 +5595,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 636,
+            "line": 662,
             "description": "Send a login packet.",
             "itemtype": "method",
             "name": "login",
@@ -5309,7 +5604,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 648,
+            "line": 674,
             "description": "Send a pong packet to the server.",
             "itemtype": "method",
             "name": "pong",
@@ -5318,7 +5613,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 659,
+            "line": 685,
             "description": "Join a channel.",
             "itemtype": "method",
             "name": "join",
@@ -5334,7 +5629,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 671,
+            "line": 697,
             "description": "Leave a channel.",
             "itemtype": "method",
             "name": "part",
@@ -5350,7 +5645,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 683,
+            "line": 709,
             "description": "Send a message to a channel.",
             "itemtype": "method",
             "name": "say",
@@ -5371,7 +5666,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 703,
+            "line": 729,
             "description": "Send a non-parsed message to a channel.",
             "itemtype": "method",
             "name": "npmsg",
@@ -5392,7 +5687,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 723,
+            "line": 749,
             "description": "Send an action message to a channel.",
             "itemtype": "method",
             "name": "action",
@@ -5413,7 +5708,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 743,
+            "line": 769,
             "description": "Promote a user in a channel.",
             "itemtype": "method",
             "name": "promote",
@@ -5440,7 +5735,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 758,
+            "line": 784,
             "description": "Demote a user in a channel.",
             "itemtype": "method",
             "name": "demote",
@@ -5467,7 +5762,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 773,
+            "line": 799,
             "description": "Ban a user from a channel.",
             "itemtype": "method",
             "name": "ban",
@@ -5488,7 +5783,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 787,
+            "line": 813,
             "description": "Unban a user from a channel.",
             "itemtype": "method",
             "name": "unban",
@@ -5509,7 +5804,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 801,
+            "line": 827,
             "description": "Kick a user from a channel.",
             "itemtype": "method",
             "name": "kick",
@@ -5536,7 +5831,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 820,
+            "line": 846,
             "description": "Kill a user's connection to the server.\nOnly message network admins have access to this packet on the server.",
             "itemtype": "method",
             "name": "kill",
@@ -5558,7 +5853,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 834,
+            "line": 860,
             "description": "Send an admin comment to a channel.",
             "itemtype": "method",
             "name": "admin",
@@ -5579,7 +5874,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 849,
+            "line": 875,
             "description": "Request a channel property from the server.",
             "itemtype": "method",
             "name": "property",
@@ -5600,7 +5895,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 862,
+            "line": 888,
             "description": "Set a channel property.",
             "itemtype": "method",
             "name": "set",
@@ -5626,7 +5921,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 882,
+            "line": 908,
             "description": "Get whois information for a user.",
             "itemtype": "method",
             "name": "whois",
@@ -5642,7 +5937,7 @@
         },
         {
             "file": "src/client.js",
-            "line": 894,
+            "line": 920,
             "description": "Send a disconnect packet.",
             "itemtype": "method",
             "name": "disconnect",
@@ -6862,7 +7157,7 @@
         },
         {
             "message": "Missing item type\nEmote picker.\nThis should be used for retrieving input from the user.",
-            "line": " src/dAmn/emotes.js:375"
+            "line": " src/dAmn/emotes.js:373"
         },
         {
             "message": "Missing item type\nBDS Event handlers.",
@@ -6906,11 +7201,11 @@
         },
         {
             "message": "Missing item type\nPager notices and such.",
-            "line": " src/ui/templates.js:261"
+            "line": " src/ui/templates.js:306"
         },
         {
             "message": "Missing item type\nSettings stuff.",
-            "line": " src/ui/templates.js:281"
+            "line": " src/ui/templates.js:326"
         },
         {
             "message": "Missing item type\nAutojoin extension.",

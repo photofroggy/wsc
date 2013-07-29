@@ -27,11 +27,15 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.BaseTab.html">Chatterbox.BaseTab</a></li>
+    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Feed.html">Chatterbox.Feed</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
     
@@ -259,6 +263,51 @@ Chatterbox.template.nav_button = &#x27;&lt;li&gt;&lt;a href=&quot;{href}&quot; t
  * @type String
  *&#x2F;
 Chatterbox.template.tab = &#x27;&lt;li id=&quot;{selector}-tab&quot;&gt;&lt;a href=&quot;#{selector}&quot; class=&quot;tab&quot;&gt;{ns}&lt;a href=&quot;#{selector}&quot; class=&quot;close iconic x&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;&#x27;;
+
+&#x2F;**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ *&#x2F;
+Chatterbox.template.basetab = &#x27;&lt;div class=&quot;chatwindow&quot; id=&quot;{selector}-window&quot;&gt;&lt;&#x2F;div&gt;&#x27;;
+
+&#x2F;**
+ * HTML template for a feed view.
+ * 
+ * @property channel
+ * @type String
+ *&#x2F;
+Chatterbox.template.feed = &#x27;&lt;div class=&quot;chatwindow feed&quot; id=&quot;{selector}-window&quot;&gt;\
+                    &lt;header class=&quot;info&quot;&gt;\
+                        &lt;h2&gt;{name}&lt;span class=&quot;type&quot;&gt;{type} feed&lt;&#x2F;span&gt;&lt;&#x2F;h2&gt;\
+                        &lt;p&gt;{info}&lt;&#x2F;p&gt;\
+                        &lt;ul class=&quot;control&quot;&gt;\
+                            &lt;li&gt;&lt;a href=&quot;#post&quot; class=&quot;button iconic pen&quot; title=&quot;Post a message on&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+                            &lt;li&gt;&lt;a href=&quot;#refresh&quot; class=&quot;button iconic spin&quot; title=&quot;Get updates&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+                            &lt;li&gt;&lt;a href=&quot;#close&quot; class=&quot;button iconic x&quot; title=&quot;Close feed reader&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;\
+                        &lt;&#x2F;ul&gt;\
+                    &lt;&#x2F;header&gt;\
+                    &lt;div class=&quot;log&quot; id=&quot;{selector}-log&quot;&gt;\
+                        &lt;ul class=&quot;logwrap&quot;&gt;&lt;&#x2F;ul&gt;\
+                    &lt;&#x2F;div&gt;\
+                    &lt;div class=&quot;users&quot; id=&quot;{selector}-users&quot;&gt;&lt;&#x2F;div&gt;\
+                &lt;&#x2F;div&gt;&#x27;;
+&#x2F;**
+ * HTML template for a feed message.
+ * @property feedmsg
+ * @type String
+ *&#x2F;
+Chatterbox.template.feedmsg = &#x27;&lt;li id=&quot;{ref}&quot;&gt;\
+                                &lt;article&gt;\
+                                    &lt;a href=&quot;#close&quot; class=&quot;iconic x&quot; title=&quot;Remove feed message&quot;&gt;&lt;&#x2F;a&gt;\
+                                    &lt;section class=&quot;label&quot;&gt;{icon}&lt;&#x2F;section&gt;\
+                                    &lt;section class=&quot;content&quot;&gt;\
+                                        &lt;h3&gt;{title}&lt;&#x2F;h3&gt;\
+                                        {content}\
+                                    &lt;&#x2F;section&gt;\
+                                &lt;&#x2F;article&gt;\
+                            &lt;&#x2F;li&gt;&#x27;;
 
 &#x2F;**
  * HTML template for a channel view.

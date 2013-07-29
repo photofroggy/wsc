@@ -27,11 +27,15 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.BaseTab.html">Chatterbox.BaseTab</a></li>
+    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Feed.html">Chatterbox.Feed</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
     
@@ -319,6 +323,15 @@
                         
                             
                             <li class="index-item method">
+                                <a href="#method_create_feed">create_feed</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
                                 <a href="#method_developer">developer</a>
 
                                 
@@ -329,6 +342,15 @@
                             
                             <li class="index-item method">
                                 <a href="#method_each">each</a>
+
+                                
+                                
+                            </li>
+                            
+                        
+                            
+                            <li class="index-item method">
+                                <a href="#method_feed_object">feed_object</a>
 
                                 
                                 
@@ -629,7 +651,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l218"><code>src&#x2F;ui&#x2F;chatbook.js:218</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l260"><code>src&#x2F;ui&#x2F;chatbook.js:260</code></a>
         
         </p>
 
@@ -672,12 +694,6 @@
                         
                     </li>
                 
-                    <li class="arg">
-                        
-                            <code>hidden</code>
-                        
-                    </li>
-                
                 </ul><span class="paren">)</span>
             </section>
         
@@ -712,7 +728,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l134"><code>src&#x2F;ui&#x2F;chatbook.js:134</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l159"><code>src&#x2F;ui&#x2F;chatbook.js:159</code></a>
         
         </p>
 
@@ -746,21 +762,6 @@ Override this method to use a different type of channel object.</p>
 
                     <div class="description">
                         <p>Namespace of the channel.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="name">hidden</code>
-                        <span class="type">Boolean</span>
-                    
-
-                    
-
-                    <div class="description">
-                        <p>Should the tab be hidden?</p>
                     </div>
 
                     
@@ -827,7 +828,7 @@ Override this method to use a different type of channel object.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l251"><code>src&#x2F;ui&#x2F;chatbook.js:251</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l293"><code>src&#x2F;ui&#x2F;chatbook.js:293</code></a>
         
         </p>
 
@@ -1091,6 +1092,183 @@ ui.</p>
 
                 
                     
+<div id="method_create_feed" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>create_feed</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>type</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>priv</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[actions]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l134"><code>src&#x2F;ui&#x2F;chatbook.js:134</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Create a feed in the UI.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Namespace of the feed to create</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">type</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The type of feed this view represents</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">priv</code>
+                        <span class="type">Integer</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The privilege level the user has for this feed</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[actions]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>A string describing the actions the user can perform on this feed</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    WscUIChannel object.
+                
+            </p>
+        </section>
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
 <div id="method_developer" class="method item">
     <header>
         <section class="signature">
@@ -1126,7 +1304,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l390"><code>src&#x2F;ui&#x2F;chatbook.js:390</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l432"><code>src&#x2F;ui&#x2F;chatbook.js:432</code></a>
         
         </p>
 
@@ -1199,7 +1377,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l283"><code>src&#x2F;ui&#x2F;chatbook.js:283</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l325"><code>src&#x2F;ui&#x2F;chatbook.js:325</code></a>
         
         </p>
 
@@ -1241,6 +1419,184 @@ ui.</p>
         </section>
     
 
+    
+
+    
+    </section>
+</div>
+
+
+                
+                    
+<div id="method_feed_object" class="method item">
+    <header>
+        <section class="signature">
+            <h3><code>feed_object</code></h3>
+
+        
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>type</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>priv</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[actions]</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
+        
+    
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    </section>
+
+    <section class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l171"><code>src&#x2F;ui&#x2F;chatbook.js:171</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </section>
+    </header>
+    <section class="body">
+    
+    <section class="description">
+        <p>Create a new feed panel object.
+Override this method to use a different type of channel object.</p>
+    </section>
+    
+
+    
+        <section class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Namespace of the feed</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">type</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The type of feed this view represents</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">priv</code>
+                        <span class="type">Integer</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The privilege level the user has for this feed</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[actions]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>A string describing the actions the user can perform on this feed</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    An object representing a feed UI.
+                
+            </p>
+        </section>
     
 
     
@@ -1301,7 +1657,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l401"><code>src&#x2F;ui&#x2F;chatbook.js:401</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l443"><code>src&#x2F;ui&#x2F;chatbook.js:443</code></a>
         
         </p>
 
@@ -1402,7 +1758,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l22"><code>src&#x2F;ui&#x2F;chatbook.js:22</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l31"><code>src&#x2F;ui&#x2F;chatbook.js:31</code></a>
         
         </p>
 
@@ -1415,7 +1771,7 @@ ui.</p>
     <section class="body">
     
     <section class="description">
-        <p>Return the height of the chatbook.</p>
+        <p>Return the width of the chatbook.</p>
     </section>
     
 
@@ -1465,7 +1821,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l31"><code>src&#x2F;ui&#x2F;chatbook.js:31</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l22"><code>src&#x2F;ui&#x2F;chatbook.js:22</code></a>
         
         </p>
 
@@ -1478,7 +1834,7 @@ ui.</p>
     <section class="body">
     
     <section class="description">
-        <p>Return the width of the chatbook.</p>
+        <p>Return the height of the chatbook.</p>
     </section>
     
 
@@ -1538,7 +1894,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l334"><code>src&#x2F;ui&#x2F;chatbook.js:334</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l362"><code>src&#x2F;ui&#x2F;chatbook.js:362</code></a>
         
         </p>
 
@@ -1634,7 +1990,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l320"><code>src&#x2F;ui&#x2F;chatbook.js:320</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l376"><code>src&#x2F;ui&#x2F;chatbook.js:376</code></a>
         
         </p>
 
@@ -1736,7 +2092,7 @@ ui.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l348"><code>src&#x2F;ui&#x2F;chatbook.js:348</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l390"><code>src&#x2F;ui&#x2F;chatbook.js:390</code></a>
         
         </p>
 
@@ -1912,7 +2268,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l196"><code>src&#x2F;ui&#x2F;chatbook.js:196</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l235"><code>src&#x2F;ui&#x2F;chatbook.js:235</code></a>
         
         </p>
 
@@ -2095,7 +2451,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l377"><code>src&#x2F;ui&#x2F;chatbook.js:377</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l419"><code>src&#x2F;ui&#x2F;chatbook.js:419</code></a>
         
         </p>
 
@@ -2174,7 +2530,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l305"><code>src&#x2F;ui&#x2F;chatbook.js:305</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l347"><code>src&#x2F;ui&#x2F;chatbook.js:347</code></a>
         
         </p>
 
@@ -2286,7 +2642,7 @@ Maybe this is something that the UI lib should handle.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l147"><code>src&#x2F;ui&#x2F;chatbook.js:147</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_chatbook.js.html#l186"><code>src&#x2F;ui&#x2F;chatbook.js:186</code></a>
         
         </p>
 

@@ -120,195 +120,206 @@
     </ul>
 </nav>
         <div class="content">
-            <h1>wsc Module</h1>
-    
-<section class="main">
-    <article class="meta">
-        
-    
-        
-    
-        
-            <p>
-                Defined in: <a href="..&#x2F;files&#x2F;src_wsc.js.html#l1"><code>src&#x2F;wsc.js:1</code></a>
-            </p>
-        
-    
-        
-    
-        
-    </article>
-    
-    <section class="intro">
-        <p>WebSocket Chat client module.</p>
-    </section>
-    
-    
-</section>
-<section class="items">
-    
-        <section class="left">
-            <h3>Classes</h3>
-    
-            <ul>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.avatar.html">
-                        dAmn.avatar
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.Extension.html">
-                        dAmn.Extension
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.Stash.html">
-                        dAmn.Stash
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.TablumpParser.html">
-                        dAmn.TablumpParser
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/dAmn.TablumpString.html">
-                        dAmn.TablumpString
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/EventEmitter.html">
-                        EventEmitter
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/jQuery.plugin.html">
-                        jQuery.plugin
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/StringSet.html">
-                        StringSet
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Channel.html">
-                        wsc.Channel
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Client.html">
-                        wsc.Client
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.defaults.Extension.html">
-                        wsc.defaults.Extension
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Flow.html">
-                        wsc.Flow
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.MessageParser.html">
-                        wsc.MessageParser
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.MessageString.html">
-                        wsc.MessageString
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Middleware.html">
-                        wsc.Middleware
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Packet.html">
-                        wsc.Packet
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Protocol.html">
-                        wsc.Protocol
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Protocol.LogMessage.html">
-                        wsc.Protocol.LogMessage
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.SocketIO.html">
-                        wsc.SocketIO
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Storage.html">
-                        wsc.Storage
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.Transport.html">
-                        wsc.Transport
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="/wsc/api/classes/wsc.WebSocket.html">
-                        wsc.WebSocket
-                    </a>
-                </li>
-            
-            </ul>
-        </section>
-    
+            <h1 class="file-heading">File: src&#x2F;ui&#x2F;basetab.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+&#x2F;**
+ * Implements a base for a channel view.
+ * @class Chatterbox.BaseTab
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel&#x27;s tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ *&#x2F;
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
+
+    this.manager = ui;
+    this.hidden = hidden;
+    this.monitor = ( monitor == undefined ? false : monitor );
+    this.built = false;
+    this.raw = ns;
+    this.selector = &#x27;t-&#x27; + (ns || &#x27;chan&#x27;).toLowerCase();
+    this.namespace = ns;
+    this.visible = false;
+    this.st = 0;
     
-        <section class="right">
-            <h3>Submodules</h3>
+    &#x2F;&#x2F; UI elements.
+    this.el = {
+        t: {                        &#x2F;&#x2F; Tab
+            o: null,                &#x2F;&#x2F;      Object..
+            l: null,                &#x2F;&#x2F;      Link
+            c: null,                &#x2F;&#x2F;      Close button
+        },                          &#x2F;&#x2F;
+        m: null,                    &#x2F;&#x2F; Main
+        l: {                        &#x2F;&#x2F; Channel log
+            p: null,                &#x2F;&#x2F;      Panel
+            w: null,                &#x2F;&#x2F;      Wrap
+        },                          &#x2F;&#x2F;
+        u: null,                    &#x2F;&#x2F; User panel
+        h: {                        &#x2F;&#x2F; Head
+            title: null,            &#x2F;&#x2F;      Title
+            topic: null             &#x2F;&#x2F;      Topic
+        }
+    };
+    this.mulw = 0;
+    &#x2F;&#x2F; Dimensions...
+    this.d = {
+        u: [0, 0],                  &#x2F;&#x2F; User panel [ width, height ]
+        h: {                        &#x2F;&#x2F; Header
+            title: [0, 0],          &#x2F;&#x2F;      Title [ width, height ]
+            topic: [0, 0]           &#x2F;&#x2F;      Topic [ width, height ]
+        }
+    };
     
-            <ul>
-            
-                <li>
-                    <a href="/wsc/api/modules/dAmn.html">
-                        dAmn
-                    </a>
+    if( !ui )
+        return;
     
-                    <div class="description">
-                        This module holds the dAmn extension.
-                    </div>
-                </li>
-            
-            </ul>
-        </section>
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == &#x27;pc&#x27; ? &#x27;pc&#x27; : &#x27;c&#x27;) + &#x27;-&#x27; + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
+
+};
+
+&#x2F;**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ * @param [view] {String} HTML for the channel view
+ *&#x2F;
+Chatterbox.BaseTab.prototype.build = function( view ) {
     
-        
-</section>
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    &#x2F;&#x2F; Tabs.
+    this.el.t.o = this.manager.nav.add_tab( selector, ns );
+    this.el.t.l = this.el.t.o.find(&#x27;.tab&#x27;);
+    this.el.t.c = this.el.t.o.find(&#x27;.close&#x27;);
+    
+    &#x2F;&#x2F; Draw
+    this.manager.chatbook.view.append( view || Chatterbox.render(&#x27;basetab&#x27;, {&#x27;selector&#x27;: selector, &#x27;ns&#x27;: ns}) );
+    
+    &#x2F;&#x2F; Store
+    this.el.m = this.window = this.manager.chatbook.view.find(&#x27;#&#x27; + selector + &#x27;-window&#x27;);
+    
+    var chan = this;
+    
+    &#x2F;&#x2F; When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    &#x2F;&#x2F; When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( &#x27;tab.close.clicked&#x27;, {
+            &#x27;ns&#x27;: chan.raw,
+            &#x27;chan&#x27;: chan,
+            &#x27;e&#x27;: e
+        } );
+        return false;
+    });
+    
+    if( this.hidden &amp;&amp; !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass(&#x27;hidden&#x27;);
+    }
+    
+    this.built = true;
+};
+
+&#x2F;**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ *&#x2F;
+Chatterbox.BaseTab.prototype.hide = function( ) {
+    this.el.m.css({&#x27;display&#x27;: &#x27;none&#x27;});
+    this.el.t.o.removeClass(&#x27;active&#x27;);
+    this.visible = false;
+};
+
+&#x2F;**
+ * Display the channel.
+ * 
+ * @method show
+ *&#x2F;
+Chatterbox.BaseTab.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({&#x27;display&#x27;: &#x27;block&#x27;});
+    this.el.t.o.addClass(&#x27;active&#x27;);
+    this.el.t.o.removeClass(&#x27;noise chatting tabbed fill&#x27;);
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop(&#x27;scrollHeight&#x27;) - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop(&#x27;scrollHeight&#x27;) - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+&#x2F;**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ *&#x2F;
+Chatterbox.BaseTab.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass(&#x27;hidden&#x27;);
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass(&#x27;hidden&#x27;);
+    }
+};
+
+&#x2F;**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ *&#x2F;
+Chatterbox.BaseTab.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
+
+&#x2F;**
+ * Resize the view window to fill the space available.
+ * @method resize
+ *&#x2F;
+Chatterbox.BaseTab.prototype.resize = function( width, height ) {
+
+    this.el.m.css( {
+        height: height || this.manager.chatbook.height(),
+        width: ( width || this.manager.chatbook.width() ) - 10
+    } );
+
+};
+
+&#x2F;**
+ * This method is run on the main loop event. Having this allows channels to do
+ * some maintenance autonomously.
+ * @method loop
+ *&#x2F;
+Chatterbox.BaseTab.prototype.loop = function(  ) {
+
+
+
+};
+
+
+
+    </pre>
+</div>
 
         </div>
     </div>

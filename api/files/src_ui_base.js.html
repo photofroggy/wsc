@@ -27,11 +27,15 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.BaseTab.html">Chatterbox.BaseTab</a></li>
+    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Feed.html">Chatterbox.Feed</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
     
@@ -127,7 +131,7 @@
  *&#x2F;
 var Chatterbox = {};
 
-Chatterbox.VERSION = &#x27;0.19.91&#x27;;
+Chatterbox.VERSION = &#x27;0.19.100&#x27;;
 Chatterbox.STATE = &#x27;beta&#x27;;
 
 &#x2F;**
@@ -248,7 +252,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
         unmute: function(  ) { ui.sound.toggle( false ); },
     };
     
-    view.extend( this.settings, options );
+    this.settings = view.extend( this.settings, options );
     view.append(&#x27;&lt;div class=&quot;wsc &#x27;+this.settings[&#x27;theme&#x27;]+&#x27;&quot;&gt;&lt;&#x2F;div&gt;&#x27;);
     
     this.mw = new wsc.Middleware();
@@ -349,18 +353,33 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @param ns {String} Channel namespace to deform.
+ * @param namespace {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **&#x2F;
-Chatterbox.UI.prototype.deform_ns = function( ns ) {
-    if(ns.indexOf(&quot;chat:&quot;) == 0)
-        return &#x27;#&#x27; + ns.slice(5);
+Chatterbox.UI.prototype.deform_ns = function( namespace ) {
+
+    var sym = namespace[0];
     
-    if(ns.indexOf(&quot;server:&quot;) == 0)
-        return &#x27;~&#x27; + ns.slice(7);
+    if( sym == &#x27;#&#x27;
+        || sym == &#x27;@&#x27;
+        || sym == &#x27;~&#x27;
+        || sym == &#x27;+&#x27; )
+            return namespace;
     
-    if(ns.indexOf(&quot;pchat:&quot;) == 0) {
-        var names = ns.split(&quot;:&quot;);
+    if( namespace.indexOf(&quot;chat:&quot;) == 0 )
+        return &#x27;#&#x27; + namespace.slice(5);
+    
+    if( namespace.indexOf(&quot;server:&quot;) == 0 )
+        return &#x27;~&#x27; + namespace.slice(7);
+    
+    if( namespace.indexOf(&quot;feed:&quot;) == 0 )
+        return &#x27;#&#x27; + namespace.slice(5);
+    
+    if( namespace.indexOf(&#x27;login:&#x27;) == 0 )
+        return &#x27;@&#x27; + namespace.slice(6);
+    
+    if( namespace.indexOf(&quot;pchat:&quot;) == 0 ) {
+        var names = namespace.split(&quot;:&quot;);
         names.shift();
         for(i in names) {
             name = names[i];
@@ -370,39 +389,54 @@ Chatterbox.UI.prototype.deform_ns = function( ns ) {
         }
     }
     
-    if( ns.indexOf(&#x27;login:&#x27;) == 0 )
-        return &#x27;@&#x27; + ns.slice(6);
+    return &#x27;#&#x27; + namespace;
     
-    if(ns[0] != &#x27;#&#x27; &amp;&amp; ns[0] != &#x27;@&#x27; &amp;&amp; ns[0] != &#x27;~&#x27;)
-        return &#x27;#&#x27; + ns;
-    
-    return ns;
 };
 
 &#x2F;**
  * Format a channel namespace.
  *
  * @method format_ns
- * @param ns {String} Channel namespace to format.
- * @return {String} ns formatted as a channel namespace.
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} namespace formatted as a channel namespace.
  *&#x2F;
-Chatterbox.UI.prototype.format_ns = function( ns ) {
-    if(ns.indexOf(&#x27;#&#x27;) == 0) {
-        return &#x27;chat:&#x27; + ns.slice(1);
-    }
-    if(ns.indexOf(&#x27;@&#x27;) == 0) {
-        var names = [ns.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift(&quot;pchat&quot;);
-        return names.join(&#x27;:&#x27;);
-    }
-    if(ns.indexOf(&#x27;~&#x27;) == 0) {
-        return &quot;server:&quot; + ns.slice(1);
-    }
-    if(ns.indexOf(&#x27;chat:&#x27;) != 0 &amp;&amp; ns.indexOf(&#x27;server:&#x27;) != 0 &amp;&amp; ns.indexOf(&#x27;pchat:&#x27;) != 0)
-        return &#x27;chat:&#x27; + ns;
+Chatterbox.UI.prototype.format_ns = function( namespace ) {
     
-    return ns;
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case &#x27;@&#x27;:
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift(&quot;pchat&quot;);
+            namespace = names.join(&#x27;:&#x27;);
+            break;
+        
+        case &#x27;~&#x27;:
+            namespace = &quot;server:&quot; + n;
+            break;
+        
+        case &#x27;+&#x27;:
+            namespace = &#x27;feed:&#x27; + n
+            break;
+            
+        case &#x27;#&#x27;:
+            namespace = &#x27;chat:&#x27; + n;
+            break;
+            
+        default:
+            if( namespace.indexOf(&#x27;chat:&#x27;) == 0
+                || namespace.indexOf(&#x27;pchat:&#x27;) == 0
+                || namespace.indexOf(&#x27;server:&#x27;) == 0
+                || namespace.indexOf(&#x27;feed:&#x27;) == 0 )
+                    break;
+            namespace = &#x27;chat:&#x27; + namespace;
+            break;
+    }
+    
+    return namespace;
+    
 };
 
 &#x2F;**
@@ -464,6 +498,8 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     &#x2F;&#x2F; Sound bank
     this.sound.bank.m = this.view.find(&#x27;div.soundbank&#x27;);
     this.sound.add( &#x27;click&#x27;, this.sound.bank.m.find(&#x27;audio.click&#x27;)[0] );
+    
+    var sound = this.sound;
     
     &#x2F;&#x2F; Mute button.
     var muted = false;

@@ -27,11 +27,15 @@
     <h3>Classes</h3>
     <ul>
     
+        <li><a href="/wsc/api/classes/Chatterbox.BaseTab.html">Chatterbox.BaseTab</a></li>
+    
         <li><a href="/wsc/api/classes/Chatterbox.Channel.html">Chatterbox.Channel</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Chatbook.html">Chatterbox.Chatbook</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Control.html">Chatterbox.Control</a></li>
+    
+        <li><a href="/wsc/api/classes/Chatterbox.Feed.html">Chatterbox.Feed</a></li>
     
         <li><a href="/wsc/api/classes/Chatterbox.Navigation.html">Chatterbox.Navigation</a></li>
     
@@ -553,13 +557,27 @@ wsc.Client.prototype.each_channel = function( method, include ) {
  *&#x2F;
 wsc.Client.prototype.deform_ns = function( namespace ) {
 
-    if(namespace.indexOf(&quot;chat:&quot;) == 0)
+    var sym = namespace[0];
+    
+    if( sym == &#x27;#&#x27;
+        || sym == &#x27;@&#x27;
+        || sym == &#x27;~&#x27;
+        || sym == &#x27;+&#x27; )
+            return namespace;
+    
+    if( namespace.indexOf(&quot;chat:&quot;) == 0 )
         return &#x27;#&#x27; + namespace.slice(5);
     
-    if(namespace.indexOf(&quot;server:&quot;) == 0)
+    if( namespace.indexOf(&quot;server:&quot;) == 0 )
         return &#x27;~&#x27; + namespace.slice(7);
     
-    if(namespace.indexOf(&quot;pchat:&quot;) == 0) {
+    if( namespace.indexOf(&quot;feed:&quot;) == 0 )
+        return &#x27;#&#x27; + namespace.slice(5);
+    
+    if( namespace.indexOf(&#x27;login:&#x27;) == 0 )
+        return &#x27;@&#x27; + namespace.slice(6);
+    
+    if( namespace.indexOf(&quot;pchat:&quot;) == 0 ) {
         var names = namespace.split(&quot;:&quot;);
         names.shift();
         for(i in names) {
@@ -570,13 +588,7 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
         }
     }
     
-    if( namespace.indexOf(&#x27;login:&#x27;) == 0 )
-        return &#x27;@&#x27; + namespace.slice(6);
-    
-    if(namespace[0] != &#x27;#&#x27; &amp;&amp; namespace[0] != &#x27;@&#x27; &amp;&amp; namespace[0] != &#x27;~&#x27;)
-        return &#x27;#&#x27; + namespace;
-    
-    return namespace;
+    return &#x27;#&#x27; + namespace;
 
 };
 
@@ -589,20 +601,38 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  *&#x2F;
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(namespace.indexOf(&#x27;#&#x27;) == 0) {
-        return &#x27;chat:&#x27; + namespace.slice(1);
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case &#x27;@&#x27;:
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift(&quot;pchat&quot;);
+            namespace = names.join(&#x27;:&#x27;);
+            break;
+        
+        case &#x27;~&#x27;:
+            namespace = &quot;server:&quot; + n;
+            break;
+        
+        case &#x27;+&#x27;:
+            namespace = &#x27;feed:&#x27; + n
+            break;
+            
+        case &#x27;#&#x27;:
+            namespace = &#x27;chat:&#x27; + n;
+            break;
+            
+        default:
+            if( namespace.indexOf(&#x27;chat:&#x27;) == 0
+                || namespace.indexOf(&#x27;pchat:&#x27;) == 0
+                || namespace.indexOf(&#x27;server:&#x27;) == 0
+                || namespace.indexOf(&#x27;feed:&#x27;) == 0 )
+                    break;
+            namespace = &#x27;chat:&#x27; + namespace;
+            break;
     }
-    if(namespace.indexOf(&#x27;@&#x27;) == 0) {
-        var names = [namespace.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift(&quot;pchat&quot;);
-        return names.join(&#x27;:&#x27;);
-    }
-    if(namespace.indexOf(&#x27;~&#x27;) == 0) {
-        return &quot;server:&quot; + namespace.slice(1);
-    }
-    if(namespace.indexOf(&#x27;chat:&#x27;) != 0 &amp;&amp; namespace.indexOf(&#x27;server:&#x27;) != 0 &amp;&amp; namespace.indexOf(&#x27;pchat:&#x27;) != 0)
-        return &#x27;chat:&#x27; + namespace;
     
     return namespace;
 

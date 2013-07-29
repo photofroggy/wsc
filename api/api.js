@@ -1,9 +1,11 @@
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
+        "Chatterbox.BaseTab",
         "Chatterbox.Channel",
         "Chatterbox.Chatbook",
         "Chatterbox.Control",
+        "Chatterbox.Feed",
         "Chatterbox.Navigation",
         "Chatterbox.Pager",
         "Chatterbox.Popup",

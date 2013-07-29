@@ -120,7 +120,7 @@
     </ul>
 </nav>
         <div class="content">
-            <h1>Chatterbox.Popup Class</h1>
+            <h1>Chatterbox.Feed Class</h1>
 
     <section class="main">
     
@@ -131,7 +131,7 @@
     
         
             <p>
-                Defined in: <a href="..&#x2F;files&#x2F;src_ui_popup.js.html#l1"><code>src&#x2F;ui&#x2F;popup.js:1</code></a>
+                Defined in: <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l2"><code>src&#x2F;ui&#x2F;feed.js:2</code></a>
             </p>
         
     
@@ -147,24 +147,17 @@
     </article>
     
     <section class="intro">
-        <p>Popup window base class.</p>
-
-<p>Should allow people to easily create popups... or something.
-Subclasses of the popups should provide a way of closing the popup, or
-maybe I could change things around a bit so there's always a close button in
-the top right corner. That said, the settings window looks good with the
-close button at the bottom. Maybe make that configurable. Use a flag to
-determine whether or not this class applies the close function or not?</p>
+        <p>Object for managing feed interfaces.</p>
     </section>
     
     
         <article class="constructor">
             <h2>Constructor</h2>
             
-<div id="method_Chatterbox.Popup" class="method item">
+<div id="method_Chatterbox.Feed" class="method item">
     <header>
         <section class="signature">
-            <h3><code>Chatterbox.Popup</code></h3>
+            <h3><code>Chatterbox.Feed</code></h3>
 
         
             <section class="args">
@@ -173,6 +166,24 @@ determine whether or not this class applies the close function or not?</p>
                     <li class="arg">
                         
                             <code>ui</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>ns</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code>type</code>
+                        
+                    </li>
+                
+                    <li class="arg">
+                        
+                            <code class="optional">[actions]</code>
                         
                     </li>
                 
@@ -206,7 +217,7 @@ determine whether or not this class applies the close function or not?</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_popup.js.html#l1"><code>src&#x2F;ui&#x2F;popup.js:1</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l2"><code>src&#x2F;ui&#x2F;feed.js:2</code></a>
         
         </p>
 
@@ -240,6 +251,52 @@ determine whether or not this class applies the close function or not?</p>
                     
                 </li>
             
+                <li class="param">
+                    
+                        <code class="name">ns</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The name of the feed this object will represent</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name">type</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>The type of feed this view represents</p>
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="name optional">[actions]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>A string describing the feed</p>
+                    </div>
+
+                    
+                </li>
+            
             </ul>
         </section>
     
@@ -261,6 +318,8 @@ determine whether or not this class applies the close function or not?</p>
             <li id="methods" class="active"><a href="#methods">Methods</a></li>
         
         
+            <li id="properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -276,7 +335,7 @@ determine whether or not this class applies the close function or not?</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_build">build</a>
+                                <a href="#method_add_item">add_item</a>
 
                                 
                                 
@@ -294,7 +353,7 @@ determine whether or not this class applies the close function or not?</p>
                         
                             
                             <li class="index-item method">
-                                <a href="#method_close">close</a>
+                                <a href="#method_resize">resize</a>
 
                                 
                                 
@@ -305,6 +364,34 @@ determine whether or not this class applies the close function or not?</p>
                 </div>
             
 
+            
+                <div class="index properties">
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_description">description</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_name">name</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_type">type</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
             
 
             
@@ -317,15 +404,29 @@ determine whether or not this class applies the close function or not?</p>
 
                 
                     
-<div id="method_build" class="method item">
+<div id="method_add_item" class="method item">
     <header>
         <section class="signature">
-            <h3><code>build</code></h3>
+            <h3><code>add_item</code></h3>
 
         
-            <span class="paren">()</span>
+            <section class="args">
+                <span class="paren">(</span><ul class="args inline commas">
+                
+                    <li class="arg">
+                        
+                            <code>item</code>
+                        
+                    </li>
+                
+                </ul><span class="paren">)</span>
+            </section>
         
     
+        
+            <span class="returns-inline">
+                <span class="type">Object</span>
+            </span>
         
     
         
@@ -352,7 +453,7 @@ determine whether or not this class applies the close function or not?</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_popup.js.html#l30"><code>src&#x2F;ui&#x2F;popup.js:30</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l94"><code>src&#x2F;ui&#x2F;feed.js:94</code></a>
         
         </p>
 
@@ -365,13 +466,48 @@ determine whether or not this class applies the close function or not?</p>
     <section class="body">
     
     <section class="description">
-        <p>Build the popup window.
-This should be pretty easy.</p>
+        <p>Add a feed item to the interface.</p>
     </section>
     
 
     
+        <section class="params">
+            <h4>Parameters:</h4>
 
+            <ul class="params">
+            
+                <li class="param">
+                    
+                        <code class="name">item</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="description">
+                        <p>Object representing a feed item</p>
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </section>
+    
+
+    
+        <section class="returns">
+            <h4>Returns:</h4>
+
+            <p>
+                
+                    
+                        <span class="type">Object</span>:
+                    
+                    Object representing the item in the UI
+                
+            </p>
+        </section>
     
 
     
@@ -416,7 +552,7 @@ This should be pretty easy.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_popup.js.html#l101"><code>src&#x2F;ui&#x2F;popup.js:101</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l42"><code>src&#x2F;ui&#x2F;feed.js:42</code></a>
         
         </p>
 
@@ -429,7 +565,7 @@ This should be pretty easy.</p>
     <section class="body">
     
     <section class="description">
-        <p>Build the prompt.</p>
+        <p>Draw the feed on screen and store the different elements in attributes.</p>
     </section>
     
 
@@ -444,10 +580,10 @@ This should be pretty easy.</p>
 
                 
                     
-<div id="method_close" class="method item">
+<div id="method_resize" class="method item">
     <header>
         <section class="signature">
-            <h3><code>close</code></h3>
+            <h3><code>resize</code></h3>
 
         
             <span class="paren">()</span>
@@ -479,7 +615,7 @@ This should be pretty easy.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;src_ui_popup.js.html#l61"><code>src&#x2F;ui&#x2F;popup.js:61</code></a>
+        <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l83"><code>src&#x2F;ui&#x2F;feed.js:83</code></a>
         
         </p>
 
@@ -492,7 +628,7 @@ This should be pretty easy.</p>
     <section class="body">
     
     <section class="description">
-        <p>Close the popup.</p>
+        <p>Resize the feed reader</p>
     </section>
     
 
@@ -509,6 +645,164 @@ This should be pretty easy.</p>
             </div>
         
 
+        
+            <div id="properties" class="listing">
+
+                
+                    
+<div id="property_description" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>description</code></h3>
+            <span class="type">String</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l30"><code>src&#x2F;ui&#x2F;feed.js:30</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>The description for the channel.</p>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section>
+</div>
+
+                
+                    
+<div id="property_name" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>name</code></h3>
+            <span class="type">String</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l16"><code>src&#x2F;ui&#x2F;feed.js:16</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>The name of the feed.</p>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section>
+</div>
+
+                
+                    
+<div id="property_type" class="property item">
+    <header>
+        <section class="signature">
+            <h3><code>type</code></h3>
+            <span class="type">String</span>
+        
+            
+        
+            
+        
+            
+        
+            
+        </section>
+
+        <section class="meta">
+            
+                
+                    
+                    <p>
+                    
+                    Defined in
+                    
+                
+            
+            
+            <a href="..&#x2F;files&#x2F;src_ui_feed.js.html#l23"><code>src&#x2F;ui&#x2F;feed.js:23</code></a>
+            
+            </p>
+    
+            
+    
+            
+        </section>
+    </header>
+    <section class="body">
+        
+        <section class="description">
+            <p>The type of feed this channel represents</p>
+        </section>
+    
+        
+    
+        
+    
+        
+    </section>
+</div>
+
+                
+            </div>
         
 
         
