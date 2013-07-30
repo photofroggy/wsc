@@ -802,12 +802,6 @@ div.wsc div.chatwindow div.chatusers {
   float: left;
   display: none;
   overflow: auto;
-  /*
-  div.pc:first-child {
-      h3, h4 {
-          border-top: none;
-      }
-  }*/
 }
 div.wsc div.chatwindow div.chatusers div.pc {
   padding: 0px;
@@ -819,15 +813,6 @@ div.wsc div.chatwindow div.chatusers div.pc h4 {
   padding: 5px;
   padding: 2px 10px;
   font-size: 12px;
-  /*border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  
-  &.first {
-      -moz-border-radius: inherit;
-      border-radius: inherit;
-      border-top: none;
-  }
-  */
 }
 div.wsc div.chatwindow div.chatusers div.pc ul {
   list-style: none;

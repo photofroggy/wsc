@@ -356,8 +356,6 @@
     div.chatusers {
         div.pc {
             h3, h4 {
-                //background-color: $heading-bg;
-                //border-color: $inner-border !important;
                 color: $heading-color;
             }
             ul {
@@ -373,7 +371,6 @@
                 }
             }
         }
-        //border: 1px solid $inner-border;
     }
     
     div.chatwindow div.userinfo {
