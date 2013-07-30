@@ -18,7 +18,7 @@
                 padding: 5px;
                 padding: 2px 10px;
                 font-size: 12px;
-                border-top: 1px solid black;
+                /*border-top: 1px solid black;
                 border-bottom: 1px solid black;
                 
                 &.first {
@@ -26,11 +26,12 @@
                     border-radius: inherit;
                     border-top: none;
                 }
+                */
             }
             
             ul {
                 list-style: none;
-                padding: 4px 5px;
+                padding: 4px 20px;
                 margin: 0px;
                 margin-bottom: 10px;
                 
@@ -50,12 +51,12 @@
                 }
             }
         }
-        
+        /*
         div.pc:first-child {
             h3, h4 {
                 border-top: none;
             }
-        }
+        }*/
     }
 }
 

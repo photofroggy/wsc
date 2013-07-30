@@ -802,6 +802,12 @@ div.wsc div.chatwindow div.chatusers {
   float: left;
   display: none;
   overflow: auto;
+  /*
+  div.pc:first-child {
+      h3, h4 {
+          border-top: none;
+      }
+  }*/
 }
 div.wsc div.chatwindow div.chatusers div.pc {
   padding: 0px;
@@ -813,18 +819,19 @@ div.wsc div.chatwindow div.chatusers div.pc h4 {
   padding: 5px;
   padding: 2px 10px;
   font-size: 12px;
-  border-top: 1px solid black;
+  /*border-top: 1px solid black;
   border-bottom: 1px solid black;
-}
-div.wsc div.chatwindow div.chatusers div.pc h3.first,
-div.wsc div.chatwindow div.chatusers div.pc h4.first {
-  -moz-border-radius: inherit;
-  border-radius: inherit;
-  border-top: none;
+  
+  &.first {
+      -moz-border-radius: inherit;
+      border-radius: inherit;
+      border-top: none;
+  }
+  */
 }
 div.wsc div.chatwindow div.chatusers div.pc ul {
   list-style: none;
-  padding: 4px 5px;
+  padding: 4px 20px;
   margin: 0px;
   margin-bottom: 10px;
 }
@@ -840,9 +847,6 @@ div.wsc div.chatwindow div.chatusers div.pc ul li a {
 }
 div.wsc div.chatwindow div.chatusers div.pc ul li a em {
   font-style: normal;
-}
-div.wsc div.chatwindow div.chatusers div.pc:first-child h3, div.wsc div.chatwindow div.chatusers div.pc:first-child h4 {
-  border-top: none;
 }
 div.wsc div.chatwindow div.userinfo {
   display: block;
@@ -1646,12 +1650,8 @@ div.wsc.wsct_dAmn div.chatcontrol {
 div.wsc.wsct_dAmn div.chatcontrol div.brow ul.states li {
   color: #6a6f6a;
 }
-div.wsc.wsct_dAmn div.chatusers {
-  border: 1px solid #b9c2ba;
-}
 div.wsc.wsct_dAmn div.chatusers div.pc h3, div.wsc.wsct_dAmn div.chatusers div.pc h4 {
   background-color: #c9d3c9;
-  border-color: #b9c2ba !important;
   color: #69796f;
 }
 div.wsc.wsct_dAmn div.chatusers div.pc ul {
@@ -2034,12 +2034,8 @@ div.wsc.wsct_dark div.chatcontrol {
 div.wsc.wsct_dark div.chatcontrol div.brow ul.states li {
   color: #95b4b6;
 }
-div.wsc.wsct_dark div.chatusers {
-  border: 1px solid #2a4e5a;
-}
 div.wsc.wsct_dark div.chatusers div.pc h3, div.wsc.wsct_dark div.chatusers div.pc h4 {
   background-color: #2f4750;
-  border-color: #2a4e5a !important;
   color: #698b8b;
 }
 div.wsc.wsct_dark div.chatusers div.pc ul {
