@@ -2083,6 +2083,14 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
     }, event );
 
 };
+/**
+ * Handle a recv_action packet.
+ * @method pkt_recv_action
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+// do the exact same thing as above
+Chatterbox.Channel.prototype.pkt_recv_action = Chatterbox.Channel.prototype.pkt_recv_msg;
 
 /**
  * Handle a property packet.
