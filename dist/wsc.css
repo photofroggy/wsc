@@ -874,6 +874,9 @@ div.wsc div.window div.userinfo div ul li {
   margin-bottom: 0px;
   margin-left: 0px;
 }
+div.wsc div.window.feed {
+  margin-top: 40px;
+}
 div.wsc div.window.feed header {
   display: block;
 }
@@ -891,6 +894,8 @@ div.wsc div.window.feed header div h3 span {
 }
 div.wsc div.window.feed div.log {
   border: none;
+  width: 65%;
+  margin: 0px 60px;
 }
 div.wsc div.chatcontrol {
   clear: both;
