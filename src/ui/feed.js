@@ -62,7 +62,7 @@ Chatterbox.Feed.prototype.build = function( ) {
             'feed',
             {
                 'selector': selector,
-                'type': 'quiet',
+                'type': this.type,
                 'name': this.name,
                 'info': this.description,
             }
