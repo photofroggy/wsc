@@ -879,6 +879,7 @@ div.wsc div.window.feed {
 }
 div.wsc div.window.feed header {
   display: block;
+  line-height: 1.6em;
 }
 div.wsc div.window.feed header div {
   display: block;
@@ -896,6 +897,7 @@ div.wsc div.window.feed div.log {
   border: none;
   width: 65%;
   margin: 0px 60px;
+  border-radius: 0px;
 }
 div.wsc div.chatcontrol {
   clear: both;

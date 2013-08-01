@@ -5,6 +5,8 @@
     
         header {
             display: block;
+            line-height: 1.6em;
+            
             div {
                 display: block;
                 h3 {
@@ -23,6 +25,7 @@
             border: none;
             width: 65%;
             margin: 0px 60px;
+            border-radius: 0px;
         }
     }
 }
