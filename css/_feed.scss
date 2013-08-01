@@ -4,6 +4,15 @@
             display: block;
             div {
                 display: block;
+                h3 {
+                    font-size: 30px;
+                    span {
+                        font-size: 15px;
+                        position: relative;
+                        top: -4px;
+                        padding-left: 10px;
+                    }
+                }
             }
         }
         

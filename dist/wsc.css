@@ -880,6 +880,15 @@ div.wsc div.window.feed header {
 div.wsc div.window.feed header div {
   display: block;
 }
+div.wsc div.window.feed header div h3 {
+  font-size: 30px;
+}
+div.wsc div.window.feed header div h3 span {
+  font-size: 15px;
+  position: relative;
+  top: -4px;
+  padding-left: 10px;
+}
 div.wsc div.window.feed div.log {
   border: none;
 }
