@@ -91,6 +91,15 @@ div.wsc {
         @include headers;
         @include user-list;
         @include user-info;
+        
+        &.feed {
+            header {
+                display: block;
+                div {
+                    display: block;
+                }
+            }
+        }
     
     }
     
