@@ -1629,10 +1629,10 @@ div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
 div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #858585;
 }
-div.wsc.wsct_dAmn div.control {
+div.wsc.wsct_dAmn div.chatcontrol {
   background-color: #d0dbd0;
 }
-div.wsc.wsct_dAmn div.control div.brow ul.states li {
+div.wsc.wsct_dAmn div.chatcontrol div.brow ul.states li {
   color: #6a6f6a;
 }
 div.wsc.wsct_dAmn div.users div.pc h3, div.wsc.wsct_dAmn div.users div.pc h4 {
@@ -2012,10 +2012,10 @@ div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
 div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #3a5058;
 }
-div.wsc.wsct_dark div.control {
+div.wsc.wsct_dark div.chatcontrol {
   background-color: #415b64;
 }
-div.wsc.wsct_dark div.control div.brow ul.states li {
+div.wsc.wsct_dark div.chatcontrol div.brow ul.states li {
   color: #95b4b6;
 }
 div.wsc.wsct_dark div.users div.pc h3, div.wsc.wsct_dark div.users div.pc h4 {
