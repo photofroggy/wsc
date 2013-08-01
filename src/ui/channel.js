@@ -34,7 +34,7 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     Chatterbox.BaseTab.prototype.build.call(
         this,
-        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns, 'type': ''})
     );
     
     // Store

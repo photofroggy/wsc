@@ -5369,7 +5369,7 @@ Chatterbox.Channel.prototype.build = function( ) {
     
     Chatterbox.BaseTab.prototype.build.call(
         this,
-        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns, 'type': ''})
     );
     
     // Store
@@ -7677,12 +7677,13 @@ Chatterbox.Feed.prototype.build = function( ) {
     Chatterbox.BaseTab.prototype.build.call(
         this,
         Chatterbox.render(
-            'feed',
+            'channel',
             {
                 'selector': selector,
-                'type': 'quiet',
+                'type': 'feed',
                 'name': this.name,
                 'info': this.description,
+                'ns': ns
             }
         )
     );
@@ -10265,7 +10266,7 @@ Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>
  * @property channel
  * @type String
  */
-Chatterbox.template.feed = '<div class="chatwindow feed" id="{selector}-window">\
+Chatterbox.template.feed = '<div class="window feed" id="{selector}-window">\
                     <header class="info">\
                         <h2>{name}<span class="type">{type} feed</span></h2>\
                         <p>{info}</p>\
@@ -10302,7 +10303,7 @@ Chatterbox.template.feedmsg = '<li id="{ref}">\
  * @property channel
  * @type String
  */
-Chatterbox.template.channel = '<div class="window" id="{selector}-window">\
+Chatterbox.template.channel = '<div class="window{type}" id="{selector}-window">\
                     <header class="title">\
                         <div class="title"></div>\
                         <textarea></textarea>\
