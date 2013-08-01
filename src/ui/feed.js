@@ -7,7 +7,7 @@
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the feed this object will represent
  * @param type {String} The type of feed this view represents
- * @param [actions] {String} A string describing the feed
+ * @param [description] {String} A string describing the feed
  */
 Chatterbox.Feed = function( ui, ns, type, description ) {
     

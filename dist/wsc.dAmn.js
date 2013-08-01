@@ -6623,12 +6623,11 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * @method create_feed
  * @param ns {String} Namespace of the feed to create
  * @param type {String} The type of feed this view represents
- * @param priv {Integer} The privilege level the user has for this feed
- * @param [actions] {String} A string describing the actions the user can perform on this feed
+ * @param [description] {String} A string describing the feed
  * @return {Object} WscUIChannel object.
  */
-Chatterbox.Chatbook.prototype.create_feed = function( ns, type, priv, actions ) {
-    var chan = this.channel(ns, this.feed_object(ns, type, priv, actions));
+Chatterbox.Chatbook.prototype.create_feed = function( ns, type, description ) {
+    var chan = this.channel(ns, this.feed_object(ns, type, description));
     chan.build();
     // Update the paper trail.
     if( this.trail.indexOf(chan.namespace) == -1 ) {
@@ -6661,12 +6660,11 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
  * @method feed_object
  * @param ns {String} Namespace of the feed
  * @param type {String} The type of feed this view represents
- * @param priv {Integer} The privilege level the user has for this feed
- * @param [actions] {String} A string describing the actions the user can perform on this feed
+ * @param [description] {String} A string describing the feed
  * @return {Object} An object representing a feed UI.
  */
-Chatterbox.Chatbook.prototype.feed_object = function( ns, type, priv, actions ) {
-    return new Chatterbox.Feed( this.manager, ns, type, priv, actions );
+Chatterbox.Chatbook.prototype.feed_object = function( ns, type, description ) {
+    return new Chatterbox.Feed( this.manager, ns, type, description );
 };
 
 /**
@@ -7625,7 +7623,7 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the feed this object will represent
  * @param type {String} The type of feed this view represents
- * @param [actions] {String} A string describing the feed
+ * @param [description] {String} A string describing the feed
  */
 Chatterbox.Feed = function( ui, ns, type, description ) {
     
