@@ -271,7 +271,7 @@
         background-color: $chrome;
         border-color: $outer-border;
     }
-    div.chatwindow {
+    div.window {
 
         header {
             div.title {
@@ -292,7 +292,7 @@
             }
         }
         
-        div.chatlog {
+        div.log {
             background-color: $log-bg;
             border-color: $inner-border;
             
@@ -353,11 +353,9 @@
         }
     }
     
-    div.chatusers {
+    div.users {
         div.pc {
             h3, h4 {
-                background-color: $heading-bg;
-                border-color: $inner-border !important;
                 color: $heading-color;
             }
             ul {
@@ -373,10 +371,9 @@
                 }
             }
         }
-        border: 1px solid $inner-border;
     }
     
-    div.chatwindow div.userinfo {
+    div.window div.userinfo {
         border-color: $inner-border;
         background-color: $heading-bg;
         div.info {

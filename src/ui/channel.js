@@ -622,7 +622,7 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
  */
 Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
     
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var pc = '';
     var pcel = null;
     
@@ -644,7 +644,7 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
  */
 Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
 
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var total = 0;
     var count = 0;
     var pc = null;
@@ -676,7 +676,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     if( Object.size(users) == 0 )
         return;
     
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var user = null;
     
     for( var index in users ) {
@@ -699,7 +699,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  */
 Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
-    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
+    var uld = this.el.u.find( 'div.pc#' + replaceAll( user.pc, ' ', '-' ) );
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
     var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
@@ -754,7 +754,7 @@ Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
 
     this.el
-        .m.find('div.chatusers div.pc ul li a#' + user)
+        .u.find('div.pc ul li a#' + user)
         .parent().remove();
     
     noreveal = noreveal || false;
@@ -1110,6 +1110,14 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
     }, event );
 
 };
+/**
+ * Handle a recv_action packet.
+ * @method pkt_recv_action
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+// do the exact same thing as above
+Chatterbox.Channel.prototype.pkt_recv_action = Chatterbox.Channel.prototype.pkt_recv_msg;
 
 /**
  * Handle a property packet.
