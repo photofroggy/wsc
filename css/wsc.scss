@@ -60,10 +60,10 @@ div.wsc {
         @include messages;
     }
             
-    div.chatwindow {
+    div.window {
         overflow: hidden;
         
-        div.chatlog {
+        div.log {
             overflow: hidden;
             float: left;
             width: 100%;
