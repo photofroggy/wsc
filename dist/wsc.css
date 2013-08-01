@@ -720,10 +720,10 @@ div.wsc div.chatbook .loginfo .whoiswrap .info section ul {
 div.wsc div.chatbook .loginfo .whoiswrap .info section ul li {
   word-wrap: break-word;
 }
-div.wsc div.chatwindow {
+div.wsc div.window {
   overflow: hidden;
 }
-div.wsc div.chatwindow div.chatlog {
+div.wsc div.window div.log {
   overflow: hidden;
   float: left;
   width: 100%;
@@ -731,30 +731,30 @@ div.wsc div.chatwindow div.chatlog {
   border-radius: 10px 10px 0px 0px;
   margin-right: 5px;
 }
-div.wsc div.chatwindow div.chatlog a {
+div.wsc div.window div.log a {
   padding: 0px;
   margin: 0px;
 }
-div.wsc div.chatwindow div.chatlog img {
+div.wsc div.window div.log img {
   padding: 0px;
   margin: 0px;
   vertical-align: middle;
 }
-div.wsc div.chatwindow div.chatlog ul.logwrap {
+div.wsc div.window div.log ul.logwrap {
   overflow: auto;
   list-style: none;
 }
-div.wsc div.chatwindow header {
+div.wsc div.window header {
   width: auto;
   height: auto;
   border-bottom: none;
   line-height: 1.3em;
 }
-div.wsc div.chatwindow header textarea {
+div.wsc div.window header textarea {
   display: none;
   height: 60px;
 }
-div.wsc div.chatwindow header .button {
+div.wsc div.window header .button {
   padding: 0px 4px !important;
   position: relative;
   right: 5px;
@@ -763,35 +763,35 @@ div.wsc div.chatwindow header .button {
   width: 10px;
   margin-bottom: -25px !important;
 }
-div.wsc div.chatwindow header a[href=\#save] {
+div.wsc div.window header a[href=\#save] {
   right: 30px;
   top: -60px;
 }
-div.wsc div.chatwindow header a[href=\#cancel] {
+div.wsc div.window header a[href=\#cancel] {
   top: -60px;
 }
-div.wsc div.chatwindow header div {
+div.wsc div.window header div {
   margin: 0px;
   padding: 0px 2px;
   display: none;
 }
-div.wsc div.chatwindow header div p {
+div.wsc div.window header div p {
   margin: 0px;
   padding: 0xp;
 }
-div.wsc div.chatwindow header div.title {
+div.wsc div.window header div.title {
   padding-top: 0px;
   padding-bottom: 2px;
 }
-div.wsc div.chatwindow header div.topic {
+div.wsc div.window header div.topic {
   padding: 5px 10px;
   border-bottom: 1px solid black;
   /*border-bottom: none;*/
 }
-div.wsc div.chatwindow header div.topic.topic img {
+div.wsc div.window header div.topic.topic img {
   vertical-align: middle;
 }
-div.wsc div.chatwindow div.chatusers {
+div.wsc div.window div.users {
   margin: 0px;
   padding: 0px;
   overflow: auto;
@@ -800,73 +800,73 @@ div.wsc div.chatwindow div.chatusers {
   display: none;
   overflow: auto;
 }
-div.wsc div.chatwindow div.chatusers div.pc {
+div.wsc div.window div.users div.pc {
   padding: 0px;
   margin: 0p;
 }
-div.wsc div.chatwindow div.chatusers div.pc h3,
-div.wsc div.chatwindow div.chatusers div.pc h4 {
+div.wsc div.window div.users div.pc h3,
+div.wsc div.window div.users div.pc h4 {
   margin: 0px;
   padding: 5px;
   padding: 2px 10px;
   font-size: 12px;
 }
-div.wsc div.chatwindow div.chatusers div.pc ul {
+div.wsc div.window div.users div.pc ul {
   list-style: none;
   padding: 4px 20px;
   margin: 0px;
   margin-bottom: 10px;
 }
-div.wsc div.chatwindow div.chatusers div.pc ul li {
+div.wsc div.window div.users div.pc ul li {
   font-size: 11px;
   line-height: 1.2em;
   position: relative;
   white-space: nowrap;
 }
-div.wsc div.chatwindow div.chatusers div.pc ul li a {
+div.wsc div.window div.users div.pc ul li a {
   padding: 0px;
   margin: 0px;
 }
-div.wsc div.chatwindow div.chatusers div.pc ul li a em {
+div.wsc div.window div.users div.pc ul li a em {
   font-style: normal;
 }
-div.wsc div.chatwindow div.userinfo {
+div.wsc div.window div.userinfo {
   display: block;
   position: absolute;
   padding: 0;
   border: 1px solid black;
   border-right: none;
 }
-div.wsc div.chatwindow div.userinfo div {
+div.wsc div.window div.userinfo div {
   display: block;
   float: left;
   padding: 0px;
 }
-div.wsc div.chatwindow div.userinfo div.avatar {
+div.wsc div.window div.userinfo div.avatar {
   background: none;
   height: 100%;
   padding: 5px;
 }
-div.wsc div.chatwindow div.userinfo div.avatar a.avatar {
+div.wsc div.window div.userinfo div.avatar a.avatar {
   padding: 0px;
 }
-div.wsc div.chatwindow div.userinfo div.avatar a img {
+div.wsc div.window div.userinfo div.avatar a img {
   height: 50px;
   width: 50px;
   padding: 0px;
   margin: 0px;
 }
-div.wsc div.chatwindow div.userinfo div.info {
+div.wsc div.window div.userinfo div.info {
   padding-right: 5px;
   padding-left: 5px;
   margin: 0px;
   border-left: 1px solid black;
 }
-div.wsc div.chatwindow div.userinfo div ul {
+div.wsc div.window div.userinfo div ul {
   list-style: none;
   margin: 0px;
 }
-div.wsc div.chatwindow div.userinfo div ul li {
+div.wsc div.window div.userinfo div ul li {
   padding-top: 0px;
   padding-bottom: 0px;
   font-size: 11px;
@@ -1572,58 +1572,58 @@ div.wsc.wsct_dAmn div.chatbook {
   background-color: #d0dbd0;
   border-color: #858585;
 }
-div.wsc.wsct_dAmn div.chatwindow header div.title {
+div.wsc.wsct_dAmn div.window header div.title {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow header div.title a {
-  color: #2c3635;
-  text-decoration: underline;
-}
-div.wsc.wsct_dAmn div.chatwindow header div.title a:hover {
+div.wsc.wsct_dAmn div.window header div.title a {
   color: #2c3635;
   text-decoration: underline;
 }
-div.wsc.wsct_dAmn div.chatwindow header div.topic {
+div.wsc.wsct_dAmn div.window header div.title a:hover {
+  color: #2c3635;
+  text-decoration: underline;
+}
+div.wsc.wsct_dAmn div.window header div.topic {
   background-color: #e8eee6;
   border-color: #b9c2ba;
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog {
+div.wsc.wsct_dAmn div.window div.log {
   background-color: #dce7dc;
   border-color: #b9c2ba;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap a {
   color: #2c3635;
   text-decoration: underline;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap a:hover {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap a:hover {
   color: #2c3635;
   text-decoration: underline;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .logmsg {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .logmsg.highlight, div.wsc.wsct_dAmn div.window div.log ul.logwrap .logmsg.highlight span {
   background-color: white;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .logmsg span.ts, div.wsc.wsct_dAmn div.window div.log ul.logwrap .logmsg span.bg {
   color: #797979;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo {
   background-color: #d0dbd0;
   border-color: #858585;
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button) {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo a:not(.button) {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):hover {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo a:not(.button):hover {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
   background-color: #c9d3c9;
 }
-div.wsc.wsct_dAmn div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
+div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #858585;
 }
 div.wsc.wsct_dAmn div.chatcontrol {
@@ -1632,37 +1632,37 @@ div.wsc.wsct_dAmn div.chatcontrol {
 div.wsc.wsct_dAmn div.chatcontrol div.brow ul.states li {
   color: #6a6f6a;
 }
-div.wsc.wsct_dAmn div.chatusers div.pc h3, div.wsc.wsct_dAmn div.chatusers div.pc h4 {
+div.wsc.wsct_dAmn div.users div.pc h3, div.wsc.wsct_dAmn div.users div.pc h4 {
   color: #69796f;
 }
-div.wsc.wsct_dAmn div.chatusers div.pc ul {
+div.wsc.wsct_dAmn div.users div.pc ul {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatusers div.pc ul a {
-  color: #2c3635;
-  text-decoration: none;
-}
-div.wsc.wsct_dAmn div.chatusers div.pc ul a:hover {
+div.wsc.wsct_dAmn div.users div.pc ul a {
   color: #2c3635;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn div.chatusers div.pc ul a em {
+div.wsc.wsct_dAmn div.users div.pc ul a:hover {
+  color: #2c3635;
+  text-decoration: none;
+}
+div.wsc.wsct_dAmn div.users div.pc ul a em {
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.userinfo {
+div.wsc.wsct_dAmn div.window div.userinfo {
   border-color: #b9c2ba;
   background-color: #c9d3c9;
 }
-div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info {
+div.wsc.wsct_dAmn div.window div.userinfo div.info {
   background-color: #d0dbd0;
   border-color: #b9c2ba;
   color: #2c3635;
 }
-div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a {
+div.wsc.wsct_dAmn div.window div.userinfo div.info a {
   color: #2c3635;
   text-decoration: none;
 }
-div.wsc.wsct_dAmn div.chatwindow div.userinfo div.info a:hover {
+div.wsc.wsct_dAmn div.window div.userinfo div.info a:hover {
   color: #2c3635;
   text-decoration: underline;
 }
@@ -1955,58 +1955,58 @@ div.wsc.wsct_dark div.chatbook {
   background-color: #415b64;
   border-color: #3a5058;
 }
-div.wsc.wsct_dark div.chatwindow header div.title {
+div.wsc.wsct_dark div.window header div.title {
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow header div.title a {
-  color: #aac3c7;
-  text-decoration: underline;
-}
-div.wsc.wsct_dark div.chatwindow header div.title a:hover {
+div.wsc.wsct_dark div.window header div.title a {
   color: #aac3c7;
   text-decoration: underline;
 }
-div.wsc.wsct_dark div.chatwindow header div.topic {
+div.wsc.wsct_dark div.window header div.title a:hover {
+  color: #aac3c7;
+  text-decoration: underline;
+}
+div.wsc.wsct_dark div.window header div.topic {
   background-color: #c3e0e4;
   border-color: #2a4e5a;
   color: #1b4949;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog {
+div.wsc.wsct_dark div.window div.log {
   background-color: #b3d2df;
   border-color: #2a4e5a;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap a {
+div.wsc.wsct_dark div.window div.log ul.logwrap a {
   color: #3c4d50;
   text-decoration: underline;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap a:hover {
+div.wsc.wsct_dark div.window div.log ul.logwrap a:hover {
   color: #3c4d50;
   text-decoration: underline;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg {
+div.wsc.wsct_dark div.window div.log ul.logwrap .logmsg {
   color: #3c4d50;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg.highlight span {
+div.wsc.wsct_dark div.window div.log ul.logwrap .logmsg.highlight, div.wsc.wsct_dark div.window div.log ul.logwrap .logmsg.highlight span {
   background-color: white;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.ts, div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .logmsg span.bg {
+div.wsc.wsct_dark div.window div.log ul.logwrap .logmsg span.ts, div.wsc.wsct_dark div.window div.log ul.logwrap .logmsg span.bg {
   color: #608288;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo {
+div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo {
   background-color: #415b64;
   border-color: #3a5058;
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button) {
+div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo a:not(.button) {
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo a:not(.button):hover {
+div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo a:not(.button):hover {
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .avatar {
+div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
   background-color: #2f4750;
 }
-div.wsc.wsct_dark div.chatwindow div.chatlog ul.logwrap .loginfo .whoiswrap .info {
+div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #3a5058;
 }
 div.wsc.wsct_dark div.chatcontrol {
@@ -2015,37 +2015,37 @@ div.wsc.wsct_dark div.chatcontrol {
 div.wsc.wsct_dark div.chatcontrol div.brow ul.states li {
   color: #95b4b6;
 }
-div.wsc.wsct_dark div.chatusers div.pc h3, div.wsc.wsct_dark div.chatusers div.pc h4 {
+div.wsc.wsct_dark div.users div.pc h3, div.wsc.wsct_dark div.users div.pc h4 {
   color: #698b8b;
 }
-div.wsc.wsct_dark div.chatusers div.pc ul {
+div.wsc.wsct_dark div.users div.pc ul {
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatusers div.pc ul a {
-  color: #aac3c7;
-  text-decoration: none;
-}
-div.wsc.wsct_dark div.chatusers div.pc ul a:hover {
+div.wsc.wsct_dark div.users div.pc ul a {
   color: #aac3c7;
   text-decoration: none;
 }
-div.wsc.wsct_dark div.chatusers div.pc ul a em {
+div.wsc.wsct_dark div.users div.pc ul a:hover {
+  color: #aac3c7;
+  text-decoration: none;
+}
+div.wsc.wsct_dark div.users div.pc ul a em {
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow div.userinfo {
+div.wsc.wsct_dark div.window div.userinfo {
   border-color: #2a4e5a;
   background-color: #2f4750;
 }
-div.wsc.wsct_dark div.chatwindow div.userinfo div.info {
+div.wsc.wsct_dark div.window div.userinfo div.info {
   background-color: #415b64;
   border-color: #2a4e5a;
   color: #aac3c7;
 }
-div.wsc.wsct_dark div.chatwindow div.userinfo div.info a {
+div.wsc.wsct_dark div.window div.userinfo div.info a {
   color: #aac3c7;
   text-decoration: none;
 }
-div.wsc.wsct_dark div.chatwindow div.userinfo div.info a:hover {
+div.wsc.wsct_dark div.window div.userinfo div.info a:hover {
   color: #aac3c7;
   text-decoration: underline;
 }
