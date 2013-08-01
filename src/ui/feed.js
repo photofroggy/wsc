@@ -59,13 +59,12 @@ Chatterbox.Feed.prototype.build = function( ) {
     Chatterbox.BaseTab.prototype.build.call(
         this,
         Chatterbox.render(
-            'channel',
+            'feed',
             {
                 'selector': selector,
-                'type': 'feed',
+                'type': 'quiet',
                 'name': this.name,
                 'info': this.description,
-                'ns': ns
             }
         )
     );

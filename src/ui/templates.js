@@ -153,20 +153,21 @@ Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>
  * @type String
  */
 Chatterbox.template.feed = '<div class="window feed" id="{selector}-window">\
-                    <header class="info">\
-                        <h2>{name}<span class="type">{type} feed</span></h2>\
-                        <p>{info}</p>\
-                        <ul class="control">\
-                            <li><a href="#post" class="button iconic pen" title="Post a message on"></a></li>\
-                            <li><a href="#refresh" class="button iconic spin" title="Get updates"></a></li>\
-                            <li><a href="#close" class="button iconic x" title="Close feed reader"></a></li>\
-                        </ul>\
-                    </header>\
                     <div class="log" id="{selector}-log">\
+                        <header class="info">\
+                            <div class="info">\
+                                <h3>{name}<span>{type}</span></h3>\
+                                <p>{info}</p>\
+                            </div>\
+                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
+                            <a href="#save" class="button iconic check" title="Save changes"></a>\
+                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
+                        </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
-                    <div class="users" id="{selector}-users"></div>\
-                </div>';
+                    <div class="users" id="{selector}-users">\
+                </div>\
+            </div>';
 /**
  * HTML template for a feed message.
  * @property feedmsg
@@ -189,7 +190,7 @@ Chatterbox.template.feedmsg = '<li id="{ref}">\
  * @property channel
  * @type String
  */
-Chatterbox.template.channel = '<div class="window{type}" id="{selector}-window">\
+Chatterbox.template.channel = '<div class="window" id="{selector}-window">\
                     <header class="title">\
                         <div class="title"></div>\
                         <textarea></textarea>\
