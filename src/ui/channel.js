@@ -41,7 +41,6 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
-    //console.log( selector, this.el.m, this.el.u );
     
     // Max user list width;
     this.mulw = parseInt(this.el.u.css('max-width').slice(0,-2));
