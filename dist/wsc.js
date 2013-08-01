@@ -5194,7 +5194,19 @@ Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
         return;
     
     this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    
+    if( this.raw.substr( 0, 2 ) == 'pc' ) {
+        this.selector = 'pc';
+    } else if( this.raw.substr( 0, 1 ) == 'c' ) {
+        this.selector = 'c';
+    } else if( this.raw.substr( 0, 4 ) == 'feed' ) {
+        this.selector = 'f';
+    } else {
+        this.selector = 't';
+    }
+       
+    this.selector += '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    
     this.namespace = ui.deform_ns(ns);
 
 };
