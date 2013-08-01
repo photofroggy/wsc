@@ -344,6 +344,12 @@
         
     }
     
+    div.window.feed {
+        div.log {
+            background-color: $chrome;
+        }
+    }
+    
     div.chatcontrol {
         background-color: $chrome;
         div.brow {

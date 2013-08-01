@@ -1,0 +1,14 @@
+@mixin feed {
+    &.feed {
+        header {
+            display: block;
+            div {
+                display: block;
+            }
+        }
+        
+        div.log {
+            border: none;
+        }
+    }
+}

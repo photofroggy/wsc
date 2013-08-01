@@ -24,6 +24,7 @@
 @import "settings";
 @import "pager";
 @import "theme_template";
+@import "feed";
 
 /* Layout */
 div.wsc {
@@ -92,14 +93,7 @@ div.wsc {
         @include user-list;
         @include user-info;
         
-        &.feed {
-            header {
-                display: block;
-                div {
-                    display: block;
-                }
-            }
-        }
+        @include feed;
     
     }
     

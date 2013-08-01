@@ -880,6 +880,9 @@ div.wsc div.window.feed header {
 div.wsc div.window.feed header div {
   display: block;
 }
+div.wsc div.window.feed div.log {
+  border: none;
+}
 div.wsc div.chatcontrol {
   clear: both;
   margin: 0px;
@@ -1632,6 +1635,9 @@ div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
 div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #858585;
 }
+div.wsc.wsct_dAmn div.window.feed div.log {
+  background-color: #d0dbd0;
+}
 div.wsc.wsct_dAmn div.chatcontrol {
   background-color: #d0dbd0;
 }
@@ -2014,6 +2020,9 @@ div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .avatar {
 }
 div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .info {
   border-color: #3a5058;
+}
+div.wsc.wsct_dark div.window.feed div.log {
+  background-color: #415b64;
 }
 div.wsc.wsct_dark div.chatcontrol {
   background-color: #415b64;
