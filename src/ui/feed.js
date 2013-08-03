@@ -6,10 +6,10 @@
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the feed this object will represent
- * @param type {String} The type of feed this view represents
+ * @param [meta] {String} Meta information about the feed
  * @param [description] {String} A string describing the feed
  */
-Chatterbox.Feed = function( ui, ns, type, description ) {
+Chatterbox.Feed = function( ui, ns, meta, description ) {
     
     Chatterbox.BaseTab.call( this, ui, ns );
     
@@ -21,11 +21,11 @@ Chatterbox.Feed = function( ui, ns, type, description ) {
     this.name = this.namespace.substr(1);
     
     /**
-     * The type of feed this channel represents
-     * @property type
+     * Meta information for the feed
+     * @property meta
      * @type String
      */
-    this.type = type;
+    this.meta = meta || '';
     
     /**
      * The description for the channel.
@@ -62,7 +62,7 @@ Chatterbox.Feed.prototype.build = function( ) {
             'feed',
             {
                 'selector': selector,
-                'type': this.type,
+                'meta': this.meta,
                 'name': this.name,
                 'info': this.description,
             }

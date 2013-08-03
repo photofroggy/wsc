@@ -156,14 +156,14 @@ Chatterbox.template.feed = '<div class="window feed" id="{selector}-window">\
                     <div class="log" id="{selector}-log">\
                         <header class="info">\
                             <div class="info">\
-                                <h3>{name}<span>{type}</span></h3>\
+                                <h3>{name}<span>{meta}</span></h3>\
                                 <p>{info}</p>\
+                                <ul>\
+                                    <li><a href="#refresh" class="button iconic spin" title="Refresh the feed"></a></li>\
+                                    <li><a href="#post" class="button iconic check" title="Post to this feed"></a></li>\
+                                    <li><a href="#close" class="button iconic x" title="Close this feed"></a></li>\
+                                </ul>\
                             </div>\
-                            <ul>\
-                                <li><a href="#post" class="button iconic check" title="Post to this feed"></a></li>\
-                                <li><a href="#refresh" class="button iconic cycle" title="Refresh the feed"></a></li>\
-                                <li><a href="#close" class="button iconic x" title="Close this feed"></a></li>\
-                            </ul>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\

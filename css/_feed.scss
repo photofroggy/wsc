@@ -25,10 +25,20 @@
                 p {
                     padding: 0px 10px;
                 }
+            }
+            
+            ul {
+                margin-left: 10px;
                 
-                a.button {
-                    display: block;
-                    float: none;
+                li {
+                    display: inline-block;
+                    
+                    a.button {
+                        display: block;
+                        float: none;
+                        padding: 0px 4px;
+                        font-size: 16px;
+                    }
                 }
             }
         }

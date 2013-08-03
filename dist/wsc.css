@@ -897,9 +897,17 @@ div.wsc div.window.feed header div h3 span {
 div.wsc div.window.feed header div p {
   padding: 0px 10px;
 }
-div.wsc div.window.feed header div a.button {
+div.wsc div.window.feed header ul {
+  margin-left: 10px;
+}
+div.wsc div.window.feed header ul li {
+  display: inline-block;
+}
+div.wsc div.window.feed header ul li a.button {
   display: block;
   float: none;
+  padding: 0px 4px;
+  font-size: 16px;
 }
 div.wsc div.window.feed div.log {
   border: none;

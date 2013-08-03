@@ -2273,11 +2273,11 @@ Chatterbox.Chatbook.prototype.create_channel = function( ns, hidden, monitor ) {
  * @method create_feed
  * @param ns {String} Namespace of the feed to create
  * @param type {String} The type of feed this view represents
- * @param [description] {String} A string describing the feed
+ * @param [meta] {String} Meta information about the feed
  * @return {Object} WscUIChannel object.
  */
-Chatterbox.Chatbook.prototype.create_feed = function( ns, type, description ) {
-    var chan = this.channel(ns, this.feed_object(ns, type, description));
+Chatterbox.Chatbook.prototype.create_feed = function( ns, meta, description ) {
+    var chan = this.channel(ns, this.feed_object(ns, meta, description));
     chan.build();
     // Update the paper trail.
     if( this.trail.indexOf(chan.namespace) == -1 ) {
@@ -2309,12 +2309,12 @@ Chatterbox.Chatbook.prototype.channel_object = function( ns ) {
  * 
  * @method feed_object
  * @param ns {String} Namespace of the feed
- * @param type {String} The type of feed this view represents
+ * @param [meta] {String} Meta information about the feed
  * @param [description] {String} A string describing the feed
  * @return {Object} An object representing a feed UI.
  */
-Chatterbox.Chatbook.prototype.feed_object = function( ns, type, description ) {
-    return new Chatterbox.Feed( this.manager, ns, type, description );
+Chatterbox.Chatbook.prototype.feed_object = function( ns, meta, description ) {
+    return new Chatterbox.Feed( this.manager, ns, meta, description );
 };
 
 /**
@@ -3272,10 +3272,10 @@ Chatterbox.Control.prototype.handle = function( event, data ) {
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the feed this object will represent
- * @param type {String} The type of feed this view represents
+ * @param [meta] {String} Meta information about the feed
  * @param [description] {String} A string describing the feed
  */
-Chatterbox.Feed = function( ui, ns, type, description ) {
+Chatterbox.Feed = function( ui, ns, meta, description ) {
     
     Chatterbox.BaseTab.call( this, ui, ns );
     
@@ -3287,11 +3287,11 @@ Chatterbox.Feed = function( ui, ns, type, description ) {
     this.name = this.namespace.substr(1);
     
     /**
-     * The type of feed this channel represents
-     * @property type
+     * Meta information for the feed
+     * @property meta
      * @type String
      */
-    this.type = type;
+    this.meta = meta || '';
     
     /**
      * The description for the channel.
@@ -3328,7 +3328,7 @@ Chatterbox.Feed.prototype.build = function( ) {
             'feed',
             {
                 'selector': selector,
-                'type': this.type,
+                'meta': this.meta,
                 'name': this.name,
                 'info': this.description,
             }
@@ -5917,14 +5917,14 @@ Chatterbox.template.feed = '<div class="window feed" id="{selector}-window">\
                     <div class="log" id="{selector}-log">\
                         <header class="info">\
                             <div class="info">\
-                                <h3>{name}<span>{type}</span></h3>\
+                                <h3>{name}<span>{meta}</span></h3>\
                                 <p>{info}</p>\
+                                <ul>\
+                                    <li><a href="#refresh" class="button iconic spin" title="Refresh the feed"></a></li>\
+                                    <li><a href="#post" class="button iconic check" title="Post to this feed"></a></li>\
+                                    <li><a href="#close" class="button iconic x" title="Close this feed"></a></li>\
+                                </ul>\
                             </div>\
-                            <ul>\
-                                <li><a href="#post" class="button iconic check" title="Post to this feed"></a></li>\
-                                <li><a href="#refresh" class="button iconic cycle" title="Refresh the feed"></a></li>\
-                                <li><a href="#close" class="button iconic x" title="Close this feed"></a></li>\
-                            </ul>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
