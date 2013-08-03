@@ -159,15 +159,19 @@ Chatterbox.template.feed = '<div class="window feed" id="{selector}-window">\
                                 <h3>{name}<span>{type}</span></h3>\
                                 <p>{info}</p>\
                             </div>\
-                            <a href="#edit" class="button iconic pen" title="Edit the topic"></a>\
-                            <a href="#save" class="button iconic check" title="Save changes"></a>\
-                            <a href="#cancel" class="button iconic x" title="Cancel"></a>\
+                            <ul>\
+                                <li><a href="#post" class="button iconic check" title="Post to this feed"></a></li>\
+                                <li><a href="#refresh" class="button iconic cycle" title="Refresh the feed"></a></li>\
+                                <li><a href="#close" class="button iconic x" title="Close this feed"></a></li>\
+                            </ul>\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
                     <div class="users" id="{selector}-users">\
                 </div>\
             </div>';
+
+
 /**
  * HTML template for a feed message.
  * @property feedmsg

@@ -744,17 +744,17 @@ div.wsc div.window div.log ul.logwrap {
   overflow: auto;
   list-style: none;
 }
-div.wsc div.window header {
+div.wsc div.window header.title, div.wsc div.window header.topic {
   width: auto;
   height: auto;
   border-bottom: none;
   line-height: 1.3em;
 }
-div.wsc div.window header textarea {
+div.wsc div.window header.title textarea, div.wsc div.window header.topic textarea {
   display: none;
   height: 60px;
 }
-div.wsc div.window header .button {
+div.wsc div.window header.title .button, div.wsc div.window header.topic .button {
   padding: 0px 4px !important;
   position: relative;
   right: 5px;
@@ -763,32 +763,32 @@ div.wsc div.window header .button {
   width: 10px;
   margin-bottom: -25px !important;
 }
-div.wsc div.window header a[href=\#save] {
+div.wsc div.window header.title a[href=\#save], div.wsc div.window header.topic a[href=\#save] {
   right: 30px;
   top: -60px;
 }
-div.wsc div.window header a[href=\#cancel] {
+div.wsc div.window header.title a[href=\#cancel], div.wsc div.window header.topic a[href=\#cancel] {
   top: -60px;
 }
-div.wsc div.window header div {
+div.wsc div.window header.title div, div.wsc div.window header.topic div {
   margin: 0px;
   padding: 0px 2px;
   display: none;
 }
-div.wsc div.window header div p {
+div.wsc div.window header.title div p, div.wsc div.window header.topic div p {
   margin: 0px;
   padding: 0xp;
 }
-div.wsc div.window header div.title {
+div.wsc div.window header.title div.title, div.wsc div.window header.topic div.title {
   padding-top: 0px;
   padding-bottom: 2px;
 }
-div.wsc div.window header div.topic {
+div.wsc div.window header.title div.topic, div.wsc div.window header.topic div.topic {
   padding: 5px 10px;
   border-bottom: 1px solid black;
   /*border-bottom: none;*/
 }
-div.wsc div.window header div.topic.topic img {
+div.wsc div.window header.title div.topic.topic img, div.wsc div.window header.topic div.topic.topic img {
   vertical-align: middle;
 }
 div.wsc div.window div.users {
@@ -883,21 +883,36 @@ div.wsc div.window.feed header {
 }
 div.wsc div.window.feed header div {
   display: block;
+  padding: 5px 2px;
 }
 div.wsc div.window.feed header div h3 {
   font-size: 30px;
+  margin-bottom: 10px;
 }
 div.wsc div.window.feed header div h3 span {
   font-size: 15px;
-  position: relative;
-  top: -4px;
+  font-style: italic;
   padding-left: 10px;
+}
+div.wsc div.window.feed header div p {
+  padding: 0px 10px;
+}
+div.wsc div.window.feed header div a.button {
+  display: block;
+  float: none;
 }
 div.wsc div.window.feed div.log {
   border: none;
   width: 65%;
   margin: 0px 60px;
   border-radius: 0px;
+}
+div.wsc div.window.feed div.log ul.logwrap {
+  border: 1px dashed black;
+}
+div.wsc div.window.feed div.users {
+  display: block;
+  width: 30%;
 }
 div.wsc div.chatcontrol {
   clear: both;
@@ -1654,6 +1669,9 @@ div.wsc.wsct_dAmn div.window div.log ul.logwrap .loginfo .whoiswrap .info {
 div.wsc.wsct_dAmn div.window.feed div.log {
   background-color: #d0dbd0;
 }
+div.wsc.wsct_dAmn div.window.feed div.log ul.logwrap {
+  border-color: #858585;
+}
 div.wsc.wsct_dAmn div.chatcontrol {
   background-color: #d0dbd0;
 }
@@ -2039,6 +2057,9 @@ div.wsc.wsct_dark div.window div.log ul.logwrap .loginfo .whoiswrap .info {
 }
 div.wsc.wsct_dark div.window.feed div.log {
   background-color: #415b64;
+}
+div.wsc.wsct_dark div.window.feed div.log ul.logwrap {
+  border-color: #3a5058;
 }
 div.wsc.wsct_dark div.chatcontrol {
   background-color: #415b64;

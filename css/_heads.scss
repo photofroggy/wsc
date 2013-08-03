@@ -1,6 +1,6 @@
 @mixin headers {
 
-    header {
+    header.title, header.topic {
     
         width: auto;
         height: auto;

@@ -9,14 +9,26 @@
             
             div {
                 display: block;
+                padding: 5px 2px;
+                
                 h3 {
                     font-size: 30px;
+                    margin-bottom: 10px;
+                    
                     span {
                         font-size: 15px;
-                        position: relative;
-                        top: -4px;
+                        font-style: italic;
                         padding-left: 10px;
                     }
+                }
+                
+                p {
+                    padding: 0px 10px;
+                }
+                
+                a.button {
+                    display: block;
+                    float: none;
                 }
             }
         }
@@ -26,6 +38,15 @@
             width: 65%;
             margin: 0px 60px;
             border-radius: 0px;
+            
+            ul.logwrap {
+                border: 1px dashed black;
+            }
+        }
+        
+        div.users {
+            display: block;
+            width: 30%;
         }
     }
 }
