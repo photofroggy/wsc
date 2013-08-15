@@ -13,6 +13,11 @@
             "files": "src/ui"
         },
         {
+            "dest": "dist/bdspeer.js",
+            "mini": "dist/bdspeer.min.js",
+            "files": "src/dAmn/peer"
+        },
+        {
             "dest": "dist/dAmn.js",
             "mini": "dist/dAmn.min.js",
             "files": "src/dAmn"
@@ -64,6 +69,7 @@
                 "src/ignore.js",
                 "src/client.js",
                 "dist/chatterbox.js",
+                "dist/bdspeer.js",
                 "dist/dAmn.js",
                 "src/wsc.js"
             ]
