@@ -431,13 +431,27 @@ wsc.Client.prototype.each_channel = function( method, include ) {
  */
 wsc.Client.prototype.deform_ns = function( namespace ) {
 
-    if(namespace.indexOf("chat:") == 0)
+    var sym = namespace[0];
+    
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);
     
-    if(namespace.indexOf("server:") == 0)
+    if( namespace.indexOf("server:") == 0 )
         return '~' + namespace.slice(7);
     
-    if(namespace.indexOf("pchat:") == 0) {
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
         var names = namespace.split(":");
         names.shift();
         for(i in names) {
@@ -448,13 +462,7 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
         }
     }
     
-    if( namespace.indexOf('login:') == 0 )
-        return '@' + namespace.slice(6);
-    
-    if(namespace[0] != '#' && namespace[0] != '@' && namespace[0] != '~')
-        return '#' + namespace;
-    
-    return namespace;
+    return '#' + namespace;
 
 };
 
@@ -467,20 +475,38 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  */
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(namespace.indexOf('#') == 0) {
-        return 'chat:' + namespace.slice(1);
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
     }
-    if(namespace.indexOf('@') == 0) {
-        var names = [namespace.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(namespace.indexOf('~') == 0) {
-        return "server:" + namespace.slice(1);
-    }
-    if(namespace.indexOf('chat:') != 0 && namespace.indexOf('server:') != 0 && namespace.indexOf('pchat:') != 0)
-        return 'chat:' + namespace;
     
     return namespace;
 

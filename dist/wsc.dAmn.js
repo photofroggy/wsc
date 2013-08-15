@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.39';
+wsc.VERSION = '1.7.44';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.124';
+wsc.REVISION = '0.21.129';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -2991,7 +2991,7 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.bind('pkt.recv_msg.highlighted', pkt_highlighted);
+        client.ui.on('tabbed', pkt_highlighted);
         client.ui.on('settings.open', settings.page);
     
     };
@@ -3121,6 +3121,10 @@ wsc.defaults.Extension.Away = function( client ) {
     };
     
     var cmd_setback = function( event, client ) {
+    
+        if( !settings.on )
+            return;
+        
         settings.on = false;
         var method = client.say;
         var announce = settings.format.setback;
@@ -3137,7 +3141,7 @@ wsc.defaults.Extension.Away = function( client ) {
         client.ui.control.rem_state('away');
     };
     
-    var pkt_highlighted = function( event, client ) {
+    var pkt_highlighted = function( event ) {
     
         if( !settings.on )
             return;
@@ -3859,13 +3863,27 @@ wsc.Client.prototype.each_channel = function( method, include ) {
  */
 wsc.Client.prototype.deform_ns = function( namespace ) {
 
-    if(namespace.indexOf("chat:") == 0)
+    var sym = namespace[0];
+    
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
         return '#' + namespace.slice(5);
     
-    if(namespace.indexOf("server:") == 0)
+    if( namespace.indexOf("server:") == 0 )
         return '~' + namespace.slice(7);
     
-    if(namespace.indexOf("pchat:") == 0) {
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
         var names = namespace.split(":");
         names.shift();
         for(i in names) {
@@ -3876,13 +3894,7 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
         }
     }
     
-    if( namespace.indexOf('login:') == 0 )
-        return '@' + namespace.slice(6);
-    
-    if(namespace[0] != '#' && namespace[0] != '@' && namespace[0] != '~')
-        return '#' + namespace;
-    
-    return namespace;
+    return '#' + namespace;
 
 };
 
@@ -3895,20 +3907,38 @@ wsc.Client.prototype.deform_ns = function( namespace ) {
  */
 wsc.Client.prototype.format_ns = function( namespace ) {
 
-    if(namespace.indexOf('#') == 0) {
-        return 'chat:' + namespace.slice(1);
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
     }
-    if(namespace.indexOf('@') == 0) {
-        var names = [namespace.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(namespace.indexOf('~') == 0) {
-        return "server:" + namespace.slice(1);
-    }
-    if(namespace.indexOf('chat:') != 0 && namespace.indexOf('server:') != 0 && namespace.indexOf('pchat:') != 0)
-        return 'chat:' + namespace;
     
     return namespace;
 
@@ -4337,14 +4367,14 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.89';
+Chatterbox.VERSION = '0.19.102';
 Chatterbox.STATE = 'beta';
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
  * 
- * @class Chatterbox
+ * @class Chatterbox.UI
  * @constructor
  * @param client {Object} The client that this UI is attached to.
  * @param view {Object} Base jQuery object to use for the UI. Any empty div will do.
@@ -4372,12 +4402,71 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     };
     
     var ui = this;
+    
+    /**
+     * Sound bank.
+     * 
+     * Play and manage UI sounds. So far, Chatterbox includes these sounds:
+     *
+     *      * click
+     *
+     * To play a sound clip, call the method of the same name. For example, to
+     * play the `click` sound, call `ui.sound.click()`.
+     * 
+     * Note that the sound methods are not documented as they are created on
+     * the fly by the `add` method.
+     * @class Chatterbox.UI.sound
+     */
     this.sound = {
+        
+        /**
+         * Holds references to audio objects.
+         * @property bank
+         * @type Object
+         */
+        bank: {
+            m: null
+        },
+        
+        /**
+         * Add a sound to the sound bank.
+         * @method add
+         * @param name {String} Name to use for the sound and corresponding method
+         * @param sound {Object} Audio DOM object
+         * @return {Boolean} Success or fail
+         */
+        add: function( name, sound ) {
+            if( ui.sound.hasOwnProperty( name ) )
+                return false;
+            
+            ui.sound.bank[name] = sound;
+            sound.load();
+            
+            ui.sound[name] = function(  ) {
+                ui.sound.play( ui.sound.bank[name] );
+            };
+            
+            return true;
+        },
+        
+        /**
+         * Play an audio file.
+         * 
+         * Do not use this method directly.
+         * @method play
+         * @param sound {Object} Audio DOM object
+         */
         play: function( sound ) {
             sound.pause();
             sound.currentTime = 0;
             sound.play();
         },
+        
+        /**
+         * Mute or unmute the UI.
+         * @method toggle
+         * @param state {Boolean} True is muted, false is unmuted
+         */
         toggle: function( state ) {
             for( var s in ui.sound.bank ) {
                 if( !ui.sound.bank.hasOwnProperty( s ) )
@@ -4385,16 +4474,21 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
                 ui.sound.bank[s].muted = state;
             }
         },
+        
+        /**
+         * Shortcut for `sound.toggle( true )`
+         * @method mute
+         */
         mute: function(  ) { ui.sound.toggle( true ); },
+        
+        /**
+         * Shortcut for `sound.toggle( false )`
+         * @method unmute
+         */
         unmute: function(  ) { ui.sound.toggle( false ); },
-        bank: {
-            m: null,
-            c: null
-        },
-        click: null,
     };
     
-    view.extend( this.settings, options );
+    this.settings = view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
     this.mw = new wsc.Middleware();
@@ -4435,6 +4529,7 @@ wsc.defaults.UI = Chatterbox.UI;
  * Used to trigger events.
  *
  * @method trigger
+ * @for Chatterbox.UI
  * @param event {String} Name of the event to trigger.
  * @param data {Object} Event data.
  **/
@@ -4494,18 +4589,33 @@ Chatterbox.UI.prototype.remove_listeners = function(  ) {
  * Deform a channel namespace.
  *
  * @method deform_ns
- * @param ns {String} Channel namespace to deform.
+ * @param namespace {String} Channel namespace to deform.
  * @return {String} The deformed namespace.
  **/
-Chatterbox.UI.prototype.deform_ns = function( ns ) {
-    if(ns.indexOf("chat:") == 0)
-        return '#' + ns.slice(5);
+Chatterbox.UI.prototype.deform_ns = function( namespace ) {
     
-    if(ns.indexOf("server:") == 0)
-        return '~' + ns.slice(7);
+    var sym = namespace[0];
     
-    if(ns.indexOf("pchat:") == 0) {
-        var names = ns.split(":");
+    if( sym == '#'
+        || sym == '@'
+        || sym == '~'
+        || sym == '+' )
+            return namespace;
+    
+    if( namespace.indexOf("chat:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf("server:") == 0 )
+        return '~' + namespace.slice(7);
+    
+    if( namespace.indexOf("feed:") == 0 )
+        return '#' + namespace.slice(5);
+    
+    if( namespace.indexOf('login:') == 0 )
+        return '@' + namespace.slice(6);
+    
+    if( namespace.indexOf("pchat:") == 0 ) {
+        var names = namespace.split(":");
         names.shift();
         for(i in names) {
             name = names[i];
@@ -4515,39 +4625,54 @@ Chatterbox.UI.prototype.deform_ns = function( ns ) {
         }
     }
     
-    if( ns.indexOf('login:') == 0 )
-        return '@' + ns.slice(6);
+    return '#' + namespace;
     
-    if(ns[0] != '#' && ns[0] != '@' && ns[0] != '~')
-        return '#' + ns;
-    
-    return ns;
 };
 
 /**
  * Format a channel namespace.
  *
  * @method format_ns
- * @param ns {String} Channel namespace to format.
- * @return {String} ns formatted as a channel namespace.
+ * @param namespace {String} Channel namespace to format.
+ * @return {String} namespace formatted as a channel namespace.
  */
-Chatterbox.UI.prototype.format_ns = function( ns ) {
-    if(ns.indexOf('#') == 0) {
-        return 'chat:' + ns.slice(1);
-    }
-    if(ns.indexOf('@') == 0) {
-        var names = [ns.slice(1), this.lun];
-        names.sort(caseInsensitiveSort)
-        names.unshift("pchat");
-        return names.join(':');
-    }
-    if(ns.indexOf('~') == 0) {
-        return "server:" + ns.slice(1);
-    }
-    if(ns.indexOf('chat:') != 0 && ns.indexOf('server:') != 0 && ns.indexOf('pchat:') != 0)
-        return 'chat:' + ns;
+Chatterbox.UI.prototype.format_ns = function( namespace ) {
     
-    return ns;
+    var n = namespace.slice( 1 );
+    
+    switch( namespace[0] ) {
+        
+        case '@':
+            var names = [n, this.lun];
+            names.sort(caseInsensitiveSort)
+            names.unshift("pchat");
+            namespace = names.join(':');
+            break;
+        
+        case '~':
+            namespace = "server:" + n;
+            break;
+        
+        case '+':
+            namespace = 'feed:' + n
+            break;
+            
+        case '#':
+            namespace = 'chat:' + n;
+            break;
+            
+        default:
+            if( namespace.indexOf('chat:') == 0
+                || namespace.indexOf('pchat:') == 0
+                || namespace.indexOf('server:') == 0
+                || namespace.indexOf('feed:') == 0 )
+                    break;
+            namespace = 'chat:' + namespace;
+            break;
+    }
+    
+    return namespace;
+    
 };
 
 /**
@@ -4608,14 +4733,9 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     // Sound bank
     this.sound.bank.m = this.view.find('div.soundbank');
-    this.sound.bank.c = this.sound.bank.m.find('audio.click')[0];
-    this.sound.bank.c.load();
+    this.sound.add( 'click', this.sound.bank.m.find('audio.click')[0] );
     
     var sound = this.sound;
-    
-    this.sound.click = function(  ) {
-        sound.play( sound.bank.c );
-    };
     
     // Mute button.
     var muted = false;
@@ -4748,6 +4868,12 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        // If the event is -shownotice, don't display it!
+        if( event.hasOwnProperty( 's' ) && event.s == '0' ) {
+            this.chatbook.handle( event, client );
+            return;
         }
         
         event.html = msg.html();
@@ -5014,27 +5140,28 @@ Chatterbox.UI.prototype.developer = function( mode ) {
 };
 
 
+
 /**
- * Object for managing channel interfaces.
- * 
- * @class Chatterbox.Channel
+ * Implements a base for a channel view.
+ * @class Chatterbox.BaseTab
  * @constructor
  * @param ui {Object} Chatterbox.UI object.
  * @param ns {String} The name of the channel this object will represent.
  * @param hidden {Boolean} Should the channel's tab be visible?
  * @param monitor {Boolean} Is this channel the monitor?
  */
-Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+Chatterbox.BaseTab = function( ui, ns, hidden, monitor ) {
 
     this.manager = ui;
     this.hidden = hidden;
     this.monitor = ( monitor == undefined ? false : monitor );
     this.built = false;
-    this.raw = ui.format_ns(ns);
-    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
-    this.namespace = ui.deform_ns(ns);
+    this.raw = ns;
+    this.selector = 't-' + (ns || 'chan').toLowerCase();
+    this.namespace = ns;
     this.visible = false;
     this.st = 0;
+    
     // UI elements.
     this.el = {
         t: {                        // Tab
@@ -5062,15 +5189,26 @@ Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
             topic: [0, 0]           //      Topic [ width, height ]
         }
     };
+    
+    if( !ui )
+        return;
+    
+    this.raw = ui.format_ns(ns);
+    this.selector = (this.raw.substr(0, 2) == 'pc' ? 'pc' : 'c') + '-' + ui.deform_ns(ns).slice(1).toLowerCase();
+    this.namespace = ui.deform_ns(ns);
 
 };
 
 /**
- * Draw channel on screen and store the different elements in attributes.
+ * Draw the channel on screen and store the different elements in attributes.
  * 
  * @method build
+ * @param [view] {String} HTML for the channel view
  */
-Chatterbox.Channel.prototype.build = function( ) {
+Chatterbox.BaseTab.prototype.build = function( view ) {
+    
+    if( !this.manager )
+        return;
     
     if( this.built )
         return;
@@ -5085,10 +5223,156 @@ Chatterbox.Channel.prototype.build = function( ) {
     this.el.t.c = this.el.t.o.find('.close');
     
     // Draw
-    this.manager.chatbook.view.append(Chatterbox.render('channel', {'selector': selector, 'ns': ns}));
+    this.manager.chatbook.view.append( view || Chatterbox.render('basetab', {'selector': selector, 'ns': ns}) );
     
     // Store
     this.el.m = this.window = this.manager.chatbook.view.find('#' + selector + '-window');
+    
+    var chan = this;
+    
+    // When someone clicks the tab link.
+    this.el.t.l.click(function () {
+        chan.manager.toggle_channel(raw);
+        return false;
+    });
+    
+    // When someone clicks the tab close button.
+    this.el.t.c.click(function ( e ) {
+        chan.manager.trigger( 'tab.close.clicked', {
+            'ns': chan.raw,
+            'chan': chan,
+            'e': e
+        } );
+        return false;
+    });
+    
+    if( this.hidden && !this.manager.settings.developer ) {
+        this.el.t.o.toggleClass('hidden');
+    }
+    
+    this.built = true;
+};
+
+/**
+ * Hide the channel from view.
+ * 
+ * @method hide
+ */
+Chatterbox.BaseTab.prototype.hide = function( ) {
+    this.el.m.css({'display': 'none'});
+    this.el.t.o.removeClass('active');
+    this.visible = false;
+};
+
+/**
+ * Display the channel.
+ * 
+ * @method show
+ */
+Chatterbox.BaseTab.prototype.show = function( ) {
+    this.visible = true;
+    this.el.m.css({'display': 'block'});
+    this.el.t.o.addClass('active');
+    this.el.t.o.removeClass('noise chatting tabbed fill');
+    var c = this;
+    setTimeout( function(  ) {
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+        c.resize();
+        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
+    }, 100);
+};
+
+/**
+ * Display or hide the tab based on whether we are in developer mode or not.
+ * 
+ * @method developer
+ */
+Chatterbox.BaseTab.prototype.developer = function(  ) {
+    if( this.manager.settings.developer ) {
+        this.el.t.o.removeClass('hidden');
+        return;
+    }
+    if( this.hidden ) {
+        this.el.t.o.addClass('hidden');
+    }
+};
+
+/**
+ * Remove the channel from the UI.
+ * 
+ * @method remove
+ */
+Chatterbox.BaseTab.prototype.remove = function(  ) {
+    this.el.t.o.remove();
+    this.el.m.remove();
+};
+
+
+/**
+ * Resize the view window to fill the space available.
+ * @method resize
+ */
+Chatterbox.BaseTab.prototype.resize = function( width, height ) {
+
+    this.el.m.css( {
+        height: height || this.manager.chatbook.height(),
+        width: ( width || this.manager.chatbook.width() ) - 10
+    } );
+
+};
+
+/**
+ * This method is run on the main loop event. Having this allows channels to do
+ * some maintenance autonomously.
+ * @method loop
+ */
+Chatterbox.BaseTab.prototype.loop = function(  ) {
+
+
+
+};
+
+
+/**
+ * Object for managing channel interfaces.
+ * 
+ * @class Chatterbox.Channel
+ * @constructor
+ * @param ui {Object} Chatterbox.UI object.
+ * @param ns {String} The name of the channel this object will represent.
+ * @param hidden {Boolean} Should the channel's tab be visible?
+ * @param monitor {Boolean} Is this channel the monitor?
+ */
+Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
+    Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+};
+
+Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
+Chatterbox.Channel.prototype.constructor = Chatterbox.Channel;
+
+/**
+ * Draw the channel on screen and store the different elements in attributes.
+ * 
+ * @method build
+ */
+Chatterbox.Channel.prototype.build = function( ) {
+    
+    if( !this.manager )
+        return;
+    
+    if( this.built )
+        return;
+    
+    var selector = this.selector;
+    var ns = this.namespace;
+    var raw = this.raw;
+    
+    Chatterbox.BaseTab.prototype.build.call(
+        this,
+        Chatterbox.render('channel', {'selector': selector, 'ns': ns})
+    );
+    
+    // Store
     this.el.l.p = this.el.m.find('#' + selector + "-log");
     this.el.l.w = this.el.l.p.find('ul.logwrap');
     this.el.u = this.el.m.find('#' + selector + "-users");
@@ -5120,22 +5404,8 @@ Chatterbox.Channel.prototype.build = function( ) {
         return false;
     });
     
-    // When someone clicks the tab close button.
-    this.el.t.c.click(function ( e ) {
-        chan.manager.trigger( 'tab.close.clicked', {
-            'ns': chan.raw,
-            'chan': chan,
-            'e': e
-        } );
-        return false;
-    });
-    
     this.setup_header('title');
     this.setup_header('topic');
-    
-    if( this.hidden && !this.manager.settings.developer ) {
-        this.el.t.o.toggleClass('hidden');
-    }
     
     if( this.namespace[0] == '@' ) {
         this.build_user_list( { 100: 'Room Members' }, [ 100 ] );
@@ -5232,60 +5502,6 @@ Chatterbox.Channel.prototype.setup_header = function( head ) {
 };
 
 /**
- * Hide the channel from view.
- * 
- * @method hide
- */
-Chatterbox.Channel.prototype.hide = function( ) {
-    this.el.m.css({'display': 'none'});
-    this.el.t.o.removeClass('active');
-    this.visible = false;
-};
-
-/**
- * Display the channel.
- * 
- * @method show
- */
-Chatterbox.Channel.prototype.show = function( ) {
-    this.visible = true;
-    this.el.m.css({'display': 'block'});
-    this.el.t.o.addClass('active');
-    this.el.t.o.removeClass('noise chatting tabbed fill');
-    var c = this;
-    setTimeout( function(  ) {
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-        c.resize();
-        c.el.l.w.scrollTop(c.el.l.w.prop('scrollHeight') - c.el.l.w.innerHeight());
-    }, 100);
-};
-
-/**
- * Display or hide the tab based on whether we are in developer mode or not.
- * 
- * @method developer
- */
-Chatterbox.Channel.prototype.developer = function(  ) {
-    if( this.manager.settings.developer ) {
-        this.el.t.o.removeClass('hidden');
-        return;
-    }
-    if( this.hidden ) {
-        this.el.t.o.addClass('hidden');
-    }
-};
-
-/**
- * Remove the channel from the UI.
- * 
- * @method remove
- */
-Chatterbox.Channel.prototype.remove = function(  ) {
-    this.el.t.o.remove();
-    this.el.m.remove();
-};
-
-/**
  * Scroll the log panel downwards.
  * 
  * @method scroll
@@ -5330,6 +5546,8 @@ Chatterbox.Channel.prototype.pad = function ( ) {
  */
 Chatterbox.Channel.prototype.resize = function( width, height ) {
     
+    Chatterbox.BaseTab.prototype.resize.call( this, width, height );
+    
     var heads = {
         'title': {
             m: this.el.m.find( 'header div.title' ),
@@ -5346,9 +5564,6 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     height = height || this.manager.chatbook.height();
     width = width || this.manager.chatbook.width();
     var wh = height;
-    this.el.m.height(wh);
-    // Width.
-    this.el.m.css('width', width - 10);
     var cw = this.el.m.width();
     
     // Userlist width.
@@ -5742,7 +5957,7 @@ Chatterbox.Channel.prototype.get_header = function( head ) {
  */
 Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
     
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var pc = '';
     var pcel = null;
     
@@ -5764,7 +5979,7 @@ Chatterbox.Channel.prototype.build_user_list = function( names, order ) {
  */
 Chatterbox.Channel.prototype.reveal_user_list = function(  ) {
 
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var total = 0;
     var count = 0;
     var pc = null;
@@ -5796,7 +6011,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
     if( Object.size(users) == 0 )
         return;
     
-    var uld = this.el.m.find('div.chatusers');
+    var uld = this.el.u;
     var user = null;
     
     for( var index in users ) {
@@ -5819,7 +6034,7 @@ Chatterbox.Channel.prototype.set_user_list = function( users ) {
  */
 Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 
-    var uld = this.el.m.find( 'div.chatusers div.pc#' + replaceAll( user.pc, ' ', '-' ) );
+    var uld = this.el.u.find( 'div.pc#' + replaceAll( user.pc, ' ', '-' ) );
     var ull = uld.find('ul');
     var conn = user.conn == 1 ? '' : '[' + user.conn + ']';
     var html = '<li><a target="_blank" id="' + user.name + '" href="http://' + user.name + '.' + this.manager.settings['domain'] + '"><em>' + user.symbol + '</em>' + user.name + '</a>' + conn + '</li>';
@@ -5874,7 +6089,7 @@ Chatterbox.Channel.prototype.set_user = function( user, noreveal ) {
 Chatterbox.Channel.prototype.remove_user = function( user, noreveal ) {
 
     this.el
-        .m.find('div.chatusers div.pc ul li a#' + user)
+        .u.find('div.pc ul li a#' + user)
         .parent().remove();
     
     noreveal = noreveal || false;
@@ -6190,6 +6405,9 @@ Chatterbox.Channel.prototype.clear_user = function( user ) {
  */
 Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
 
+    if( event.e != 'ok' )
+        return;
+    
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
 
@@ -6223,10 +6441,18 @@ Chatterbox.Channel.prototype.pkt_recv_msg = function( event, client ) {
             c.highlight( false );
         }
         
-        c.trigger( 'pkt.recv_msg.highlighted', e );
+        c.manager.trigger( 'tabbed', e );
     }, event );
 
 };
+/**
+ * Handle a recv_action packet.
+ * @method pkt_recv_action
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+// do the exact same thing as above
+Chatterbox.Channel.prototype.pkt_recv_action = Chatterbox.Channel.prototype.pkt_recv_msg;
 
 /**
  * Handle a property packet.
@@ -6461,6 +6687,9 @@ Chatterbox.Chatbook.prototype.toggle_channel = function( ns ) {
  */
 Chatterbox.Chatbook.prototype.remove_channel = function( ns ) {
     var chan = this.channel(ns);
+    
+    if( !chan )
+        return;
     
     if( this.channels() == 0 && !chan.hidden ) 
         return;
@@ -9865,12 +10094,20 @@ Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="bu
 Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
 
 /**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ */
+Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>';
+
+/**
  * HTML template for a channel view.
  * 
  * @property channel
  * @type String
  */
-Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
+Chatterbox.template.channel = '<div class="window" id="{selector}-window">\
                     <header class="title">\
                         <div class="title"></div>\
                         <textarea></textarea>\
@@ -9878,7 +10115,7 @@ Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                         <a href="#save" class="button iconic check" title="Save changes"></a>\
                         <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
-                    <div class="chatlog" id="{selector}-log">\
+                    <div class="log" id="{selector}-log">\
                         <header class="topic">\
                             <div class="topic"></div>\
                             <textarea></textarea>\
@@ -9888,7 +10125,7 @@ Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
-                    <div class="chatusers" id="{selector}-users">\
+                    <div class="users" id="{selector}-users">\
                 </div>\
             </div>';
 
@@ -10396,7 +10633,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.26';
+wsc.dAmn.VERSION = '0.9.29';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -10568,7 +10805,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.pkt.arg.e != 'ok' )
                 return;
             
-            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+            //client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
         
         // Botcheck
@@ -10577,6 +10814,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
+            
+            if( event.ns.toLowerCase() == settings.bds.gate && client.channel( settings.bds.mns ) != null ) {
+                return;
+            }
+            
             var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
@@ -10594,7 +10836,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
-                client.join( settings.bds.mns );
+                if( client.channel( settings.bds.mns ) == null)
+                    client.join( settings.bds.mns );
+                
                 return;
             }
             
@@ -11147,10 +11391,9 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
 
     var d = {
         'id': data[0],
-        'user': data[2],
-        'thumb': data[5],
-        'server': parseInt(data[4]),
-        'flags': data[6].split(':'),
+        'thumb': data[4],
+        'server': parseInt(data[3]),
+        'flags': data[5].split(':'),
         'dimensions': '',
         'title': '',
         'anchor': '',
@@ -11162,17 +11405,16 @@ wsc.dAmn.Emotes.Tablumps = function( data ) {
     d.flags[2] = parseInt(d.flags[2]);
     
     var isgif = d.thumb.match( /\.gif$/i );
-    var dim = data[3].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
+    var dim = data[2].split('x'); var w = parseInt(dim[0]); var h = parseInt(dim[1]);
     var tw, th;
-    var lu = d.user.substring(1).replace(/^[^a-zA-Z0-9\-_]/, '');
     // Deviation title.
     var ut = (d.otitle.replace(/[^A-Za-z0-9]+/g, '-')
         .replace(/^-+/, '')
         .replace(/-+$/, '') || '-') + '-' + d.id;
     
     // Deviation link tag. First segment only.
-    d.title = d.otitle + ' by ' + d.user + ', ' + w + 'x' + h;
-    d.anchor = '<a target="_blank" href="http://' + lu + '.deviantart.com/art/' + ut + '" title="' + d.title + '">';
+    d.title = d.otitle + ', ' + w + 'x' + h;
+    d.anchor = '<a target="_blank" href="http://www.deviantart.com/art/' + ut + '" title="' + d.title + '">';
     
     if( w/h > 1) {
         th = parseInt((h * 100) / w);
@@ -11986,6 +12228,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         client.bind( 'BDS.PEER.END', function( event, client ) { handle.signal.end( event, client ); } );
         client.bind( 'BDS.PEER.OFFER', function( event, client ) { handle.signal.offer( event, client ); } );
         client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.signal.answer( event, client ); } );
+        client.bind( 'BDS.PEER.CANDIDATE', function( event, client ) { handle.signal.candidate( event, client ); } );
         client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.signal.close( event, client ); } );
         // dAmn events.
         // client.bind('pkt.join', handler.join);
@@ -11994,6 +12237,95 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         // client.bind('pkt.recv_part', handler.recv_part);
 
     };
+    
+    
+    /**
+     * Implements outgoing BDS PEER commands.
+     * 
+     * Can be accessed using `client.bds.peer`
+     * @class wsc.bds.peer
+     */
+    settings.bds.peer = {
+    
+        /**
+         * Implements the BDS.PEER.REQUEST command.
+         * @method request
+         * @param something
+         */
+        request: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ACK command.
+         * @method ack
+         * @param something
+         */
+        ack: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.REJECT command.
+         * @method reject
+         * @param something
+         */
+        reject: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ACCEPT command.
+         * @method accept
+         * @param something
+         */
+        accept: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.LIST command.
+         * @method list
+         * @param something
+         */
+        list: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.OPEN command.
+         * @method open
+         * @param something
+         *
+        open: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.END command.
+         * @method end
+         * @param something
+         *
+        end: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.OFFER command.
+         * @method offer
+         * @param something
+         */
+        offer: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.ANSWER command.
+         * @method answer
+         * @param something
+         */
+        answer: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.CANDIDATE command.
+         * @method candidate
+         * @param something
+         */
+        candidate: function(  ) {},
+        
+        /**
+         * Implements the BDS.PEER.CLOSE command.
+         * @method close
+         * @param something
+         */
+        close: function(  ) {},
+    
+    };
+    
     
     /**
      * Handle events.
@@ -12628,6 +12960,21 @@ wsc.dAmn.BDS.Peer.Connection.prototype.answer_created = function( answer ) {
 
 };
 
+
+/**
+ * Aggregate peer connection.
+ * 
+ * This class implements aggregate peer connections. This involves using a
+ * single signaling channel for multiple peer to peer connections.
+ * @class dAmn.BDS.Peer.Aggregate
+ * @constructor
+ */
+wsc.dAmn.BDS.Peer.Aggregate = function( host, remote_offer ) {
+
+    this.host = host;
+
+};
+
 /**
  * Extension to handle stash links posted in the chat. Provides some helper functions
  * to meet this end as well.
@@ -12986,7 +13333,7 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
-        '&thumb\t': [ 7,
+        '&thumb\t': [ 6,
             ':thumb{0}:',
             wsc.dAmn.Emotes.Tablumps
         ],

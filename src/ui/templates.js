@@ -139,12 +139,20 @@ Chatterbox.template.nav_button = '<li><a href="{href}" title="{title}" class="bu
 Chatterbox.template.tab = '<li id="{selector}-tab"><a href="#{selector}" class="tab">{ns}<a href="#{selector}" class="close iconic x"></a></a></li>';
 
 /**
+ * HTML template for a base channel view.
+ * 
+ * @property basetab
+ * @type String
+ */
+Chatterbox.template.basetab = '<div class="window" id="{selector}-window"></div>';
+
+/**
  * HTML template for a channel view.
  * 
  * @property channel
  * @type String
  */
-Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
+Chatterbox.template.channel = '<div class="window" id="{selector}-window">\
                     <header class="title">\
                         <div class="title"></div>\
                         <textarea></textarea>\
@@ -152,7 +160,7 @@ Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                         <a href="#save" class="button iconic check" title="Save changes"></a>\
                         <a href="#cancel" class="button iconic x" title="Cancel"></a>\
                     </header>\
-                    <div class="chatlog" id="{selector}-log">\
+                    <div class="log" id="{selector}-log">\
                         <header class="topic">\
                             <div class="topic"></div>\
                             <textarea></textarea>\
@@ -162,7 +170,7 @@ Chatterbox.template.channel = '<div class="chatwindow" id="{selector}-window">\
                         </header>\
                         <ul class="logwrap"></ul>\
                     </div>\
-                    <div class="chatusers" id="{selector}-users">\
+                    <div class="users" id="{selector}-users">\
                 </div>\
             </div>';
 

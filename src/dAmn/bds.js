@@ -167,7 +167,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.pkt.arg.e != 'ok' )
                 return;
             
-            client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
+            //client.npmsg( event.ns, 'BDS:PROVIDER:CAPS:' + settings.bds.provides.join(',') );
         },
         
         // Botcheck
@@ -176,6 +176,11 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
             if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
                 return;
             }
+            
+            if( event.ns.toLowerCase() == settings.bds.gate && client.channel( settings.bds.mns ) != null ) {
+                return;
+            }
+            
             var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
@@ -193,7 +198,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 client.part( event.ns );
             
             if( event.head[2] == 'OK' ) {
-                client.join( settings.bds.mns );
+                if( client.channel( settings.bds.mns ) == null)
+                    client.join( settings.bds.mns );
+                
                 return;
             }
             
