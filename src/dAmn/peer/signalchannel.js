@@ -36,7 +36,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
     var arg = this.pns;
     
     for( var i = 0; i < args.length; i++ ) {
-        if( !args[i] )
+        if( !args.hasOwnProperty(i) || !args[i] )
             continue;
         arg+= ',' + args[i];
     }
