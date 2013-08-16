@@ -16,7 +16,9 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
 
     var init = function(  ) {
     
+        var handle = new wsc.dAmn.BDS.Peer.SignalHandler( client );
         // BDS events.
+        /*
         client.bind( 'BDS.PEER.REQUEST', function( event, client ) { handle.signal.request( event, client ); } );
         client.bind( 'BDS.PEER.ACK', function( event, client ) { handle.signal.ack( event, client ); } );
         client.bind( 'BDS.PEER.REJECT', function( event, client ) { handle.signal.reject( event, client ); } );
@@ -27,12 +29,27 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.signal.answer( event, client ); } );
         client.bind( 'BDS.PEER.CANDIDATE', function( event, client ) { handle.signal.candidate( event, client ); } );
         client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.signal.close( event, client ); } );
+        */
         // dAmn events.
         // client.bind('pkt.join', handler.join);
         // client.bind('pkt.part', handler.part);
         // client.bind('pkt.recv_join', handler.recv_join);
         // client.bind('pkt.recv_part', handler.recv_part);
 
+    };
+    
+    /**
+     * BDS PEER settings and API.
+     */
+    settings.bds.peer = {
+    
+        handler: null,
+        call: null,
+        
+        open: function(  ) {},
+        
+        request: function(  ) {},
+    
     };
     
     //init();
