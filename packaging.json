@@ -69,8 +69,8 @@
                 "src/ignore.js",
                 "src/client.js",
                 "dist/chatterbox.js",
-                "dist/bdspeer.js",
                 "dist/dAmn.js",
+                "dist/bdspeer.js",
                 "src/wsc.js"
             ]
         },
