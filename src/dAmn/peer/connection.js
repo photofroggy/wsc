@@ -3,12 +3,12 @@
  *
  * Make a peer connection.
  */
-wsc.dAmn.BDS.peer_connection = function( user, remote ) {
+wsc.dAmn.BDS.peer_connection = function( call, user, remote ) {
 
     if( !wsc.dAmn.BDS.Peer.RTC.PeerConnection )
         return null;
     
-    return new wsc.dAmn.BDS.Peer.Connection( user, remote );
+    return new wsc.dAmn.BDS.Peer.Connection( call, user, remote );
 
 };
 
@@ -24,8 +24,9 @@ wsc.dAmn.BDS.peer_connection = function( user, remote ) {
  * @param [remote_offer=null] {String} Descriptor for a remote offer.
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Connection = function( user, remote_offer ) {
+wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer ) {
 
+    this.call = call;
     this.user = user;
     this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options );
     this.offer = '';
@@ -53,7 +54,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // For those things that still do things in ice candidate mode or whatever.
     this.pc.onicecandidate = function( candidate ) {
-        wsc.dAmn.BDS.Peer.signal.candidate( wsc.dAmn.BDS.Peer.phone.call.peer( user ), candidate );
+        pc.call.signal.candidate( pc, candidate );
     };
     
     // Do something when a remote stream arrives.
@@ -95,7 +96,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
         
         this.onopen = function( ) {
         
-            pc.answer();
+            pc.call.signal.answer( pc );
             pc.onopen = onopen;
         
         };
@@ -121,7 +122,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
         return;
     
     this.remote_offer = offer || this.remote_offer;
-    this.onopen = onopen;
+    this.onopen = onopen || this.onopen;
     
     if( !this.remote_offer )
         return;
@@ -279,7 +280,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_stream = function( event ) {
  * @method set_local_stream
  * @param stream {Object} Local media stream
  */
-wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_stream = function( stream ) {
+wsc.dAmn.BDS.Peer.Connection.prototype.set_local_stream = function( stream ) {
 
     this.pc.addStream( stream );
     this.stream = stream;

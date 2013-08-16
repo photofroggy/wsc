@@ -2,36 +2,42 @@
  * Call object. Maybe a bit over the top here.
  * @class wsc.dAmn.BDS.Peer.Call
  * @constructor
- * @param phone {Object} Phone the call is being made on
- * @param bds {String} dAmn channel being used for bds messages
- * @param ns {String} dAmn channel the call is connected to
  * @param pns {String} Peer namespace the call is associated with
- * @param [user=pns.user] {String} User who started the call
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Call = function( phone, bds, ns, pns, user ) {
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application ) {
 
-    this.phone = phone;
-    this.bds = bds;
-    this.pns = pns;
-    this.ns = ns;
-    this.user = '';
-    this.peers = {};
+    this.client = client;
     
-    this.spns = this.pns.split('-');
-    this.ans = this.spns.shift();
-    this.rns = this.spns.join(' ');
+    this.bds = bds;
+    this.ns = '';
+    this.pns = pns;
+    this.user = user;
+    this.app = application;
+    this.title = '';
+    this.pc = '';
+    
+    this.peers = {};
+    this.group = user.substr(0, 5) == 'chat:';
+    
+    var boom = this.pns.split(':');
+    var h = boom.shift();
+    
+    if( h == 'chat' ) {
+        this.ns = 'chat:' + boom.shift();
+    } else if( h == 'pchat' ) {
+        this.ns = 'pchat:' + boom.shift() + ':' + boom.shift();
+    }
+    
+    if( boom[0] == 'pc' ) {
+        boom.shift();
+        this.pc = boom.shift();
+    }
+    
+    this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.user = user || this.spns[0].substr(1);
-    
-    this.dans = phone.client.deform_ns( this.ans );
-    
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( this.phone.client, bds, pns, ns );
-    
-    if( this.phone.stream == null ) {
-        this.phone.get_media();
-    }
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns );
 
 };
 
@@ -55,30 +61,23 @@ wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
 /**
  * Add a new peer to the call.
  * @method new_peer
- * @param pns {String} Peer namespace for the call
  * @param user {String} Name of the peer
  * @return {Object} New peer connection object or null if failed
  */
-wsc.dAmn.BDS.Peer.Call.prototype.new_peer = function( pns, user ) {
-    
-    if( this.pns != pns )
-        return null;
-    
+wsc.dAmn.BDS.Peer.Call.prototype.new_peer = function( user, offer ) {
+
+    /*
     if( !this.group ) {
     
         if( this.dans.substr(1).toLowerCase() != user.toLowerCase() )
             return null;
     
     }
-    
-    var peer = {
-        user: user,
-        conn: wsc.dAmn.BDS.peer_connection( user ),
-        stream: null,
-        url: null
-    };
+    */
+    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer );
     
     this.peers[user] = peer;
+    
     return peer;
 
 };

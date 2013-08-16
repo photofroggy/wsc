@@ -39,9 +39,11 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
-    var user = event.param[0];
-    var pns = event.param[1];
+    var pns = event.param[0];
+    var user = event.param[1];
+    var app = event.param[2];
     
+    /*
     // Away or ignored
     if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
         client.npmsg(event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',You have been blocked');
@@ -52,17 +54,24 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
         client.npmsg(event.ns, 'BDS:PEER:REJECT:'+pns+','+user+',Away; ' + client.away.reason);
         return false;
     }
-    
+    /*
     if( phone.call != null ) {
         if( !phone.call.group ) {
             client.npmsg( event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',Already in a call' );
             return false;
         }
     }
-    
+    */
     client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user);
     
-    // Tell the user about the call.
+    client.trigger( 'peer.request', {
+        name: 'peer.request',
+        ns: event.ns,
+        pns: pns,
+        user: user,
+        app: app
+    });
+    
     return true;
 
 },
@@ -89,8 +98,13 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
-    // wsc.dAmn.BDS.Peer.phone.call.close();
-    // wsc.dAmn.BDS.Peer.phone.call = null;
+    client.trigger( 'peer.reject', {
+        name: 'peer.reject',
+        ns: event.ns,
+        pns: event.param[0],
+        user: event.param[1],
+        reason: event.param[2]
+    } );
 
 };
 
@@ -106,28 +120,47 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
-    if( !phone.call )
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
         return;
     
-    var call = wsc.dAmn.BDS.Peer.phone.call;
-    var pns = event.param[0];
     var user = event.param[1];
-    var chan = event.param[2] || event.ns;
+    var app = event.param[2];
     
     if( user.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
-    var peer = phone.call.new_peer( pns, event.user );
+    if( !call.group ) {
     
-    if( !peer ) {
-        return;
+        var peer = call.new_peer( event.user );
+        
+        if( !peer ) {
+            return;
+        }
+        
+        client.trigger( 'peer.new', {
+            name: 'peer.new',
+            ns: event.ns,
+            pns: call.pns,
+            peer: peer
+        } );
+        
+        peer.ready(
+            function(  ) {
+                call.signal.offer( peer );
+            }
+        );
+    
     }
     
-    peer.conn.ready(
-        function(  ) {
-            wsc.dAmn.BDS.Peer.signal.offer( peer );
-        }
-    );
+    client.trigger( 'peer.accept', {
+        name: 'peer.accept',
+        ns: event.ns,
+        pns: event.param[0],
+        user: event.param[1],
+        reason: event.param[2]
+    } );
 
 };
 
@@ -148,10 +181,11 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
-    if( !phone.call )
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
         return;
     
-    var call = phone.call;
     var pns = event.param[0];
     var user = event.param[1];
     var target = event.param[2];
@@ -160,6 +194,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     if( target.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
+    /*
     // Away or ignored
     if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
         wsc.dAmn.BDS.Peer.signal.reject( user, 'You have been blocked' );
@@ -170,6 +205,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         wsc.dAmn.BDS.Peer.signal.reject( user, 'Away, reason: ' + client.away.reason );
         return;
     }
+    */
     
     var peer = call.peer( user );
     
@@ -177,16 +213,17 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         if( !call.group )
             return;
         
-        peer = call.new_peer( pns, user );
+        peer = call.new_peer( user );
+        
+        client.trigger( 'peer.new', {
+            name: 'peer.new',
+            ns: event.ns,
+            pns: call.pns,
+            peer: peer
+        } );
     }
     
-    peer.conn.ready(
-        function(  ) {
-            wsc.dAmn.BDS.Peer.signal.answer( peer );
-            console.log('new peer',peer.user);
-        },
-        offer
-    );
+    peer.ready( null, offer );
 
 };
 
@@ -201,12 +238,11 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
-    if( !phone.call )
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
         return;
     
-    var call = phone.call;
-    var pns = event.param[0];
-    var user = event.param[1];
     var target = event.param[2];
     var offer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
     
@@ -218,12 +254,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
     if( !peer )
         return;
     
-    peer.conn.open(
-        function(  ) {
-            console.log('> connected to new peer ' + peer.user);
-        },
-        offer
-    );
+    peer.open( null, offer );
 
 };
 
@@ -239,12 +270,11 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     if( event.sns[0] != '@' )
         return;
     
-    if( !phone.call )
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
         return;
     
-    var call = phone.call;
-    var pns = event.param[0];
-    var user = event.param[1];
     var target = event.param[2];
     var candidate = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
     
@@ -256,7 +286,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     if( !peer )
         return;
     
-    peer.conn.candidate( candidate );
+    peer.candidate( candidate );
 
 };
 

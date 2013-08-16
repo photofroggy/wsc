@@ -44,9 +44,32 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
     settings.bds.peer = {
     
         handler: null,
-        call: null,
+        calls: {},
         
-        open: function(  ) {},
+        /**
+         * Retrieve a call.
+         */
+        call: function( find ) {
+        
+            find = find.toLowerCase();
+            
+            for( var id in settings.bds.peer.calls ) {
+                if( !settings.bds.peer.calls.hasOwnProperty( id ) )
+                    continue;
+                if( id.toLowerCase() == find )
+                    return settings.bds.peer.calls[id];
+            }
+            
+            return null;
+        
+        },
+        
+        open: function( ns, pns, user, application, title ) {
+        
+            settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application );
+            return settings.bds.peer.calls[ pns ];
+        
+        },
         
         request: function(  ) {},
     

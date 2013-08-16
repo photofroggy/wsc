@@ -7,10 +7,9 @@
  * @param client {Object} An instance of wsc.
  * @param this.bds {String} dAmn channel used for this.bds commands
  * @param this.pns {String} Peer namespace associated with the signals
- * @param [ns] {String} Channel associated with the connection, if any
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, ns ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
