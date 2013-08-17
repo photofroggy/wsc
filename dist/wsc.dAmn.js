@@ -12833,7 +12833,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
     
     };
     
-    //init();
+    init();
 
 };
 
@@ -13294,8 +13294,8 @@ wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
-    this.bds = this.bds;
-    this.pns = this.pns;
+    this.bds = bds;
+    this.pns = pns;
     this.ns = ns;
     this.client = client;
 
@@ -13440,7 +13440,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.list = function( channel ) {
 wsc.dAmn.BDS.Peer.SignalHandler = function( client ) {
 
     var handle = this;
-
+    
     client.bind( 'BDS.PEER.REQUEST', function( event, client ) { handle.request( event, client ); } );
     client.bind( 'BDS.PEER.ACK', function( event, client ) { handle.ack( event, client ); } );
     client.bind( 'BDS.PEER.REJECT', function( event, client ) { handle.reject( event, client ); } );
@@ -13464,6 +13464,7 @@ wsc.dAmn.BDS.Peer.SignalHandler = function( client ) {
  * @param event {Object} Event data
  */
 wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
+    
     
     if( event.sns[0] != '@' )
         return;
@@ -13493,12 +13494,15 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     */
     client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user);
     
+    var call = client.bds.peer.call( pns );
+    
+    if( !call )
+        call = client.bds.peer.open( event.ns, pns, user, app );
+    
     client.trigger( 'peer.request', {
         name: 'peer.request',
         ns: event.ns,
-        pns: pns,
-        user: user,
-        app: app
+        call: call
     });
     
     return true;

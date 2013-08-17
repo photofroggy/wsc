@@ -75,7 +75,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
     
     };
     
-    //init();
+    init();
 
 };
 

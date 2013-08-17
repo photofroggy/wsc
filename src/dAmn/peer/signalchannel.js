@@ -13,8 +13,8 @@ wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
-    this.bds = this.bds;
-    this.pns = this.pns;
+    this.bds = bds;
+    this.pns = pns;
     this.ns = ns;
     this.client = client;
 
