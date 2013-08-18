@@ -62,9 +62,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function(  ) {
  * @method accept
  * @param auser {String} user to open a peer connection with
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( auser ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app ) {
 
-    this.command( 'ACCEPT', auser, this.nse );
+    this.command( 'ACCEPT', user, app );
 
 };
 
@@ -76,7 +76,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( auser ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.offer = function( peer ) {
 
-    this.command( 'OFFER', this.user, peer.user, JSON.stringify( peer.conn.offer ) );
+    this.command( 'OFFER', this.user, peer.user, JSON.stringify( peer.offer ) );
 
 };
 
@@ -88,7 +88,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.offer = function( peer ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.answer = function( peer ) {
 
-    this.command( 'ANSWER', this.user, peer.user, JSON.stringify( peer.conn.offer ) );
+    this.command( 'ANSWER', this.user, peer.user, JSON.stringify( peer.offer ) );
 
 };
 

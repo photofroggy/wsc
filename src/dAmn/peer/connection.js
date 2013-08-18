@@ -86,10 +86,10 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
 
-    this.onready = onready || this.onready;
+    var onreadyo = this.onready;
     this.remote_offer = remote || this.remote_offer;
     this.responding = this.remote_offer != null;
-    
+    /*
     if( this.responding ) {
         var onopen = this.onopen;
         var pc = this;
@@ -104,6 +104,16 @@ wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
         this.set_remote_description( this.remote_offer );
         return;
     }
+    */
+    
+    var conn = this;
+    
+    this.onready = function(  ) {
+    
+        ( onready || onreadyo )();
+        conn.onready = onreadyo;
+    
+    };
     
     this.create_offer();
 
@@ -121,8 +131,16 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
     if( !this.offer )
         return;
     
+    var conn = this;
+    var opened = this.onopen;
     this.remote_offer = offer || this.remote_offer;
-    this.onopen = onopen || this.onopen;
+    
+    this.onopen = function(  ) {
+    
+        ( onopen || opened )();
+        conn.onopen = opened;
+    
+    };
     
     if( !this.remote_offer )
         return;

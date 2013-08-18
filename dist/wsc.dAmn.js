@@ -13079,10 +13079,10 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
 
-    this.onready = onready || this.onready;
+    var onreadyo = this.onready;
     this.remote_offer = remote || this.remote_offer;
     this.responding = this.remote_offer != null;
-    
+    /*
     if( this.responding ) {
         var onopen = this.onopen;
         var pc = this;
@@ -13097,6 +13097,16 @@ wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
         this.set_remote_description( this.remote_offer );
         return;
     }
+    */
+    
+    var conn = this;
+    
+    this.onready = function(  ) {
+    
+        ( onready || onreadyo )();
+        conn.onready = onreadyo;
+    
+    };
     
     this.create_offer();
 
@@ -13114,8 +13124,16 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
     if( !this.offer )
         return;
     
+    var conn = this;
+    var opened = this.onopen;
     this.remote_offer = offer || this.remote_offer;
-    this.onopen = onopen || this.onopen;
+    
+    this.onopen = function(  ) {
+    
+        ( onopen || opened )();
+        conn.onopen = opened;
+    
+    };
     
     if( !this.remote_offer )
         return;
@@ -13343,9 +13361,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function(  ) {
  * @method accept
  * @param auser {String} user to open a peer connection with
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( auser ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app ) {
 
-    this.command( 'ACCEPT', auser, this.nse );
+    this.command( 'ACCEPT', user, app );
 
 };
 
@@ -13357,7 +13375,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( auser ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.offer = function( peer ) {
 
-    this.command( 'OFFER', this.user, peer.user, JSON.stringify( peer.conn.offer ) );
+    this.command( 'OFFER', this.user, peer.user, JSON.stringify( peer.offer ) );
 
 };
 
@@ -13369,7 +13387,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.offer = function( peer ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.answer = function( peer ) {
 
-    this.command( 'ANSWER', this.user, peer.user, JSON.stringify( peer.conn.offer ) );
+    this.command( 'ANSWER', this.user, peer.user, JSON.stringify( peer.offer ) );
 
 };
 
@@ -13492,17 +13510,25 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
         }
     }
     */
-    client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user);
+    client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user + ',' + app);
     
     var call = client.bds.peer.call( pns );
     
     if( !call )
         call = client.bds.peer.open( event.ns, pns, user, app );
     
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
     client.trigger( 'peer.request', {
         name: 'peer.request',
         ns: event.ns,
-        call: call
+        call: call,
+        user: user,
+        app: app,
+        peer: peer
     });
     
     return true;
@@ -13564,35 +13590,18 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
     if( user.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
-    if( !call.group ) {
+    var peer = call.peer( user );
     
-        var peer = call.new_peer( event.user );
-        
-        if( !peer ) {
-            return;
-        }
-        
-        client.trigger( 'peer.new', {
-            name: 'peer.new',
-            ns: event.ns,
-            pns: call.pns,
-            peer: peer
-        } );
-        
-        peer.ready(
-            function(  ) {
-                call.signal.offer( peer );
-            }
-        );
-    
-    }
+    if( !peer )
+        peer = call.new_peer( user );
     
     client.trigger( 'peer.accept', {
         name: 'peer.accept',
         ns: event.ns,
         pns: event.param[0],
-        user: event.param[1],
-        reason: event.param[2]
+        app: app,
+        call: call,
+        peer: peer
     } );
 
 };
@@ -13642,21 +13651,16 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     
     var peer = call.peer( user );
     
-    if( !peer ) {
-        if( !call.group )
-            return;
-        
+    if( !peer )
         peer = call.new_peer( user );
-        
-        client.trigger( 'peer.new', {
-            name: 'peer.new',
-            ns: event.ns,
-            pns: call.pns,
-            peer: peer
-        } );
-    }
     
-    peer.ready( null, offer );
+    client.trigger( 'peer.offer', {
+        name: 'peer.offer',
+        ns: event.ns,
+        pns: call.pns,
+        peer: peer,
+        offer: offer
+    } );
 
 };
 
@@ -13676,8 +13680,9 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
     if( !call )
         return;
     
+    var user = event.param[1]
     var target = event.param[2];
-    var offer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+    var answer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
     
     if( target.toLowerCase() != client.settings.username.toLowerCase() )
         return;
@@ -13685,9 +13690,15 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
     var peer = call.peer( user );
     
     if( !peer )
-        return;
+        peer = call.new_peer( user );
     
-    peer.open( null, offer );
+    client.trigger( 'peer.answer', {
+        name: 'peer.answer',
+        ns: event.ns,
+        pns: call.pns,
+        peer: peer,
+        answer: answer
+    } );
 
 };
 
@@ -13720,6 +13731,14 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         return;
     
     peer.candidate( candidate );
+    
+    client.trigger( 'peer.candidate', {
+        name: 'peer.candidate',
+        ns: event.ns,
+        pns: call.pns,
+        peer: peer,
+        candidate: candidate
+    } );
 
 };
 
