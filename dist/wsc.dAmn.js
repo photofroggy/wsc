@@ -13344,16 +13344,32 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
 
 };
 
+
 /**
  * Request a peer connection with a particular user.
  * 
  * @method request
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function(  ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
 
-    this.command( 'REQUEST', this.user, 'webcam' );
+    this.command( 'REQUEST', this.user, app || 'webcam' );
 
 };
+
+
+/**
+ * Acknowledge a PEER request.
+ * 
+ * @method ack
+ * @param user {String} User to acknowledge
+ * @param app {String} Application for the connection
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
+
+    this.command( 'ACK', user, app );
+
+};
+
 
 /**
  * Accept a peer connection request.
@@ -13491,31 +13507,12 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     var user = event.param[1];
     var app = event.param[2];
     
-    /*
-    // Away or ignored
-    if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
-        client.npmsg(event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',You have been blocked');
-        return false;
-    }
-    
-    if( client.away.on ) {
-        client.npmsg(event.ns, 'BDS:PEER:REJECT:'+pns+','+user+',Away; ' + client.away.reason);
-        return false;
-    }
-    /*
-    if( phone.call != null ) {
-        if( !phone.call.group ) {
-            client.npmsg( event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',Already in a call' );
-            return false;
-        }
-    }
-    */
-    client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user + ',' + app);
-    
     var call = client.bds.peer.call( pns );
     
     if( !call )
         call = client.bds.peer.open( event.ns, pns, user, app );
+    
+    call.signal.ack( user, app );
     
     var peer = call.peer( user );
     
@@ -13636,19 +13633,6 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     if( target.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
-    /*
-    // Away or ignored
-    if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
-        wsc.dAmn.BDS.Peer.signal.reject( user, 'You have been blocked' );
-        return;
-    }
-    
-    if( client.away.on ) {
-        wsc.dAmn.BDS.Peer.signal.reject( user, 'Away, reason: ' + client.away.reason );
-        return;
-    }
-    */
-    
     var peer = call.peer( user );
     
     if( !peer )
@@ -13658,6 +13642,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         name: 'peer.offer',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         offer: offer
     } );
@@ -13696,6 +13681,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         name: 'peer.answer',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         answer: answer
     } );
@@ -13736,6 +13722,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         name: 'peer.candidate',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         candidate: candidate
     } );

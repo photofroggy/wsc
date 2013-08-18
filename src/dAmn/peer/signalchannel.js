@@ -45,16 +45,32 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
 
 };
 
+
 /**
  * Request a peer connection with a particular user.
  * 
  * @method request
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function(  ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
 
-    this.command( 'REQUEST', this.user, 'webcam' );
+    this.command( 'REQUEST', this.user, app || 'webcam' );
 
 };
+
+
+/**
+ * Acknowledge a PEER request.
+ * 
+ * @method ack
+ * @param user {String} User to acknowledge
+ * @param app {String} Application for the connection
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
+
+    this.command( 'ACK', user, app );
+
+};
+
 
 /**
  * Accept a peer connection request.

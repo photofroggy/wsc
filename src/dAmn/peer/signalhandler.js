@@ -44,31 +44,12 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     var user = event.param[1];
     var app = event.param[2];
     
-    /*
-    // Away or ignored
-    if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
-        client.npmsg(event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',You have been blocked');
-        return false;
-    }
-    
-    if( client.away.on ) {
-        client.npmsg(event.ns, 'BDS:PEER:REJECT:'+pns+','+user+',Away; ' + client.away.reason);
-        return false;
-    }
-    /*
-    if( phone.call != null ) {
-        if( !phone.call.group ) {
-            client.npmsg( event.ns, 'BDS:PEER:REJECT:' + pns + ',' + user + ',Already in a call' );
-            return false;
-        }
-    }
-    */
-    client.npmsg(event.ns, 'BDS:PEER:ACK:' + pns + ',' + user + ',' + app);
-    
     var call = client.bds.peer.call( pns );
     
     if( !call )
         call = client.bds.peer.open( event.ns, pns, user, app );
+    
+    call.signal.ack( user, app );
     
     var peer = call.peer( user );
     
@@ -189,19 +170,6 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     if( target.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
-    /*
-    // Away or ignored
-    if( client.ui.umuted.indexOf( user.toLowerCase() ) != -1 ) {
-        wsc.dAmn.BDS.Peer.signal.reject( user, 'You have been blocked' );
-        return;
-    }
-    
-    if( client.away.on ) {
-        wsc.dAmn.BDS.Peer.signal.reject( user, 'Away, reason: ' + client.away.reason );
-        return;
-    }
-    */
-    
     var peer = call.peer( user );
     
     if( !peer )
@@ -211,6 +179,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         name: 'peer.offer',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         offer: offer
     } );
@@ -249,6 +218,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         name: 'peer.answer',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         answer: answer
     } );
@@ -289,6 +259,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         name: 'peer.candidate',
         ns: event.ns,
         pns: call.pns,
+        call: call,
         peer: peer,
         candidate: candidate
     } );
