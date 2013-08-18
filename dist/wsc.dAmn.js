@@ -13028,6 +13028,7 @@ wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer ) {
     this.streamed = false;
     this.remote_stream = null;
     this.stream = null;
+    this.connected = false;
     
     this.bindings();
     
@@ -13059,6 +13060,8 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     var stub = function() {};
     this.onready = stub;
     this.onopen = stub;
+    this.onremotedescription = stub;
+    this.onlocaldescription = stub;
     this.onremotestream = stub;
     this.onlocalstream = stub;
 
@@ -13079,10 +13082,18 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
 
+    var conn = this;
     var onreadyo = this.onready;
     this.remote_offer = remote || this.remote_offer;
     this.responding = this.remote_offer != null;
     /*
+    this.onready = function(  ) {
+    
+        ( onready || onreadyo )();
+        conn.onready = onreadyo;
+    
+    };
+    
     if( this.responding ) {
         var onopen = this.onopen;
         var pc = this;
@@ -13098,15 +13109,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
         return;
     }
     */
-    
-    var conn = this;
-    
-    this.onready = function(  ) {
-    
-        ( onready || onreadyo )();
-        conn.onready = onreadyo;
-    
-    };
     
     this.create_offer();
 
@@ -13170,6 +13172,9 @@ wsc.dAmn.BDS.Peer.Connection.prototype.onerror = function( err ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
 
+    if( !this.connected )
+        return;
+    
     this.pc.addIceCandidate( candidate );
 
 };
@@ -13213,6 +13218,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.offer_created = function( description ) {
 wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_description = function( description ) {
 
     this.remote_offer = description;
+    this.responding = this.pc.signalingState == 'stable';
     var pc = this;
     
     this.pc.setRemoteDescription( this.remote_offer , function(  ) { pc.remote_description_set(); }, this.onerror );
@@ -13224,8 +13230,13 @@ wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_description = function( descri
  * @method local_description_set
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function(  ) {
-
-    this.onready();
+    
+    if( this.responding ) {
+        this.connected = true;
+        this.responding = false;
+    }
+    
+    this.onlocaldescription();
 
 };
 
@@ -13235,7 +13246,11 @@ wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function(  ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function(  ) {
 
-    this.onopen();
+    if( !this.responding ) {
+        this.connected = true;
+    }
+    
+    this.onremotedescription();
 
 };
 
@@ -13243,7 +13258,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function(  ) {
  * Create an answer for a remote offer.
  * @method answer
  */
-wsc.dAmn.BDS.Peer.Connection.prototype.answer = function(  ) {
+wsc.dAmn.BDS.Peer.Connection.prototype.create_answer = function(  ) {
 
     var pc = this;
     this.responding = true;
@@ -13646,6 +13661,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         peer: peer,
         offer: offer
     } );
+    
+    peer.set_remote_description( offer );
 
 };
 
@@ -13685,6 +13702,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         peer: peer,
         answer: answer
     } );
+    
+    peer.set_remote_description( answer );
 
 };
 
@@ -13705,18 +13724,19 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     if( !call )
         return;
     
-    var target = event.param[2];
-    var candidate = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
-    
-    if( target.toLowerCase() != client.settings.username.toLowerCase() )
-        return;
-    
-    var peer = call.peer( user );
+    var peer = call.peer( event.param[1] );
     
     if( !peer )
         return;
     
-    peer.candidate( candidate );
+    var target = event.param[2];
+    var candidate = JSON.parse( event.param.slice(3).join(',') );
+    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
+    
+    if( target.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    peer.candidate( ice );
     
     client.trigger( 'peer.candidate', {
         name: 'peer.candidate',
@@ -13724,7 +13744,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         pns: call.pns,
         call: call,
         peer: peer,
-        candidate: candidate
+        candidate: candidate,
+        ice: ice
     } );
 
 };

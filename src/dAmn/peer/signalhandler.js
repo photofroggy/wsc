@@ -183,6 +183,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         peer: peer,
         offer: offer
     } );
+    
+    peer.set_remote_description( offer );
 
 };
 
@@ -222,6 +224,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         peer: peer,
         answer: answer
     } );
+    
+    peer.set_remote_description( answer );
 
 };
 
@@ -242,18 +246,19 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     if( !call )
         return;
     
-    var target = event.param[2];
-    var candidate = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
-    
-    if( target.toLowerCase() != client.settings.username.toLowerCase() )
-        return;
-    
-    var peer = call.peer( user );
+    var peer = call.peer( event.param[1] );
     
     if( !peer )
         return;
     
-    peer.candidate( candidate );
+    var target = event.param[2];
+    var candidate = JSON.parse( event.param.slice(3).join(',') );
+    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
+    
+    if( target.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    peer.candidate( ice );
     
     client.trigger( 'peer.candidate', {
         name: 'peer.candidate',
@@ -261,7 +266,8 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         pns: call.pns,
         call: call,
         peer: peer,
-        candidate: candidate
+        candidate: candidate,
+        ice: ice
     } );
 
 };
