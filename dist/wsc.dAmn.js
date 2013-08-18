@@ -13730,11 +13730,16 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
         return;
     
     var target = event.param[2];
-    var candidate = JSON.parse( event.param.slice(3).join(',') );
-    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
     
     if( target.toLowerCase() != client.settings.username.toLowerCase() )
         return;
+    
+    var candidate = JSON.parse( event.param.slice(3).join(',') );
+    
+    if( !candidate.candidate )
+        return;
+    
+    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate.candidate );
     
     peer.candidate( ice );
     
