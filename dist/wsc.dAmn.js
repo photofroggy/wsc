@@ -13047,8 +13047,8 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     var user = this.user;
     
     // For those things that still do things in ice candidate mode or whatever.
-    this.pc.onicecandidate = function( candidate ) {
-        pc.call.signal.candidate( pc, candidate );
+    this.pc.onicecandidate = function( event ) {
+        pc.call.signal.candidate( pc, event.candidate );
     };
     
     // Do something when a remote stream arrives.
@@ -13736,10 +13736,10 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     
     var candidate = JSON.parse( event.param.slice(3).join(',') );
     
-    if( !candidate.candidate )
+    if( !candidate )
         return;
     
-    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate.candidate );
+    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
     
     peer.candidate( ice );
     

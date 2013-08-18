@@ -54,8 +54,8 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     var user = this.user;
     
     // For those things that still do things in ice candidate mode or whatever.
-    this.pc.onicecandidate = function( candidate ) {
-        pc.call.signal.candidate( pc, candidate );
+    this.pc.onicecandidate = function( event ) {
+        pc.call.signal.candidate( pc, event.candidate );
     };
     
     // Do something when a remote stream arrives.
