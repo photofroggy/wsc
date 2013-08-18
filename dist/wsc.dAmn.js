@@ -12822,7 +12822,7 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         
         },
         
-        open: function( ns, pns, user, application, title ) {
+        open: function( ns, pns, user, application ) {
         
             settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application );
             return settings.bds.peer.calls[ pns ];
@@ -13587,10 +13587,10 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
     if( user.toLowerCase() != client.settings.username.toLowerCase() )
         return;
     
-    var peer = call.peer( user );
+    var peer = call.peer( event.user );
     
     if( !peer )
-        peer = call.new_peer( user );
+        peer = call.new_peer( event.user );
     
     client.trigger( 'peer.accept', {
         name: 'peer.accept',
@@ -13625,7 +13625,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
     if( !call )
         return;
     
-    var pns = event.param[0];
+    var pns = call.pns;
     var user = event.param[1];
     var target = event.param[2];
     var offer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
