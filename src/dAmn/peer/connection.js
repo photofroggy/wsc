@@ -69,6 +69,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     this.onopen = stub;
     this.onremotedescription = stub;
     this.onlocaldescription = stub;
+    this.onicecompleted = stub;
     this.onremotestream = stub;
     this.onlocalstream = stub;
 
@@ -179,12 +180,25 @@ wsc.dAmn.BDS.Peer.Connection.prototype.onerror = function( err ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
 
-    if( !this.connected )
-        return;
+    //if( !this.connected )
+    //    return;
     
     this.pc.addIceCandidate( candidate );
 
 };
+
+
+/**
+ * Called when ice gathering is done.
+ * 
+ * @method ice_completed
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.ice_completed = function(  ) {
+
+    this.onicecompleted();
+
+};
+
 
 /**
  * Create an offer for a connection.

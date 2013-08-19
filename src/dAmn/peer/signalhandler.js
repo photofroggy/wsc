@@ -258,8 +258,10 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     
     var candidate = JSON.parse( event.param.slice(3).join(',') );
     
-    if( !candidate )
+    if( !candidate ) {
+        peer.ice_completed();
         return;
+    }
     
     var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
     
