@@ -796,7 +796,7 @@ div.wsc div.window div.users {
   padding: 0px;
   overflow: auto;
   max-width: 300px;
-  float: left;
+  float: right;
   display: none;
   overflow: auto;
 }
