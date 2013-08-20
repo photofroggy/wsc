@@ -39,7 +39,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constrai
     this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns );
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application );
 
 };
 
