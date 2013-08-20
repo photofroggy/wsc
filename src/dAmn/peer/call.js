@@ -16,7 +16,8 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constrai
     this.app = application;
     this.title = '';
     this.pc = '';
-    this.localstream = stream;
+    this.localstream = null;
+    this.localurl = null;
     this.constraints = constraints;
     this.peers = {};
     
@@ -40,8 +41,30 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constrai
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
     this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application );
+    this.onlocalstream = function(){};
+    
+    if( stream ) {
+        this.localstream = stream;
+        this.localurl = URL.createObjectURL( stream );
+    }
 
 };
+
+
+/**
+ * Set the local stream.
+ * 
+ * @method set_local_stream
+ * @param stream {Object} Local media stream
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
+
+    this.localstream = stream;
+    this.localurl = URL.createObjectURL( stream );
+    this.onlocalstream();
+
+};
+
 
 /**
  * Close the call.
