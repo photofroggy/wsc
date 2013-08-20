@@ -195,6 +195,8 @@ wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.ice_completed = function(  ) {
 
+    // this method is here in case it turns out that more needs to be done.
+    // rather than only having onicecompleted, I mean.
     this.onicecompleted();
 
 };
