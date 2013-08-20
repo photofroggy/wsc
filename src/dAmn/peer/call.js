@@ -5,7 +5,7 @@
  * @param pns {String} Peer namespace the call is associated with
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application ) {
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constraints, stream ) {
 
     this.client = client;
     
@@ -16,8 +16,10 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application ) {
     this.app = application;
     this.title = '';
     this.pc = '';
-    
+    this.localstream = stream;
+    this.constraints = constraints;
     this.peers = {};
+    
     this.group = user.substr(0, 5) == 'chat:';
     
     var boom = this.pns.split(':');
@@ -74,7 +76,7 @@ wsc.dAmn.BDS.Peer.Call.prototype.new_peer = function( user, offer ) {
     
     }
     */
-    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer );
+    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer, this.constraints, this.localstream );
     
     this.peers[user] = peer;
     

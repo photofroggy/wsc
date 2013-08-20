@@ -12946,7 +12946,7 @@ wsc.dAmn.BDS.Peer.chan.calls = [];
  * @param pns {String} Peer namespace the call is associated with
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application ) {
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constraints, stream ) {
 
     this.client = client;
     
@@ -12957,8 +12957,10 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application ) {
     this.app = application;
     this.title = '';
     this.pc = '';
-    
+    this.localstream = stream;
+    this.constraints = constraints;
     this.peers = {};
+    
     this.group = user.substr(0, 5) == 'chat:';
     
     var boom = this.pns.split(':');
@@ -13015,7 +13017,7 @@ wsc.dAmn.BDS.Peer.Call.prototype.new_peer = function( user, offer ) {
     
     }
     */
-    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer );
+    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer, this.constraints, this.localstream );
     
     this.peers[user] = peer;
     
@@ -13039,12 +13041,12 @@ wsc.dAmn.BDS.Peer.Call.prototype.peer = function( peer ) {
  *
  * Make a peer connection.
  */
-wsc.dAmn.BDS.peer_connection = function( call, user, remote ) {
+wsc.dAmn.BDS.peer_connection = function( call, user, remote, constraints ) {
 
     if( !wsc.dAmn.BDS.Peer.RTC.PeerConnection )
         return null;
     
-    return new wsc.dAmn.BDS.Peer.Connection( call, user, remote );
+    return new wsc.dAmn.BDS.Peer.Connection( call, user, remote, constraints );
 
 };
 
@@ -13060,11 +13062,11 @@ wsc.dAmn.BDS.peer_connection = function( call, user, remote ) {
  * @param [remote_offer=null] {String} Descriptor for a remote offer.
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer ) {
+wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer, constraints, stream ) {
 
     this.call = call;
     this.user = user;
-    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options );
+    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options, constraints );
     this.offer = '';
     this.remote_offer = remote_offer || null;
     this.responding = this.remote_offer != null;
@@ -13077,6 +13079,9 @@ wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer ) {
     
     if( this.remote_offer )
         this.set_remote_description( this.remote_offer );
+    
+    if( stream )
+        this.set_local_stream( stream );
 
 };
 
@@ -13099,6 +13104,11 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
         pc.set_remote_stream( event );
     };
     
+    // Negotiation is needed!
+    this.pc.onnegotiationneeded = function( event ) {
+        pc.onnegotiationneeded( event );
+    };
+    
     // Stub event handler
     var stub = function() {};
     this.onready = stub;
@@ -13108,6 +13118,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     this.onicecompleted = stub;
     this.onremotestream = stub;
     this.onlocalstream = stub;
+    this.onnegotiationneeded = stub;
 
 };
 
@@ -13265,7 +13276,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.offer_created = function( description ) {
     this.offer = description;
     var pc = this;
     
-    this.pc.setLocalDescription( this.offer , function(  ) { pc.local_description_set(); }, this.onerror );
+    this.pc.setLocalDescription( this.offer , function(  ) { pc.local_description_set( 0 ); }, this.onerror );
 
 };
 
@@ -13273,43 +13284,46 @@ wsc.dAmn.BDS.Peer.Connection.prototype.offer_created = function( description ) {
  * Set the descriptor for the remote connection.
  * @method set_remote_description
  * @param description {String} Descriptor for the remote connection
+ * @param type {Integer} Offer (0) or answer (1)
  */
-wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_description = function( description ) {
+wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_description = function( description, type ) {
 
     this.remote_offer = description;
     this.responding = this.pc.signalingState == 'stable';
     var pc = this;
     
-    this.pc.setRemoteDescription( this.remote_offer , function(  ) { pc.remote_description_set(); }, this.onerror );
+    this.pc.setRemoteDescription( this.remote_offer , function(  ) { pc.remote_description_set( type ); }, this.onerror );
 
 };
 
 /**
  * A local description as been set. Handle it!
  * @method local_description_set
+ * @param type {Integer} Offer (0) or answer (1)
  */
-wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function(  ) {
+wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function( type ) {
     
     if( this.responding ) {
         this.connected = true;
         this.responding = false;
     }
     
-    this.onlocaldescription();
+    this.onlocaldescription( type );
 
 };
 
 /**
  * A local description as been set. Handle it!
  * @method remote_description_set
+ * @param type {Integer} Offer (0) or answer (1)
  */
-wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function(  ) {
+wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function( type ) {
 
     if( !this.responding ) {
         this.connected = true;
     }
     
-    this.onremotedescription();
+    this.onremotedescription( type );
 
 };
 
@@ -13340,7 +13354,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.answer_created = function( answer ) {
     var pc = this;
     
     this.pc.setLocalDescription( this.offer,
-        function(  ) { pc.local_description_set(); },
+        function(  ) { pc.local_description_set( 1 ); },
         function( err ) { pc.onerror( err ); }
     );
 
@@ -13371,6 +13385,46 @@ wsc.dAmn.BDS.Peer.Connection.prototype.set_local_stream = function( stream ) {
     this.stream = stream;
     this.onlocalstream();
 
+};
+
+
+/**
+ * Keep responding to offers and answers as though your life depends on it.
+ *
+ * @method persist
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.persist = function(  ) {
+
+    var peer = this;
+    var call = this.call;
+    
+    // Send an answer to an offer.
+    peer.onremotedescription = function( type ) {
+        if( type != 0 )
+            return;
+        
+        peer.create_answer();
+    };
+    
+    // Send our offers and answers
+    peer.onlocaldescription = function( type ) {
+        switch( type ) {
+            case 0:
+                call.signal.offer( peer );
+                break;
+            case 1:
+                call.signal.answer( peer );
+                break;
+            default:
+                break;
+        }    
+    };
+    
+    // Make it happen.
+    peer.onnegotiationneeded = function(  ) {
+        peer.create_offer();
+    };
+
 };/**
  * This object represents a signalling channel used for transmitting connection data
  * between two peers.
@@ -13378,17 +13432,19 @@ wsc.dAmn.BDS.Peer.Connection.prototype.set_local_stream = function( stream ) {
  * @class wsc.dAmn.BDS.Peer.SignalChannel
  * @constructor
  * @param client {Object} An instance of wsc.
- * @param this.bds {String} dAmn channel used for this.bds commands
- * @param this.pns {String} Peer namespace associated with the signals
+ * @param bds {String} dAmn channel used for this.bds commands
+ * @param pns {String} Peer namespace associated with the signals
+ * @param application {String} Application name for the thingy
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
     this.bds = bds;
     this.pns = pns;
     this.ns = ns;
+    this.app = application;
     this.client = client;
 
 };
@@ -13426,7 +13482,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
 
-    this.command( 'REQUEST', this.user, app || 'webcam' );
+    this.command( 'REQUEST', this.user, app || this.app );
 
 };
 
@@ -13721,7 +13777,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         offer: offer
     } );
     
-    peer.set_remote_description( offer );
+    peer.set_remote_description( offer, 0 );
 
 };
 
@@ -13762,7 +13818,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         answer: answer
     } );
     
-    peer.set_remote_description( answer );
+    peer.set_remote_description( answer, 1 );
 
 };
 

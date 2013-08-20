@@ -184,7 +184,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
         offer: offer
     } );
     
-    peer.set_remote_description( offer );
+    peer.set_remote_description( offer, 0 );
 
 };
 
@@ -225,7 +225,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
         answer: answer
     } );
     
-    peer.set_remote_description( answer );
+    peer.set_remote_description( answer, 1 );
 
 };
 

@@ -5,17 +5,19 @@
  * @class wsc.dAmn.BDS.Peer.SignalChannel
  * @constructor
  * @param client {Object} An instance of wsc.
- * @param this.bds {String} dAmn channel used for this.bds commands
- * @param this.pns {String} Peer namespace associated with the signals
+ * @param bds {String} dAmn channel used for this.bds commands
+ * @param pns {String} Peer namespace associated with the signals
+ * @param application {String} Application name for the thingy
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
     this.bds = bds;
     this.pns = pns;
     this.ns = ns;
+    this.app = application;
     this.client = client;
 
 };
@@ -53,7 +55,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
 
-    this.command( 'REQUEST', this.user, app || 'webcam' );
+    this.command( 'REQUEST', this.user, app || this.app );
 
 };
 
