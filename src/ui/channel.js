@@ -850,7 +850,7 @@ Chatterbox.Channel.prototype.highlight = function( message ) {
         var tab = c.el.t.o;
         var message = data.message;
         
-        if( message !== false ) {
+        if( message !== false && c.namespace[0] != '@' ) {
             ( message || c.el.l.w.find('.logmsg').last() ).addClass('highlight');
         }
         
