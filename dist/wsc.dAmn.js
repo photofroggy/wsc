@@ -12877,6 +12877,17 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         
         },
         
+        remove: function( pns ) {
+        
+            var call = settings.bds.peer.call( pns );
+            
+            if( !call )
+                return;
+            
+            delete settings.bds.peer.calls[ pns ];
+        
+        },
+        
         request: function(  ) {},
     
     };
