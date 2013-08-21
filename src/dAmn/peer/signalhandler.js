@@ -77,7 +77,11 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
  * @method ack
  * @param event {Object} Event data
  */
-wsc.dAmn.BDS.Peer.SignalHandler.prototype.ack = function( event, client ) {};
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.ack = function( event, client ) {
+
+
+
+};
 
 
 /**
@@ -141,9 +145,32 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
 };
 
 
-wsc.dAmn.BDS.Peer.SignalHandler.prototype.open = function( event, client ) {};
+/**
+ * Handle an OPEN command. OPEN commands provide information about open connections.
+ * 
+ * @method open
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.open = function( event, client ) {
 
-wsc.dAmn.BDS.Peer.SignalHandler.prototype.end = function( event, client ) {};
+
+
+};
+
+
+/**
+ * Handle an END command. END commands are given at the end of connection listing.
+ * 
+ * @method end
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.end = function( event, client ) {
+
+
+
+};
 
 
 /**
