@@ -301,7 +301,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
     if( !peer )
         return;
     
-    if( peer.user.toLowerCase() != client.settings.username.toLowerCase() )
+    if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
     
     peer.close();

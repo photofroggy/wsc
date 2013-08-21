@@ -13925,10 +13925,18 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
     if( !peer )
         return;
     
-    if( peer.user.toLowerCase() != client.settings.username.toLowerCase() )
+    if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
     
     peer.close();
+    
+    client.trigger( 'peer.close', {
+        name: 'peer.close',
+        ns: event.ns,
+        evt: event,
+        call: call,
+        peer: peer
+    });
 
 };
 /**
