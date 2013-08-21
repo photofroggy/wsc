@@ -63,6 +63,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Do something when a remote stream arrives.
     this.pc.onaddstream = function( event ) {
+        console.log('> remote stream arrived.');
         pc.set_remote_stream( event );
     };
     
@@ -75,6 +76,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     var stub = function() {};
     this.onready = stub;
     this.onopen = stub;
+    this.onclose = stub;
     this.onremotedescription = stub;
     this.onlocaldescription = stub;
     this.onicecompleted = stub;
@@ -168,6 +170,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
 wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
     this.pc.close();
+    this.onclose();
 
 };
 

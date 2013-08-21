@@ -12871,7 +12871,8 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         
         open: function( ns, pns, user, application ) {
         
-            settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application );
+            if( !settings.bds.peer.call( pns ) )
+                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application );
             return settings.bds.peer.calls[ pns ];
         
         },
@@ -13128,6 +13129,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Do something when a remote stream arrives.
     this.pc.onaddstream = function( event ) {
+        console.log('> remote stream arrived.');
         pc.set_remote_stream( event );
     };
     
@@ -13140,6 +13142,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     var stub = function() {};
     this.onready = stub;
     this.onopen = stub;
+    this.onclose = stub;
     this.onremotedescription = stub;
     this.onlocaldescription = stub;
     this.onicecompleted = stub;
@@ -13233,6 +13236,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
 wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
     this.pc.close();
+    this.onclose();
 
 };
 
@@ -13906,7 +13910,28 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
  * @method close
  * @param event {Object} Event data
  */
-wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {};/**
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( event.param[1] );
+    
+    if( !peer )
+        return;
+    
+    if( peer.user.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    peer.close();
+
+};
+/**
  * webRTC objects
  */
 wsc.dAmn.BDS.Peer.RTC = {

@@ -286,4 +286,32 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
  * @method close
  * @param event {Object} Event data
  */
-wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {};
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( event.param[1] );
+    
+    if( !peer )
+        return;
+    
+    if( peer.user.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    peer.close();
+    
+    client.trigger( 'peer.close', {
+        name: 'peer.close',
+        ns: event.ns,
+        evt: event,
+        call: call,
+        peer: peer
+    });
+
+};
