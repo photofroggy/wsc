@@ -28,7 +28,7 @@ wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer, constraints, 
 
     this.call = call;
     this.user = user;
-    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options, constraints );
+    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer.peer_options, constraints );
     this.offer = '';
     this.remote_offer = remote_offer || null;
     this.remote_set = false;

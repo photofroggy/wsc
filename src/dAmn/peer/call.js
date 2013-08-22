@@ -5,7 +5,7 @@
  * @param pns {String} Peer namespace the call is associated with
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constraints, stream ) {
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version, constraints, stream ) {
 
     this.client = client;
     
@@ -14,6 +14,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constrai
     this.pns = pns;
     this.user = user;
     this.app = application;
+    this.app_ver = version;
     this.title = '';
     this.pc = '';
     this.localstream = null;

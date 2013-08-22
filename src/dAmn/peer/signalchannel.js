@@ -69,9 +69,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
  * @param user {String} User to acknowledge
  * @param app {String} Application for the connection
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
 
-    this.command( 'ACK', user, app, ver );
+    this.command( 'ACK', user, app || this.app, ver || this.app_ver );
 
 };
 
@@ -82,9 +82,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
  * @method accept
  * @param auser {String} user to open a peer connection with
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app, ver ) {
 
-    this.command( 'ACCEPT', user, app, ver );
+    this.command( 'ACCEPT', user, app || this.app, ver || this.app_ver );
 
 };
 

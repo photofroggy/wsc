@@ -12962,7 +12962,7 @@ wsc.dAmn.BDS.Peer.chan.calls = [];
  * @param pns {String} Peer namespace the call is associated with
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constraints, stream ) {
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version, constraints, stream ) {
 
     this.client = client;
     
@@ -12971,6 +12971,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, constrai
     this.pns = pns;
     this.user = user;
     this.app = application;
+    this.app_ver = version;
     this.title = '';
     this.pc = '';
     this.localstream = null;
@@ -13105,7 +13106,7 @@ wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer, constraints, 
 
     this.call = call;
     this.user = user;
-    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options, constraints );
+    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer.peer_options, constraints );
     this.offer = '';
     this.remote_offer = remote_offer || null;
     this.remote_set = false;
@@ -13542,9 +13543,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
  * @param user {String} User to acknowledge
  * @param app {String} Application for the connection
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
 
-    this.command( 'ACK', user, app, ver );
+    this.command( 'ACK', user, app || this.app, ver || this.app_ver );
 
 };
 
@@ -13555,9 +13556,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
  * @method accept
  * @param auser {String} user to open a peer connection with
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app, ver ) {
 
-    this.command( 'ACCEPT', user, app, ver );
+    this.command( 'ACCEPT', user, app || this.app, ver || this.app_ver );
 
 };
 
@@ -13691,7 +13692,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     if( !call )
         call = client.bds.peer.open( event.ns, pns, user, app, ver );
     
-    call.signal.ack( user, app );
+    call.signal.ack( user, app, ver );
     
     var peer = call.peer( user );
     

@@ -50,7 +50,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     if( !call )
         call = client.bds.peer.open( event.ns, pns, user, app, ver );
     
-    call.signal.ack( user, app );
+    call.signal.ack( user, app, ver );
     
     var peer = call.peer( user );
     
