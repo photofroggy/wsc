@@ -275,6 +275,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) 
     
     var peer = call.peer( event.param[1] );
     
+    console.log(call,peer,peer.remote_set);
     if( !peer )
         return;
     

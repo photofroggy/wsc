@@ -31,6 +31,7 @@ wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer, constraints, 
     this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer._options, constraints );
     this.offer = '';
     this.remote_offer = remote_offer || null;
+    this.remote_set = false;
     this.responding = this.remote_offer != null;
     this.streamed = false;
     this.remote_stream = null;
@@ -194,7 +195,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
 
     //if( !this.connected )
     //    return;
-    
+    console.log( '> remote', this.remote_set );
     this.pc.addIceCandidate( candidate );
 
 };
@@ -284,6 +285,9 @@ wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function( type ) 
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function( type ) {
 
+    this.responding = type == 0;
+    this.remote_set = true;
+    
     if( !this.responding ) {
         this.connected = true;
     }
