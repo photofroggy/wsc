@@ -4528,7 +4528,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
+    
     if( window.webkitRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
@@ -4536,8 +4536,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
-    if( window.RTCPeerConnection ) {
+    
+    if( window.RTCPeerConnection && !window.mozRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
             return navigator.getUserMedia( options, success, error );
