@@ -7,45 +7,18 @@ wsc.dAmn.BDS.Peer.RTC = {
     IceCandidate: null,
 }
 
-wsc.dAmn.BDS.Peer._gum = function() {};
-
-wsc.dAmn.BDS.Peer.getUserMedia = function( options, success, error ) {
-
-    return wsc.dAmn.BDS.Peer._gum( options, success, error );
-
-};
-
 if( window.mozRTCPeerConnection ) {
     wsc.dAmn.BDS.Peer.RTC.PeerConnection = mozRTCPeerConnection;
     wsc.dAmn.BDS.Peer.RTC.SessionDescription = mozRTCSessionDescription;
     wsc.dAmn.BDS.Peer.RTC.IceCandidate = mozRTCIceCandidate;
-    
-    wsc.dAmn.BDS.Peer._gum = function( options, success, error ) {
-    
-        return navigator.mozGetUserMedia( options, success, error );
-    
-    };
-    
 }
 
 if( window.webkitRTCPeerConnection ) {
     wsc.dAmn.BDS.Peer.RTC.PeerConnection = webkitRTCPeerConnection;
-    
-    wsc.dAmn.BDS.Peer._gum = function( options, success, error ) {
-    
-        return navigator.webkitGetUserMedia( options, success, error );
-    
-    };
 }
 
-if( window.RTCPeerConnection ) {
+if( window.RTCPeerConnection && !wsc.dAmn.BDS.Peer.RTC.PeerConnection ) {
     wsc.dAmn.BDS.Peer.RTC.PeerConnection = RTCPeerConnection;
-    
-    wsc.dAmn.BDS.Peer._gum = function( options, success, error ) {
-    
-        return navigator.getUserMedia( options, success, error );
-    
-    };
 }
 
 if( window.RTCSessionDescription ) {
