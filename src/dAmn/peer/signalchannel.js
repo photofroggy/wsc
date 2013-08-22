@@ -8,9 +8,10 @@
  * @param bds {String} dAmn channel used for this.bds commands
  * @param pns {String} Peer namespace associated with the signals
  * @param application {String} Application name for the thingy
+ * @param version {Integer} Application version number
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application, version ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
@@ -18,6 +19,7 @@ wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application ) {
     this.pns = pns;
     this.ns = ns;
     this.app = application;
+    this.app_ver = version;
     this.client = client;
 
 };
@@ -53,9 +55,9 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  * 
  * @method request
  */
-wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
 
-    this.command( 'REQUEST', this.user, app || this.app );
+    this.command( 'REQUEST', this.user, app || this.app, ver || this.app_ver );
 
 };
 
@@ -69,7 +71,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
 
-    this.command( 'ACK', user, app );
+    this.command( 'ACK', user, app, ver );
 
 };
 
@@ -82,7 +84,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app ) {
 
-    this.command( 'ACCEPT', user, app );
+    this.command( 'ACCEPT', user, app, ver );
 
 };
 

@@ -64,10 +64,10 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         
         },
         
-        open: function( ns, pns, user, application ) {
+        open: function( ns, pns, user, application, version ) {
         
             if( !settings.bds.peer.call( pns ) )
-                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application );
+                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application, version );
             return settings.bds.peer.calls[ pns ];
         
         },

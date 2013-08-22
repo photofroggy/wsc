@@ -43,11 +43,12 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
     var pns = event.param[0];
     var user = event.param[1];
     var app = event.param[2];
+    var ver = parseInt(event.param[3]);
     
     var call = client.bds.peer.call( pns );
     
     if( !call )
-        call = client.bds.peer.open( event.ns, pns, user, app );
+        call = client.bds.peer.open( event.ns, pns, user, app, ver );
     
     call.signal.ack( user, app );
     
@@ -62,6 +63,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
         call: call,
         user: user,
         app: app,
+        version: ver,
         peer: peer
     });
     
@@ -124,6 +126,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
     
     var user = event.param[1];
     var app = event.param[2];
+    var ver = parseInt(event.param[3]);
     
     if( user.toLowerCase() != client.settings.username.toLowerCase() )
         return;
@@ -138,6 +141,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
         ns: event.ns,
         pns: event.param[0],
         app: app,
+        version: ver,
         call: call,
         peer: peer
     } );
