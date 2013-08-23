@@ -91,82 +91,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
 
 };
 
-/**
- * Ready the connection.
- * 
- * Callback fired when the connection is ready to be opened. IE, when a local
- * offer is set. Signalling channels should be used to transfer offer information.
- * 
- * If a remote offer is provided, then the object generates an answer for the
- * offer.
- * 
- * @method ready
- * @param onready {Function} Callback to fire when the connection is ready
- * @param [remote=null] {String} Descriptor for a remote offer
- */
-wsc.dAmn.BDS.Peer.Connection.prototype.ready = function( onready, remote ) {
-
-    var conn = this;
-    var onreadyo = this.onready;
-    this.remote_offer = remote || this.remote_offer;
-    this.responding = this.remote_offer != null;
-    /*
-    this.onready = function(  ) {
-    
-        ( onready || onreadyo )();
-        conn.onready = onreadyo;
-    
-    };
-    
-    if( this.responding ) {
-        var onopen = this.onopen;
-        var pc = this;
-        
-        this.onopen = function( ) {
-        
-            pc.call.signal.answer( pc );
-            pc.onopen = onopen;
-        
-        };
-        
-        this.set_remote_description( this.remote_offer );
-        return;
-    }
-    */
-    
-    this.create_offer();
-
-};
-
-/**
- * Open a connection to a remote peer.
- *
- * @method open
- * @param onopen {Function} Callback to fire when the connection is open
- * @param [offer=null] {String} Descriptor for the remote connection
- */
-wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
-
-    if( !this.offer )
-        return;
-    
-    var conn = this;
-    var opened = this.onopen;
-    this.remote_offer = offer || this.remote_offer;
-    
-    this.onopen = function(  ) {
-    
-        ( onopen || opened )();
-        conn.onopen = opened;
-    
-    };
-    
-    if( !this.remote_offer )
-        return;
-    
-    this.set_remote_description( this.remote_offer );
-
-};
 
 /**
  * Close a connection
@@ -176,9 +100,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
     try {
         this.pc.close();
-        console.log( '> no err' );
     } catch( err ) {
-        console.log( '> err', err );
     }
     this._closed();
 
@@ -186,7 +108,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
 wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
     
-    console.log( '> pc closed' );
     this.onclose();
     
 };
