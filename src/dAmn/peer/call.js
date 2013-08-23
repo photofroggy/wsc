@@ -48,6 +48,14 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
         this.localstream = stream;
         this.localurl = URL.createObjectURL( stream );
     }
+    
+    this.onclose = function() {};
+    
+    var call = this;
+    
+    this._closed = function( ) {
+        call.onclose();
+    };
 
 };
 
@@ -73,14 +81,19 @@ wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
  */
 wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
 
+    this.signal.close( );
+    
     for( var p in this.peers ) {
     
         if( !this.peers.hasOwnProperty( p ) )
             continue;
         
-        this.peers[p].conn.close();
+        this.remove( p );
     
     }
+    
+    this.client.bds.peer.remove( this.pns );
+    this._closed();
 
 };
 
@@ -119,3 +132,23 @@ wsc.dAmn.BDS.Peer.Call.prototype.peer = function( peer ) {
     return this.peers[peer] || null;
 
 };
+
+
+/**
+ * Remove a peer from the call.
+ *
+ * @method remove
+ * @param user {String} Name of the peer
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.remove = function( user ) {
+
+    var peer = this.peer( user );
+    
+    if( !peer )
+        return;
+    
+    delete this.peers[ peer ];
+    peer.close();
+
+};
+

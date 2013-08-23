@@ -328,14 +328,14 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
         return;
     
     var peer = call.peer( event.param[1] );
-    
+    console.log('>close',peer);
     if( !peer )
         return;
     
     if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
-    
-    peer.close();
+    console.log('>remove');
+    call.remove( peer.user );
     
     client.trigger( 'peer.close', {
         name: 'peer.close',

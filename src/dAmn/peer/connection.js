@@ -64,13 +64,18 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Do something when a remote stream arrives.
     this.pc.onaddstream = function( event ) {
-        console.log('> remote stream arrived.');
         pc.set_remote_stream( event );
     };
     
     // Negotiation is needed!
     this.pc.onnegotiationneeded = function( event ) {
         pc.onnegotiationneeded( event );
+    };
+    
+    // Connection closed
+    this.pc.onclose = function(  ) {
+        console.log('> pc closed');
+        pc._closed();
     };
     
     // Stub event handler
@@ -170,9 +175,18 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
-    this.pc.close();
-    this.onclose();
+    try {
+        this.pc.close();
+    } catch( err ) {
+        this._closed();
+    }
 
+};
+
+wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
+    
+    this.onclose();
+    
 };
 
 /**
@@ -195,7 +209,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
 
     //if( !this.connected )
     //    return;
-    console.log( '> remote', this.remote_set );
     this.pc.addIceCandidate( candidate );
 
 };

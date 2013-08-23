@@ -12869,10 +12869,10 @@ wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
         
         },
         
-        open: function( ns, pns, user, application, version ) {
+        open: function( ns, pns, user, application, version, constraints ) {
         
             if( !settings.bds.peer.call( pns ) )
-                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application, version );
+                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application, version, constraints );
             return settings.bds.peer.calls[ pns ];
         
         },
@@ -13005,6 +13005,14 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
         this.localstream = stream;
         this.localurl = URL.createObjectURL( stream );
     }
+    
+    this.onclose = function() {};
+    
+    var call = this;
+    
+    this._closed = function( ) {
+        call.onclose();
+    };
 
 };
 
@@ -13030,14 +13038,19 @@ wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
  */
 wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
 
+    this.signal.close( );
+    
     for( var p in this.peers ) {
     
         if( !this.peers.hasOwnProperty( p ) )
             continue;
         
-        this.peers[p].conn.close();
+        this.remove( p );
     
     }
+    
+    this.client.bds.peer.remove( this.pns );
+    this._closed();
 
 };
 
@@ -13076,6 +13089,26 @@ wsc.dAmn.BDS.Peer.Call.prototype.peer = function( peer ) {
     return this.peers[peer] || null;
 
 };
+
+
+/**
+ * Remove a peer from the call.
+ *
+ * @method remove
+ * @param user {String} Name of the peer
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.remove = function( user ) {
+
+    var peer = this.peer( user );
+    
+    if( !peer )
+        return;
+    
+    delete this.peers[ peer ];
+    peer.close();
+
+};
+
 /**
  * lol
  *
@@ -13142,13 +13175,18 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Do something when a remote stream arrives.
     this.pc.onaddstream = function( event ) {
-        console.log('> remote stream arrived.');
         pc.set_remote_stream( event );
     };
     
     // Negotiation is needed!
     this.pc.onnegotiationneeded = function( event ) {
         pc.onnegotiationneeded( event );
+    };
+    
+    // Connection closed
+    this.pc.onclose = function(  ) {
+        console.log('> pc closed');
+        pc._closed();
     };
     
     // Stub event handler
@@ -13248,9 +13286,18 @@ wsc.dAmn.BDS.Peer.Connection.prototype.open = function( onopen, offer ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
-    this.pc.close();
-    this.onclose();
+    try {
+        this.pc.close();
+    } catch( err ) {
+        this._closed();
+    }
 
+};
+
+wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
+    
+    this.onclose();
+    
 };
 
 /**
@@ -13273,7 +13320,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
 
     //if( !this.connected )
     //    return;
-    console.log( '> remote', this.remote_set );
     this.pc.addIceCandidate( candidate );
 
 };
@@ -13970,14 +14016,14 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
         return;
     
     var peer = call.peer( event.param[1] );
-    
+    console.log('>close',peer);
     if( !peer )
         return;
     
     if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
-    
-    peer.close();
+    console.log('>remove');
+    call.remove( peer.user );
     
     client.trigger( 'peer.close', {
         name: 'peer.close',
