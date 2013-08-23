@@ -74,7 +74,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Connection closed
     this.pc.onclose = function(  ) {
-        console.log('> pc closed');
         pc._closed();
     };
     
@@ -177,14 +176,17 @@ wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
     try {
         this.pc.close();
+        console.log( '> no err' );
     } catch( err ) {
-        this._closed();
+        console.log( '> err', err );
     }
+    this._closed();
 
 };
 
 wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
     
+    console.log( '> pc closed' );
     this.onclose();
     
 };

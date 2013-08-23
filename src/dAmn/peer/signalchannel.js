@@ -57,7 +57,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
 
-    this.command( 'REQUEST', this.user, app || this.app, ver || this.app_ver );
+    this.command( 'REQUEST', this.user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 
@@ -71,7 +71,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
 
-    this.command( 'ACK', user, app || this.app, ver || this.app_ver );
+    this.command( 'ACK', user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 
@@ -84,7 +84,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app, ver ) {
 
-    this.command( 'ACCEPT', user, app || this.app, ver || this.app_ver );
+    this.command( 'ACCEPT', user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 

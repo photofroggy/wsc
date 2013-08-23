@@ -21,6 +21,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.localurl = null;
     this.constraints = constraints;
     this.peers = {};
+    this.closing = false;
     
     this.group = user.substr(0, 5) == 'chat:';
     
@@ -41,7 +42,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application );
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application, version );
     this.onlocalstream = function(){};
     
     if( stream ) {
@@ -81,6 +82,10 @@ wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
  */
 wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
 
+    if( this.closing )
+        return;
+    
+    this.closing = true;
     this.signal.close( );
     
     for( var p in this.peers ) {
@@ -94,6 +99,7 @@ wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
     
     this.client.bds.peer.remove( this.pns );
     this._closed();
+    this.closing = false;
 
 };
 

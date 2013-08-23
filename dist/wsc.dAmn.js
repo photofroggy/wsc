@@ -12978,6 +12978,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.localurl = null;
     this.constraints = constraints;
     this.peers = {};
+    this.closing = false;
     
     this.group = user.substr(0, 5) == 'chat:';
     
@@ -12998,7 +12999,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application );
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application, version );
     this.onlocalstream = function(){};
     
     if( stream ) {
@@ -13038,6 +13039,10 @@ wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
  */
 wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
 
+    if( this.closing )
+        return;
+    
+    this.closing = true;
     this.signal.close( );
     
     for( var p in this.peers ) {
@@ -13051,6 +13056,7 @@ wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
     
     this.client.bds.peer.remove( this.pns );
     this._closed();
+    this.closing = false;
 
 };
 
@@ -13185,7 +13191,6 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     
     // Connection closed
     this.pc.onclose = function(  ) {
-        console.log('> pc closed');
         pc._closed();
     };
     
@@ -13288,14 +13293,17 @@ wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
 
     try {
         this.pc.close();
+        console.log( '> no err' );
     } catch( err ) {
-        this._closed();
+        console.log( '> err', err );
     }
+    this._closed();
 
 };
 
 wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
     
+    console.log( '> pc closed' );
     this.onclose();
     
 };
@@ -13577,7 +13585,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
 
-    this.command( 'REQUEST', this.user, app || this.app, ver || this.app_ver );
+    this.command( 'REQUEST', this.user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 
@@ -13591,7 +13599,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
 
-    this.command( 'ACK', user, app || this.app, ver || this.app_ver );
+    this.command( 'ACK', user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 
@@ -13604,7 +13612,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app, ver ) {
 
-    this.command( 'ACCEPT', user, app || this.app, ver || this.app_ver );
+    this.command( 'ACCEPT', user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
 
