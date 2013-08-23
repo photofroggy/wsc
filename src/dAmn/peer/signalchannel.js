@@ -11,7 +11,7 @@
  * @param version {Integer} Application version number
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application, version ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, call, bds, pns, application, version ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
@@ -21,6 +21,7 @@ wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application, versi
     this.app = application;
     this.app_ver = version;
     this.client = client;
+    this.call = call;
 
 };
 
@@ -57,6 +58,13 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
 
+    var call = this.call;
+    
+    call.timeout = setTimeout(
+        function( ) {
+            call.timedout();
+        }, 10000);
+    
     this.command( 'REQUEST', this.user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };

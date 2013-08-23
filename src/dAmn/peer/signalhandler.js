@@ -80,8 +80,23 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
  * @param event {Object} Event data
  */
 wsc.dAmn.BDS.Peer.SignalHandler.prototype.ack = function( event, client ) {
-
-
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var user = event.param[1];
+    var app = event.param[2];
+    var ver = parseInt(event.param[3]);
+    
+    if( call.timeout != null ) {
+        clearTimeout( call.timeout );
+        call.timeout = null;
+    }
 
 };
 
@@ -97,12 +112,26 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
+    var call = client.bds.peer.call( event.param[0] );
+    var user = event.param[1];
+    var reason = event.param[2];
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
+    peer.reject( reason );
+    
     client.trigger( 'peer.reject', {
         name: 'peer.reject',
         ns: event.ns,
         pns: event.param[0],
-        user: event.param[1],
-        reason: event.param[2]
+        user: user,
+        reason: reason
     } );
 
 };
@@ -328,13 +357,13 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
         return;
     
     var peer = call.peer( event.param[1] );
-    console.log('>close',peer);
+    
     if( !peer )
         return;
     
     if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
-    console.log('>remove');
+    
     call.remove( peer.user );
     
     client.trigger( 'peer.close', {

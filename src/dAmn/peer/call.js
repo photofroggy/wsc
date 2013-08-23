@@ -22,6 +22,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.constraints = constraints;
     this.peers = {};
     this.closing = false;
+    this.timeout = null;
     
     this.group = user.substr(0, 5) == 'chat:';
     
@@ -42,7 +43,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application, version );
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, this, bds, pns, application, version );
     this.onlocalstream = function(){};
     
     if( stream ) {
@@ -57,6 +58,22 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this._closed = function( ) {
         call.onclose();
     };
+    
+    call.ontimeout = function() {};
+
+};
+
+
+/**
+ * Call request timed out.
+ * 
+ * @method timedout
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.timedout = function(  ) {
+
+    this.timeout = null;
+    this.ontimeout();
+    this.close();
 
 };
 

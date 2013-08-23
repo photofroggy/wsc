@@ -82,6 +82,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     this.onready = stub;
     this.onopen = stub;
     this.onclose = stub;
+    this.onreject = stub;
     this.onremotedescription = stub;
     this.onlocaldescription = stub;
     this.onicecompleted = stub;
@@ -111,6 +112,23 @@ wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
     this.onclose();
     
 };
+
+
+/**
+ * Peer request rejected.
+ * 
+ * @method reject
+ * @param reason {String} Reason given for rejecting the request
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.reject = function( reason ) {
+
+    console.log( 'reject',this.user,reason );
+    //this.call.remove( this.user );
+    this.onreject( reason );
+
+};
+
+
 
 /**
  * Method usually called on errors.

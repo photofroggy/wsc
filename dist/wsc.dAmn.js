@@ -12979,6 +12979,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.constraints = constraints;
     this.peers = {};
     this.closing = false;
+    this.timeout = null;
     
     this.group = user.substr(0, 5) == 'chat:';
     
@@ -12999,7 +13000,7 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this.title = boom.join(':');
     this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
     
-    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, bds, pns, application, version );
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, this, bds, pns, application, version );
     this.onlocalstream = function(){};
     
     if( stream ) {
@@ -13014,6 +13015,22 @@ wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version,
     this._closed = function( ) {
         call.onclose();
     };
+    
+    call.ontimeout = function() {};
+
+};
+
+
+/**
+ * Call request timed out.
+ * 
+ * @method timedout
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.timedout = function(  ) {
+
+    this.timeout = null;
+    this.ontimeout();
+    this.close();
 
 };
 
@@ -13199,6 +13216,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
     this.onready = stub;
     this.onopen = stub;
     this.onclose = stub;
+    this.onreject = stub;
     this.onremotedescription = stub;
     this.onlocaldescription = stub;
     this.onicecompleted = stub;
@@ -13228,6 +13246,23 @@ wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
     this.onclose();
     
 };
+
+
+/**
+ * Peer request rejected.
+ * 
+ * @method reject
+ * @param reason {String} Reason given for rejecting the request
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.reject = function( reason ) {
+
+    console.log( 'reject',this.user,reason );
+    //this.call.remove( this.user );
+    this.onreject( reason );
+
+};
+
+
 
 /**
  * Method usually called on errors.
@@ -13460,7 +13495,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.persist = function(  ) {
  * @param version {Integer} Application version number
  * @since 0.0.0
  */
-wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application, version ) {
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, call, bds, pns, application, version ) {
     
     this.user = client.settings.username;
     this.nse = ns ? ',' + ns : '';
@@ -13470,6 +13505,7 @@ wsc.dAmn.BDS.Peer.SignalChannel = function( client, bds, pns, application, versi
     this.app = application;
     this.app_ver = version;
     this.client = client;
+    this.call = call;
 
 };
 
@@ -13506,6 +13542,13 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
  */
 wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
 
+    var call = this.call;
+    
+    call.timeout = setTimeout(
+        function( ) {
+            call.timedout();
+        }, 10000);
+    
     this.command( 'REQUEST', this.user, app || this.app, ( ver || this.app_ver ).toString() );
 
 };
@@ -13697,8 +13740,23 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
  * @param event {Object} Event data
  */
 wsc.dAmn.BDS.Peer.SignalHandler.prototype.ack = function( event, client ) {
-
-
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var user = event.param[1];
+    var app = event.param[2];
+    var ver = parseInt(event.param[3]);
+    
+    if( call.timeout != null ) {
+        clearTimeout( call.timeout );
+        call.timeout = null;
+    }
 
 };
 
@@ -13714,12 +13772,26 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
     if( event.sns[0] != '@' )
         return;
     
+    var call = client.bds.peer.call( event.param[0] );
+    var user = event.param[1];
+    var reason = event.param[2];
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
+    peer.reject( reason );
+    
     client.trigger( 'peer.reject', {
         name: 'peer.reject',
         ns: event.ns,
         pns: event.param[0],
-        user: event.param[1],
-        reason: event.param[2]
+        user: user,
+        reason: reason
     } );
 
 };
@@ -13945,13 +14017,13 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
         return;
     
     var peer = call.peer( event.param[1] );
-    console.log('>close',peer);
+    
     if( !peer )
         return;
     
     if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
         return;
-    console.log('>remove');
+    
     call.remove( peer.user );
     
     client.trigger( 'peer.close', {
