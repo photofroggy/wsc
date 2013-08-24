@@ -110,6 +110,14 @@ wsc.dAmn.Extension = function( client ) {
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
     
     /**
+     * Implements Data Sharing Peers. BDS Peers are signalling channels for
+     * peer to peer WebRTC connections.
+     * 
+     * @method BDS.Peer
+     */
+    wsc.dAmn.BDS.Peer( client, storage.bds, settings );
+    
+    /**
      * Implements custom colours.
      * 
      * @method Colours

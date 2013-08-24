@@ -4528,7 +4528,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
+    
     if( window.webkitRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
@@ -4536,8 +4536,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
-    if( window.RTCPeerConnection ) {
+    
+    if( window.RTCPeerConnection && !window.mozRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
             return navigator.getUserMedia( options, success, error );
@@ -4743,7 +4743,7 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.get_user_media = function( options, success, error ) {
 
-    return Chatterbox._gum( options, success, error );
+    Chatterbox._gum( options, success, error );
 
 };
 
@@ -5388,6 +5388,8 @@ Chatterbox.BaseTab.prototype.loop = function(  ) {
  */
 Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+    this.resized = function(  ) {};
+    this.ulbuf = 0;
 };
 
 Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
@@ -5628,7 +5630,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     // Log panel dimensions
     this.el.l.p.css({
         height: wh - 3,
-        width: cw - 10});
+        width: (cw - 10) - this.ulbuf});
     
     // Scroll again just to make sure.
     this.scroll();
@@ -5648,6 +5650,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
         var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
         heads[head].e.css('top', tline);
     }
+    
+    this.resized();
 };
 
 /**

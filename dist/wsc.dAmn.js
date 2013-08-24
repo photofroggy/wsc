@@ -4528,7 +4528,7 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
+    
     if( window.webkitRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
@@ -4536,8 +4536,8 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
     
         };
     }
-
-    if( window.RTCPeerConnection ) {
+    
+    if( window.RTCPeerConnection && !window.mozRTCPeerConnection ) {
         Chatterbox._gum = function( options, success, error ) {
     
             return navigator.getUserMedia( options, success, error );
@@ -4743,7 +4743,7 @@ Chatterbox.UI.prototype.clock = function( mode ) {
  */
 Chatterbox.UI.prototype.get_user_media = function( options, success, error ) {
 
-    return Chatterbox._gum( options, success, error );
+    Chatterbox._gum( options, success, error );
 
 };
 
@@ -5388,6 +5388,8 @@ Chatterbox.BaseTab.prototype.loop = function(  ) {
  */
 Chatterbox.Channel = function( ui, ns, hidden, monitor ) {
     Chatterbox.BaseTab.call( this, ui, ns, hidden, monitor );
+    this.resized = function(  ) {};
+    this.ulbuf = 0;
 };
 
 Chatterbox.Channel.prototype = new Chatterbox.BaseTab;
@@ -5628,7 +5630,7 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
     // Log panel dimensions
     this.el.l.p.css({
         height: wh - 3,
-        width: cw - 10});
+        width: (cw - 10) - this.ulbuf});
     
     // Scroll again just to make sure.
     this.scroll();
@@ -5648,6 +5650,8 @@ Chatterbox.Channel.prototype.resize = function( width, height ) {
         var tline = (heads[head].m.outerHeight(true) - 5) * (-1);
         heads[head].e.css('top', tline);
     }
+    
+    this.resized();
 };
 
 /**
@@ -11898,6 +11902,14 @@ wsc.dAmn.Extension = function( client ) {
     wsc.dAmn.BDS.Link( client, storage.bds, settings );
     
     /**
+     * Implements Data Sharing Peers. BDS Peers are signalling channels for
+     * peer to peer WebRTC connections.
+     * 
+     * @method BDS.Peer
+     */
+    wsc.dAmn.BDS.Peer( client, storage.bds, settings );
+    
+    /**
      * Implements custom colours.
      * 
      * @method Colours
@@ -12791,7 +12803,1269 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
         return renderer.call(this, tokens);
 };
 
+
 /**
+ * Implements BDS Peer.
+ * 
+ * This allows the client to negotiate and open peer to peer network
+ * connections with other clients. These connections can be used to stream
+ * video, audio, and, in the future, data.
+ * 
+ * @class dAmn.BDS.Peer
+ * @constructor
+ * @param client {Object} Reference to the client
+ * @param storage {Object} Reference to the dAmn extension storage
+ * @param settings {Object} Reference to the dAmn extension settings
+ */
+wsc.dAmn.BDS.Peer = function( client, storage, settings ) {
+
+    var init = function(  ) {
+    
+        var handle = new wsc.dAmn.BDS.Peer.SignalHandler( client );
+        // BDS events.
+        /*
+        client.bind( 'BDS.PEER.REQUEST', function( event, client ) { handle.signal.request( event, client ); } );
+        client.bind( 'BDS.PEER.ACK', function( event, client ) { handle.signal.ack( event, client ); } );
+        client.bind( 'BDS.PEER.REJECT', function( event, client ) { handle.signal.reject( event, client ); } );
+        client.bind( 'BDS.PEER.ACCEPT', function( event, client ) { handle.signal.accept( event, client ); } );
+        client.bind( 'BDS.PEER.OPEN', function( event, client ) { handle.signal.open( event, client ); } );
+        client.bind( 'BDS.PEER.END', function( event, client ) { handle.signal.end( event, client ); } );
+        client.bind( 'BDS.PEER.OFFER', function( event, client ) { handle.signal.offer( event, client ); } );
+        client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.signal.answer( event, client ); } );
+        client.bind( 'BDS.PEER.CANDIDATE', function( event, client ) { handle.signal.candidate( event, client ); } );
+        client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.signal.close( event, client ); } );
+        */
+        // dAmn events.
+        // client.bind('pkt.join', handler.join);
+        // client.bind('pkt.part', handler.part);
+        // client.bind('pkt.recv_join', handler.recv_join);
+        // client.bind('pkt.recv_part', handler.recv_part);
+
+    };
+    
+    /**
+     * BDS PEER settings and API.
+     */
+    settings.bds.peer = {
+    
+        handler: null,
+        calls: {},
+        
+        /**
+         * Retrieve a call.
+         */
+        call: function( find ) {
+        
+            find = find.toLowerCase();
+            
+            for( var id in settings.bds.peer.calls ) {
+                if( !settings.bds.peer.calls.hasOwnProperty( id ) )
+                    continue;
+                if( id.toLowerCase() == find )
+                    return settings.bds.peer.calls[id];
+            }
+            
+            return null;
+        
+        },
+        
+        open: function( ns, pns, user, application, version, constraints ) {
+        
+            if( !settings.bds.peer.call( pns ) )
+                settings.bds.peer.calls[ pns ] = new wsc.dAmn.BDS.Peer.Call( client, ns, pns, user, application, version, constraints );
+            return settings.bds.peer.calls[ pns ];
+        
+        },
+        
+        remove: function( pns ) {
+        
+            var call = settings.bds.peer.call( pns );
+            
+            if( !call )
+                return;
+            
+            delete settings.bds.peer.calls[ pns ];
+        
+        },
+        
+        request: function(  ) {},
+    
+    };
+    
+    init();
+
+};
+
+
+/**
+ * Array containing bots used to manage calls.
+ * 
+ * TODO: change things so that instead of using this, the extension recognises bots in
+ * the privilege class ServiceBots. If implementing things so that normal bots can
+ * declare themselves as service bots for specific channels, then take that into account
+ * as well, though that would probably be done in wsc, not here.
+ */
+wsc.dAmn.BDS.Peer.bots = [ 'botdom', 'damnphone' ];
+
+
+/**
+ * Options for peer candidates.
+ */
+wsc.dAmn.BDS.Peer.peer_options = {
+    iceServers: [
+        { url: 'stun:stun.l.google.com:19302' }
+    ]
+};
+
+
+/**
+ * Holds a reference to the phone.
+ */
+wsc.dAmn.BDS.Peer.phone = null;
+
+
+/**
+ * Signaling channel object
+ */
+wsc.dAmn.BDS.Peer.signal = null;
+
+
+/**
+ * Object detailing the local peer.
+ */
+wsc.dAmn.BDS.Peer.local = {};
+wsc.dAmn.BDS.Peer.local.stream = null;
+wsc.dAmn.BDS.Peer.local.url = null;
+
+/**
+ * Objects detailing remote peers.
+ */
+wsc.dAmn.BDS.Peer.remote = {};
+wsc.dAmn.BDS.Peer.remote._empty = {
+    video: null,
+    audio: null,
+    conn: null
+};
+
+
+/**
+ * Current channel stuff.
+ */
+wsc.dAmn.BDS.Peer.chan = {};
+wsc.dAmn.BDS.Peer.chan.group = false;
+wsc.dAmn.BDS.Peer.chan.calls = [];
+
+/**
+ * Call object. Maybe a bit over the top here.
+ * @class wsc.dAmn.BDS.Peer.Call
+ * @constructor
+ * @param pns {String} Peer namespace the call is associated with
+ * @since 0.0.0
+ */
+wsc.dAmn.BDS.Peer.Call = function( client, bds, pns, user, application, version, constraints, stream ) {
+
+    this.client = client;
+    
+    this.bds = bds;
+    this.ns = '';
+    this.pns = pns;
+    this.user = user;
+    this.app = application;
+    this.app_ver = version;
+    this.title = '';
+    this.pc = '';
+    this.localstream = null;
+    this.localurl = null;
+    this.constraints = constraints;
+    this.peers = {};
+    this.closing = false;
+    this.timeout = null;
+    
+    this.group = user.substr(0, 5) == 'chat:';
+    
+    var boom = this.pns.split(':');
+    var h = boom.shift();
+    
+    if( h == 'chat' ) {
+        this.ns = 'chat:' + boom.shift();
+    } else if( h == 'pchat' ) {
+        this.ns = 'pchat:' + boom.shift() + ':' + boom.shift();
+    }
+    
+    if( boom[0] == 'pc' ) {
+        boom.shift();
+        this.pc = boom.shift();
+    }
+    
+    this.title = boom.join(':');
+    this.group = wsc.dAmn.BDS.Peer.bots.indexOf( this.ns.substr( 1 ) ) != -1;
+    
+    this.signal = new wsc.dAmn.BDS.Peer.SignalChannel( client, this, bds, pns, application, version );
+    this.onlocalstream = function(){};
+    
+    if( stream ) {
+        this.localstream = stream;
+        this.localurl = URL.createObjectURL( stream );
+    }
+    
+    this.onclose = function() {};
+    
+    var call = this;
+    
+    this._closed = function( ) {
+        call.onclose();
+    };
+    
+    call.ontimeout = function() {};
+
+};
+
+
+/**
+ * Call request timed out.
+ * 
+ * @method timedout
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.timedout = function(  ) {
+
+    this.timeout = null;
+    this.ontimeout();
+    this.close();
+
+};
+
+
+/**
+ * Set the local stream.
+ * 
+ * @method set_local_stream
+ * @param stream {Object} Local media stream
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.set_local_stream = function( stream ) {
+
+    this.localstream = stream;
+    this.localurl = URL.createObjectURL( stream );
+    this.onlocalstream();
+
+};
+
+
+/**
+ * Close the call.
+ * @method close
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.close = function(  ) {
+
+    if( this.closing )
+        return;
+    
+    this.closing = true;
+    this.signal.close( );
+    
+    for( var p in this.peers ) {
+    
+        if( !this.peers.hasOwnProperty( p ) )
+            continue;
+        
+        this.remove( p );
+    
+    }
+    
+    this.client.bds.peer.remove( this.pns );
+    this._closed();
+    this.closing = false;
+
+};
+
+/**
+ * Add a new peer to the call.
+ * @method new_peer
+ * @param user {String} Name of the peer
+ * @return {Object} New peer connection object or null if failed
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.new_peer = function( user, offer ) {
+
+    /*
+    if( !this.group ) {
+    
+        if( this.dans.substr(1).toLowerCase() != user.toLowerCase() )
+            return null;
+    
+    }
+    */
+    var peer = wsc.dAmn.BDS.peer_connection( this, user, offer, this.constraints, this.localstream );
+    
+    this.peers[user] = peer;
+    
+    return peer;
+
+};
+
+/**
+ * Get a peer.
+ * @method peer
+ * @param peer {String} Name of the peer
+ * @return {Object} Peer connection object or null
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.peer = function( peer ) {
+
+    return this.peers[peer] || null;
+
+};
+
+
+/**
+ * Remove a peer from the call.
+ *
+ * @method remove
+ * @param user {String} Name of the peer
+ */
+wsc.dAmn.BDS.Peer.Call.prototype.remove = function( user ) {
+
+    var peer = this.peer( user );
+    
+    if( !peer )
+        return;
+    
+    delete this.peers[ peer ];
+    peer.close();
+
+};
+
+/**
+ * lol
+ *
+ * Make a peer connection.
+ */
+wsc.dAmn.BDS.peer_connection = function( call, user, remote, constraints ) {
+
+    if( !wsc.dAmn.BDS.Peer.RTC.PeerConnection )
+        return null;
+    
+    return new wsc.dAmn.BDS.Peer.Connection( call, user, remote, constraints );
+
+};
+
+
+/**
+ * Our own wrapper for RTCPeerConnection objects.
+ * 
+ * Because boilerplate? Yeah, that.
+ *
+ * @class wsc.dAmn.BDS.Peer.Connection
+ * @constructor
+ * @param user {String} User the connection is associated with
+ * @param [remote_offer=null] {String} Descriptor for a remote offer.
+ * @since 0.0.0
+ */
+wsc.dAmn.BDS.Peer.Connection = function( call, user, remote_offer, constraints, stream ) {
+
+    this.call = call;
+    this.user = user;
+    this.pc = new wsc.dAmn.BDS.Peer.RTC.PeerConnection( wsc.dAmn.BDS.Peer.peer_options, constraints );
+    this.offer = '';
+    this.remote_offer = remote_offer || null;
+    this.remote_set = false;
+    this.responding = this.remote_offer != null;
+    this.streamed = false;
+    this.remote_stream = null;
+    this.stream = null;
+    this.connected = false;
+    
+    this.bindings();
+    
+    if( this.remote_offer )
+        this.set_remote_description( this.remote_offer );
+    
+    if( stream )
+        this.set_local_stream( stream );
+
+};
+
+/**
+ * Set up event bindings for the peer connection.
+ * @method bindings
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.bindings = function(  ) {
+
+    var pc = this;
+    var user = this.user;
+    
+    // For those things that still do things in ice candidate mode or whatever.
+    this.pc.onicecandidate = function( event ) {
+        pc.call.signal.candidate( pc, event.candidate );
+    };
+    
+    // Do something when a remote stream arrives.
+    this.pc.onaddstream = function( event ) {
+        pc.set_remote_stream( event );
+    };
+    
+    // Negotiation is needed!
+    this.pc.onnegotiationneeded = function( event ) {
+        pc.onnegotiationneeded( event );
+    };
+    
+    // Connection closed
+    this.pc.onclose = function(  ) {
+        pc._closed();
+    };
+    
+    // Stub event handler
+    var stub = function() {};
+    this.onready = stub;
+    this.onopen = stub;
+    this.onclose = stub;
+    this.onreject = stub;
+    this.onremotedescription = stub;
+    this.onlocaldescription = stub;
+    this.onicecompleted = stub;
+    this.onremotestream = stub;
+    this.onlocalstream = stub;
+    this.onnegotiationneeded = stub;
+
+};
+
+
+/**
+ * Close a connection
+ * @method close
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.close = function(  ) {
+
+    try {
+        this.pc.close();
+    } catch( err ) {
+    }
+    this._closed();
+
+};
+
+wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
+    
+    this.onclose();
+    
+};
+
+
+/**
+ * Peer request rejected.
+ * 
+ * @method reject
+ * @param reason {String} Reason given for rejecting the request
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.reject = function( reason ) {
+
+    this.onreject( reason );
+    this.call.remove( this.user );
+
+};
+
+
+
+/**
+ * Method usually called on errors.
+ * @method onerror
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.onerror = function( err ) {
+
+    console.log( '>> Got an error:', '"', err.message, '"', err );
+
+};
+
+/**
+ * Add an Ice Candidate to the peer connection.
+ * 
+ * @method candidate
+ * @param candidate {Object} Ice Candidate
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.candidate = function( candidate ) {
+
+    //if( !this.connected )
+    //    return;
+    this.pc.addIceCandidate( candidate );
+
+};
+
+
+/**
+ * Called when ice gathering is done.
+ * 
+ * @method ice_completed
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.ice_completed = function(  ) {
+
+    // this method is here in case it turns out that more needs to be done.
+    // rather than only having onicecompleted, I mean.
+    this.onicecompleted();
+
+};
+
+
+/**
+ * Create an offer for a connection.
+ *
+ * Helper method.
+ * @method create_offer
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.create_offer = function(  ) {
+
+    var pc = this;
+    
+    this.pc.createOffer(
+        function( description ) { pc.offer_created( description ); },
+        function( err ) { pc.onerror( err ); }
+    );
+
+};
+
+/**
+ * An offer has been created! Set it as our local description.
+ * @method offer_created
+ * @param description {String} Descriptor for the offer.
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.offer_created = function( description ) {
+
+    this.offer = description;
+    var pc = this;
+    
+    this.pc.setLocalDescription( this.offer , function(  ) { pc.local_description_set( 0 ); }, this.onerror );
+
+};
+
+/**
+ * Set the descriptor for the remote connection.
+ * @method set_remote_description
+ * @param description {String} Descriptor for the remote connection
+ * @param type {Integer} Offer (0) or answer (1)
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_description = function( description, type ) {
+
+    this.remote_offer = description;
+    this.responding = this.pc.signalingState == 'stable';
+    var pc = this;
+    
+    this.pc.setRemoteDescription( this.remote_offer , function(  ) { pc.remote_description_set( type ); }, this.onerror );
+
+};
+
+/**
+ * A local description as been set. Handle it!
+ * @method local_description_set
+ * @param type {Integer} Offer (0) or answer (1)
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.local_description_set = function( type ) {
+    
+    if( this.responding ) {
+        this.connected = true;
+        this.responding = false;
+    }
+    
+    this.onlocaldescription( type );
+
+};
+
+/**
+ * A local description as been set. Handle it!
+ * @method remote_description_set
+ * @param type {Integer} Offer (0) or answer (1)
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.remote_description_set = function( type ) {
+
+    this.responding = type == 0;
+    this.remote_set = true;
+    
+    if( !this.responding ) {
+        this.connected = true;
+    }
+    
+    this.onremotedescription( type );
+
+};
+
+/**
+ * Create an answer for a remote offer.
+ * @method answer
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.create_answer = function(  ) {
+
+    var pc = this;
+    this.responding = true;
+    
+    this.pc.createAnswer( 
+        function( answer ) { pc.answer_created( answer ); },
+        function( err ) { pc.onerror( err ); }
+    );
+
+};
+
+/**
+ * Answer has been created. Send away, or something.
+ * @method answer_created
+ * @param answer {String} Descriptor for answer.
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.answer_created = function( answer ) {
+
+    this.offer = answer;
+    var pc = this;
+    
+    this.pc.setLocalDescription( this.offer,
+        function(  ) { pc.local_description_set( 1 ); },
+        function( err ) { pc.onerror( err ); }
+    );
+
+};
+
+/**
+ * Do something with the remote stream when it arrives.
+ * 
+ * @method set_remote_stream
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.set_remote_stream = function( event ) {
+
+    this.remote_stream = event.stream;
+    this.onremotestream();
+
+};
+
+/**
+ * Store the local media stream and add it to the peer connection.
+ * 
+ * @method set_local_stream
+ * @param stream {Object} Local media stream
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.set_local_stream = function( stream ) {
+
+    this.pc.addStream( stream );
+    this.stream = stream;
+    this.onlocalstream();
+
+};
+
+
+/**
+ * Keep responding to offers and answers as though your life depends on it.
+ *
+ * @method persist
+ */
+wsc.dAmn.BDS.Peer.Connection.prototype.persist = function(  ) {
+
+    var peer = this;
+    var call = this.call;
+    
+    // Send an answer to an offer.
+    peer.onremotedescription = function( type ) {
+        if( type != 0 )
+            return;
+        
+        peer.create_answer();
+    };
+    
+    // Send our offers and answers
+    peer.onlocaldescription = function( type ) {
+        switch( type ) {
+            case 0:
+                call.signal.offer( peer );
+                break;
+            case 1:
+                call.signal.answer( peer );
+                break;
+            default:
+                break;
+        }    
+    };
+    
+    // Make it happen.
+    peer.onnegotiationneeded = function(  ) {
+        peer.create_offer();
+    };
+
+};/**
+ * This object represents a signalling channel used for transmitting connection data
+ * between two peers.
+ *
+ * @class wsc.dAmn.BDS.Peer.SignalChannel
+ * @constructor
+ * @param client {Object} An instance of wsc.
+ * @param bds {String} dAmn channel used for this.bds commands
+ * @param pns {String} Peer namespace associated with the signals
+ * @param application {String} Application name for the thingy
+ * @param version {Integer} Application version number
+ * @since 0.0.0
+ */
+wsc.dAmn.BDS.Peer.SignalChannel = function( client, call, bds, pns, application, version ) {
+    
+    this.user = client.settings.username;
+    this.nse = ns ? ',' + ns : '';
+    this.bds = bds;
+    this.pns = pns;
+    this.ns = ns;
+    this.app = application;
+    this.app_ver = version;
+    this.client = client;
+    this.call = call;
+
+};
+
+/**
+ * Send a command for the current signal channel.
+ * 
+ * @method command
+ * @param command {String} Command to send
+ * @param [arg1..n] {String} Arguments
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.command = function(  ) {
+
+    var args = Array.prototype.slice.call(arguments);
+    var command = args.shift();
+    
+    //args.unshift( this.pns );
+    var arg = this.pns;
+    
+    for( var i = 0; i < args.length; i++ ) {
+        if( !args.hasOwnProperty(i) || !args[i] )
+            continue;
+        arg+= ',' + args[i];
+    }
+    
+    this.client.npmsg( this.bds, 'BDS:PEER:' + command + ':' + arg );
+
+};
+
+
+/**
+ * Request a peer connection with a particular user.
+ * 
+ * @method request
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.request = function( app, ver ) {
+
+    var call = this.call;
+    
+    call.timeout = setTimeout(
+        function( ) {
+            call.timedout();
+        }, 10000);
+    
+    this.command( 'REQUEST', this.user, app || this.app, ( ver || this.app_ver ).toString() );
+
+};
+
+
+/**
+ * Acknowledge a PEER request.
+ * 
+ * @method ack
+ * @param user {String} User to acknowledge
+ * @param app {String} Application for the connection
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.ack = function( user, app, ver ) {
+
+    this.command( 'ACK', user, app || this.app, ( ver || this.app_ver ).toString() );
+
+};
+
+
+/**
+ * Accept a peer connection request.
+ * 
+ * @method accept
+ * @param auser {String} user to open a peer connection with
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.accept = function( user, app, ver ) {
+
+    this.command( 'ACCEPT', user, app || this.app, ( ver || this.app_ver ).toString() );
+
+};
+
+/**
+ * Send a connection offer.
+ * 
+ * @method offer
+ * @param peer {Object} WebRTC peer object
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.offer = function( peer ) {
+
+    this.command( 'OFFER', this.user, peer.user, JSON.stringify( peer.offer ) );
+
+};
+
+/**
+ * Send a WebRTC peer answer to open a connection
+ * 
+ * @method answer
+ * @param peer {Object} WebRTC peer object
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.answer = function( peer ) {
+
+    this.command( 'ANSWER', this.user, peer.user, JSON.stringify( peer.offer ) );
+
+};
+
+
+/**
+ * Send a candidate
+ * 
+ * @method candidate
+ * @param peer {Object} WebRTC peer object
+ * @param candidate {Object} WebRTC candidate object
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.candidate = function( peer, candidate ) {
+
+    this.command( 'CANDIDATE', this.user, peer.user, JSON.stringify( candidate ) );
+
+};
+
+
+/**
+ * Reject a peer request
+ * 
+ * @method reject
+ * @param ruser {String} Remote user to reject
+ * @param [reason] {String} Reason for rejecting the request
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.reject = function( ruser, reason ) {
+
+    this.command( 'REJECT', ruser, reason );
+
+};
+
+
+/**
+ * Close a peer connection
+ * 
+ * @method close
+ * @param cuser {String} User to close the connection for
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.close = function( cuser ) {
+
+    this.command( 'CLOSE', ( cuser || this.user ) );
+
+};
+
+
+/**
+ * Request a list of available connections
+ * 
+ * @method list
+ * @param [channel] {String} Find connections associated with this channel
+ */
+wsc.dAmn.BDS.Peer.SignalChannel.prototype.list = function( channel ) {
+
+    channel = channel ? ':' + channel : '';
+    this.client.npmsg( this.bds, 'BDS:PEER:LIST' + channel );
+
+};
+/**
+ * Signal handling class.
+ *
+ * Provides a collection of event handlers which allow the extension to respond to
+ * appropriate BDS commands.
+ *
+ * @class wsc.dAmn.BDS.Peer.SignalHandler
+ * @constructor
+ * @param client {Object} Reference to a wsc instance
+ */
+wsc.dAmn.BDS.Peer.SignalHandler = function( client ) {
+
+    var handle = this;
+    
+    client.bind( 'BDS.PEER.REQUEST', function( event, client ) { handle.request( event, client ); } );
+    client.bind( 'BDS.PEER.ACK', function( event, client ) { handle.ack( event, client ); } );
+    client.bind( 'BDS.PEER.REJECT', function( event, client ) { handle.reject( event, client ); } );
+    client.bind( 'BDS.PEER.ACCEPT', function( event, client ) { handle.accept( event, client ); } );
+    client.bind( 'BDS.PEER.OPEN', function( event, client ) { handle.open( event, client ); } );
+    client.bind( 'BDS.PEER.END', function( event, client ) { handle.end( event, client ); } );
+    client.bind( 'BDS.PEER.OFFER', function( event, client ) { handle.offer( event, client ); } );
+    client.bind( 'BDS.PEER.ANSWER', function( event, client ) { handle.answer( event, client ); } );
+    client.bind( 'BDS.PEER.CANDIDATE', function( event, client ) { handle.candidate( event, client ); } );
+    client.bind( 'BDS.PEER.CLOSE', function( event, client ) { handle.close( event, client ); } );
+
+};
+
+
+// EVENT HANDLERS
+
+/**
+ * Handle a peer request
+ * 
+ * @method request
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.request = function( event, client ) {
+    
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var pns = event.param[0];
+    var user = event.param[1];
+    var app = event.param[2];
+    var ver = parseInt(event.param[3]);
+    
+    var call = client.bds.peer.call( pns );
+    
+    if( !call )
+        call = client.bds.peer.open( event.ns, pns, user, app, ver );
+    
+    call.signal.ack( user, app, ver );
+    
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
+    client.trigger( 'peer.request', {
+        name: 'peer.request',
+        ns: event.ns,
+        call: call,
+        user: user,
+        app: app,
+        version: ver,
+        peer: peer
+    });
+    
+    return true;
+
+},
+
+/**
+ * Handle an ack
+ * Don't really need to do anything here
+ * Unless we set a timeout for requests
+ * 
+ * @method ack
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.ack = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var user = event.param[1];
+    var app = event.param[2];
+    var ver = parseInt(event.param[3]);
+    
+    if( call.timeout != null ) {
+        clearTimeout( call.timeout );
+        call.timeout = null;
+    }
+
+};
+
+
+/**
+ * handle a reject
+ * 
+ * @method reject
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    var user = event.param[1];
+    var reason = event.param[2];
+    
+    if( !call )
+        return;
+    
+    if( user.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var peer = call.peer( event.user );
+    
+    if( !peer )
+        peer = call.new_peer( event.user );
+    
+    peer.reject( reason );
+    
+    client.trigger( 'peer.reject', {
+        name: 'peer.reject',
+        ns: event.ns,
+        pns: event.param[0],
+        user: event.user,
+        reason: reason
+    } );
+
+};
+
+
+/**
+ * Handle an accept
+ *
+ * @method accept
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.accept = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var user = event.param[1];
+    var app = event.param[2];
+    var ver = parseInt(event.param[3]);
+    
+    if( user.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var peer = call.peer( event.user );
+    
+    if( !peer )
+        peer = call.new_peer( event.user );
+    
+    client.trigger( 'peer.accept', {
+        name: 'peer.accept',
+        ns: event.ns,
+        pns: event.param[0],
+        app: app,
+        version: ver,
+        call: call,
+        peer: peer
+    } );
+
+};
+
+
+/**
+ * Handle an OPEN command. OPEN commands provide information about open connections.
+ * 
+ * @method open
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.open = function( event, client ) {
+
+
+
+};
+
+
+/**
+ * Handle an END command. END commands are given at the end of connection listing.
+ * 
+ * @method end
+ * @param event {Object} Event data
+ * @param client {Object} Reference to the client
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.end = function( event, client ) {
+
+
+
+};
+
+
+/**
+ * Handle an offer
+ * 
+ * @method offer
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.offer = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var pns = call.pns;
+    var user = event.param[1];
+    var target = event.param[2];
+    var offer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+    
+    if( target.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
+    client.trigger( 'peer.offer', {
+        name: 'peer.offer',
+        ns: event.ns,
+        pns: call.pns,
+        call: call,
+        peer: peer,
+        offer: offer
+    } );
+    
+    peer.set_remote_description( offer, 0 );
+
+};
+
+/**
+ * Handle an answer
+ * 
+ * @method answer
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.answer = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var user = event.param[1]
+    var target = event.param[2];
+    var answer = new wsc.dAmn.BDS.Peer.RTC.SessionDescription( JSON.parse( event.param.slice(3).join(',') ) );
+    
+    if( target.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var peer = call.peer( user );
+    
+    if( !peer )
+        peer = call.new_peer( user );
+    
+    client.trigger( 'peer.answer', {
+        name: 'peer.answer',
+        ns: event.ns,
+        pns: call.pns,
+        call: call,
+        peer: peer,
+        answer: answer
+    } );
+    
+    peer.set_remote_description( answer, 1 );
+
+};
+
+
+/**
+ * Handle a candidate
+ * 
+ * @method candidate
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.candidate = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( event.param[1] );
+    
+    if( !peer )
+        return;
+    
+    var target = event.param[2];
+    
+    if( target.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var candidate = JSON.parse( event.param.slice(3).join(',') );
+    
+    if( !candidate ) {
+        peer.ice_completed();
+        return;
+    }
+    
+    var ice = new wsc.dAmn.BDS.Peer.RTC.IceCandidate( candidate );
+    
+    peer.candidate( ice );
+    
+    client.trigger( 'peer.candidate', {
+        name: 'peer.candidate',
+        ns: event.ns,
+        pns: call.pns,
+        call: call,
+        peer: peer,
+        candidate: candidate,
+        ice: ice
+    } );
+
+};
+
+
+/**
+ * Handle a close command
+ *
+ * @method close
+ * @param event {Object} Event data
+ */
+wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
+    
+    if( event.sns[0] != '@' )
+        return;
+    
+    var call = client.bds.peer.call( event.param[0] );
+    
+    if( !call )
+        return;
+    
+    var peer = call.peer( event.param[1] );
+    
+    if( !peer )
+        return;
+    
+    if( peer.user.toLowerCase() == client.settings.username.toLowerCase() )
+        return;
+    
+    call.remove( peer.user );
+    
+    client.trigger( 'peer.close', {
+        name: 'peer.close',
+        ns: event.ns,
+        evt: event,
+        call: call,
+        peer: peer
+    });
+
+};
+/**
+ * webRTC objects
+ */
+wsc.dAmn.BDS.Peer.RTC = {
+    PeerConnection: null,
+    SessionDescription: null,
+    IceCandidate: null,
+}
+
+if( window.mozRTCPeerConnection ) {
+    wsc.dAmn.BDS.Peer.RTC.PeerConnection = mozRTCPeerConnection;
+    wsc.dAmn.BDS.Peer.RTC.SessionDescription = mozRTCSessionDescription;
+    wsc.dAmn.BDS.Peer.RTC.IceCandidate = mozRTCIceCandidate;
+}
+
+if( window.webkitRTCPeerConnection ) {
+    wsc.dAmn.BDS.Peer.RTC.PeerConnection = webkitRTCPeerConnection;
+}
+
+if( window.RTCPeerConnection && !wsc.dAmn.BDS.Peer.RTC.PeerConnection ) {
+    wsc.dAmn.BDS.Peer.RTC.PeerConnection = RTCPeerConnection;
+}
+
+if( window.RTCSessionDescription ) {
+
+    wsc.dAmn.BDS.Peer.RTC.SessionDescription = RTCSessionDescription;
+    wsc.dAmn.BDS.Peer.RTC.IceCandidate = RTCIceCandidate;
+
+}/**
  * jQuery plugin.
  * 
  * Wrapper for implementing the plugin.
