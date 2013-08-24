@@ -4367,7 +4367,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.103';
+Chatterbox.VERSION = '0.20.104';
 Chatterbox.STATE = 'beta';
 
 Chatterbox._gum = function(  ) {};
@@ -10680,7 +10680,7 @@ Chatterbox.template.settings.item.form.field.colour.frame = '<input class="{ref}
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.9.29';
+wsc.dAmn.VERSION = '0.10.30';
 wsc.dAmn.STATE = 'alpha';
 
 
