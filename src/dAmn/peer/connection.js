@@ -122,9 +122,8 @@ wsc.dAmn.BDS.Peer.Connection.prototype._closed = function( ) {
  */
 wsc.dAmn.BDS.Peer.Connection.prototype.reject = function( reason ) {
 
-    console.log( 'reject',this.user,reason );
-    //this.call.remove( this.user );
     this.onreject( reason );
+    this.call.remove( this.user );
 
 };
 

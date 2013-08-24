@@ -119,10 +119,13 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
     if( !call )
         return;
     
-    var peer = call.peer( user );
+    if( user.toLowerCase() != client.settings.username.toLowerCase() )
+        return;
+    
+    var peer = call.peer( event.user );
     
     if( !peer )
-        peer = call.new_peer( user );
+        peer = call.new_peer( event.user );
     
     peer.reject( reason );
     
@@ -130,7 +133,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.reject = function( event, client ) {
         name: 'peer.reject',
         ns: event.ns,
         pns: event.param[0],
-        user: user,
+        user: event.user,
         reason: reason
     } );
 
