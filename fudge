@@ -86,6 +86,8 @@ def fetch_bundle(files):
     if isinstance(files, list):
         out = ''
         for file in files:
+            if os.path.isdir( file ):
+                continue
             try:
                 out+= fetch(file)
             except IOError:

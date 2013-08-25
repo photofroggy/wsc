@@ -5,8 +5,10 @@
  */
 var Chatterbox = {};
 
-Chatterbox.VERSION = '0.19.102';
+Chatterbox.VERSION = '0.20.104';
 Chatterbox.STATE = 'beta';
+
+Chatterbox._gum = function(  ) {};
 
 /**
  * This object is the platform for the wsc UI. Everything can be used and
@@ -154,6 +156,32 @@ Chatterbox.UI = function( client, view, options, mozilla, events ) {
         }
         return scrollbarWidth;
     } ) ();
+    
+    // Get user media methods.
+
+    if( window.mozRTCPeerConnection ) {
+        Chatterbox._gum = function( options, success, error ) {
+    
+            return navigator.mozGetUserMedia( options, success, error );
+    
+        };
+    }
+    
+    if( window.webkitRTCPeerConnection ) {
+        Chatterbox._gum = function( options, success, error ) {
+    
+            return navigator.webkitGetUserMedia( options, success, error );
+    
+        };
+    }
+    
+    if( window.RTCPeerConnection && !window.mozRTCPeerConnection ) {
+        Chatterbox._gum = function( options, success, error ) {
+    
+            return navigator.getUserMedia( options, success, error );
+    
+        };
+    }
     
     this.LIB = 'Chatterbox';
     this.VERSION = Chatterbox.VERSION;
@@ -342,6 +370,21 @@ Chatterbox.UI.prototype.clock = function( mode ) {
     return this.settings.clock;
 
 };
+
+
+/**
+ * Get user media streams.
+ * @method get_user_media
+ * @param options {Object} Options for the media streams
+ * @param [success] {Function}  Callback fired when media streams have been retrieved
+ * @param [error] {Function} Callback fired when an error occurs
+ */
+Chatterbox.UI.prototype.get_user_media = function( options, success, error ) {
+
+    Chatterbox._gum( options, success, error );
+
+};
+
 
 /**
  * Build the GUI.
