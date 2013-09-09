@@ -513,6 +513,9 @@ wsc.Protocol.LogMessage.prototype.render = function( format ) {
         
         d = this.event[key];
         
+        if( d == null )
+            continue;
+        
         if( key == 'ns' || key == 'sns' ) {
             key = 'ns';
             d = this.event['sns'];

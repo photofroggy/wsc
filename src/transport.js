@@ -148,6 +148,7 @@ wsc.WebSocket = function( server, open, message, disconnect ) {
     this.sock = null;
     this.conn = null;
     this.server = server;
+    this.cause = null;
     this.open( open );
     this.message( message );
     this.disconnect( disconnect );
@@ -183,7 +184,7 @@ wsc.WebSocket.prototype.ondisconnect = function( event ) {
 
     this.sock = null;
     this.conn = null;
-    this._disconnect( event );
+    this._disconnect( { wsEvent: event, cause: this.cause } );
 
 };
 
@@ -227,10 +228,12 @@ wsc.WebSocket.prototype.send = function( message ) {
  * 
  * @method close
  */
-wsc.WebSocket.prototype.close = function(  ) {
+wsc.WebSocket.prototype.close = function( cause ) {
 
     if( this.sock == null )
         return;
+    
+    this.cause = cause;
     
     this.sock.close();
 

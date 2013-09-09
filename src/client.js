@@ -341,11 +341,11 @@ wsc.Client.prototype.connect = function(  ) {
  * Close the connection foo.
  * 
  * @method close
+ * @param [event] {Object} Event that resulted in the connection being closed
  */
-wsc.Client.prototype.close = function(  ) {
+wsc.Client.prototype.close = function( event ) {
 
-    console.log(this.conn);
-    this.conn.close();
+    this.conn.close( event );
     //this.conn = null;
 
 };
