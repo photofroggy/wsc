@@ -11390,6 +11390,8 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         var idex = -1;
         var debug = true;
         
+        /*
+         * Until we have a better option...
         // First part we create our maps for our page items.
         for( var i in settings.emotes.emote ) {
             if( !settings.emotes.emote.hasOwnProperty(i) )
@@ -11442,6 +11444,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         
         // Display the newly sorted emotes.
         settings.emotes.picker.refresh();
+        */
     
     };
     
