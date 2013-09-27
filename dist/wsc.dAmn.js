@@ -11213,6 +11213,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.picker.build();
     settings.emotes.picker.hide();
     
+    /*
     client.ui.control.add_button( {
         'label': '',
         'icon': 'user',
@@ -11226,6 +11227,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             }
         }
     });
+    */
     
     settings.emotes.configure_page = function( event, ui ) {
     
