@@ -99,6 +99,10 @@ wsc.Protocol = function( mparser ) {
         'unknown': [null, null, null, 'packet'],
     };
     
+    // template keys for search/replace
+    this.tkeys = {};
+    this.populate_keys();
+    
     // Mapping callbacks!
     var p = this;
     this.mapper = {
@@ -202,9 +206,11 @@ wsc.Protocol = function( mparser ) {
  */
 wsc.Protocol.prototype.extend_maps = function( maps ) {
 
-    for( key in maps ) {
+    for( var key in maps ) {
         this.maps[key] = maps[key];
     }
+    
+    this.populate_keys();
 
 };
 
@@ -216,8 +222,73 @@ wsc.Protocol.prototype.extend_maps = function( maps ) {
  */
 wsc.Protocol.prototype.extend_messages = function( messages ) {
 
-    for( key in messages ) {
+    for( var key in messages ) {
         this.messages[key] = messages[key];
+    }
+
+};
+
+/**
+ * Generate template keys based on current protocol maps.
+ * 
+ * @method populate_keys
+ */
+wsc.Protocol.prototype.populate_keys = function(  ) {
+
+    this.tkeys = {};
+    
+    for( var evt in this.maps ) {
+        
+        if( !this.maps.hasOwnProperty( evt ) )
+            continue;
+        
+        var keys = this.maps[evt];
+        var key = '';
+        
+        this.tkeys[evt] = [];
+        
+        for( var i in keys ) {
+            if( !keys.hasOwnProperty( i ) )
+                continue;
+            
+            key = keys[i];
+            
+            if( !key )
+                continue;
+            
+            if( i == 1 ) {
+                
+                var sk = '';
+                
+                for( var x in key ) {
+                    if( !key.hasOwnProperty( x ) )
+                        continue;
+                    
+                    sk = key[x];
+                    
+                    if( !sk )
+                        continue;
+                    
+                    if( sk instanceof Array ) {
+                        sk = sk[1];
+                    }
+                    
+                    if( sk[0] == '*' )
+                        this.tkeys[evt].push( sk.substr( 1 ) );
+                    else
+                        this.tkeys[evt].push( sk );
+                }
+                
+                continue;
+                
+            }
+            
+            if( key[0] == '*' )
+                this.tkeys[evt].push( key.substr( 1 ) );
+            else
+                this.tkeys[evt].push( key );
+        }
+    
     }
 
 };
@@ -230,7 +301,7 @@ wsc.Protocol.prototype.extend_messages = function( messages ) {
  */
 wsc.Protocol.prototype.parse = function( packet ) {
 
-    name = this.event( packet );
+    var name = this.event( packet );
     
     if( !(name in this.maps) ) {
         console.log('unknown: ',name);
@@ -364,14 +435,26 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
 wsc.Protocol.prototype.render = function( event, format ) {
 
     var msgm = this.messages[event.name];
-    
+    console.log('hi');
     if( !msgm )
         return '';
     
     var msg = msgm[0];
     var d = '';
-    
-    for( key in event ) {
+    var keys = this.map[event.name] || [];
+    var key = '';
+    console.log('>',event.name);
+    for( var i in keys ) {
+        if( !keys.hasOwnProperty( i ) )
+            continue;
+        
+        key = keys[i];
+        
+        if( key instanceof Array )
+            key = key[1];
+        
+        console.log('>>',key);
+        
         if( !event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
@@ -413,11 +496,8 @@ wsc.Protocol.prototype.render = function( event, format ) {
 wsc.Protocol.prototype.log = function( event ) {
 
     var msgm = this.messages[event.name];
-    
-    if( !msgm )
-        return null;
-    
-    return new wsc.Protocol.LogMessage( event, msgm );
+    //console.log(this.map[event.name]);
+    return new wsc.Protocol.LogMessage( event, msgm, this.tkeys[event.name] );
 
 };
 
@@ -429,10 +509,12 @@ wsc.Protocol.prototype.log = function( event ) {
  * @param event {Object} Event data
  * @param options {Array} Log message options
  */
-wsc.Protocol.LogMessage = function( event, options ) {
-
+wsc.Protocol.LogMessage = function( event, options, keys ) {
+    
+    options = options || [ '', false, false ];
     this.event = event;
     this.template = options[0] || '';
+    this.keys = keys || [];
     this.monitor = options[1] || false;
     this.global = options[2] || false;
     this._html = false;
@@ -507,7 +589,16 @@ wsc.Protocol.LogMessage.prototype.render = function( format ) {
     var render = this.template;
     var d = '';
     
-    for( var key in this.event ) {
+    for( var i in this.keys ) {
+    
+        if( !this.keys.hasOwnProperty( i ) )
+            continue;
+        
+        key = this.keys[i];
+        
+        if( key instanceof Array )
+            key = key[1];
+        
         if( !this.event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
@@ -535,14 +626,12 @@ wsc.Protocol.LogMessage.prototype.render = function( format ) {
                     break;
             }
         }
+        
         render = replaceAll( render, '{' + key + '}', d );
+        
     }
     
     return render;
-    
-    /*
-    }
-    */
 
 };
 

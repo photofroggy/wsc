@@ -222,7 +222,7 @@ wsc.Client.prototype.build = function(  ) {
  */
 wsc.Client.prototype.loop = function(  ) {
 
-    this.ui.loop();
+    //this.ui.loop();
 
 };
 
@@ -332,11 +332,11 @@ wsc.Client.prototype.connect = function(  ) {
         this.conn.disconnect(function( evt ) { client.flow.close( client, evt ); });
         this.conn.message(function( evt ) { client.flow.message( client, evt ); });
         this.conn.connect();
-        this.ui.server_message('Opening connection');
+        //this.ui.server_message('Opening connection');
         this.trigger('start', new wsc.Packet('client connecting\ne=ok\n\n'));
     } catch(err) {
         console.log(err);
-        this.monitor("Your browser does not support WebSockets. Sorry.");
+        //this.monitor("Your browser does not support WebSockets. Sorry.");
         this.trigger('start', new wsc.Packet('client connecting\ne=no websockets available\n\n'));
     }
 
