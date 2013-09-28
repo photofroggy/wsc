@@ -1,5 +1,9 @@
 /**
- * Parser for dAmn-like protocols.
+ * Rendering for dAmn-like protocols.
+ *
+ * This object is mainly used for constructing LogMessage objects with the
+ * right data. Seemed to make more sense than having multiple definitions of
+ * LogMessage and/or if...else/switch...case blocks.
  * 
  * @class Chatterbox.Protocol
  * @constructor
@@ -219,6 +223,8 @@ Chatterbox.Protocol.prototype.log = function( event ) {
  * @param options {Array} Log message options
  */
 Chatterbox.Protocol.LogMessage = function( event, options ) {
+    
+    options = options || {};
     
     this.event = event;
     this.template = options.template || '';

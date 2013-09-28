@@ -10,6 +10,35 @@ Chatterbox.STATE = 'beta';
 
 Chatterbox._gum = function(  ) {};
 
+
+// jQuery hook.
+
+( function( $ ) {
+    $.fn.chatterbox = function( method, client, options ) {
+        
+        var ui = $(window).data('chatterbox');
+        
+        if( method == 'init' || ui === undefined ) {
+            if( ui == undefined ) {
+                ui = new Chatterbox.UI( $(this), client, options, ($.browser.mozilla || false) );
+                $(window).resize(ui.resize);
+            }
+            $(window).data('chatterbox', ui);
+        }
+        
+        if( method != 'init' && method != undefined ) {
+            method = 'jq_' + method;
+            if( method in ui )
+                ui[method]( $(this), options);
+        }
+        
+        return ui;
+        
+    };
+    
+} )( jQuery );
+
+
 /**
  * This object is the platform for the wsc UI. Everything can be used and
  * loaded from here.
@@ -22,7 +51,7 @@ Chatterbox._gum = function(  ) {};
  * @param mozilla {Boolean} Is the browser in use made by Mozilla?
  * @param [events] {Object} EventEmitter object.
  **/
-Chatterbox.UI = function( client, view, options, mozilla, events ) {
+Chatterbox.UI = function( view, client, options, mozilla, events ) {
     
     this.client = client;
     this.events = events || new EventEmitter();
