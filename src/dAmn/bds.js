@@ -44,7 +44,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         client.bind('closed', handle.closed);
         
         // Filter BDS commands
-        client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
+        //client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
         client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
     };
     
@@ -181,7 +181,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             }
             
-            var ver = wsc.VERSION + '/' + client.ui.VERSION + '/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
+            var ver = wsc.VERSION + '/0.0.0/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
             var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
             client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
         },

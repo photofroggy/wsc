@@ -22,32 +22,45 @@ wsc.Flow.prototype.open = function( client, event, sock ) {
 
 // WebSocket connection closed!
 wsc.Flow.prototype.close = function( client, event ) {
-    var evt = {name: 'closed', pkt: new wsc.Packet('connection closed\n\n'), reason: '', evt: event};
+    var evt = {
+        name: 'closed',
+        pkt: new wsc.Packet('connection closed\n\n'),
+        reason: '',
+        evt: event,
+        // Were we fully connected or did we fail to connect?
+        connected: client.connected,
+        // Are we using SocketIO?
+        sio: client.conn instanceof wsc.SocketIO,
+        cause: '',
+        reconnect: true
+    };
+    
     client.trigger( 'closed', evt );
     
     if(client.connected) {
-        client.ui.server_message("Connection closed");
+        //client.ui.server_message("Connection closed");
         client.connected = false;
         if( client.conn instanceof wsc.SocketIO ) {
-            client.ui.server_message("At the moment there is a problem with reconnecting under socket.io.");
-            client.ui.server_message("Refresh the page to connect.");
+            //client.ui.server_message("At the moment there is a problem with reconnecting under socket.io.");
+            //client.ui.server_message("Refresh the page to connect.");
             return;
         }
     } else {
-        client.ui.server_message("Connection failed");
+        //client.ui.server_message("Connection failed");
     }
     
     evt.name = 'quit';
     
-    // For now we want to automatically reconnect.
-    // Should probably be more intelligent about this though.
+    // Tried more than twice? Give up.
     if( client.attempts > 2 ) {
-        client.ui.server_message("Can't connect. Try again later.");
+        //client.ui.server_message("Can't connect. Try again later.");
+        evt.reconnect = false;
         client.attempts = 0;
         client.trigger( 'quit', evt );
         return;
     }
     
+    // If login failure occured, don't reconnect
     if( event.cause ) {
         if( event.cause.hasOwnProperty( 'name' ) && event.cause.name == 'login' ) {
             client.trigger( 'quit', evt );
@@ -55,7 +68,8 @@ wsc.Flow.prototype.close = function( client, event ) {
         }
     }
     
-    client.ui.server_message("Connecting in 2 seconds");
+    // Notify everyone we'll be reconnecting soon
+    //client.ui.server_message("Connecting in 2 seconds");
     
     setTimeout(function () {
         client.connect();

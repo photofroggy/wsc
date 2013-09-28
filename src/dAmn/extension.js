@@ -67,7 +67,7 @@ wsc.dAmn.Extension = function( client ) {
     
     client.exclude.add( 'chat:devart' );
     client.exclude.add( 'chat:damnidlers' );
-    
+    /*
     client.ui.middle( 'user.hover', function( data, done ) {
         data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
@@ -92,7 +92,7 @@ wsc.dAmn.Extension = function( client ) {
         
         if( event.raw.typename )
             event.info.push(event.raw.typename);
-    } );
+    } );*/
     
     /**
      * Implements the Data Sharing Protocol.
@@ -122,20 +122,20 @@ wsc.dAmn.Extension = function( client ) {
      * 
      * @method Colours
      */
-    wsc.dAmn.Colours( client, storage.colours, settings );
+    //wsc.dAmn.Colours( client, storage.colours, settings );
     
     /**
      * Implements custom emoticons.
      *
      * @method Emotes
      */
-    wsc.dAmn.Emotes( client, storage.emotes, settings );
+    //wsc.dAmn.Emotes( client, storage.emotes, settings );
     
     /**
      * Implements Sta.sh thumbnails.
      * 
      * @method Stash
      */
-    wsc.dAmn.Stash( client, storage.emotes, settings );
+    //wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };

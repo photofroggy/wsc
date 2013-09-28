@@ -83,6 +83,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
+    /*
     this.ui = new this.settings.ui_object( this, view, {
         'themes': this.settings.ui.themes,
         'theme': this.settings.ui.theme,
@@ -94,8 +95,9 @@ wsc.Client = function( view, options, mozilla ) {
         'developer': this.settings.developer,
         'media': this.settings.ui.media
     }, mozilla );
+    */
     
-    this.settings.agent = this.ui.LIB + '/' + this.ui.VERSION + ' (' + navigator.appVersion.match(/\(([^)]+)\)/)[1] + ') wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
+    this.settings.agent = 'wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.protocol = new this.settings.protocol( new this.settings.mparser() );
@@ -103,12 +105,14 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.build();
     
+    /*
     for(var index in this.settings["extend"]) {
         this.settings["extend"][index](this);
     }
+    */
     
     // Welcome!
-    this.monitor(this.settings["welcome"]);
+    //this.monitor(this.settings["welcome"]);
 
 };
 
@@ -186,10 +190,10 @@ wsc.Client.prototype.config_save = function(  ) {
  */
 wsc.Client.prototype.build = function(  ) {
 
-    this.ui.build();
-    this.create_ns( this.ui.monitoro.raw, this.ui.monitoro.hidden, true );
+    //this.ui.build();
+    //this.create_ns( this.settings.monitor[0], true, true );
     var client = this;
-    
+    /*
     this.ui.on('tab.close.clicked', function( event, ui ) {
         if( event.chan.monitor )
             return false;
@@ -205,6 +209,7 @@ wsc.Client.prototype.build = function(  ) {
     this.ui.on('topic.save', function( event, ui ) {
         client.set(event.ns, 'topic', event.value);
     } );
+    */
 
 };
 
@@ -602,7 +607,8 @@ wsc.Client.prototype.log = function( namespace, data ) {
  */
 wsc.Client.prototype.monitor = function( message ) {
 
-    this.ui.monitor(message);
+    console.log( message );
+    //this.ui.monitor(message);
 
 };
 
