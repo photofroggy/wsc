@@ -48,7 +48,10 @@ def package():
         nnotice(package['dest'])
         bundle(package)
         nom(package['dest'])
-        subprocess.call(yui + ['-o', '{0}'.format(package['mini']), package['dest']])
+        res = subprocess.call(yui + ['-o', '{0}'.format(package['mini']), package['dest']])
+        if res != 0:
+            notice('Problem with packaging source. Exiting...')
+            return
     
     notice('Running post scripts...')
     if 'post' in conf:

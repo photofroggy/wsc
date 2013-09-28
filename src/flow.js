@@ -201,9 +201,9 @@ wsc.Flow.prototype.join = function( event, client ) {
         var ns = client.deform_ns(event.pkt["param"]);
         //client.monitor("You have joined " + ns + '.');
         client.create_ns(ns, client.hidden.contains(event.pkt['param']));
-        client.ui.channel(ns).server_message("You have joined " + ns);
+        //client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
-        client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
+        //client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
     }
 };
 
@@ -243,8 +243,8 @@ wsc.Flow.prototype.part = function( event, client ) {
             this.message( client, { data: 'disconnect\ne='+e.r+'\n' } );
         }
     } else {
-        client.monitor('Couldn\'t leave ' + ns, event.e);
-        c.server_message("Couldn't leave "+ns, event.e);
+        //client.monitor('Couldn\'t leave ' + ns, event.e);
+        //c.server_message("Couldn't leave "+ns, event.e);
     }
     
 };

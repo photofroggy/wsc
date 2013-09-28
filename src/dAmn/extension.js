@@ -56,11 +56,11 @@ wsc.dAmn.Extension = function( client ) {
     client.protocol.extend_maps({
         'dAmnServer': ['version']
     });
-    
+    /*
     client.protocol.extend_messages({
         'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
     });
-    
+    */
     client.protocol.mparser = new wsc.dAmn.TablumpParser;
     
     client.flow.dAmnServer = client.flow.chatserver;
