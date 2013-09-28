@@ -2185,11 +2185,13 @@ wsc.defaults.Extension = function( client ) {
         
         // lol themes
         client.bind('cmd.theme', cmd.theme);
+        /*
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
         client.ui.on('settings.save.ui', settings_save);
         client.ui.on('settings.save', function(  ) { client.config_save(); } );
+        */
     };
     
     var settings_save = function( e, ui ) {
@@ -2428,7 +2430,8 @@ wsc.defaults.Extension = function( client ) {
     
     // Say something.
     cmd.say = function( e ) {
-        if( client.channel(e.target).monitor ) return;
+        if( client.channel(e.target).monitor )
+            return;
         client.say( e.target, e.args );
     };
     
@@ -2572,21 +2575,21 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Ignore
      */
-    wsc.defaults.Extension.Ignore(client);
+    //wsc.defaults.Extension.Ignore(client);
     
     /**
      * Implements away messages.
      * 
      * @method Away
      */
-    wsc.defaults.Extension.Away(client);
+    //wsc.defaults.Extension.Away(client);
     
     /**
      * Implements autojoin channels.
      * 
      * @method Autojoin
      */
-    wsc.defaults.Extension.Autojoin(client);
+    //wsc.defaults.Extension.Autojoin(client);
 
 };
 /**
@@ -3361,6 +3364,8 @@ wsc.Client = function( view, options, mozilla ) {
     }
     */
     
+    wsc.defaults.Extension( this );
+    
     // Welcome!
     //this.monitor(this.settings["welcome"]);
 
@@ -3441,7 +3446,7 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     //this.ui.build();
-    //this.create_ns( this.settings.monitor[0], true, true );
+    this.create_ns( this.settings.monitor[0], true, true );
     var client = this;
     /*
     this.ui.on('tab.close.clicked', function( event, ui ) {
@@ -4208,6 +4213,8 @@ Chatterbox._gum = function(  ) {};
             if( ui == undefined ) {
                 ui = new Chatterbox.UI( $(this), client, options, ($.browser.mozilla || false) );
                 $(window).resize(ui.resize);
+                setInterval(function(  ) { ui.loop(); }, 120000);
+                ui.build();
             }
             $(window).data('chatterbox', ui);
         }

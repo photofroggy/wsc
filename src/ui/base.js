@@ -22,6 +22,8 @@ Chatterbox._gum = function(  ) {};
             if( ui == undefined ) {
                 ui = new Chatterbox.UI( $(this), client, options, ($.browser.mozilla || false) );
                 $(window).resize(ui.resize);
+                setInterval(function(  ) { ui.loop(); }, 120000);
+                ui.build();
             }
             $(window).data('chatterbox', ui);
         }

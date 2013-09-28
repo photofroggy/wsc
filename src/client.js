@@ -111,6 +111,8 @@ wsc.Client = function( view, options, mozilla ) {
     }
     */
     
+    wsc.defaults.Extension( this );
+    
     // Welcome!
     //this.monitor(this.settings["welcome"]);
 
@@ -191,7 +193,7 @@ wsc.Client.prototype.config_save = function(  ) {
 wsc.Client.prototype.build = function(  ) {
 
     //this.ui.build();
-    //this.create_ns( this.settings.monitor[0], true, true );
+    this.create_ns( this.settings.monitor[0], true, true );
     var client = this;
     /*
     this.ui.on('tab.close.clicked', function( event, ui ) {

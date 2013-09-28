@@ -64,11 +64,13 @@ wsc.defaults.Extension = function( client ) {
         
         // lol themes
         client.bind('cmd.theme', cmd.theme);
+        /*
         // some ui business.
         client.ui.on('settings.open', settings_page);
         client.ui.on('settings.open.ran', about_page);
         client.ui.on('settings.save.ui', settings_save);
         client.ui.on('settings.save', function(  ) { client.config_save(); } );
+        */
     };
     
     var settings_save = function( e, ui ) {
@@ -307,7 +309,8 @@ wsc.defaults.Extension = function( client ) {
     
     // Say something.
     cmd.say = function( e ) {
-        if( client.channel(e.target).monitor ) return;
+        if( client.channel(e.target).monitor )
+            return;
         client.say( e.target, e.args );
     };
     
@@ -451,20 +454,20 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Ignore
      */
-    wsc.defaults.Extension.Ignore(client);
+    //wsc.defaults.Extension.Ignore(client);
     
     /**
      * Implements away messages.
      * 
      * @method Away
      */
-    wsc.defaults.Extension.Away(client);
+    //wsc.defaults.Extension.Away(client);
     
     /**
      * Implements autojoin channels.
      * 
      * @method Autojoin
      */
-    wsc.defaults.Extension.Autojoin(client);
+    //wsc.defaults.Extension.Autojoin(client);
 
 };
