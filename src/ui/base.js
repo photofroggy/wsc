@@ -160,6 +160,7 @@ Chatterbox.UI = function( view, client, options, mozilla, events ) {
     this.settings = view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
+    this.protocol = new Chatterbox.Protocol();
     this.mw = new wsc.Middleware();
     
     this.view = view.find('.wsc');
@@ -572,7 +573,7 @@ Chatterbox.UI.prototype.loop = function(  ) {
 Chatterbox.UI.prototype.packet = function( event, client ) {
 
     var ui = this;
-    var msg = client.protocol.log( event );
+    var msg = this.protocol.log( event );
     
     if( msg ) {
         
