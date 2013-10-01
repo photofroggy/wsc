@@ -31,7 +31,7 @@ wsc.Flow.prototype.close = function( client, event ) {
         connected: client.connected,
         // Are we using SocketIO?
         sio: client.conn instanceof wsc.SocketIO,
-        cause: '',
+        cause: event.cause || null,
         reconnect: true
     };
     

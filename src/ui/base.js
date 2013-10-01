@@ -72,7 +72,17 @@ Chatterbox.UI = function( view, client, options, mozilla, events ) {
         'media': '/static/'
     };
     
+    this.settings = view.extend( this.settings, options );
+    
+    this.settings.monitor = client.settings.monitor || this.settings.monitor;
+    this.settings.username = client.settings.username || this.settings.username;
+    this.settings.domain = client.settings.domain || this.settings.domain;
+    this.settings.developer = client.settings.developer || this.settings.developer;
+    
     var ui = this;
+    
+    // Monkey patch the agent string.
+    client.settings.agent = 'Chatterbox/' + Chatterbox.VERSION + ' ' + client.settings.agent;
     
     /**
      * Sound bank.
@@ -159,7 +169,6 @@ Chatterbox.UI = function( view, client, options, mozilla, events ) {
         unmute: function(  ) { ui.sound.toggle( false ); },
     };
     
-    this.settings = view.extend( this.settings, options );
     view.append('<div class="wsc '+this.settings['theme']+'"></div>');
     
     this.protocol = new Chatterbox.Protocol();

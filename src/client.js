@@ -56,13 +56,6 @@ wsc.Client = function( view, options, mozilla ) {
         "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
-        "ui": {
-            "theme": wsc.defaults.theme,
-            "themes": wsc.defaults.themes,
-            "tabclose": true,
-            "clock": true,
-            "media": "/static/"
-        },
         "developer": false
     };
     this.autojoin = {
@@ -83,21 +76,7 @@ wsc.Client = function( view, options, mozilla ) {
     
     this.mw = new wsc.Middleware();
     
-    /*
-    this.ui = new this.settings.ui_object( this, view, {
-        'themes': this.settings.ui.themes,
-        'theme': this.settings.ui.theme,
-        'monitor': this.settings.monitor,
-        'username': this.settings.username,
-        'domain': this.settings.domain,
-        'clock': this.settings.ui.clock,
-        'tabclose': this.settings.ui.tabclose,
-        'developer': this.settings.developer,
-        'media': this.settings.ui.media
-    }, mozilla );
-    */
-    
-    this.settings.agent = 'wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
+    this.settings.agent = 'Client (' + navigator.platform + '; HTML5; JavaScript) wsc/' + wsc.VERSION + '-r' + wsc.REVISION;
     this.mns = this.format_ns(this.settings['monitor'][0]);
     this.lun = this.settings["username"].toLowerCase();
     this.protocol = new this.settings.protocol( new this.settings.mparser() );
@@ -126,9 +105,9 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.config_load = function(  ) {
 
     this.settings.developer = ( this.storage.get('developer', this.settings.developer.toString()) == 'true' );
-    this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
-    this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
-    this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
+    //this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
+    //this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
+    //this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
     
     this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
     this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
@@ -156,9 +135,9 @@ wsc.Client.prototype.config_load = function(  ) {
 wsc.Client.prototype.config_save = function(  ) {
 
     this.storage.set('developer', this.settings.developer);
-    this.storage.ui.set('theme', this.settings.ui.theme);
-    this.storage.ui.set('clock', this.settings.ui.clock.toString());
-    this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
+    //this.storage.ui.set('theme', this.settings.ui.theme);
+    //this.storage.ui.set('clock', this.settings.ui.clock.toString());
+    //this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
     
     this.storage.aj.set('on', this.autojoin.on.toString());
     this.storage.aj.set('count', this.autojoin.count);
