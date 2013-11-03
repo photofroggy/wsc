@@ -91,9 +91,6 @@ wsc.Client = function( view, options, mozilla ) {
     */
     
     wsc.defaults.Extension( this );
-    
-    // Welcome!
-    //this.monitor(this.settings["welcome"]);
 
 };
 

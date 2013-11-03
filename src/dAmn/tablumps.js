@@ -23,6 +23,7 @@ wsc.dAmn.TablumpString = function(data, parser) {
     this._text = null;
     this._html = null;
     this._ansi = null;
+    this._chonc = null;
 };
 
 wsc.dAmn.TablumpString.prototype = new wsc.MessageString;
@@ -66,8 +67,19 @@ wsc.dAmn.TablumpString.prototype.text = function() {
  */
 wsc.dAmn.TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
-        this._ansi = this._parser.render(2, this);
+        this._ansi = this._parser.render(3, this);
     return this._ansi;
+};
+
+/**
+ * @function chonc
+ * 
+ * Render the tablumps with chonc-style HTML.
+ */
+wsc.dAmn.TablumpString.prototype.chonc = function() {
+    if(this._chonc == null)
+        this._chonc = this._parser.render(2, this);
+    return this._chonc;
 };
 
 
@@ -153,14 +165,14 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
-        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
-        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
-        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
-        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
-        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
-        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
-        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
+        '&b\t': [0, '<b>', '<b>', '<b>', '\x1b[1m'],
+        '&/b\t': [0, '</b>', '</b>', '</b>', '\x1b[22m'],
+        '&i\t': [0, '<i>', '<i>', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '</i>', '</i>', '</i>', '\x1b[23m'],
+        '&u\t': [0, '<u>', '<u>', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '</u>', '</u>', '</u>', '\x1b[24m'],
+        '&s\t': [0, '<s>', '<s>', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '</s>', '</s>', '</s>', '\x1b[29m'],
         '&sup\t': [0, '<sup>'],
         '&/sup\t': [0, '</sup>'],
         '&sub\t': [0, '<sub>'],
@@ -178,6 +190,10 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&link\t': [ 3,
             function( data ) {
                 return data[0] + ( data[1] ? (' (' + data[1] + ')') : '');
+            },
+            function( data ) {
+                t = data[1];
+                return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
             },
             function( data ) {
                 t = data[1];
@@ -207,13 +223,25 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&dev\t': [ 2,
             ':dev{1}:',
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
         '&thumb\t': [ 6,
             ':thumb{0}:',
-            wsc.dAmn.Emotes.Tablumps
+            wsc.dAmn.Emotes.Tablumps,
+            function( data ) {
+            
+                var ut = (data[1].replace(/[^A-Za-z0-9]+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '') || '-') + '-' + data[0];
+                var anchor = '[<a target="_blank" href="http://www.deviantart.com/art/' + ut + '" title="' + data[1] + '">';
+                
+                return anchor + 'deviation: ' + data[1] + '</a>]';
+            
+            },
+           '[deviation: {1}]'
         ],
-        'EOF': [0, '', null, '\x1b[m']
+        'EOF': [0, '', null, null, '\x1b[m']
     };
 
 };

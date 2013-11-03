@@ -501,6 +501,12 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     } );
     
+    this.client.bind( 'log', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
     // Channel removed from client.
     this.client.middle(
         'ns.remove',
@@ -590,6 +596,11 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        if( event.name == 'log' && event.sns == '~current' ) {
+            event.ns = ui.chatbook.current.raw;
+            event.sns = ui.chatbook.current.namespace;
         }
         
         // If the event is -shownotice, don't display it!

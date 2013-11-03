@@ -1784,22 +1784,33 @@ wsc.Flow.prototype.close = function( client, event ) {
         connected: client.connected,
         // Are we using SocketIO?
         sio: client.conn instanceof wsc.SocketIO,
-        cause: '',
+        cause: event.cause || null,
         reconnect: true
+    };
+    
+    var logevt = {
+        name: 'log',
+        ns: '~System',
+        msg: '',
+        info: ''
     };
     
     client.trigger( 'closed', evt );
     
     if(client.connected) {
-        //client.ui.server_message("Connection closed");
+        logevt.msg = 'Connection closed';
+        client.trigger( 'log', logevt );
         client.connected = false;
         if( client.conn instanceof wsc.SocketIO ) {
-            //client.ui.server_message("At the moment there is a problem with reconnecting under socket.io.");
-            //client.ui.server_message("Refresh the page to connect.");
+            logevt.msg = 'At the moment there is a problem with reconnecting with socket.io';
+            logevt.info = 'Refresh to connect';
+            client.trigger( 'log', logevt );
+            logevt.info = '';
             return;
         }
     } else {
-        //client.ui.server_message("Connection failed");
+        logevt.msg = 'Connection failed';
+        client.trigger( 'log', logevt );
     }
     
     evt.name = 'quit';
@@ -1952,11 +1963,17 @@ wsc.Flow.prototype.login = function( event, client ) {
 wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
         var ns = client.deform_ns(event.pkt["param"]);
-        //client.monitor("You have joined " + ns + '.');
         client.create_ns(ns, client.hidden.contains(event.pkt['param']));
-        //client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
-        //client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
+        client.trigger( 'log',
+            {
+                name: 'log',
+                ns: 'server:current',
+                sns: '~current',
+                msg: "Failed to join " + client.deform_ns(event.pkt["param"]),
+                info: event.pkt["arg"]["e"]
+            }
+        );
     }
 };
 
@@ -1996,8 +2013,15 @@ wsc.Flow.prototype.part = function( event, client ) {
             this.message( client, { data: 'disconnect\ne='+e.r+'\n' } );
         }
     } else {
-        //client.monitor('Couldn\'t leave ' + ns, event.e);
-        //c.server_message("Couldn't leave "+ns, event.e);
+        client.trigger( 'log',
+            {
+                name: 'log',
+                ns: 'server:current',
+                sns: '~current',
+                msg: "Couldn't leave " + ns,
+                info: event.e
+            }
+        );
     }
     
 };
@@ -3344,9 +3368,6 @@ wsc.Client = function( view, options, mozilla ) {
     */
     
     wsc.defaults.Extension( this );
-    
-    // Welcome!
-    //this.monitor(this.settings["welcome"]);
 
 };
 
@@ -4671,6 +4692,12 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     } );
     
+    this.client.bind( 'log', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
     // Channel removed from client.
     this.client.middle(
         'ns.remove',
@@ -4760,6 +4787,11 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        if( event.name == 'log' && event.sns == '~current' ) {
+            event.ns = ui.chatbook.current.raw;
+            event.sns = ui.chatbook.current.namespace;
         }
         
         // If the event is -shownotice, don't display it!
@@ -6306,6 +6338,7 @@ Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
     
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
+    this.server_message( 'You have joined ' + this.namespace );
 
 };
 
@@ -8435,6 +8468,10 @@ Chatterbox.Protocol = function(  ) {
             keys: [ 'ns', 'e' ],
             template: '<span class="servermsg">** Kill error * <em>{e}</em></span>'
         },
+        'log': {
+            keys: [ 'ns', 'msg', 'info' ],
+            template: '<span class="servermsg">** {msg} * <em>{info}</em></span>'
+        },
         'unknown': {
             keys: [ 'ns', 'packet' ],
             template: '<span class="servermsg">** Received unknown packet in {ns} * <em>{packet}</em></span>',
@@ -8574,14 +8611,14 @@ Chatterbox.Protocol.LogMessage.prototype.render = function( format ) {
         if( !this.event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
-        d = this.event[key];
+        d = this.event[key] || '';
         
         if( d == null )
             continue;
         
         if( key == 'ns' || key == 'sns' ) {
             key = 'ns';
-            d = this.event['sns'];
+            d = this.event['sns'] || d;
         }
         
         if( d.hasOwnProperty('_parser') ) {

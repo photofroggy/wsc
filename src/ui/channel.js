@@ -1079,6 +1079,7 @@ Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
     
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
+    this.server_message( 'You have joined ' + this.namespace );
 
 };
 

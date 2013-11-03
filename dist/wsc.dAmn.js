@@ -1784,22 +1784,33 @@ wsc.Flow.prototype.close = function( client, event ) {
         connected: client.connected,
         // Are we using SocketIO?
         sio: client.conn instanceof wsc.SocketIO,
-        cause: '',
+        cause: event.cause || null,
         reconnect: true
+    };
+    
+    var logevt = {
+        name: 'log',
+        ns: '~System',
+        msg: '',
+        info: ''
     };
     
     client.trigger( 'closed', evt );
     
     if(client.connected) {
-        //client.ui.server_message("Connection closed");
+        logevt.msg = 'Connection closed';
+        client.trigger( 'log', logevt );
         client.connected = false;
         if( client.conn instanceof wsc.SocketIO ) {
-            //client.ui.server_message("At the moment there is a problem with reconnecting under socket.io.");
-            //client.ui.server_message("Refresh the page to connect.");
+            logevt.msg = 'At the moment there is a problem with reconnecting with socket.io';
+            logevt.info = 'Refresh to connect';
+            client.trigger( 'log', logevt );
+            logevt.info = '';
             return;
         }
     } else {
-        //client.ui.server_message("Connection failed");
+        logevt.msg = 'Connection failed';
+        client.trigger( 'log', logevt );
     }
     
     evt.name = 'quit';
@@ -1952,11 +1963,17 @@ wsc.Flow.prototype.login = function( event, client ) {
 wsc.Flow.prototype.join = function( event, client ) {
     if(event.pkt["arg"]["e"] == "ok") {
         var ns = client.deform_ns(event.pkt["param"]);
-        //client.monitor("You have joined " + ns + '.');
         client.create_ns(ns, client.hidden.contains(event.pkt['param']));
-        //client.ui.channel(ns).server_message("You have joined " + ns);
     } else {
-        //client.ui.chatbook.current.server_message("Failed to join " + client.deform_ns(event.pkt["param"]), event.pkt["arg"]["e"]);
+        client.trigger( 'log',
+            {
+                name: 'log',
+                ns: 'server:current',
+                sns: '~current',
+                msg: "Failed to join " + client.deform_ns(event.pkt["param"]),
+                info: event.pkt["arg"]["e"]
+            }
+        );
     }
 };
 
@@ -1996,8 +2013,15 @@ wsc.Flow.prototype.part = function( event, client ) {
             this.message( client, { data: 'disconnect\ne='+e.r+'\n' } );
         }
     } else {
-        //client.monitor('Couldn\'t leave ' + ns, event.e);
-        //c.server_message("Couldn't leave "+ns, event.e);
+        client.trigger( 'log',
+            {
+                name: 'log',
+                ns: 'server:current',
+                sns: '~current',
+                msg: "Couldn't leave " + ns,
+                info: event.e
+            }
+        );
     }
     
 };
@@ -3344,9 +3368,6 @@ wsc.Client = function( view, options, mozilla ) {
     */
     
     wsc.defaults.Extension( this );
-    
-    // Welcome!
-    //this.monitor(this.settings["welcome"]);
 
 };
 
@@ -4671,6 +4692,12 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     } );
     
+    this.client.bind( 'log', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
     // Channel removed from client.
     this.client.middle(
         'ns.remove',
@@ -4760,6 +4787,11 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        if( event.name == 'log' && event.sns == '~current' ) {
+            event.ns = ui.chatbook.current.raw;
+            event.sns = ui.chatbook.current.namespace;
         }
         
         // If the event is -shownotice, don't display it!
@@ -6306,6 +6338,7 @@ Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
     
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
+    this.server_message( 'You have joined ' + this.namespace );
 
 };
 
@@ -8435,6 +8468,10 @@ Chatterbox.Protocol = function(  ) {
             keys: [ 'ns', 'e' ],
             template: '<span class="servermsg">** Kill error * <em>{e}</em></span>'
         },
+        'log': {
+            keys: [ 'ns', 'msg', 'info' ],
+            template: '<span class="servermsg">** {msg} * <em>{info}</em></span>'
+        },
         'unknown': {
             keys: [ 'ns', 'packet' ],
             template: '<span class="servermsg">** Received unknown packet in {ns} * <em>{packet}</em></span>',
@@ -8574,14 +8611,14 @@ Chatterbox.Protocol.LogMessage.prototype.render = function( format ) {
         if( !this.event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
-        d = this.event[key];
+        d = this.event[key] || '';
         
         if( d == null )
             continue;
         
         if( key == 'ns' || key == 'sns' ) {
             key = 'ns';
-            d = this.event['sns'];
+            d = this.event['sns'] || d;
         }
         
         if( d.hasOwnProperty('_parser') ) {
@@ -12626,6 +12663,7 @@ wsc.dAmn.TablumpString = function(data, parser) {
     this._text = null;
     this._html = null;
     this._ansi = null;
+    this._chonc = null;
 };
 
 wsc.dAmn.TablumpString.prototype = new wsc.MessageString;
@@ -12669,8 +12707,19 @@ wsc.dAmn.TablumpString.prototype.text = function() {
  */
 wsc.dAmn.TablumpString.prototype.ansi = function() {
     if(this._ansi == null)
-        this._ansi = this._parser.render(2, this);
+        this._ansi = this._parser.render(3, this);
     return this._ansi;
+};
+
+/**
+ * @function chonc
+ * 
+ * Render the tablumps with chonc-style HTML.
+ */
+wsc.dAmn.TablumpString.prototype.chonc = function() {
+    if(this._chonc == null)
+        this._chonc = this._parser.render(2, this);
+    return this._chonc;
 };
 
 
@@ -12756,14 +12805,14 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
     return {
         // There are a lot of 0 arg things here...
         // Would use regex but that'd be less flexible.
-        '&b\t': [0, '<b>', '<b>', '\x1b[1m'],
-        '&/b\t': [0, '</b>', '</b>', '\x1b[22m'],
-        '&i\t': [0, '<i>', '<i>', '\x1b[3m'],
-        '&/i\t': [0, '</i>', '</i>', '\x1b[23m'],
-        '&u\t': [0, '<u>', '<u>', '\x1b[4m'],
-        '&/u\t': [0, '</u>', '</u>', '\x1b[24m'],
-        '&s\t': [0, '<s>', '<s>', '\x1b[9m'],
-        '&/s\t': [0, '</s>', '</s>', '\x1b[29m'],
+        '&b\t': [0, '<b>', '<b>', '<b>', '\x1b[1m'],
+        '&/b\t': [0, '</b>', '</b>', '</b>', '\x1b[22m'],
+        '&i\t': [0, '<i>', '<i>', '<i>', '\x1b[3m'],
+        '&/i\t': [0, '</i>', '</i>', '</i>', '\x1b[23m'],
+        '&u\t': [0, '<u>', '<u>', '<u>', '\x1b[4m'],
+        '&/u\t': [0, '</u>', '</u>', '</u>', '\x1b[24m'],
+        '&s\t': [0, '<s>', '<s>', '<s>', '\x1b[9m'],
+        '&/s\t': [0, '</s>', '</s>', '</s>', '\x1b[29m'],
         '&sup\t': [0, '<sup>'],
         '&/sup\t': [0, '</sup>'],
         '&sub\t': [0, '<sub>'],
@@ -12781,6 +12830,10 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&link\t': [ 3,
             function( data ) {
                 return data[0] + ( data[1] ? (' (' + data[1] + ')') : '');
+            },
+            function( data ) {
+                t = data[1];
+                return '<a target="_blank" href="'+data[0]+'" title="'+( t || data[0] )+'">'+( t || '[link]' )+'</a>';
             },
             function( data ) {
                 t = data[1];
@@ -12810,13 +12863,25 @@ wsc.dAmn.TablumpParser.prototype.defaultMap = function () {
         '&dev\t': [ 2,
             ':dev{1}:',
             '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
+            '{0}<a target="_blank" alt=":dev{1}:" href="http://{1}.deviantart.com/">{1}</a>',
             '{0}\x1b[36m{1}\x1b[39m'
         ],
         '&thumb\t': [ 6,
             ':thumb{0}:',
-            wsc.dAmn.Emotes.Tablumps
+            wsc.dAmn.Emotes.Tablumps,
+            function( data ) {
+            
+                var ut = (data[1].replace(/[^A-Za-z0-9]+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '') || '-') + '-' + data[0];
+                var anchor = '[<a target="_blank" href="http://www.deviantart.com/art/' + ut + '" title="' + data[1] + '">';
+                
+                return anchor + 'deviation: ' + data[1] + '</a>]';
+            
+            },
+           '[deviation: {1}]'
         ],
-        'EOF': [0, '', null, '\x1b[m']
+        'EOF': [0, '', null, null, '\x1b[m']
     };
 
 };

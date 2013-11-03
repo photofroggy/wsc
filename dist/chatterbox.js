@@ -501,6 +501,12 @@ Chatterbox.UI.prototype.build = function( control, navigation, chatbook ) {
     
     } );
     
+    this.client.bind( 'log', function( event, client ) {
+    
+        ui.packet( event, client );
+    
+    } );
+    
     // Channel removed from client.
     this.client.middle(
         'ns.remove',
@@ -590,6 +596,11 @@ Chatterbox.UI.prototype.packet = function( event, client ) {
         
         if( this.settings.developer ) {
             console.log( '>>>', event.sns, '|', msg.text() );
+        }
+        
+        if( event.name == 'log' && event.sns == '~current' ) {
+            event.ns = ui.chatbook.current.raw;
+            event.sns = ui.chatbook.current.namespace;
         }
         
         // If the event is -shownotice, don't display it!
@@ -2136,6 +2147,7 @@ Chatterbox.Channel.prototype.pkt_join = function( event, client ) {
     
     this.set_header('title', (new wsc.MessageString('')), '', '' );
     this.set_header('topic', (new wsc.MessageString('')), '', '' );
+    this.server_message( 'You have joined ' + this.namespace );
 
 };
 
@@ -4265,6 +4277,10 @@ Chatterbox.Protocol = function(  ) {
             keys: [ 'ns', 'e' ],
             template: '<span class="servermsg">** Kill error * <em>{e}</em></span>'
         },
+        'log': {
+            keys: [ 'ns', 'msg', 'info' ],
+            template: '<span class="servermsg">** {msg} * <em>{info}</em></span>'
+        },
         'unknown': {
             keys: [ 'ns', 'packet' ],
             template: '<span class="servermsg">** Received unknown packet in {ns} * <em>{packet}</em></span>',
@@ -4404,14 +4420,14 @@ Chatterbox.Protocol.LogMessage.prototype.render = function( format ) {
         if( !this.event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
-        d = this.event[key];
+        d = this.event[key] || '';
         
         if( d == null )
             continue;
         
         if( key == 'ns' || key == 'sns' ) {
             key = 'ns';
-            d = this.event['sns'];
+            d = this.event['sns'] || d;
         }
         
         if( d.hasOwnProperty('_parser') ) {

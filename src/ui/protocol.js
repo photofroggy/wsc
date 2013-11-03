@@ -177,6 +177,10 @@ Chatterbox.Protocol = function(  ) {
             keys: [ 'ns', 'e' ],
             template: '<span class="servermsg">** Kill error * <em>{e}</em></span>'
         },
+        'log': {
+            keys: [ 'ns', 'msg', 'info' ],
+            template: '<span class="servermsg">** {msg} * <em>{info}</em></span>'
+        },
         'unknown': {
             keys: [ 'ns', 'packet' ],
             template: '<span class="servermsg">** Received unknown packet in {ns} * <em>{packet}</em></span>',
@@ -316,14 +320,14 @@ Chatterbox.Protocol.LogMessage.prototype.render = function( format ) {
         if( !this.event.hasOwnProperty(key) || key == 'pkt' )
             continue;
         
-        d = this.event[key];
+        d = this.event[key] || '';
         
         if( d == null )
             continue;
         
         if( key == 'ns' || key == 'sns' ) {
             key = 'ns';
-            d = this.event['sns'];
+            d = this.event['sns'] || d;
         }
         
         if( d.hasOwnProperty('_parser') ) {
