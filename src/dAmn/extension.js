@@ -6,7 +6,7 @@
  * @class dAmn.Extension
  * @constructor
  */
-wsc.dAmn.Extension = function( client ) {
+wsc.dAmn.Extension = function( client, ui ) {
 
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
@@ -68,7 +68,7 @@ wsc.dAmn.Extension = function( client ) {
     client.exclude.add( 'chat:devart' );
     client.exclude.add( 'chat:damnidlers' );
     /*
-    client.ui.middle( 'user.hover', function( data, done ) {
+    ui.middle( 'user.hover', function( data, done ) {
         data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
         
         if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
@@ -80,10 +80,10 @@ wsc.dAmn.Extension = function( client ) {
         done( data );
     });
     
-    client.ui.on( 'settings.save', settings.save );
-    client.ui.on( 'settings.close', settings.load );
+    ui.on( 'settings.save', settings.save );
+    ui.on( 'settings.close', settings.load );
     
-    client.ui.on( 'log_whois.before', function( event, ui ) {
+    ui.on( 'log_whois.before', function( event, ui ) {
         event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
         event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
         
