@@ -419,7 +419,7 @@ wsc.dAmn.Emotes.Picker = function( ui, options, settings ) {
 
 };
 
-wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
+//wsc.dAmn.Emotes.Picker.prototype = new Chatterbox.Popup.ItemPicker();
 wsc.dAmn.Emotes.Picker.prototype.constructor = wsc.dAmn.Emotes.Picker;
 
 wsc.dAmn.Emotes.Picker.Disabled = '<section class="pages">\
@@ -576,7 +576,7 @@ wsc.dAmn.Emotes.Page = function(  ) {
     Chatterbox.Popup.ItemPicker.Page.apply(this, arguments);
 };
 
-wsc.dAmn.Emotes.Page.prototype = new Chatterbox.Popup.ItemPicker.Page();
+//wsc.dAmn.Emotes.Page.prototype = new Chatterbox.Popup.ItemPicker.Page();
 wsc.dAmn.Emotes.Page.prototype.constructor = wsc.dAmn.Emotes.Page;
 
 wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {

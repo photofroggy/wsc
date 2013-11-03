@@ -8,11 +8,6 @@
     ],
     "packs": [
         {
-            "dest": "dist/chatterbox.js",
-            "mini": "dist/chatterbox.min.js",
-            "files": "src/ui"
-        },
-        {
             "dest": "dist/bdspeer.js",
             "mini": "dist/bdspeer.min.js",
             "files": "src/dAmn/peer"
@@ -43,7 +38,6 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "dist/chatterbox.js",
                 "src/wsc.js"
             ]
         },
@@ -68,21 +62,10 @@
                 "src/away.js",
                 "src/ignore.js",
                 "src/client.js",
-                "dist/chatterbox.js",
                 "dist/dAmn.js",
                 "dist/bdspeer.js",
                 "src/wsc.js"
             ]
-        },
-        {
-            "sass": true,
-            "options": [
-                "--style",
-                "expanded"
-            ],
-            "dest": "dist/wsc.css",
-            "mini": "dist/wsc.min.css",
-            "files": "css/wsc.scss"
         }
     ],
     "post": ["./mvlh", "./doctq"]
