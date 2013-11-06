@@ -598,7 +598,7 @@ wsc.Client.prototype.monitor = function( message ) {
  */
 wsc.Client.prototype.mute_user = function( user ) {
 
-    return this.ui.mute_user( user );
+    //return this.ui.mute_user( user );
 
 };
 
@@ -610,7 +610,7 @@ wsc.Client.prototype.mute_user = function( user ) {
  */
 wsc.Client.prototype.unmute_user = function( user ) {
 
-    return this.ui.unmute_user( user );
+    //return this.ui.unmute_user( user );
 
 };
 

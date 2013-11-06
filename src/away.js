@@ -25,11 +25,11 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.ui.on('tabbed', pkt_highlighted);
-        client.ui.on('settings.open', settings.page);
+        //client.ui.on('tabbed', pkt_highlighted);
+        //client.ui.on('settings.open', settings.page);
     
     };
-    
+    /*
     settings.page = function( event, ui ) {
     
         var strips = function( data ) {
@@ -119,7 +119,7 @@ wsc.defaults.Extension.Away = function( client ) {
         });
     
     };
-    
+    */
     
     
     // Away message stuff.
@@ -146,11 +146,12 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
-        
+        /*
         client.ui.control.add_state({
             'ref': 'away',
             'label': 'Away, reason: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
         });
+        */
     
     };
     
@@ -172,7 +173,7 @@ wsc.defaults.Extension.Away = function( client ) {
             method.call( client, ns, announce );
         } );
         
-        client.ui.control.rem_state('away');
+        //client.ui.control.rem_state('away');
     };
     
     var pkt_highlighted = function( event ) {

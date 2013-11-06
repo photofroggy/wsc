@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.47';
+wsc.VERSION = '1.7.48';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.132';
+wsc.REVISION = '0.21.133';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -2599,14 +2599,14 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Ignore
      */
-    //wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Ignore(client);
     
     /**
      * Implements away messages.
      * 
      * @method Away
      */
-    //wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Away(client);
     
     /**
      * Implements autojoin channels.
@@ -2776,14 +2776,14 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                 };
                 break;
             case 'on':
-                chan.server_message('Autojoin on.');
+                //chan.server_message('Autojoin on.');
                 if( !client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = true;
                 }
                 break;
             case 'off':
-                chan.server_message('Autojoin off.');
+                //chan.server_message('Autojoin off.');
                 if( client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = false;
@@ -2849,11 +2849,11 @@ wsc.defaults.Extension.Away = function( client ) {
         
         client.bind('cmd.setaway', cmd_setaway);
         client.bind('cmd.setback', cmd_setback);
-        client.ui.on('tabbed', pkt_highlighted);
-        client.ui.on('settings.open', settings.page);
+        //client.ui.on('tabbed', pkt_highlighted);
+        //client.ui.on('settings.open', settings.page);
     
     };
-    
+    /*
     settings.page = function( event, ui ) {
     
         var strips = function( data ) {
@@ -2943,7 +2943,7 @@ wsc.defaults.Extension.Away = function( client ) {
         });
     
     };
-    
+    */
     
     
     // Away message stuff.
@@ -2970,11 +2970,12 @@ wsc.defaults.Extension.Away = function( client ) {
         client.each_channel( function( ns ) {
             method.call( client, ns, announce );
         } );
-        
+        /*
         client.ui.control.add_state({
             'ref': 'away',
             'label': 'Away, reason: <i>' + ( settings.reason || '[silent away]' ) + '</i>'
         });
+        */
     
     };
     
@@ -2996,7 +2997,7 @@ wsc.defaults.Extension.Away = function( client ) {
             method.call( client, ns, announce );
         } );
         
-        client.ui.control.rem_state('away');
+        //client.ui.control.rem_state('away');
     };
     
     var pkt_highlighted = function( event ) {
@@ -3072,10 +3073,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
         client.bind('cmd.unignore', cmd_unignore);
         
         // Settings window
-        client.ui.on('settings.open', settings.page);
+        //client.ui.on('settings.open', settings.page);
     
     };
-    
+    /*
     settings.page = function( event, ui ) {
     
         var page = event.settings.page('Ignores');
@@ -3163,6 +3164,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         });
     
     };
+    */
     
     var cmd_ignore = function( cmd ) {
     
@@ -3235,19 +3237,21 @@ wsc.defaults.Extension.Ignore = function( client ) {
         settings.count = parseInt( storage.get( 'count', 0 ) );
         
         var tu = null;
+        /*
         for( var i in client.ui.umuted ) {
             if( !client.ui.umuted.hasOwnProperty(i) ) {
                 continue;
             }
             client.unmute_user( client.ui.umuted[i] );
         }
+        */
         
-        client.ui.umuted = [];
+        //client.ui.umuted = [];
         
         if( settings.count > 0 ) {
             tu = null;
             for( var i = 0; i < settings.count; i++ ) {
-                client.mute_user( istore.get(i, null) );
+                //client.mute_user( istore.get(i, null) );
                 //client.ui.mute_user( tu );
             }
         }
@@ -3262,11 +3266,12 @@ wsc.defaults.Extension.Ignore = function( client ) {
         for( var i = 0; i < settings.count; i++ ) {
             istore.remove(i)
         }
-        
+        /*
         if( client.ui.umuted.length == 0 ) {
             storage.set('count', 0);
         } else {
             var c = -1;
+            
             for( var i in client.ui.umuted ) {
             
                 if( !client.ui.umuted.hasOwnProperty(i) )
@@ -3280,7 +3285,9 @@ wsc.defaults.Extension.Ignore = function( client ) {
             c++;
             settings.count = c;
             storage.set('count', c);
+            
         }
+        */
     
     };
     
@@ -3888,7 +3895,7 @@ wsc.Client.prototype.monitor = function( message ) {
  */
 wsc.Client.prototype.mute_user = function( user ) {
 
-    return this.ui.mute_user( user );
+    //return this.ui.mute_user( user );
 
 };
 
@@ -3900,7 +3907,7 @@ wsc.Client.prototype.mute_user = function( user ) {
  */
 wsc.Client.prototype.unmute_user = function( user ) {
 
-    return this.ui.unmute_user( user );
+    //return this.ui.unmute_user( user );
 
 };
 

@@ -158,14 +158,14 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                 };
                 break;
             case 'on':
-                chan.server_message('Autojoin on.');
+                //chan.server_message('Autojoin on.');
                 if( !client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = true;
                 }
                 break;
             case 'off':
-                chan.server_message('Autojoin off.');
+                //chan.server_message('Autojoin off.');
                 if( client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = false;

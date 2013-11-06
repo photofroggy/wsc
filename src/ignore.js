@@ -19,10 +19,10 @@ wsc.defaults.Extension.Ignore = function( client ) {
         client.bind('cmd.unignore', cmd_unignore);
         
         // Settings window
-        client.ui.on('settings.open', settings.page);
+        //client.ui.on('settings.open', settings.page);
     
     };
-    
+    /*
     settings.page = function( event, ui ) {
     
         var page = event.settings.page('Ignores');
@@ -110,6 +110,7 @@ wsc.defaults.Extension.Ignore = function( client ) {
         });
     
     };
+    */
     
     var cmd_ignore = function( cmd ) {
     
@@ -182,19 +183,21 @@ wsc.defaults.Extension.Ignore = function( client ) {
         settings.count = parseInt( storage.get( 'count', 0 ) );
         
         var tu = null;
+        /*
         for( var i in client.ui.umuted ) {
             if( !client.ui.umuted.hasOwnProperty(i) ) {
                 continue;
             }
             client.unmute_user( client.ui.umuted[i] );
         }
+        */
         
-        client.ui.umuted = [];
+        //client.ui.umuted = [];
         
         if( settings.count > 0 ) {
             tu = null;
             for( var i = 0; i < settings.count; i++ ) {
-                client.mute_user( istore.get(i, null) );
+                //client.mute_user( istore.get(i, null) );
                 //client.ui.mute_user( tu );
             }
         }
@@ -209,11 +212,12 @@ wsc.defaults.Extension.Ignore = function( client ) {
         for( var i = 0; i < settings.count; i++ ) {
             istore.remove(i)
         }
-        
+        /*
         if( client.ui.umuted.length == 0 ) {
             storage.set('count', 0);
         } else {
             var c = -1;
+            
             for( var i in client.ui.umuted ) {
             
                 if( !client.ui.umuted.hasOwnProperty(i) )
@@ -227,7 +231,9 @@ wsc.defaults.Extension.Ignore = function( client ) {
             c++;
             settings.count = c;
             storage.set('count', c);
+            
         }
+        */
     
     };
     

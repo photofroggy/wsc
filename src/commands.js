@@ -454,14 +454,14 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Ignore
      */
-    //wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Ignore(client);
     
     /**
      * Implements away messages.
      * 
      * @method Away
      */
-    //wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Away(client);
     
     /**
      * Implements autojoin channels.
