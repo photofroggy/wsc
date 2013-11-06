@@ -7,6 +7,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
+    /*
     settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
         'event': {
             'select': function( item ) { settings.emotes.select( item ); },
@@ -15,6 +16,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     }, settings );
     settings.emotes.picker.build();
     settings.emotes.picker.hide();
+    */
     
     /*
     client.ui.control.add_button( {
@@ -31,7 +33,7 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
         }
     });
     */
-    
+    /*
     settings.emotes.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Emotes');
@@ -95,12 +97,13 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     };
     
     client.ui.on('settings.open.ran', settings.emotes.configure_page);
+    */
     
     settings.emotes.fetch = function(  ) {
         if( settings.emotes.loaded ) {
-            settings.emotes.picker.loading('Reloading...');
+            //settings.emotes.picker.loading('Reloading...');
         } else {
-            settings.emotes.picker.loading();
+            //settings.emotes.picker.loading();
         }
         settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
@@ -109,21 +112,24 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
+                    /*
                     client.ui.pager.notice({
                         'ref': 'emotes-loaded',
                         'heading': 'Emote CLOUD',
                         'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
                     }, false, 5000, true);
+                    */
                 }
             }
             
             settings.emotes.sort();
             settings.emotes.loaded = true;
-            settings.emotes.picker.loaded();
+            //settings.emotes.picker.loaded();
+            console.log('emotes loaded');
             settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         },
         function(  ) {
-            settings.emotes.picker.loaded();
+            //settings.emotes.picker.loaded();
             return false;
         });
     };

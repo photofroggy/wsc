@@ -129,7 +129,7 @@ wsc.dAmn.Extension = function( client, ui ) {
      *
      * @method Emotes
      */
-    //wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
     
     /**
      * Implements Sta.sh thumbnails.
