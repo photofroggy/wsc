@@ -4,6 +4,7 @@
 wsc.defaults.Extension.Autojoin = function( client ) {
 
     var settings = client.autojoin;
+    /*
     client.ui.nav.add_button( {
         'icon': 'chat',
         'label': '',
@@ -17,14 +18,15 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             }
         }
     });
+    */
     
     var init = function(  ) {
     
         client.bind('cmd.autojoin', cmd_autojoin);
-        client.ui.on('settings.open', settings.page);
+        //client.ui.on('settings.open', settings.page);
     
     };
-    
+    /*
     settings.page = function( event, ui ) {
     
         var page = event.settings.page('Autojoin');
@@ -115,6 +117,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         });
     
     };
+    */
     
     var cmd_autojoin = function( cmd ) {
     
@@ -135,9 +138,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     if( client.autojoin.channel.indexOf( item ) == -1 ) {
                         mod = true;
                         client.autojoin.channel.push( item );
-                        chan.server_message('Added ' + item + ' to your autojoin.');
+                        //chan.server_message('Added ' + item + ' to your autojoin.');
                     } else {
-                        chan.server_message('Already have ' + item + ' on your autojoin.');
+                        //chan.server_message('Already have ' + item + ' on your autojoin.');
                     }
                 };
                 break;
@@ -148,9 +151,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     if( ci != -1 ) {
                         mod = true;
                         client.autojoin.channel.splice( ci, 1 );
-                        chan.server_message('Removed ' + item + ' from your autojoin.');
+                        //chan.server_message('Removed ' + item + ' from your autojoin.');
                     } else {
-                        chan.server_message(item + ' is not on your autojoin list.');
+                        //chan.server_message(item + ' is not on your autojoin list.');
                     }
                 };
                 break;
@@ -167,6 +170,16 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                     mod = true;
                     client.autojoin.on = false;
                 }
+                break;
+            default:
+                console.log('> start autojoin');
+                console.log(client.autojoin);
+                for( var i in client.autojoin.channel ) {
+                    if( !client.autojoin.channel.hasOwnProperty(i) )
+                        continue;
+                    client.join(client.autojoin.channel[i]);
+                }
+                return;
                 break;
         
         }

@@ -468,6 +468,6 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Autojoin
      */
-    //wsc.defaults.Extension.Autojoin(client);
+    wsc.defaults.Extension.Autojoin(client);
 
 };
