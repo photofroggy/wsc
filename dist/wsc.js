@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.48';
+wsc.VERSION = '1.7.49';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.133';
+wsc.REVISION = '0.21.134';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -3349,7 +3349,6 @@ wsc.Client = function( view, options, mozilla ) {
         "protocol": wsc.Protocol,
         "mparser": wsc.MessageParser,
         "flow": wsc.Flow,
-        "ui_object": Chatterbox.UI,
         "extend": [wsc.defaults.Extension],
         "client": 'chatclient',
         "clientver": '0.3',
