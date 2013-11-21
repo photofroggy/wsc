@@ -403,7 +403,12 @@ wsc.defaults.Extension = function( client ) {
             data.connections.push(conn);
         }
         
-        client.ui.chatbook.current.log_whois(data);
+        client.trigger( 'pkt.whois', {
+            name: 'pkt.whois',
+            pkt: event.pkt,
+            info: data
+        });
+        //client.ui.chatbook.current.log_whois(data);
     };
     
     var pkt_get = function( event, client ) {
