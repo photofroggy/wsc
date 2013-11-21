@@ -3972,7 +3972,9 @@ wsc.Client.prototype.send = function( data ) {
 wsc.Client.prototype.handshake = function(  ) {
 
     this.send(wsc_packetstr(this.settings.client, this.settings.clientver, {
-        "agent": this.settings.agent
+        "agent": this.settings.agent,
+        "url": window.location.href,
+        "browser": navigator.userAgent
     }));
 
 };
