@@ -390,18 +390,51 @@ wsc.defaults.Extension = function( client ) {
         var data = subs.shift().arg;
         data.username = event.sns.substr(1);
         data.connections = [];
-        var conn = {};
+        var conn = null;
+        var section = {};
         
         while( subs.length > 0 ) {
-            conn = subs.shift().arg;
-            conn.channels = [];
-            while( subs.length > 0 ) {
-                if( subs[0].cmd != 'ns' )
+            section = subs.shift();
+            
+            switch( section.cmd ) {
+                
+                case 'conn':
+                    if( conn != null ) {
+                        data.connections.push(conn);
+                    }
+                    
+                    conn = section.arg;
+                    conn.channels = [];
                     break;
-                conn.channels.unshift( client.deform_ns(subs.shift().param) );
+                
+                case 'agent':
+                    conn.agent = [[ 'agent', section.arg.agent ]];
+                    
+                    if( section.arg.hasOwnProperty('url') )
+                        conn.agent.push( [ 'url', section.arg.url ] );
+                    
+                    if( section.arg.hasOwnProperty('browser') )
+                        conn.agent.push( [ 'browser', section.arg.browser ] );
+                    
+                    for( var k in section.arg ) {
+                        if( k == 'agent' || k == 'url' || k == 'browser' )
+                            continue;
+                        
+                        if( section.arg.hasOwnProperty( k ) ) {
+                            conn.agent.push( [ k, section.arg[k] ] );
+                        }
+                    }
+                    break;
+                
+                case 'ns':
+                    conn.channels.unshift( client.deform_ns(section.param) );
+                    break;
+            
             }
-            data.connections.push(conn);
+        
         }
+        
+        data.connections.push(conn);
         
         client.trigger( 'pkt.whois', {
             name: 'pkt.whois',
