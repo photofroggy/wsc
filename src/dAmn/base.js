@@ -6,7 +6,7 @@
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.35';
+wsc.dAmn.VERSION = '0.10.36';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -109,7 +109,7 @@ wsc.dAmn.Extension = function( client, ui ) {
      *
      * @method Emotes
      */
-    wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.wsc.Emotes( client, storage.emotes, settings );
     
     return settings;
 
@@ -121,7 +121,8 @@ wsc.dAmn.chatterbox = function( ui ) {
 
     var client = ui.client;
     var settings = {
-        'colours': {}
+        'colours': {},
+        'emotes': {}
     };
     
     ui.on( 'settings.save', client.ext.dAmn.save );
@@ -160,6 +161,8 @@ wsc.dAmn.chatterbox = function( ui ) {
     } );
     
     wsc.dAmn.chatterbox.Colours( client, ui, settings );
+    
+    wsc.dAmn.chatterbox.Emotes( client, ui, settings );
     
     /**
      * Implements Sta.sh thumbnails.

@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.35';
+wsc.dAmn.VERSION = '0.10.36';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -4361,7 +4361,7 @@ wsc.dAmn.Extension = function( client, ui ) {
      *
      * @method Emotes
      */
-    wsc.dAmn.Emotes( client, storage.emotes, settings );
+    wsc.dAmn.wsc.Emotes( client, storage.emotes, settings );
     
     return settings;
 
@@ -4373,7 +4373,8 @@ wsc.dAmn.chatterbox = function( ui ) {
 
     var client = ui.client;
     var settings = {
-        'colours': {}
+        'colours': {},
+        'emotes': {}
     };
     
     ui.on( 'settings.save', client.ext.dAmn.save );
@@ -4412,6 +4413,8 @@ wsc.dAmn.chatterbox = function( ui ) {
     } );
     
     wsc.dAmn.chatterbox.Colours( client, ui, settings );
+    
+    wsc.dAmn.chatterbox.Emotes( client, ui, settings );
     
     /**
      * Implements Sta.sh thumbnails.
@@ -4812,7 +4815,8 @@ wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
 
     var settings = client.ext.dAmn;
     ext.colours.page = null;
-    console.log( settings);
+    
+    
     ext.colours.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Colours');
@@ -4915,105 +4919,14 @@ wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
 
 };
 
-wsc.dAmn.Emotes = function( client, storage, settings ) {
+wsc.dAmn.Emotes = {};
+
+wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
 
     settings.emotes.emote = {};
-    settings.emotes.page = null;
     settings.emotes.fint = null;
-    settings.emotes.notice = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
-    /*
-    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
-        'event': {
-            'select': function( item ) { settings.emotes.select( item ); },
-            'reload': function(  ) { settings.emotes.fetch(); }
-        }
-    }, settings );
-    settings.emotes.picker.build();
-    settings.emotes.picker.hide();
-    */
-    
-    /*
-    client.ui.control.add_button( {
-        'label': '',
-        'icon': 'user',
-        'href': '#emotes',
-        'title': 'Emote picker.',
-        'handler': function() {
-            if( settings.emotes.picker.window.css('display') == 'none' ) {
-                settings.emotes.picker.show();
-            } else {
-                settings.emotes.picker.close();
-            }
-        }
-    });
-    */
-    /*
-    settings.emotes.configure_page = function( event, ui ) {
-    
-        var page = event.settings.page('Emotes');
-        settings.emotes.page = page;
-        
-        var orig = {};
-        orig.on = settings.emotes.on;
-        var stat = '';
-        if( orig.on ) {
-            if( !settings.emotes.loaded || settings.emotes.fetching )
-                stat = '<em>Fetching emotes...</em>';
-            else
-                stat = '<em>Emotes loaded.</em>';
-        }
-        
-        page.item('Form', {
-            'ref': 'switch',
-            'title': 'Enable Emotes',
-            'text': 'Here you can turn custom emotes on and off.',
-            'fields': [
-                ['Checkbox', {
-                    'ref': 'enabled',
-                    'items': [ { 'value': 'yes', 'title': 'On', 'selected': orig.on } ]
-                }]
-            ],
-            'event': {
-                'change': function( event ) {
-                    settings.emotes.on = (event.data.enabled.indexOf('yes') != -1);
-                    settings.emotes.picker.state( settings.emotes.on );
-                    if( settings.emotes.on ) {
-                        settings.emotes.fetch();
-                        return;
-                    }
-                    if( settings.emotes.fint === null )
-                        return;
-                    clearTimeout(settings.emotes.fint);
-                    settings.emotes.fint = null;
-                },
-                'save': function( event ) {
-                    orig.on = settings.emotes.on;
-                    if( !settings.emotes.on ) {
-                        settings.emotes.picker.loading('Disabled');
-                    } else {
-                        if( !settings.emotes.fetching ) {
-                            settings.emotes.picker.loaded();
-                        }
-                    }
-                },
-                'close': function( event ) {
-                    settings.emotes.on = orig.on;
-                    settings.load();
-                    settings.emotes.page = null;
-                    if( settings.emotes.fint === null )
-                        return;
-                    clearTimeout(settings.emotes.fint);
-                    settings.emotes.fint = null;
-                }
-            }
-        });
-    
-    };
-    
-    client.ui.on('settings.open.ran', settings.emotes.configure_page);
-    */
     
     settings.emotes.fetch = function(  ) {
         if( settings.emotes.loaded ) {
@@ -5028,20 +4941,13 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
-                    /*
-                    client.ui.pager.notice({
-                        'ref': 'emotes-loaded',
-                        'heading': 'Emote CLOUD',
-                        'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
-                    }, false, 5000, true);
-                    */
+                    client.trigger( 'dAmn.emotes.loaded', { name: 'dAmn.emotes.loaded' } );
                 }
             }
             
             settings.emotes.sort();
             settings.emotes.loaded = true;
             //settings.emotes.picker.loaded();
-            console.log('emotes loaded');
             settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         },
         function(  ) {
@@ -5192,6 +5098,114 @@ wsc.dAmn.Emotes = function( client, storage, settings ) {
     settings.emotes.fetch();
 
 };
+
+wsc.dAmn.chatterbox.Emotes = function( client, ui, ext ) {
+
+    var settings = client.ext.dAmn;
+    ext.emotes.page = null;
+    
+    /*
+    settings.emotes.picker = new wsc.dAmn.Emotes.Picker( client.ui, {
+        'event': {
+            'select': function( item ) { settings.emotes.select( item ); },
+            'reload': function(  ) { settings.emotes.fetch(); }
+        }
+    }, settings );
+    settings.emotes.picker.build();
+    settings.emotes.picker.hide();
+    */
+    
+    /*
+    client.ui.control.add_button( {
+        'label': '',
+        'icon': 'user',
+        'href': '#emotes',
+        'title': 'Emote picker.',
+        'handler': function() {
+            if( settings.emotes.picker.window.css('display') == 'none' ) {
+                settings.emotes.picker.show();
+            } else {
+                settings.emotes.picker.close();
+            }
+        }
+    });
+    */
+    
+    ext.emotes.configure_page = function( event, ui ) {
+    
+        var page = event.settings.page('Emotes');
+        ext.emotes.page = page;
+        
+        var orig = {};
+        orig.on = settings.emotes.on;
+        var stat = '';
+        if( orig.on ) {
+            if( !settings.emotes.loaded || settings.emotes.fetching )
+                stat = '<em>Fetching emotes...</em>';
+            else
+                stat = '<em>Emotes loaded.</em>';
+        }
+        
+        page.item('Form', {
+            'ref': 'switch',
+            'title': 'Enable Emotes',
+            'text': 'Here you can turn custom emotes on and off.',
+            'fields': [
+                ['Checkbox', {
+                    'ref': 'enabled',
+                    'items': [ { 'value': 'yes', 'title': 'On', 'selected': orig.on } ]
+                }]
+            ],
+            'event': {
+                'change': function( event ) {
+                    settings.emotes.on = (event.data.enabled.indexOf('yes') != -1);
+                    settings.emotes.picker.state( settings.emotes.on );
+                    if( settings.emotes.on ) {
+                        settings.emotes.fetch();
+                        return;
+                    }
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
+                },
+                'save': function( event ) {
+                    orig.on = settings.emotes.on;
+                    if( !settings.emotes.on ) {
+                        //settings.emotes.picker.loading('Disabled');
+                    } else {
+                        if( !settings.emotes.fetching ) {
+                            //settings.emotes.picker.loaded();
+                        }
+                    }
+                },
+                'close': function( event ) {
+                    settings.emotes.on = orig.on;
+                    settings.load();
+                    settings.emotes.page = null;
+                    if( settings.emotes.fint === null )
+                        return;
+                    clearTimeout(settings.emotes.fint);
+                    settings.emotes.fint = null;
+                }
+            }
+        });
+    
+    };
+    
+    ui.on('settings.open.ran', ext.emotes.configure_page);
+    client.bind( 'dAmn.emotes.loaded', function( event, client ) {
+    
+        ui.pager.notice({
+            'ref': 'emotes-loaded',
+            'heading': 'Emote CLOUD',
+            'content': 'Emoticons from zike\'s Emote CLOUD have been loaded.'
+        }, false, 5000, true);
+    
+    } );
+
+};
+
 
 wsc.dAmn.Emotes.Tablumps = function( data ) {
 

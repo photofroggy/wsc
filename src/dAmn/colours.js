@@ -22,7 +22,8 @@ wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
 
     var settings = client.ext.dAmn;
     ext.colours.page = null;
-    console.log( settings);
+    
+    
     ext.colours.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Colours');
