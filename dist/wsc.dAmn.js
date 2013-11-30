@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.33';
+wsc.dAmn.VERSION = '0.10.34';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -4319,13 +4319,8 @@ wsc.dAmn.Extension = function( client, ui ) {
     client.protocol.extend_maps({
         'dAmnServer': ['version']
     });
-    /*
-    client.protocol.extend_messages({
-        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
-    });
-    */
-    client.protocol.mparser = new wsc.dAmn.TablumpParser;
     
+    client.protocol.mparser = new wsc.dAmn.TablumpParser;
     client.flow.dAmnServer = client.flow.chatserver;
     
     client.exclude.add( 'chat:devart' );
@@ -4390,6 +4385,15 @@ wsc.dAmn.chatterbox = function( ui ) {
     
     ui.on( 'settings.save', client.ext.dAmn.save );
     ui.on( 'settings.close', client.ext.dAmn.load );
+    
+    ui.protocol.extend_messages({
+        'dAmnServer': {
+            keys: [ 'version' ],
+            template: '<span class="servermsg">** Connected to dAmnServer {version} *</span>',
+            global: true
+        }
+    });
+    
     
     ui.middle( 'user.hover', function( data, done ) {
         data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
