@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.32';
+wsc.dAmn.VERSION = '0.10.33';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -4330,32 +4330,6 @@ wsc.dAmn.Extension = function( client, ui ) {
     
     client.exclude.add( 'chat:devart' );
     client.exclude.add( 'chat:damnidlers' );
-    /*
-    ui.middle( 'user.hover', function( data, done ) {
-        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
-        
-        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
-            data.info.push(data.member.realname);
-        
-        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
-            data.info.push(data.member.typename);
-        
-        done( data );
-    });
-    
-    ui.on( 'settings.save', settings.save );
-    ui.on( 'settings.close', settings.load );
-    
-    ui.on( 'log_whois.before', function( event, ui ) {
-        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
-        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
-        
-        if( event.raw.realname )
-            event.info.push(event.raw.realname);
-        
-        if( event.raw.typename )
-            event.info.push(event.raw.typename);
-    } );*/
     
     /**
      * Implements the Data Sharing Protocol.
@@ -4416,6 +4390,29 @@ wsc.dAmn.chatterbox = function( ui ) {
     
     ui.on( 'settings.save', client.ext.dAmn.save );
     ui.on( 'settings.close', client.ext.dAmn.load );
+    
+    ui.middle( 'user.hover', function( data, done ) {
+        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
+        
+        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
+            data.info.push(data.member.realname);
+        
+        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
+            data.info.push(data.member.typename);
+        
+        done( data );
+    });
+    
+    ui.on( 'log_whois.before', function( event, ui ) {
+        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
+        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
+        
+        if( event.raw.realname )
+            event.info.push(event.raw.realname);
+        
+        if( event.raw.typename )
+            event.info.push(event.raw.typename);
+    } );
     
     wsc.dAmn.chatterbox.Colours( client, ui, settings );
     
