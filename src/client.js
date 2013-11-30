@@ -89,7 +89,9 @@ wsc.Client = function( view, options, mozilla ) {
     }
     */
     
-    wsc.defaults.Extension( this );
+    this.ext = {};
+    
+    this.ext.defaults = wsc.defaults.Extension( this );
 
 };
 

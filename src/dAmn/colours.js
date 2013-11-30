@@ -1,12 +1,32 @@
 
-wsc.dAmn.Colours = function( client, storage, settings ) {
 
-    settings.colours.page = null;
+wsc.dAmn.wsc.Colours = function( client, storage, ext ) {
     
-    settings.colours.configure_page = function( event, ui ) {
+    ext.colours.send_colour = function( data, done ) {
+        if( !ext.colours.send ) {
+            done( data );
+            return;
+        }
+        
+        data.input+= '<abbr title="colors:' + ext.colours.user + ':' + ext.colours.msg + '"></abbr>';
+        done( data );
+    };
+    
+    client.middle('send.msg', ext.colours.send_colour);
+    client.middle('send.action', ext.colours.send_colour);
+
+};
+
+
+wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
+
+    var settings = client.ext.dAmn;
+    ext.colours.page = null;
+    console.log( settings);
+    ext.colours.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Colours');
-        settings.colours.page = page;
+        ext.colours.page = page;
         
         var orig = {};
         orig.on = settings.colours.on;
@@ -73,23 +93,14 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
                 'close': function( event ) {
                     settings.colours.user = orig.user;
                     settings.colours.msg = orig.msg;
+                    ext.colours.page = null;
                 },
             }
         });
     
     };
     
-    settings.colours.send_colour = function( data, done ) {
-        if( !settings.colours.send ) {
-            done( data );
-            return;
-        }
-        
-        data.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
-        done( data );
-    };
-    
-    settings.colours.parse_colour = function( event ) {
+    ext.colours.parse_colour = function( event ) {
         if( !settings.colours.on )
             return;
         
@@ -109,10 +120,7 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
         event.item.find('.cmsg.user, .caction.user').css('color', '#' + m[1]);
     };
     
-    client.ui.on('settings.open.ran', settings.colours.configure_page);
-    client.ui.on('log_item.after', settings.colours.parse_colour);
-    
-    client.middle('send.msg', settings.colours.send_colour);
-    client.middle('send.action', settings.colours.send_colour);
+    ui.on('settings.open.ran', ext.colours.configure_page);
+    ui.on('log_item.after', ext.colours.parse_colour);
 
 };

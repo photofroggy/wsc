@@ -2586,7 +2586,7 @@ wsc.defaults.Extension = function( client ) {
             pkt: event.pkt,
             info: data
         });
-        //client.ui.chatbook.current.log_whois(data);
+        
     };
     
     var pkt_get = function( event, client ) {
@@ -3424,7 +3424,9 @@ wsc.Client = function( view, options, mozilla ) {
     }
     */
     
-    wsc.defaults.Extension( this );
+    this.ext = {};
+    
+    this.ext.defaults = wsc.defaults.Extension( this );
 
 };
 
@@ -4256,9 +4258,170 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.31';
+wsc.dAmn.VERSION = '0.10.32';
 wsc.dAmn.STATE = 'alpha';
 
+
+/**
+ * The dAmn extension makes the client work with dAmn. This extension also implements
+ * various other features to improve on the user experience.
+ * 
+ * @class dAmn.Extension
+ * @constructor
+ */
+wsc.dAmn.Extension = function( client, ui ) {
+
+    client.settings.client = 'dAmnClient';
+    client.settings.clientver = '0.3';
+    client.settings.domain = 'deviantart.com';
+    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
+    
+    var storage = client.storage.folder('dAmn');
+    storage.bds = storage.folder('bds');
+    storage.emotes = storage.folder('emotes');
+    storage.colours = storage.folder('colours');
+    var settings = {
+        'emotes': {
+            'on': false,
+            'emote': []
+        },
+        'colours': {
+            'on': false,
+            'send': false,
+            'msg': '000000',
+            'user': '000000'
+        }
+    };
+    
+    settings.save = function(  ) {
+        
+        storage.emotes.set('on', settings.emotes.on);
+        storage.colours.set('on', settings.colours.on);
+        storage.colours.set('send', settings.colours.send);
+        storage.colours.set('msg', settings.colours.msg);
+        storage.colours.set('user', settings.colours.user);
+        
+    };
+    
+    settings.load = function(  ) {
+    
+        settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
+        settings.colours.on = (storage.colours.get('on', 'false') == 'true');
+        settings.colours.send = (storage.colours.get('send', 'false') == 'true');
+        settings.colours.msg = storage.colours.get('msg', '');
+        settings.colours.user = storage.colours.get('user', '');
+    
+    };
+    
+    settings.load();
+    settings.save();
+    
+    client.protocol.extend_maps({
+        'dAmnServer': ['version']
+    });
+    /*
+    client.protocol.extend_messages({
+        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
+    });
+    */
+    client.protocol.mparser = new wsc.dAmn.TablumpParser;
+    
+    client.flow.dAmnServer = client.flow.chatserver;
+    
+    client.exclude.add( 'chat:devart' );
+    client.exclude.add( 'chat:damnidlers' );
+    /*
+    ui.middle( 'user.hover', function( data, done ) {
+        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
+        
+        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
+            data.info.push(data.member.realname);
+        
+        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
+            data.info.push(data.member.typename);
+        
+        done( data );
+    });
+    
+    ui.on( 'settings.save', settings.save );
+    ui.on( 'settings.close', settings.load );
+    
+    ui.on( 'log_whois.before', function( event, ui ) {
+        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
+        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
+        
+        if( event.raw.realname )
+            event.info.push(event.raw.realname);
+        
+        if( event.raw.typename )
+            event.info.push(event.raw.typename);
+    } );*/
+    
+    /**
+     * Implements the Data Sharing Protocol.
+     * 
+     * @method BDS
+     */
+    wsc.dAmn.BDS( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Links. Links are private chats between two clients that
+     * are used for exchanging information autonomously.
+     *
+     * @method BDS.Link
+     */
+    wsc.dAmn.BDS.Link( client, storage.bds, settings );
+    
+    /**
+     * Implements Data Sharing Peers. BDS Peers are signalling channels for
+     * peer to peer WebRTC connections.
+     * 
+     * @method BDS.Peer
+     */
+    wsc.dAmn.BDS.Peer( client, storage.bds, settings );
+    
+    /**
+     * Implements custom colours.
+     * 
+     * @method Colours
+     */
+    wsc.dAmn.wsc.Colours( client, storage.colours, settings );
+    
+    /**
+     * Implements custom emoticons.
+     *
+     * @method Emotes
+     */
+    wsc.dAmn.Emotes( client, storage.emotes, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
+    //wsc.dAmn.Stash( client, storage.emotes, settings );
+    
+    return settings;
+
+};
+
+wsc.dAmn.wsc = wsc.dAmn.Extension;
+
+wsc.dAmn.chatterbox = function( ui ) {
+
+    var client = ui.client;
+    var settings = {
+        'colours': {}
+    };
+    
+    ui.on( 'settings.save', client.ext.dAmn.save );
+    ui.on( 'settings.close', client.ext.dAmn.load );
+    
+    wsc.dAmn.chatterbox.Colours( client, ui, settings );
+    
+    return settings;
+
+};
 
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
@@ -4625,14 +4788,34 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
 
 };
 
-wsc.dAmn.Colours = function( client, storage, settings ) {
 
-    settings.colours.page = null;
+wsc.dAmn.wsc.Colours = function( client, storage, ext ) {
     
-    settings.colours.configure_page = function( event, ui ) {
+    ext.colours.send_colour = function( data, done ) {
+        if( !ext.colours.send ) {
+            done( data );
+            return;
+        }
+        
+        data.input+= '<abbr title="colors:' + ext.colours.user + ':' + ext.colours.msg + '"></abbr>';
+        done( data );
+    };
+    
+    client.middle('send.msg', ext.colours.send_colour);
+    client.middle('send.action', ext.colours.send_colour);
+
+};
+
+
+wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
+
+    var settings = client.ext.dAmn;
+    ext.colours.page = null;
+    console.log( settings);
+    ext.colours.configure_page = function( event, ui ) {
     
         var page = event.settings.page('Colours');
-        settings.colours.page = page;
+        ext.colours.page = page;
         
         var orig = {};
         orig.on = settings.colours.on;
@@ -4699,23 +4882,14 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
                 'close': function( event ) {
                     settings.colours.user = orig.user;
                     settings.colours.msg = orig.msg;
+                    ext.colours.page = null;
                 },
             }
         });
     
     };
     
-    settings.colours.send_colour = function( data, done ) {
-        if( !settings.colours.send ) {
-            done( data );
-            return;
-        }
-        
-        data.input+= '<abbr title="colors:' + settings.colours.user + ':' + settings.colours.msg + '"></abbr>';
-        done( data );
-    };
-    
-    settings.colours.parse_colour = function( event ) {
+    ext.colours.parse_colour = function( event ) {
         if( !settings.colours.on )
             return;
         
@@ -4735,11 +4909,8 @@ wsc.dAmn.Colours = function( client, storage, settings ) {
         event.item.find('.cmsg.user, .caction.user').css('color', '#' + m[1]);
     };
     
-    client.ui.on('settings.open.ran', settings.colours.configure_page);
-    client.ui.on('log_item.after', settings.colours.parse_colour);
-    
-    client.middle('send.msg', settings.colours.send_colour);
-    client.middle('send.action', settings.colours.send_colour);
+    ui.on('settings.open.ran', ext.colours.configure_page);
+    ui.on('log_item.after', ext.colours.parse_colour);
 
 };
 
@@ -5375,147 +5546,6 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
             'display': 'block'
         } );
     } );
-
-};
-
-/**
- * The dAmn extension makes the client work with dAmn. This extension also implements
- * various other features to improve on the user experience.
- * 
- * @class dAmn.Extension
- * @constructor
- */
-wsc.dAmn.Extension = function( client, ui ) {
-
-    client.settings.client = 'dAmnClient';
-    client.settings.clientver = '0.3';
-    client.settings.domain = 'deviantart.com';
-    client.settings.agent+= ' wsc/dAmn/' + wsc.dAmn.VERSION;
-    
-    var storage = client.storage.folder('dAmn');
-    storage.bds = storage.folder('bds');
-    storage.emotes = storage.folder('emotes');
-    storage.colours = storage.folder('colours');
-    var settings = {
-        'emotes': {
-            'on': false,
-            'emote': []
-        },
-        'colours': {
-            'on': false,
-            'send': false,
-            'msg': '000000',
-            'user': '000000'
-        }
-    };
-    
-    settings.save = function(  ) {
-        
-        storage.emotes.set('on', settings.emotes.on);
-        storage.colours.set('on', settings.colours.on);
-        storage.colours.set('send', settings.colours.send);
-        storage.colours.set('msg', settings.colours.msg);
-        storage.colours.set('user', settings.colours.user);
-        
-    };
-    
-    settings.load = function(  ) {
-    
-        settings.emotes.on = (storage.emotes.get('on', 'false') == 'true');
-        settings.colours.on = (storage.colours.get('on', 'false') == 'true');
-        settings.colours.send = (storage.colours.get('send', 'false') == 'true');
-        settings.colours.msg = storage.colours.get('msg', '');
-        settings.colours.user = storage.colours.get('user', '');
-    
-    };
-    
-    settings.load();
-    settings.save();
-    
-    client.protocol.extend_maps({
-        'dAmnServer': ['version']
-    });
-    /*
-    client.protocol.extend_messages({
-        'dAmnServer': ['<span class="servermsg">** Connected to dAmnServer {version} *</span>', false, true ]
-    });
-    */
-    client.protocol.mparser = new wsc.dAmn.TablumpParser;
-    
-    client.flow.dAmnServer = client.flow.chatserver;
-    
-    client.exclude.add( 'chat:devart' );
-    client.exclude.add( 'chat:damnidlers' );
-    /*
-    ui.middle( 'user.hover', function( data, done ) {
-        data.avatar = wsc.dAmn.avatar.link(data.name, data.member.usericon);
-        
-        if( data.member.realname && data.info.indexOf( data.member.realname ) == -1 )
-            data.info.push(data.member.realname);
-        
-        if( data.member.typename && data.info.indexOf( data.member.typename ) == -1 )
-            data.info.push(data.member.typename);
-        
-        done( data );
-    });
-    
-    ui.on( 'settings.save', settings.save );
-    ui.on( 'settings.close', settings.load );
-    
-    ui.on( 'log_whois.before', function( event, ui ) {
-        event.avatar = wsc.dAmn.avatar.link( event.raw.username, event.raw.usericon );
-        event.username = event.raw.symbol + '<b><a href="http://' + event.raw.username + '.deviantart.com/">' + event.raw.username + '</a></b>';
-        
-        if( event.raw.realname )
-            event.info.push(event.raw.realname);
-        
-        if( event.raw.typename )
-            event.info.push(event.raw.typename);
-    } );*/
-    
-    /**
-     * Implements the Data Sharing Protocol.
-     * 
-     * @method BDS
-     */
-    wsc.dAmn.BDS( client, storage.bds, settings );
-    
-    /**
-     * Implements Data Sharing Links. Links are private chats between two clients that
-     * are used for exchanging information autonomously.
-     *
-     * @method BDS.Link
-     */
-    wsc.dAmn.BDS.Link( client, storage.bds, settings );
-    
-    /**
-     * Implements Data Sharing Peers. BDS Peers are signalling channels for
-     * peer to peer WebRTC connections.
-     * 
-     * @method BDS.Peer
-     */
-    wsc.dAmn.BDS.Peer( client, storage.bds, settings );
-    
-    /**
-     * Implements custom colours.
-     * 
-     * @method Colours
-     */
-    //wsc.dAmn.Colours( client, storage.colours, settings );
-    
-    /**
-     * Implements custom emoticons.
-     *
-     * @method Emotes
-     */
-    wsc.dAmn.Emotes( client, storage.emotes, settings );
-    
-    /**
-     * Implements Sta.sh thumbnails.
-     * 
-     * @method Stash
-     */
-    //wsc.dAmn.Stash( client, storage.emotes, settings );
 
 };
 

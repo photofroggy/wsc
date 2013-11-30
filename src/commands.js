@@ -441,7 +441,7 @@ wsc.defaults.Extension = function( client ) {
             pkt: event.pkt,
             info: data
         });
-        //client.ui.chatbook.current.log_whois(data);
+        
     };
     
     var pkt_get = function( event, client ) {
