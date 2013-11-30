@@ -6,7 +6,7 @@
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.34';
+wsc.dAmn.VERSION = '0.10.35';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -111,13 +111,6 @@ wsc.dAmn.Extension = function( client, ui ) {
      */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
     
-    /**
-     * Implements Sta.sh thumbnails.
-     * 
-     * @method Stash
-     */
-    //wsc.dAmn.Stash( client, storage.emotes, settings );
-    
     return settings;
 
 };
@@ -167,6 +160,13 @@ wsc.dAmn.chatterbox = function( ui ) {
     } );
     
     wsc.dAmn.chatterbox.Colours( client, ui, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
+    wsc.dAmn.chatterbox.Stash( ui, settings );
     
     return settings;
 

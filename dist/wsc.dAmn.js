@@ -4258,7 +4258,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.34';
+wsc.dAmn.VERSION = '0.10.35';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -4363,13 +4363,6 @@ wsc.dAmn.Extension = function( client, ui ) {
      */
     wsc.dAmn.Emotes( client, storage.emotes, settings );
     
-    /**
-     * Implements Sta.sh thumbnails.
-     * 
-     * @method Stash
-     */
-    //wsc.dAmn.Stash( client, storage.emotes, settings );
-    
     return settings;
 
 };
@@ -4419,6 +4412,13 @@ wsc.dAmn.chatterbox = function( ui ) {
     } );
     
     wsc.dAmn.chatterbox.Colours( client, ui, settings );
+    
+    /**
+     * Implements Sta.sh thumbnails.
+     * 
+     * @method Stash
+     */
+    wsc.dAmn.chatterbox.Stash( ui, settings );
     
     return settings;
 
@@ -5873,11 +5873,11 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
  *
  * @class dAmn.Stash
  */
-wsc.dAmn.Stash = function( client, storage, settings ) {
+wsc.dAmn.chatterbox.Stash = function( ui, ext ) {
 
     var init = function(  ) {
     
-        client.ui.on('log_item.after', handle.log_item);
+        ui.on('log_item.after', handle.log_item);
     
     };
     
@@ -5889,7 +5889,7 @@ wsc.dAmn.Stash = function( client, storage, settings ) {
             
             links.each( function( i, dlink ) {
                 var link = event.item.find(dlink);
-                wsc.dAmn.Stash.fetch( event, link );
+                wsc.dAmn.chatterbox.Stash.fetch( event, link );
             } );
         
         }
@@ -5904,12 +5904,12 @@ wsc.dAmn.Stash = function( client, storage, settings ) {
 /**
  * Fetch stash data.
  */
-wsc.dAmn.Stash.fetch = function( event, link ) {
+wsc.dAmn.chatterbox.Stash.fetch = function( event, link ) {
 
     $.getJSON(
         'http://backend.deviantart.com/oembed?url=' + link.prop('href') + '&format=jsonp&callback=?',
         function( data ) {
-            wsc.dAmn.Stash.render( event, link, data );
+            wsc.dAmn.chatterbox.Stash.render( event, link, data );
         }
     );
 
@@ -5919,7 +5919,7 @@ wsc.dAmn.Stash.fetch = function( event, link ) {
 /**
  * Render a stash thumb.
  */
-wsc.dAmn.Stash.render = function( event, link, data ) {
+wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
 
     if( 'error' in data )
         return;
@@ -5933,7 +5933,7 @@ wsc.dAmn.Stash.render = function( event, link, data ) {
     
     // Deviation link tag. First segment only.
     var title = data.title + ' by ' + data.author_name;
-    var anchor = '<a target="_blank" href="' + lurl + '" title="' + title + '">';
+    var anchor = '<a class="stashlink" target="_blank" href="' + lurl + '" title="' + title + '">';
     
     if( w/h > 1) {
         th = parseInt((h * 100) / w);
@@ -5973,7 +5973,7 @@ wsc.dAmn.Stash.render = function( event, link, data ) {
             smaller.css('display', 'none');
             
             if( larger == null ) {
-                lw.prepend('<img class="larger thumb' + shadow + '" width="' + w + '"\
+                lw.find('a.stashlink').append('<img class="larger thumb' + shadow + '" width="' + w + '"\
                 height="' + h + '" alt="' + lurl + '" src="' + data.thumbnail_url + '" />');
                 larger = lw.find('img.larger');
             }
