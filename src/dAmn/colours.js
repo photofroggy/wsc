@@ -121,7 +121,7 @@ wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
         event.item.find('.cmsg.user, .caction.user').css('color', '#' + m[1]);
     };
     
-    ui.on('settings.open.ran', ext.colours.configure_page);
+    ui.on('settings.open', ext.colours.configure_page);
     ui.on('log_item.after', ext.colours.parse_colour);
 
 };

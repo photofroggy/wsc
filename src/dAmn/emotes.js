@@ -273,7 +273,7 @@ wsc.dAmn.chatterbox.Emotes = function( client, ui, ext ) {
     
     };
     
-    ui.on('settings.open.ran', ext.emotes.configure_page);
+    ui.on('settings.open', ext.emotes.configure_page);
     client.bind( 'dAmn.emotes.loaded', function( event, client ) {
     
         ui.pager.notice({
