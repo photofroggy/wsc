@@ -17,7 +17,7 @@ wsc.dAmn.STATE = 'alpha';
  * @class dAmn.Extension
  * @constructor
  */
-wsc.dAmn.Extension = function( client, ui ) {
+wsc.dAmn.wsc = function( client, ui ) {
 
     client.settings.client = 'dAmnClient';
     client.settings.clientver = '0.3';
@@ -114,8 +114,6 @@ wsc.dAmn.Extension = function( client, ui ) {
     return settings;
 
 };
-
-wsc.dAmn.wsc = wsc.dAmn.Extension;
 
 wsc.dAmn.chatterbox = function( ui ) {
 

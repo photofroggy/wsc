@@ -48,8 +48,8 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.kill', cmd.killk );
         client.bind('cmd.raw', cmd.raw );
         
-        client.bind('cmd.clear', cmd.clear );
-        client.bind('cmd.clearall', cmd.clearall );
+        //client.bind('cmd.clear', cmd.clear );
+        //client.bind('cmd.clearall', cmd.clearall );
         client.bind('cmd.close', cmd.close );
         
         client.bind('pkt.property', pkt_property );
@@ -73,12 +73,12 @@ wsc.defaults.Extension = function( client ) {
         */
     };
     
-    var settings_save = function( e, ui ) {
+    ext.save = function( e, ui ) {
         client.settings.ui.theme = e.theme;
         client.settings.ui.clock = e.clock;
         client.settings.ui.tabclose = e.tabclose;
     };
-    
+    /*
     var settings_page = function( e, ui ) {
     
         var page = e.settings.page('Main');
@@ -172,7 +172,7 @@ wsc.defaults.Extension = function( client ) {
         });
     
     };
-    
+    */
     /**
      * Holds all of the command handling methods.
      * 
@@ -507,5 +507,7 @@ wsc.defaults.Extension = function( client ) {
      * @method Autojoin
      */
     wsc.defaults.Extension.Autojoin(client);
+    
+    return ext;
 
 };

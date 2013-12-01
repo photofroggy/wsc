@@ -2193,8 +2193,8 @@ wsc.defaults.Extension = function( client ) {
         client.bind('cmd.kill', cmd.killk );
         client.bind('cmd.raw', cmd.raw );
         
-        client.bind('cmd.clear', cmd.clear );
-        client.bind('cmd.clearall', cmd.clearall );
+        //client.bind('cmd.clear', cmd.clear );
+        //client.bind('cmd.clearall', cmd.clearall );
         client.bind('cmd.close', cmd.close );
         
         client.bind('pkt.property', pkt_property );
@@ -2218,12 +2218,12 @@ wsc.defaults.Extension = function( client ) {
         */
     };
     
-    var settings_save = function( e, ui ) {
+    ext.save = function( e, ui ) {
         client.settings.ui.theme = e.theme;
         client.settings.ui.clock = e.clock;
         client.settings.ui.tabclose = e.tabclose;
     };
-    
+    /*
     var settings_page = function( e, ui ) {
     
         var page = e.settings.page('Main');
@@ -2317,7 +2317,7 @@ wsc.defaults.Extension = function( client ) {
         });
     
     };
-    
+    */
     /**
      * Holds all of the command handling methods.
      * 
@@ -2652,6 +2652,8 @@ wsc.defaults.Extension = function( client ) {
      * @method Autojoin
      */
     wsc.defaults.Extension.Autojoin(client);
+    
+    return ext;
 
 };
 /**
@@ -2775,6 +2777,33 @@ wsc.defaults.Extension.Autojoin = function( client ) {
     };
     */
     
+    settings.join = function(  ) {
+        for( var i in client.autojoin.channel ) {
+            if( !client.autojoin.channel.hasOwnProperty(i) )
+                continue;
+            client.join(client.autojoin.channel[i]);
+        }
+    };
+    
+    settings.add = function( item ) {
+        if( client.autojoin.channel.indexOf( item ) != -1 )
+            return false;
+        
+        client.autojoin.channel.push( item );
+        client.config_save();
+        return true;
+    };
+    
+    settings.remove = function( item ) {
+        var ci = client.autojoin.channel.indexOf( item );
+        if( ci == -1 )
+            return false;
+        
+        client.autojoin.channel.splice( ci, 1 );
+        client.config_save();
+        return true;
+    };
+    
     var cmd_autojoin = function( cmd ) {
     
         var args = cmd.args.split(' ');
@@ -2783,72 +2812,81 @@ wsc.defaults.Extension.Autojoin = function( client ) {
             return;
         
         var subcmd = args.shift().toLowerCase();
-        var meth = function( item ) {};
+        var meth = null;
+        var success = '';
+        var fail = '';
         var mod = false;
         var chan = client.channel(cmd.ns);
         
         switch( subcmd ) {
         
             case 'add':
-                meth = function( item ) {
-                    if( client.autojoin.channel.indexOf( item ) == -1 ) {
-                        mod = true;
-                        client.autojoin.channel.push( item );
-                        //chan.server_message('Added ' + item + ' to your autojoin.');
-                    } else {
-                        //chan.server_message('Already have ' + item + ' on your autojoin.');
-                    }
-                };
+                meth = settings.add;
+                success = 'Added {item} to your autojoin.';
+                fail = 'Already have {item} on your autojoin.';
                 break;
             case 'rem':
             case 'remove':
-                meth = function( item ) {
-                    var ci = client.autojoin.channel.indexOf( item );
-                    if( ci != -1 ) {
-                        mod = true;
-                        client.autojoin.channel.splice( ci, 1 );
-                        //chan.server_message('Removed ' + item + ' from your autojoin.');
-                    } else {
-                        //chan.server_message(item + ' is not on your autojoin list.');
-                    }
-                };
+                meth = settings.remove;
+                success = 'Removed {item} from your autojoin.';
+                fail = item + ' is not on your autojoin list.';
                 break;
             case 'on':
-                //chan.server_message('Autojoin on.');
+                client.trigger( 'log',
+                    {
+                        name: 'log',
+                        ns: 'server:current',
+                        sns: '~current',
+                        msg: 'Autojoin on'
+                    }
+                );
                 if( !client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = true;
                 }
                 break;
             case 'off':
-                //chan.server_message('Autojoin off.');
+                client.trigger( 'log',
+                    {
+                        name: 'log',
+                        ns: 'server:current',
+                        sns: '~current',
+                        msg: 'Autojoin off'
+                    }
+                );
                 if( client.autojoin.on ) {
                     mod = true;
                     client.autojoin.on = false;
                 }
                 break;
             default:
-                console.log('> start autojoin');
-                console.log(client.autojoin);
-                for( var i in client.autojoin.channel ) {
-                    if( !client.autojoin.channel.hasOwnProperty(i) )
-                        continue;
-                    client.join(client.autojoin.channel[i]);
-                }
-                return;
+                settings.join();
                 break;
         
         }
         
         var item = '';
+        var res = false;
         
-        for( var i in args ) {
-        
-            if( !args.hasOwnProperty(i) )
-                continue;
-            item = client.deform_ns(args[i]).toLowerCase();
-            meth( item );
-        
+        if( meth != null ) {
+            for( var i in args ) {
+            
+                if( !args.hasOwnProperty(i) )
+                    continue;
+                
+                item = client.deform_ns(args[i]).toLowerCase();
+                res = meth( item );
+                
+                client.trigger( 'log',
+                    {
+                        name: 'log',
+                        ns: 'server:current',
+                        sns: '~current',
+                        msg: replaceAll( ( res ? success : fail ), '{item}', item )
+                    }
+                );
+            
+            }
         }
         
         if( mod )
@@ -3349,7 +3387,6 @@ wsc.Client = function( view, options, mozilla ) {
 
     this.mozilla = mozilla;
     this.storage = new wsc.Storage;
-    this.storage.ui = this.storage.folder('ui');
     this.storage.aj = this.storage.folder('autojoin');
     this.storage.aj.channel = this.storage.aj.folder('channel');
     
