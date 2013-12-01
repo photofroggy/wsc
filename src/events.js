@@ -24,7 +24,7 @@ function EventEmitter() {
             events[event] = [listener];
             return self;
         }
-        events[event].unshift(listener);
+        events[event].push(listener);
         return self;
     }
 

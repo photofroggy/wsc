@@ -8,18 +8,6 @@
 wsc.defaults.Extension = function( client ) {
 
     var ext = {};
-    ext.away = {
-        'on': false,
-        'reason': '',
-        'last': {},
-        'since': 0,
-        'store': client.storage.folder('away'),
-        'format': {
-            'setaway': '/me is away: {reason}',
-            'setback': '/me is back',
-            'away': '{from}: I am away, reason: {reason}'
-        }
-    };
     
     var init = function(  ) {
         // Commands.
@@ -499,7 +487,7 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Away
      */
-    wsc.defaults.Extension.Away(client);
+    wsc.defaults.Extension.Away(client, ext);
     
     /**
      * Implements autojoin channels.
