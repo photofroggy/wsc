@@ -2535,14 +2535,19 @@ wsc.defaults.Extension.Autojoin = function( client, ext ) {
     };
     
     var on_login = function( event, client ) {
-    
+        
         if( event.e != 'ok' )
             return;
         
         if ( fresh_client ) {
+        
             client.join( client.settings.autojoin );
-            ext.autojoin.join();
+            
+            if( ext.autojoin.on )
+                ext.autojoin.join();
+        
         } else {
+        
             var joined = false;
             
             for( key in client.channelo ) {
