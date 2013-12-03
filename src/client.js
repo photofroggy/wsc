@@ -56,12 +56,6 @@ wsc.Client = function( view, options, mozilla ) {
         "clientver": '0.3',
         "developer": false
     };
-    this.autojoin = {
-        'on': true,
-        'count': 0,
-        'channel': []
-    };
-    this.away = {};
     
     var cli = this;
     // Channels excluded from loops.
@@ -102,25 +96,6 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.config_load = function(  ) {
 
     this.settings.developer = ( this.storage.get('developer', this.settings.developer.toString()) == 'true' );
-    //this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
-    //this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
-    //this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
-    
-    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
-    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
-    this.autojoin.channel = [];
-    
-    var tc = null;
-    var c = 0;
-    for( var i = 0; i < this.autojoin.count; i++ ) {
-        tc = this.storage.aj.channel.get( i, null );
-        if( tc == null )
-            continue;
-        c++;
-        this.autojoin.channel.push(tc);
-    }
-    
-    this.autojoin.count = c;
 
 };
 
@@ -132,30 +107,6 @@ wsc.Client.prototype.config_load = function(  ) {
 wsc.Client.prototype.config_save = function(  ) {
 
     this.storage.set('developer', this.settings.developer);
-    //this.storage.ui.set('theme', this.settings.ui.theme);
-    //this.storage.ui.set('clock', this.settings.ui.clock.toString());
-    //this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
-    
-    this.storage.aj.set('on', this.autojoin.on.toString());
-    this.storage.aj.set('count', this.autojoin.count);
-    
-    for( var i = 0; i < this.autojoin.count; i++ ) {
-        this.storage.aj.channel.remove(i)
-    }
-    
-    if( this.autojoin.channel.length == 0 ) {
-        this.storage.aj.set('count', 0);
-    } else {
-        var c = -1;
-        for( var i in this.autojoin.channel ) {
-            if( !this.autojoin.channel.hasOwnProperty(i) )
-                continue;
-            c++;
-            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
-        }
-        c++;
-        this.storage.aj.set('count', c);
-    }
 
 };
 
@@ -168,26 +119,7 @@ wsc.Client.prototype.config_save = function(  ) {
  */
 wsc.Client.prototype.build = function(  ) {
 
-    //this.ui.build();
     this.create_ns( this.settings.monitor[0], true, true );
-    var client = this;
-    /*
-    this.ui.on('tab.close.clicked', function( event, ui ) {
-        if( event.chan.monitor )
-            return false;
-        client.part(event.ns);
-        client.remove_ns(event.ns);
-        return false;
-    } );
-    
-    this.ui.on('title.save', function( event, ui ) {
-        client.set(event.ns, 'title', event.value);
-    } );
-    
-    this.ui.on('topic.save', function( event, ui ) {
-        client.set(event.ns, 'topic', event.value);
-    } );
-    */
 
 };
 

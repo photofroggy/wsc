@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.52';
+wsc.VERSION = '1.7.53';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.137';
+wsc.REVISION = '0.21.138';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -1926,23 +1926,6 @@ wsc.Flow.prototype.login = function( event, client ) {
             }
         };
         
-        // Autojoin!
-        if ( client.fresh ) {
-            joiner();
-        } else {
-            var joined = false;
-            
-            for( key in client.channelo ) {
-                if( client.channelo[key].namespace[0] != '~' ) {
-                    client.join(key);
-                    joined = true;
-                }
-            }
-            
-            if( !joined )
-                joiner();
-            
-        }
     } else {
         client.close( event );
     }
@@ -2482,7 +2465,7 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Autojoin
      */
-    wsc.defaults.Extension.Autojoin(client);
+    wsc.defaults.Extension.Autojoin(client, ext);
     
     return ext;
 
@@ -2490,149 +2473,92 @@ wsc.defaults.Extension = function( client ) {
 /**
  * Autojoin extension.
  */
-wsc.defaults.Extension.Autojoin = function( client ) {
+wsc.defaults.Extension.Autojoin = function( client, ext ) {
 
-    var settings = client.autojoin;
-    /*
-    client.ui.nav.add_button( {
-        'icon': 'chat',
-        'label': '',
-        'title': 'Join your autojoin channels',
-        'href': '#autojoin-do',
-        'handler': function(  ) {
-            for( var i in client.autojoin.channel ) {
-                if( !client.autojoin.channel.hasOwnProperty(i) )
-                    continue;
-                client.join(client.autojoin.channel[i]);
-            }
-        }
-    });
-    */
+    ext.autojoin = {
+        on: false,
+        channel: []
+    };
+    
+    var fresh_client = true;
+    var storage = client.storage.folder('autojoin');
     
     var init = function(  ) {
     
+        ext.autojoin.load();
+        ext.autojoin.save();
+        
         client.bind('cmd.autojoin', cmd_autojoin);
-        //client.ui.on('settings.open', settings.page);
+        client.bind('pkt.login', on_login);
     
     };
-    /*
-    settings.page = function( event, ui ) {
     
-        var page = event.settings.page('Autojoin');
-        var ul = '<ul>';
-        var orig = {};
-        orig.ajon = client.autojoin.on;
-        orig.chan = client.autojoin.channel;
-        
-        if( client.autojoin.channel.length == 0 ) {
-            ul+= '<li><i>No autojoin channels set</i></li></ul>';
-        } else {
-            for( var i in client.autojoin.channel ) {
-                if( !client.autojoin.channel.hasOwnProperty( i ) )
-                    continue;
-                ul+= '<li>' + client.autojoin.channel[i] + '</li>';
-            }
-            ul+= '</ul>';
-        }
-        
-        page.item('Checkbox', {
-            'ref': 'eaj',
-            'title': 'Autojoin',
-            'text': 'Turn on autojoin to automatically join selected channels\
-                    when you connect to the chat server.',
-            'items': [
-                { 'value': 'yes', 'title': 'On', 'selected': orig.ajon }
-            ],
-            'event': {
-                'change': function( event ) {
-                    if( event.target.value == 'yes' )
-                        client.autojoin.on = event.target.checked;
-                },
-                'save': function( event ) {
-                    orig.ajon = client.autojoin.on;
-                    client.config_save();
-                },
-                'close': function( event ) {
-                    client.autojoin.on = orig.ajon;
-                }
-            }
-        });
-        
-        var imgr = page.item('Items', {
-            'ref': 'channelss',
-            'title': 'Channels',
-            'text': 'Add any channels you want to join automatically when you\
-                    connect to the chat server.',
-            'items': client.autojoin.channel,
-            'prompt': {
-                'title': 'Add Channel',
-                'label': 'Channel:',
-            },
-            'event': {
-                'up': function( event ) {
-                    var swap = event.args.swap;
-                    client.autojoin.channel[swap['this'].index] = swap.that.item;
-                    client.autojoin.channel[swap.that.index] = swap['this'].item;
-                    imgr.options.items = client.autojoin.channel;
-                },
-                'down': function( event ) {
-                    var swap = event.args.swap;
-                    client.autojoin.channel[swap['this'].index] = swap.that.item;
-                    client.autojoin.channel[swap.that.index] = swap['this'].item;
-                    imgr.options.items = client.autojoin.channel;
-                },
-                'add': function( event ) {
-                    var item = client.deform_ns(event.args.item).toLowerCase();
-                    var index = client.autojoin.channel.indexOf(item);
-                    
-                    if( index != -1 )
-                        return;
-                    
-                    client.autojoin.channel.push( item );
-                    imgr.options.items = client.autojoin.channel;
-                },
-                'remove': function( event ) {
-                    client.autojoin.channel.splice( event.args.index, 1 );
-                    imgr.options.items = client.autojoin.channel;
-                },
-                'save': function( event ) {
-                    orig.chan = client.autojoin.channel;
-                    client.config_save();
-                },
-                'close': function( event ) {
-                    client.config_load();
-                }
-            }
-        });
+    ext.autojoin.load = function(  ) {
+    
+        ext.autojoin.on = ( storage.get('on', 'true') == 'true' );
+        ext.autojoin.channel = JSON.parse( storage.get('channel', '[]') );
     
     };
-    */
     
-    settings.join = function(  ) {
-        for( var i in client.autojoin.channel ) {
-            if( !client.autojoin.channel.hasOwnProperty(i) )
+    ext.autojoin.save = function(  ) {
+    
+        storage.set('on', ext.autojoin.on.toString());
+        storage.set('channel', JSON.stringify( ext.autojoin.channel ));
+    
+    };
+    
+    ext.autojoin.join = function(  ) {
+        for( var i in ext.autojoin.channel ) {
+            if( !ext.autojoin.channel.hasOwnProperty(i) )
                 continue;
-            client.join(client.autojoin.channel[i]);
+            client.join(ext.autojoin.channel[i]);
         }
     };
     
-    settings.add = function( item ) {
-        if( client.autojoin.channel.indexOf( item ) != -1 )
+    ext.autojoin.add = function( item ) {
+        if( ext.autojoin.channel.indexOf( item ) != -1 )
             return false;
         
-        client.autojoin.channel.push( item );
-        client.config_save();
+        ext.autojoin.channel.push( item );
+        ext.autojoin.save();
         return true;
     };
     
-    settings.remove = function( item ) {
-        var ci = client.autojoin.channel.indexOf( item );
+    ext.autojoin.remove = function( item ) {
+        var ci = ext.autojoin.channel.indexOf( item );
         if( ci == -1 )
             return false;
         
-        client.autojoin.channel.splice( ci, 1 );
-        client.config_save();
+        ext.autojoin.channel.splice( ci, 1 );
+        ext.autojoin.save();
         return true;
+    };
+    
+    var on_login = function( event, client ) {
+    
+        if( event.e != 'ok' )
+            return;
+        
+        if ( fresh_client ) {
+            client.join( client.settings.autojoin );
+            ext.autojoin.join();
+        } else {
+            var joined = false;
+            
+            for( key in client.channelo ) {
+                if( client.channelo[key].namespace[0] != '~' ) {
+                    client.join(key);
+                    joined = true;
+                }
+            }
+            
+            if( !joined )
+                ext.autojoin.join();
+            
+        }
+        
+        fresh_client = false;
+    
     };
     
     var cmd_autojoin = function( cmd ) {
@@ -2652,13 +2578,13 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         switch( subcmd ) {
         
             case 'add':
-                meth = settings.add;
+                meth = ext.autojoin.add;
                 success = 'Added {item} to your autojoin.';
                 fail = 'Already have {item} on your autojoin.';
                 break;
             case 'rem':
             case 'remove':
-                meth = settings.remove;
+                meth = ext.autojoin.remove;
                 success = 'Removed {item} from your autojoin.';
                 fail = item + ' is not on your autojoin list.';
                 break;
@@ -2671,9 +2597,9 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                         msg: 'Autojoin on'
                     }
                 );
-                if( !client.autojoin.on ) {
+                if( !ext.autojoin.on ) {
                     mod = true;
-                    client.autojoin.on = true;
+                    ext.autojoin.on = true;
                 }
                 break;
             case 'off':
@@ -2685,13 +2611,13 @@ wsc.defaults.Extension.Autojoin = function( client ) {
                         msg: 'Autojoin off'
                     }
                 );
-                if( client.autojoin.on ) {
+                if( ext.autojoin.on ) {
                     mod = true;
-                    client.autojoin.on = false;
+                    ext.autojoin.on = false;
                 }
                 break;
             default:
-                settings.join();
+                ext.autojoin.join();
                 break;
         
         }
@@ -2721,7 +2647,7 @@ wsc.defaults.Extension.Autojoin = function( client ) {
         }
         
         if( mod )
-            client.config_save();
+            ext.autojoin.save();
     
     };
     
@@ -3174,12 +3100,6 @@ wsc.Client = function( view, options, mozilla ) {
         "clientver": '0.3',
         "developer": false
     };
-    this.autojoin = {
-        'on': true,
-        'count': 0,
-        'channel': []
-    };
-    this.away = {};
     
     var cli = this;
     // Channels excluded from loops.
@@ -3220,25 +3140,6 @@ wsc.Client = function( view, options, mozilla ) {
 wsc.Client.prototype.config_load = function(  ) {
 
     this.settings.developer = ( this.storage.get('developer', this.settings.developer.toString()) == 'true' );
-    //this.settings.ui.theme = this.storage.ui.get('theme', this.settings.ui.theme);
-    //this.settings.ui.clock = (this.storage.ui.get('clock', this.settings.ui.clock.toString()) == 'true');
-    //this.settings.ui.tabclose = (this.storage.ui.get('tabclose', this.settings.ui.tabclose.toString()) == 'true');
-    
-    this.autojoin.on = (this.storage.aj.get('on', 'true') == 'true');
-    this.autojoin.count = parseInt(this.storage.aj.get('count', '0'));
-    this.autojoin.channel = [];
-    
-    var tc = null;
-    var c = 0;
-    for( var i = 0; i < this.autojoin.count; i++ ) {
-        tc = this.storage.aj.channel.get( i, null );
-        if( tc == null )
-            continue;
-        c++;
-        this.autojoin.channel.push(tc);
-    }
-    
-    this.autojoin.count = c;
 
 };
 
@@ -3250,30 +3151,6 @@ wsc.Client.prototype.config_load = function(  ) {
 wsc.Client.prototype.config_save = function(  ) {
 
     this.storage.set('developer', this.settings.developer);
-    //this.storage.ui.set('theme', this.settings.ui.theme);
-    //this.storage.ui.set('clock', this.settings.ui.clock.toString());
-    //this.storage.ui.set('tabclose', this.settings.ui.tabclose.toString());
-    
-    this.storage.aj.set('on', this.autojoin.on.toString());
-    this.storage.aj.set('count', this.autojoin.count);
-    
-    for( var i = 0; i < this.autojoin.count; i++ ) {
-        this.storage.aj.channel.remove(i)
-    }
-    
-    if( this.autojoin.channel.length == 0 ) {
-        this.storage.aj.set('count', 0);
-    } else {
-        var c = -1;
-        for( var i in this.autojoin.channel ) {
-            if( !this.autojoin.channel.hasOwnProperty(i) )
-                continue;
-            c++;
-            this.storage.aj.channel.set( c.toString(), this.autojoin.channel[i] );
-        }
-        c++;
-        this.storage.aj.set('count', c);
-    }
 
 };
 
@@ -3286,26 +3163,7 @@ wsc.Client.prototype.config_save = function(  ) {
  */
 wsc.Client.prototype.build = function(  ) {
 
-    //this.ui.build();
     this.create_ns( this.settings.monitor[0], true, true );
-    var client = this;
-    /*
-    this.ui.on('tab.close.clicked', function( event, ui ) {
-        if( event.chan.monitor )
-            return false;
-        client.part(event.ns);
-        client.remove_ns(event.ns);
-        return false;
-    } );
-    
-    this.ui.on('title.save', function( event, ui ) {
-        client.set(event.ns, 'title', event.value);
-    } );
-    
-    this.ui.on('topic.save', function( event, ui ) {
-        client.set(event.ns, 'topic', event.value);
-    } );
-    */
 
 };
 

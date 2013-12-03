@@ -173,23 +173,6 @@ wsc.Flow.prototype.login = function( event, client ) {
             }
         };
         
-        // Autojoin!
-        if ( client.fresh ) {
-            joiner();
-        } else {
-            var joined = false;
-            
-            for( key in client.channelo ) {
-                if( client.channelo[key].namespace[0] != '~' ) {
-                    client.join(key);
-                    joined = true;
-                }
-            }
-            
-            if( !joined )
-                joiner();
-            
-        }
     } else {
         client.close( event );
     }
