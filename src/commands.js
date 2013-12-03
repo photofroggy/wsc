@@ -323,7 +323,7 @@ wsc.defaults.Extension = function( client ) {
      * 
      * @method Ignore
      */
-    wsc.defaults.Extension.Ignore(client);
+    wsc.defaults.Extension.Ignore(client, ext);
     
     /**
      * Implements away messages.
