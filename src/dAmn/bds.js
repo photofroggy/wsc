@@ -14,7 +14,28 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         'provides': [
             'BOTCHECK',
             'CLINK'
-        ]
+        ],
+        versions: [],
+        add_version: function( app, version ) {
+            settings.bds.versions.push({
+                'app': app,
+                'version': version
+            });
+        },
+        app: function(  ) {
+            var apps = [];
+            for( var i = 0; i < settings.bds.versions.length; i++ ) {
+                apps.push(settings.bds.versions[i].app);
+            }
+            return apps.join('.');
+        },
+        appv: function(  ) {
+            var apps = [];
+            for( var i = 0; i < settings.bds.versions.length; i++ ) {
+                apps.push(settings.bds.versions[i].version);
+            }
+            return apps.join('/');
+        }
     };
     // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
@@ -46,6 +67,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         // Filter BDS commands
         //client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
         client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
+            
+        settings.bds.add_version( 'wsc', wsc.VERSION );
+        settings.bds.add_version( 'dAmn', wsc.dAmn.VERSION );
     };
     
     var pkt_login = function( event ) {
@@ -181,9 +205,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             }
             
-            var ver = wsc.VERSION + '/0.0.0/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
-            var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
-            client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
+            var ver = settings.bds.appv() + '/' + settings.bds.version;
+            var app = settings.bds.app();
+            var hash = CryptoJS.MD5( ( app + ver + client.settings.username + event.user ).toLowerCase() );
+            client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:'
+                + event.user
+                + ',' + app + ',' + ver + ',' + hash );
         },
         
         // BDS:BOTCHECK:OK||DENIED

@@ -10,7 +10,7 @@ wsc.REVISION = '0.21.139';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
-// Taken from dAmnAIR by philo23
+;// Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
 
@@ -73,7 +73,7 @@ function EventEmitter() {
     this.removeListeners = removeListeners;
     this.emit = emit;
     this.listeners = listeners;
-}/*
+};/*
 CryptoJS v3.1.2
 code.google.com/p/crypto-js
 (c) 2009-2013 by Jeff Mott. All rights reserved.
@@ -93,7 +93,7 @@ d,e,j,9,a[29]),e=m(e,f,c,d,u,14,a[30]),d=m(d,e,f,c,A,20,a[31]),c=l(c,d,e,f,s,4,a
 C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53]),e=n(e,f,c,d,y,15,a[54]),d=n(d,e,f,c,w,21,a[55]),c=n(c,d,e,f,v,6,a[56]),f=n(f,c,d,e,D,10,a[57]),e=n(e,f,c,d,t,15,a[58]),d=n(d,e,f,c,B,21,a[59]),c=n(c,d,e,f,r,6,a[60]),f=n(f,c,d,e,z,10,a[61]),e=n(e,f,c,d,j,15,a[62]),d=n(d,e,f,c,x,21,a[63]);b[0]=b[0]+c|0;b[1]=b[1]+d|0;b[2]=b[2]+e|0;b[3]=b[3]+f|0},_doFinalize:function(){var a=this._data,k=a.words,b=8*this._nDataBytes,h=8*a.sigBytes;k[h>>>5]|=128<<24-h%32;var l=s.floor(b/
 4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);
 
-/**
+;/**
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
@@ -444,7 +444,7 @@ wsc.SocketIO.prototype.close = function(  ) {
 
 
 
-/* wsc lib - photofroggy
+;/* wsc lib - photofroggy
  * Generic useful functions or something.
  */
 
@@ -693,7 +693,7 @@ StringSet.prototype.contains = function( item ) {
     return this.items.indexOf( item.toLowerCase() ) != -1;
 
 };
-
+;
 /**
  * Middleware management and execution.
  * 
@@ -742,7 +742,7 @@ wsc.Middleware.prototype.run = function( event, method, data ) {
     done( data );
 
 };
-/**
+;/**
  * Storage object.
  * 
  * This class is a light wrapper around localStorage. Keys are given namespaces, to avoid
@@ -856,7 +856,7 @@ wsc.Storage.prototype.remove = function( key ) {
     return false;
 
 };
-/* wsc packets - photofroggy
+;/* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
 
@@ -983,7 +983,7 @@ function packetEvtName( pkt ) {
     
     return name;
 }
-/**
+;/**
  * Chat channel object.
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
@@ -1347,7 +1347,7 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
     
 };
 
-/**
+;/**
  * Rendered message object.
  * 
  * @class wsc.MessageString
@@ -1428,7 +1428,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 
 
 
-/**
+;/**
  * Parser for dAmn-like protocols.
  * 
  * @class wsc.Protocol
@@ -1751,7 +1751,7 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
 
 };
 
-/**
+;/**
  * Control the client's program flow. This object determines how the client responds to
  * certain events.
  * 
@@ -2126,7 +2126,7 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 };
 
 
-
+;
 
 /**
  * This extension implements most of the default commands for wsc.
@@ -2470,7 +2470,7 @@ wsc.defaults.Extension = function( client ) {
     return ext;
 
 };
-/**
+;/**
  * Autojoin extension.
  */
 wsc.defaults.Extension.Autojoin = function( client, ext ) {
@@ -2660,7 +2660,7 @@ wsc.defaults.Extension.Autojoin = function( client, ext ) {
 
 };
 
-/**
+;/**
  * Away extension.
  */
 wsc.defaults.Extension.Away = function( client, ext ) {
@@ -2804,7 +2804,7 @@ wsc.defaults.Extension.Away = function( client, ext ) {
 
 };
 
-/**
+;/**
  * Ignore extension.
  * 
  * Implements the ignore functionality.
@@ -2928,7 +2928,7 @@ wsc.defaults.Extension.Ignore = function( client, ext ) {
 
 };
 
-/**
+;/**
  * An entire chat client. Instances of this object orchestrate the operation of
  * the client. Other objects are loaded in to control different parts of the client. These
  * components can be reasonably swapped out, assuming they provide the same functionality.
@@ -3776,7 +3776,7 @@ wsc.Client.prototype.disconnect = function(  ) {
 
 };
 
-/**
+;/**
  * This module holds the dAmn extension.
  *
  * 
@@ -3950,7 +3950,7 @@ wsc.dAmn.chatterbox = function( ui ) {
     return settings;
 
 };
-
+;
 wsc.dAmn.BDS = function( client, storage, settings ) {
 
     var pchats = {};
@@ -3966,7 +3966,28 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         'provides': [
             'BOTCHECK',
             'CLINK'
-        ]
+        ],
+        versions: [],
+        add_version: function( app, version ) {
+            settings.bds.versions.push({
+                'app': app,
+                'version': version
+            });
+        },
+        app: function(  ) {
+            var apps = [];
+            for( var i = 0; i < settings.bds.versions.length; i++ ) {
+                apps.push(settings.bds.versions[i].app);
+            }
+            return apps.join('.');
+        },
+        appv: function(  ) {
+            var apps = [];
+            for( var i = 0; i < settings.bds.versions.length; i++ ) {
+                apps.push(settings.bds.versions[i].version);
+            }
+            return apps.join('/');
+        }
     };
     // Allow other parts of client to use bds functionality.
     client.bds = settings.bds;
@@ -3998,6 +4019,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         // Filter BDS commands
         //client.ui.middle( 'log_item', function( data, done ) { handle.filter( data, done ); } );
         client.middle( 'chan.recv_msg', function( data, done ) { handle.hfilter( data, done ); } );
+            
+        settings.bds.add_version( 'wsc', wsc.VERSION );
+        settings.bds.add_version( 'dAmn', wsc.dAmn.VERSION );
     };
     
     var pkt_login = function( event ) {
@@ -4133,9 +4157,12 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
                 return;
             }
             
-            var ver = wsc.VERSION + '/0.0.0/' + wsc.dAmn.VERSION + '/' + settings.bds.version;
-            var hash = CryptoJS.MD5( ( 'wsc.dAmn' + ver + client.settings.username + event.user ).toLowerCase() );
-            client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:' + event.user + ',wsc.dAmn,' + ver + ',' + hash );
+            var ver = settings.bds.appv() + '/' + settings.bds.version;
+            var app = settings.bds.app();
+            var hash = CryptoJS.MD5( ( app + ver + client.settings.username + event.user ).toLowerCase() );
+            client.npmsg( event.ns, 'BDS:BOTCHECK:CLIENT:'
+                + event.user
+                + ',' + app + ',' + ver + ',' + hash );
         },
         
         // BDS:BOTCHECK:OK||DENIED
@@ -4315,7 +4342,7 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
     init();
 
 };
-
+;
 
 wsc.dAmn.wsc.Colours = function( client, storage, ext ) {
     
@@ -4442,7 +4469,7 @@ wsc.dAmn.chatterbox.Colours = function( client, ui, ext ) {
     ui.on('log_item.after', ext.colours.parse_colour);
 
 };
-
+;
 wsc.dAmn.Emotes = {};
 
 wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
@@ -5087,7 +5114,7 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
     } );
 
 };
-
+;
 /**
  * This object provides a few helper functions relating to deviantART avatars.
  * 
@@ -5154,7 +5181,7 @@ wsc.dAmn.avatar.src = function( un, icon ) {
     }
     
     return 'http://a.deviantart.net/avatars/' + ico + '.' + ext + cachebuster;
-};
+};;
 wsc.dAmn.BDS.Link = function( client, storage, settings ) {
 
     var init = function(  ) {
@@ -5404,7 +5431,7 @@ wsc.dAmn.BDS.Link = function( client, storage, settings ) {
     
     init();
 
-};
+};;
 /**
  * Extension to handle stash links posted in the chat. Provides some helper functions
  * to meet this end as well.
@@ -5552,7 +5579,7 @@ wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
     event.chan.scroll();
 
 };
-/**
+;/**
  * Represents a string that possibly contains tablumps.
  * Use different object methods to render the tablumps differently.
  * 
@@ -5987,7 +6014,7 @@ wsc.dAmn.TablumpParser.prototype.renderOne = function( type, tag, tokens ) {
         return renderer.call(this, tokens);
 };
 
-
+;
 /**
  * Implements BDS Peer.
  * 
@@ -6139,7 +6166,7 @@ wsc.dAmn.BDS.Peer.chan = {};
 wsc.dAmn.BDS.Peer.chan.group = false;
 wsc.dAmn.BDS.Peer.chan.calls = [];
 
-/**
+;/**
  * Call object. Maybe a bit over the top here.
  * @class wsc.dAmn.BDS.Peer.Call
  * @constructor
@@ -6316,7 +6343,7 @@ wsc.dAmn.BDS.Peer.Call.prototype.remove = function( user ) {
 
 };
 
-/**
+;/**
  * lol
  *
  * Make a peer connection.
@@ -6665,7 +6692,7 @@ wsc.dAmn.BDS.Peer.Connection.prototype.persist = function(  ) {
         peer.create_offer();
     };
 
-};/**
+};;/**
  * This object represents a signalling channel used for transmitting connection data
  * between two peers.
  *
@@ -6841,7 +6868,7 @@ wsc.dAmn.BDS.Peer.SignalChannel.prototype.list = function( channel ) {
     this.client.npmsg( this.bds, 'BDS:PEER:LIST' + channel );
 
 };
-/**
+;/**
  * Signal handling class.
  *
  * Provides a collection of event handlers which allow the extension to respond to
@@ -7221,7 +7248,7 @@ wsc.dAmn.BDS.Peer.SignalHandler.prototype.close = function( event, client ) {
     });
 
 };
-/**
+;/**
  * webRTC objects
  */
 wsc.dAmn.BDS.Peer.RTC = {
@@ -7249,7 +7276,7 @@ if( window.RTCSessionDescription ) {
     wsc.dAmn.BDS.Peer.RTC.SessionDescription = RTCSessionDescription;
     wsc.dAmn.BDS.Peer.RTC.IceCandidate = RTCIceCandidate;
 
-}/**
+};/**
  * jQuery plugin.
  * 
  * Wrapper for implementing the plugin.

@@ -10,7 +10,7 @@ wsc.REVISION = '0.21.139';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
-// Taken from dAmnAIR by philo23
+;// Taken from dAmnAIR by philo23
 // dAmnAIR - http://botdom.com/wiki/DAmnAIR
 // philo23 on deviantART - http://philo23.deviantart.com/
 
@@ -73,7 +73,7 @@ function EventEmitter() {
     this.removeListeners = removeListeners;
     this.emit = emit;
     this.listeners = listeners;
-}/*
+};/*
 CryptoJS v3.1.2
 code.google.com/p/crypto-js
 (c) 2009-2013 by Jeff Mott. All rights reserved.
@@ -93,7 +93,7 @@ d,e,j,9,a[29]),e=m(e,f,c,d,u,14,a[30]),d=m(d,e,f,c,A,20,a[31]),c=l(c,d,e,f,s,4,a
 C,15,a[50]),d=n(d,e,f,c,s,21,a[51]),c=n(c,d,e,f,A,6,a[52]),f=n(f,c,d,e,q,10,a[53]),e=n(e,f,c,d,y,15,a[54]),d=n(d,e,f,c,w,21,a[55]),c=n(c,d,e,f,v,6,a[56]),f=n(f,c,d,e,D,10,a[57]),e=n(e,f,c,d,t,15,a[58]),d=n(d,e,f,c,B,21,a[59]),c=n(c,d,e,f,r,6,a[60]),f=n(f,c,d,e,z,10,a[61]),e=n(e,f,c,d,j,15,a[62]),d=n(d,e,f,c,x,21,a[63]);b[0]=b[0]+c|0;b[1]=b[1]+d|0;b[2]=b[2]+e|0;b[3]=b[3]+f|0},_doFinalize:function(){var a=this._data,k=a.words,b=8*this._nDataBytes,h=8*a.sigBytes;k[h>>>5]|=128<<24-h%32;var l=s.floor(b/
 4294967296);k[(h+64>>>9<<4)+15]=(l<<8|l>>>24)&16711935|(l<<24|l>>>8)&4278255360;k[(h+64>>>9<<4)+14]=(b<<8|b>>>24)&16711935|(b<<24|b>>>8)&4278255360;a.sigBytes=4*(k.length+1);this._process();a=this._hash;k=a.words;for(b=0;4>b;b++)h=k[b],k[b]=(h<<8|h>>>24)&16711935|(h<<24|h>>>8)&4278255360;return a},clone:function(){var a=t.clone.call(this);a._hash=this._hash.clone();return a}});r.MD5=t._createHelper(q);r.HmacMD5=t._createHmacHelper(q)})(Math);
 
-/**
+;/**
  * Client transport.
  * Acts as a basic wrapper around a transport.
  * 
@@ -444,7 +444,7 @@ wsc.SocketIO.prototype.close = function(  ) {
 
 
 
-/* wsc lib - photofroggy
+;/* wsc lib - photofroggy
  * Generic useful functions or something.
  */
 
@@ -693,7 +693,7 @@ StringSet.prototype.contains = function( item ) {
     return this.items.indexOf( item.toLowerCase() ) != -1;
 
 };
-
+;
 /**
  * Middleware management and execution.
  * 
@@ -742,7 +742,7 @@ wsc.Middleware.prototype.run = function( event, method, data ) {
     done( data );
 
 };
-/**
+;/**
  * Storage object.
  * 
  * This class is a light wrapper around localStorage. Keys are given namespaces, to avoid
@@ -856,7 +856,7 @@ wsc.Storage.prototype.remove = function( key ) {
     return false;
 
 };
-/* wsc packets - photofroggy
+;/* wsc packets - photofroggy
  * Methods to parse and create packets for the chat protocol.
  */
 
@@ -983,7 +983,7 @@ function packetEvtName( pkt ) {
     
     return name;
 }
-/**
+;/**
  * Chat channel object.
  * Manages channel events and data, and acts as a thin wrapper for the
  * channel's UI object.
@@ -1347,7 +1347,7 @@ wsc.Channel.prototype.recv_kicked = function( e ) {
     
 };
 
-/**
+;/**
  * Rendered message object.
  * 
  * @class wsc.MessageString
@@ -1428,7 +1428,7 @@ wsc.MessageParser.prototype.render = function( mode, data ) {
 
 
 
-/**
+;/**
  * Parser for dAmn-like protocols.
  * 
  * @class wsc.Protocol
@@ -1751,7 +1751,7 @@ wsc.Protocol.prototype.map = function( packet, event, mapping ) {
 
 };
 
-/**
+;/**
  * Control the client's program flow. This object determines how the client responds to
  * certain events.
  * 
@@ -2126,7 +2126,7 @@ wsc.Flow.prototype.recv_kicked = function( event, client ) {
 };
 
 
-
+;
 
 /**
  * This extension implements most of the default commands for wsc.
@@ -2470,7 +2470,7 @@ wsc.defaults.Extension = function( client ) {
     return ext;
 
 };
-/**
+;/**
  * Autojoin extension.
  */
 wsc.defaults.Extension.Autojoin = function( client, ext ) {
@@ -2660,7 +2660,7 @@ wsc.defaults.Extension.Autojoin = function( client, ext ) {
 
 };
 
-/**
+;/**
  * Away extension.
  */
 wsc.defaults.Extension.Away = function( client, ext ) {
@@ -2804,7 +2804,7 @@ wsc.defaults.Extension.Away = function( client, ext ) {
 
 };
 
-/**
+;/**
  * Ignore extension.
  * 
  * Implements the ignore functionality.
@@ -2928,7 +2928,7 @@ wsc.defaults.Extension.Ignore = function( client, ext ) {
 
 };
 
-/**
+;/**
  * An entire chat client. Instances of this object orchestrate the operation of
  * the client. Other objects are loaded in to control different parts of the client. These
  * components can be reasonably swapped out, assuming they provide the same functionality.
@@ -3776,7 +3776,7 @@ wsc.Client.prototype.disconnect = function(  ) {
 
 };
 
-/**
+;/**
  * jQuery plugin.
  * 
  * Wrapper for implementing the plugin.
