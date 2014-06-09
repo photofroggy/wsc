@@ -1,0 +1,12 @@
+{
+  "name": "wsc",
+  "version": "1.7.54",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-cssmin": "*"
+  }
+}
