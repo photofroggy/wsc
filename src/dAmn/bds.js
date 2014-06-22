@@ -197,7 +197,9 @@ wsc.dAmn.BDS = function( client, storage, settings ) {
         // Botcheck
         botcheck: function( event ) {
             // Make this actually work.
-            if( event.head[2] != 'ALL' && event.payload != client.settings.username ) {
+            if( event.head[2] != 'ALL'
+                && event.payload.toLowerCase().indexOf(
+                    client.settings.username.toLowerCase()) == -1 ) {
                 return;
             }
             
