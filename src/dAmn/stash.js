@@ -171,8 +171,12 @@ wsc.dAmn.chatterbox.Stash = function( ui, ext ) {
             
             var next = function(  ) {
                 
-                if( links.length == 0 )
+                if( links.length == 0 ) {
+                    event.chan.st+= event.item.height();
+                    event.chan.el.l.w.scrollTop( event.chan.st );
+                    event.chan.scroll();
                     return;
+                }
                 
                 rlink( links.pop() );
             
@@ -273,9 +277,6 @@ wsc.dAmn.chatterbox.Stash.render = function( link, item ) {
     
     } );
     */
-    event.chan.st+= event.item.height();
-    event.chan.el.l.w.scrollTop( event.chan.st );
-    event.chan.scroll();
 
 };
 
