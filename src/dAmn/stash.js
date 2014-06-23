@@ -1,54 +1,6 @@
 
 wsc.dAmn.Stash = {};
 
-/**
- * Extension to handle stash links posted in the chat. Provides some helper functions
- * to meet this end as well.
- *
- * @class dAmn.Stash
- */
-wsc.dAmn.chatterbox.Stash = function( ui, ext ) {
-
-    var init = function(  ) {
-    
-        ui.on('log_item.after', handle.log_item);
-    
-    };
-    
-    var handle = {
-    
-        log_item: function( event ) {
-        
-            var links = event.item.find('a[href^="http://sta.sh"]');
-            
-            links.each( function( i, dlink ) {
-                var link = event.item.find(dlink);
-                wsc.dAmn.chatterbox.Stash.fetch( event, link );
-            } );
-        
-        }
-    
-    };
-    
-    init();
-
-};
-
-
-/**
- * Fetch stash data.
- */
-wsc.dAmn.chatterbox.Stash.fetch = function( event, link ) {
-
-    $.getJSON(
-        'http://backend.deviantart.com/oembed?url=' + link.prop('href') + '&format=jsonp&callback=?',
-        function( data ) {
-            wsc.dAmn.chatterbox.Stash.render( event, link, data );
-        }
-    );
-
-};
-
 wsc.dAmn.Stash.dimensions = function( data ) {
 
     var w = data.thumbnail_width; var h = data.thumbnail_height;
@@ -79,6 +31,94 @@ wsc.dAmn.Stash.dimensions = function( data ) {
 };
 
 
+/**
+ * Cache for stash items.
+ * @class wsc.dAmn.Stash.Cache
+ * @constructor
+ */
+wsc.dAmn.Stash.Cache = function(  ) {
+
+    this.item = {};
+
+};
+
+/**
+ * Remove old items from the cache.
+ * @method uncache
+ */
+wsc.dAmn.Stash.Cache.prototype.uncache = function(  ) {
+
+    var t = (new Date).getTime();
+    
+    for( var id in this.item ) {
+        
+        if( !this.item.hasOwnProperty(id) )
+            continue;
+        
+        if( t - this.item[id].time < 30000 )
+            continue;
+        
+        delete this.item[id];
+    
+    }
+
+};
+
+/**
+ * Get a stash item.
+ * @method get
+ * @param id {Array} Stash id.
+ * @param callback {Function} Method to call with the resulting html.
+ */
+wsc.dAmn.Stash.Cache.prototype.get = function( id, callback ) {
+
+    this.uncache();
+    
+    var item = this.item[id];
+    
+    if( item ) {
+    
+        callback( item );
+        return;
+    
+    }
+    
+    item = {
+        id: id,
+        url: 'http://sta.sh/' + id,
+        time: (new Date).getTime(),
+        html: '',
+        data: null
+    };
+    
+    var stash = this;
+    
+    var cache = function( data ) {
+    
+        if( 'error' in data )
+            return callback();
+        
+        if( data.type != 'photo' )
+            return callback();
+        
+        item.html = wsc.dAmn.Stash.item_html(item.url, data);
+        item.data = data;
+        stash.item[id] = item;
+        callback(item);
+    
+    };
+    
+    $.getJSON(
+        'http://backend.deviantart.com/oembed?url=' + item.url + '&format=jsonp&callback=?',
+        function( stashdata ) {
+            cache( stashdata );
+        }
+    );
+
+};
+
+wsc.dAmn.Stash.cache = new wsc.dAmn.Stash.Cache();
+
 wsc.dAmn.Stash.item_html = function( url, data ) {
 
     var d = wsc.dAmn.Stash.dimensions( data );
@@ -98,21 +138,88 @@ wsc.dAmn.Stash.item_html = function( url, data ) {
 
 };
 
+/**
+ * Extension to handle stash links posted in the chat. Provides some helper functions
+ * to meet this end as well.
+ *
+ * @class dAmn.Stash
+ */
+wsc.dAmn.chatterbox.Stash = function( ui, ext ) {
+
+    var init = function(  ) {
+    
+        ui.on('log_item.after', handle.log_item);
+    
+    };
+    
+    var handle = {
+    
+        log_item: function( event ) {
+        
+            var linkso = event.item.find('a[href^="http://sta.sh"]');
+            
+            var links = [];
+            
+            linkso.each( function( index, item ) {
+            
+                links.push( event.item.find(item) );
+            
+            } );
+            
+            if( links.length == 0 )
+                return;
+            
+            var next = function(  ) {
+                
+                if( links.length == 0 )
+                    return;
+                
+                rlink( links.pop() );
+            
+            };
+            
+            var rlink = function( link ) {
+                
+                if( !link )
+                    return next();
+                
+                var url = link.prop('href');
+                
+                if( !url )
+                    return next();
+                
+                url = url.split('/');
+                var id = url[url.length - 1];
+                
+                wsc.dAmn.Stash.cache.get( id, function( item ) {
+                
+                    if( !item )
+                        return next();
+                    
+                    wsc.dAmn.chatterbox.Stash.render( link, item );
+                    next();
+                
+                } );
+            
+            };
+            
+            rlink( links.pop() );
+        
+        }
+    
+    };
+    
+    init();
+
+};
+
 
 /**
  * Render a stash thumb.
  */
-wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
-
-    if( 'error' in data )
-        return;
+wsc.dAmn.chatterbox.Stash.render = function( link, item ) {
     
-    if( data.type != 'photo' )
-        return;
-    
-    var lurl = link.prop('href');
-    
-    link.replaceWith(wsc.dAmn.Stash.item_html( lurl, data ));
+    link.replaceWith(item.html);
     /*link.append('<a href="#toggle" class="button iconic plus" title="Larger"></a>');
     
     var lw = event.item.find('span#' + id);
@@ -178,39 +285,61 @@ wsc.dAmn.tadpole.Stash = function( client, ui, api ) {
     
         ui.middle( 'ns.log', function( data, done ) {
         
-            var next = function( data ) {
+            var linkso = $(data.content).find('a[href^="http://sta.sh"]');
             
-                var link = data.content.match( /<a target="_blank" href="http:\/\/sta.sh\/([^"]+)([^>]+)>([^<]+)<\/a>/i );
+            var links = [];
+            
+            linkso.each( function( index, item ) {
+            
+                links.push( $(item) );
+            
+            } );
+            
+            if( links.length == 0 )
+                return done( data );
+            
+            var next = function(  ) {
                 
-                if( !link )
+                if( links.length == 0 )
                     return done( data );
                 
-                wsc.dAmn.tadpole.Stash.fetch( data, link, next );
+                rlink( links.pop() );
             
             };
             
-            next( data );
+            var rlink = function( link ) {
+                
+                if( !link )
+                    return next();
+                
+                var url = link.prop('href');
+                var html = $('<span></span>').append(link).html();
+                
+                if( !url )
+                    return next();
+                
+                url = url.split('/');
+                var id = url[url.length - 1];
+                
+                wsc.dAmn.Stash.cache.get( id, function( item ) {
+                
+                    if( !item )
+                        return next();
+                    
+                    data.content = replaceAll( data.content, html, item.html );
+                    next();
+                
+                } );
+            
+            };
+            
+            rlink( links.pop() );
         
         } );
     
     };
     
     init();
-
-};
-
-
-/**
- * Fetch stash data.
- */
-wsc.dAmn.tadpole.Stash.fetch = function( data, link, done ) {
-
-    $.getJSON(
-        'http://backend.deviantart.com/oembed?url=http://sta.sh/' + link[1] + '&format=jsonp&callback=?',
-        function( stashdata ) {
-            wsc.dAmn.tadpole.Stash.replace( data, link, stashdata, done );
-        }
-    );
 
 };
 
