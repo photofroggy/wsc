@@ -3795,7 +3795,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.12.42';
+wsc.dAmn.VERSION = '0.12.43';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -5614,7 +5614,7 @@ wsc.dAmn.Stash.Cache.prototype.get = function( id, callback ) {
         id: id,
         url: 'http://sta.sh/' + id,
         time: (new Date).getTime(),
-        html: '',
+        html: null,
         data: null
     };
     
@@ -5622,15 +5622,13 @@ wsc.dAmn.Stash.Cache.prototype.get = function( id, callback ) {
     
     var cache = function( data ) {
     
-        if( 'error' in data )
-            return callback();
-        
-        if( data.type != 'photo' )
-            return callback();
-        
-        item.html = wsc.dAmn.Stash.item_html(item.url, data);
         item.data = data;
         stash.item[id] = item;
+        
+        if( 'error' in data || data.type != 'photo' )
+            return callback(item);
+        
+        item.html = wsc.dAmn.Stash.item_html(item.url, data);
         callback(item);
     
     };
@@ -5724,7 +5722,7 @@ wsc.dAmn.chatterbox.Stash = function( ui, ext ) {
                 
                 wsc.dAmn.Stash.cache.get( id, function( item ) {
                 
-                    if( !item )
+                    if( !item || !item.html )
                         return next();
                     
                     wsc.dAmn.chatterbox.Stash.render( link, item );
@@ -5851,7 +5849,7 @@ wsc.dAmn.tadpole.Stash = function( client, ui, api ) {
                 
                 wsc.dAmn.Stash.cache.get( id, function( item ) {
                 
-                    if( !item )
+                    if( !item || !item.html )
                         return next();
                     
                     data.content = replaceAll( data.content, html, item.html );
