@@ -1,4 +1,6 @@
 
+wsc.dAmn.Stash = {};
+
 /**
  * Extension to handle stash links posted in the chat. Provides some helper functions
  * to meet this end as well.
@@ -47,25 +49,10 @@ wsc.dAmn.chatterbox.Stash.fetch = function( event, link ) {
 
 };
 
+wsc.dAmn.Stash.dimensions = function( data ) {
 
-/**
- * Render a stash thumb.
- */
-wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
-
-    if( 'error' in data )
-        return;
-    
-    if( data.type != 'photo' )
-        return;
-    
-    var lurl = link.prop('href');
     var w = data.thumbnail_width; var h = data.thumbnail_height;
     var tw, th;
-    
-    // Deviation link tag. First segment only.
-    var title = data.title + ' by ' + data.author_name;
-    var anchor = '<a class="stashlink" target="_blank" href="' + lurl + '" title="' + title + '">';
     
     if( w/h > 1) {
         th = parseInt((h * 100) / w);
@@ -80,15 +67,53 @@ wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
         th = h;
     }
     
-    var dim = 'width="' + tw + '" height="' + th + '"';
-    var shadow = !data.thumbnail_url.match(/.png$/i) ? ' shadow' : '';
-    var id = lurl.split('/').pop();
+    return {
+        height: h,
+        width: w,
+        thumb: {
+            height: th,
+            width: tw
+        }
+    };
+
+};
+
+
+wsc.dAmn.Stash.item_html = function( url, data ) {
+
+    var d = wsc.dAmn.Stash.dimensions( data );
+    var w = d.width; var h = d.height;
     
-    var thumb = '<span class="stashthumb" id="'+id+'">' + anchor + '<img class="smaller thumb' + shadow + '"' +
-        dim + ' " alt="' + lurl + '" src="' + data.thumbnail_url_150 + '" />\
-        </a><a href="#toggle" class="button iconic plus" title="Larger"></a></span>';
+    // Deviation link tag. First segment only.
+    var title = data.title + ' by ' + data.author_name;
+    var anchor = '<a class="stashlink" target="_blank" href="' + url + '" title="' + title + '">';
     
-    link.replaceWith(thumb);
+    var dim = 'width="' + d.thumb.width + '" height="' + d.thumb.height + '"';
+    //var shadow = !data.thumbnail_url.match(/.png$/i) ? ' shadow' : '';
+    var id = url.split('/').pop();
+    
+    return '<span class="stashthumb" id="'+id+'">' + anchor + '<img class="smaller thumb"' +
+        dim + ' " alt="' + url + '" src="' + data.thumbnail_url_150 + '" />\
+        </a></span>';
+
+};
+
+
+/**
+ * Render a stash thumb.
+ */
+wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
+
+    if( 'error' in data )
+        return;
+    
+    if( data.type != 'photo' )
+        return;
+    
+    var lurl = link.prop('href');
+    
+    link.replaceWith(wsc.dAmn.Stash.item_html( lurl, data ));
+    /*link.append('<a href="#toggle" class="button iconic plus" title="Larger"></a>');
     
     var lw = event.item.find('span#' + id);
     link = lw.find('a[href="' + lurl + '"]');
@@ -140,9 +165,71 @@ wsc.dAmn.chatterbox.Stash.render = function( event, link, data ) {
         return false;
     
     } );
-    
+    */
     event.chan.st+= event.item.height();
     event.chan.el.l.w.scrollTop( event.chan.st );
     event.chan.scroll();
+
+};
+
+wsc.dAmn.tadpole.Stash = function( client, ui, api ) {
+
+    var init = function(  ) {
+    
+        ui.middle( 'ns.log', function( data, done ) {
+        
+            var next = function( data ) {
+            
+                var link = data.content.match( /<a target="_blank" href="http:\/\/sta.sh\/([^"]+)([^>]+)>([^<]+)<\/a>/i );
+                
+                if( !link )
+                    return done( data );
+                
+                wsc.dAmn.tadpole.Stash.fetch( data, link, next );
+            
+            };
+            
+            next( data );
+        
+        } );
+    
+    };
+    
+    init();
+
+};
+
+
+/**
+ * Fetch stash data.
+ */
+wsc.dAmn.tadpole.Stash.fetch = function( data, link, done ) {
+
+    $.getJSON(
+        'http://backend.deviantart.com/oembed?url=http://sta.sh/' + link[1] + '&format=jsonp&callback=?',
+        function( stashdata ) {
+            wsc.dAmn.tadpole.Stash.replace( data, link, stashdata, done );
+        }
+    );
+
+};
+
+wsc.dAmn.tadpole.Stash.replace = function( data, link, stashdata, done ) {
+
+    if( 'error' in stashdata )
+        return done( data );
+    
+    if( stashdata.type != 'photo' )
+        return done( data );
+    
+    var url = 'http://sta.sh/' + link[1];
+    
+    data.content = replaceAll(
+        data.content,
+        link[0],
+        wsc.dAmn.Stash.item_html( url, stashdata )
+    );
+    
+    done( data );
 
 };

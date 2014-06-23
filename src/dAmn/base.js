@@ -6,7 +6,7 @@
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.11.38';
+wsc.dAmn.VERSION = '0.12.39';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -179,6 +179,7 @@ wsc.dAmn.tadpole = function( client, ui ) {
     var settings = {};
     
     wsc.dAmn.tadpole.Emotes( client, ui, settings );
+    wsc.dAmn.tadpole.Stash( client, ui, settings );
     
     return settings;
 
