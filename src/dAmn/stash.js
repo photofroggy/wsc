@@ -39,6 +39,13 @@ wsc.dAmn.Stash.dimensions = function( data ) {
 wsc.dAmn.Stash.Cache = function(  ) {
 
     this.item = {};
+    var cache = this;
+    
+    setInterval( function(  ) {
+    
+        cache.uncache();
+    
+    }, 300000 );
 
 };
 
@@ -55,7 +62,7 @@ wsc.dAmn.Stash.Cache.prototype.uncache = function(  ) {
         if( !this.item.hasOwnProperty(id) )
             continue;
         
-        if( t - this.item[id].time < 30000 )
+        if( t - this.item[id].time < 3600000 )
             continue;
         
         delete this.item[id];
@@ -72,8 +79,6 @@ wsc.dAmn.Stash.Cache.prototype.uncache = function(  ) {
  */
 wsc.dAmn.Stash.Cache.prototype.get = function( id, callback ) {
 
-    this.uncache();
-    
     var item = this.item[id];
     
     if( item ) {
