@@ -650,6 +650,7 @@ wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     var emoteb = ui.menu.settings.add( 'emotes', 'CLOUD Emotes', function( event ) {
     
         toggle();
+        client.ext.dAmn.save();
         toggleb();
     
     } );

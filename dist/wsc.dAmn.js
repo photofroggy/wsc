@@ -3795,7 +3795,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.11.37';
+wsc.dAmn.VERSION = '0.11.38';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -5145,6 +5145,7 @@ wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     var emoteb = ui.menu.settings.add( 'emotes', 'CLOUD Emotes', function( event ) {
     
         toggle();
+        client.ext.dAmn.save();
         toggleb();
     
     } );
