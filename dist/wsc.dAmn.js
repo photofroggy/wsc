@@ -3795,7 +3795,7 @@ wsc.Client.prototype.disconnect = function(  ) {
  * @submodule dAmn
  */
 wsc.dAmn = {};
-wsc.dAmn.VERSION = '0.10.36';
+wsc.dAmn.VERSION = '0.11.37';
 wsc.dAmn.STATE = 'alpha';
 
 
@@ -3957,6 +3957,17 @@ wsc.dAmn.chatterbox = function( ui ) {
      * @method Stash
      */
     wsc.dAmn.chatterbox.Stash( ui, settings );
+    
+    return settings;
+
+};
+
+
+wsc.dAmn.tadpole = function( client, ui ) {
+
+    var settings = {};
+    
+    wsc.dAmn.tadpole.Emotes( client, ui, settings );
     
     return settings;
 
@@ -5125,6 +5136,69 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
             'display': 'block'
         } );
     } );
+
+};
+
+
+wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
+    
+    var emoteb = ui.menu.settings.add( 'emotes', 'CLOUD Emotes', function( event ) {
+    
+        toggle();
+        toggleb();
+    
+    } );
+    
+    emoteb.button.append(
+        ' <span class="switch red">Off</span> <span class="note faint">'
+        +'turn on</span>'
+    );
+    
+    var emotesw = emoteb.button.find('.switch');
+    var emoten = emoteb.button.find('.note');
+    
+    var toggleb = function(  ) {
+    
+        if( client.ext.dAmn.emotes.on ) {
+            
+            if( emotesw.hasClass( 'red' ) ) {
+                emotesw.removeClass('red');
+                emotesw.addClass('green');
+            }
+            
+            emotesw.text('On');
+            emoten.text('turn off');
+            return;
+        }
+        
+        if( emotesw.hasClass( 'green' ) ) {
+            emotesw.removeClass('green');
+            emotesw.addClass('red');
+        }
+        
+        emotesw.text('Off');
+        emoten.text('turn on');
+    
+    };
+    
+    var toggle = function(  ) {
+    
+        var olds = client.ext.dAmn.emotes.on;
+        client.ext.dAmn.emotes.on = !olds;
+        
+        if( client.ext.dAmn.emotes.on ) {
+            client.ext.dAmn.emotes.fetch();
+            return;
+        }
+        
+        if( client.ext.dAmn.emotes.fint === null )
+            return;
+        
+        clearTimeout(client.ext.dAmn.emotes.fint);
+        client.ext.dAmn.emotes.fint = null;
+    };
+    
+    toggleb();
 
 };
 ;
