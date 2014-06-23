@@ -4,9 +4,9 @@
  * @module wsc
  */
 var wsc = {};
-wsc.VERSION = '1.7.54';
+wsc.VERSION = '1.8.55';
 wsc.STATE = 'release candidate';
-wsc.REVISION = '0.21.139';
+wsc.REVISION = '0.22.140';
 wsc.defaults = {};
 wsc.defaults.theme = 'wsct_dark';
 wsc.defaults.themes = [ 'wsct_dAmn', 'wsct_dark' ];
@@ -2692,14 +2692,12 @@ wsc.defaults.Extension.Away = function( client, ext ) {
     
     };
     
-    
-    // Away message stuff.
-    var cmd_setaway = function( event, client ) {
+    ext.away.away = function( reason ) {
     
         ext.away.on = true;
         ext.away.last = {};
         ext.away.since = new Date();
-        ext.away.reason = event.args;
+        ext.away.reason = reason || '';
         
         var method = client.say;
         var announce = replaceAll(
@@ -2725,7 +2723,7 @@ wsc.defaults.Extension.Away = function( client, ext ) {
     
     };
     
-    var cmd_setback = function( event, client ) {
+    ext.away.back = function(  ) {
     
         if( !ext.away.on )
             return;
@@ -2744,6 +2742,19 @@ wsc.defaults.Extension.Away = function( client, ext ) {
         } );
         
         client.trigger( 'ext.away.back', { name: 'ext.away.back' } );
+    
+    };
+    
+    // Away message stuff.
+    var cmd_setaway = function( event, client ) {
+    
+        ext.away.away( event.args );
+    
+    };
+    
+    var cmd_setback = function( event, client ) {
+    
+        ext.away.back();
     };
     
     var msg_pkt = function( event ) {
