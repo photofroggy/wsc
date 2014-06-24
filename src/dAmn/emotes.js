@@ -18,6 +18,7 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
             settings.emotes.fetching = false;
             settings.emotes.emote = data;
+            settings.emotes.cache.update( data );
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
@@ -35,6 +36,34 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
             return false;
         });
     };
+    
+    settings.emotes.receive = function(err, data){
+        if( err || Object.getOwnPropertyNames(data).length == 0 ) {
+            settings.emotes.fetch();
+            return;
+        }
+        
+        if( settings.emotes.fint ) {
+            clearTimeout( settings.emotes.fint );
+            settings.emotes.fint = null;
+        }
+        
+        settings.emotes.fetching = false;
+        settings.emotes.emote = data;
+        
+        if( !settings.emotes.loaded ) {
+            if( settings.emotes.on ) {
+                client.trigger( 'dAmn.emotes.loaded', { name: 'dAmn.emotes.loaded' } );
+            }
+        }
+        
+        settings.emotes.sort();
+        settings.emotes.loaded = true;
+        //settings.emotes.picker.loaded();
+        settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+    };
+    
+    settings.emotes.cache = new wsc.dAmn.Emotes.Cache(settings.emotes.receive);
     
     settings.emotes.swap = function( data, done ) {
     
@@ -174,10 +203,187 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
     
     if( !settings.emotes.on )
         return;
-    
-    settings.emotes.fetch();
 
 };
+
+
+/**
+ * Emoticon cache using IndexedDB.
+ * @class wsc.dAmn.Emotes.Cache
+ * @constructor
+ */
+wsc.dAmn.Emotes.Cache = function( onloaded ) {
+
+    this.idb = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    this.idbt = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+    this.idbkr = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+    
+    this.db = null;
+    this.store = null;
+    this.loading = false;
+    this.loaded = false;
+    this.emotes = {};
+    this.onloaded = onloaded || function( err, data ) {};
+    
+    if( !this.idb )
+        return this.onloaded( true, {} );
+    
+    this.open();
+
+};
+
+/**
+ * Open our database.
+ * @method open
+ */
+wsc.dAmn.Emotes.Cache.prototype.open = function(  ) {
+
+    var cache = this;
+    var request = this.idb.open( 'wsc.dAmn.emote.cache', 1 );
+    
+    request.onerror = function( event ) {};
+    
+    request.onsuccess = function( event ) {
+    
+        cache.db = request.result;
+        cache.load();
+    
+    };
+    
+    
+    request.onupgradeneeded = function( event ) {
+    
+        cache.upgrade( event );
+        cache.loaded = true;
+        cache.onloaded( true, {} );
+    
+    };
+
+};
+
+/**
+ * Upgrade the database.
+ * @method upgrade
+ * @param event {Object} Upgrade needed event object.
+ */
+wsc.dAmn.Emotes.Cache.prototype.upgrade = function( event ) {
+
+    var db = event.target.result;
+    
+    this.store = db.createObjectStore( 'emotes', { keyPath: 'code' } );
+
+};
+
+/**
+ * Load the cache.
+ * @method load
+ */
+wsc.dAmn.Emotes.Cache.prototype.load = function(  ) {
+
+    if( this.loading )
+        return;
+    
+    var transaction = this.db.transaction('emotes');
+    var store = transaction.objectStore('emotes');
+    var cache = this;
+    this.loading = true;
+    
+    store.openCursor().onsuccess = function(event) {
+        
+        var cursor = event.target.result;
+        
+        if (cursor) {
+            cache.emotes[cursor.key] = cursor.value;
+            cursor.continue();
+            return;
+        }
+        
+        cache.loading = false;
+        cache.loaded = true;
+        cache.onloaded( false, cache.emotes );
+        
+    };
+
+};
+
+/**
+ * Update the cache.
+ * @method update
+ * @param emotes {Object} Emoticons to update or add.
+ */
+wsc.dAmn.Emotes.Cache.prototype.update = function( emotes ) {
+
+    var uplist = [];
+    var cache = this;
+    
+    for( var k in emotes ) {
+    
+        if( !emotes.hasOwnProperty(k) )
+            continue;
+        
+        this.emotes[k] = emotes[k];
+        uplist.push(emotes[k]);
+    
+    }
+    
+    var store = cache.db.transaction(["emotes"], "readwrite").objectStore("emotes");
+    
+    var update = function(  ) {
+    
+        if( uplist.length == 0 )
+            return;
+        
+        var emote = uplist.pop();
+        
+        var request = store.get(emote.code);
+        
+        request.onerror = function(event) {
+            
+            var request = store.add(emote);
+            
+            request.onerror = function(event) {
+                update();
+            };
+            
+            request.onsuccess = function(event) {
+                update();
+            };
+            
+        };
+        
+        request.onsuccess = function(event) {
+            
+            var data = request.result;
+            var preq = null
+            
+            if( data ) {
+                data.by = emote.by;
+                data.code = emote.code;
+                data.devid = emote.devid;
+                data.img = emote.img;
+                data.myvote = emote.myvote;
+                data.votes = emote.votes;
+                preq = store.put(data);
+            } else {
+                preq = store.add(emote);
+            }
+            
+            preq.onerror = function(event) {
+                update();
+            };
+            
+            preq.onsuccess = function(event) {
+                update();
+            };
+            
+        };
+    
+    };
+    
+    update();
+
+};
+
 
 wsc.dAmn.chatterbox.Emotes = function( client, ui, ext ) {
 
