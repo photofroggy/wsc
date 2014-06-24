@@ -16,6 +16,7 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
         }
         settings.emotes.fetching = true;
         jQuery.getJSON('http://www.thezikes.org/publicemotes.php?format=jsonp&jsoncallback=?&' + (new Date()).getDay(), function(data){
+            console.log('>> fetching emote list.');
             settings.emotes.fetching = false;
             settings.emotes.emote = data;
             settings.emotes.cache.update( data );
@@ -24,12 +25,14 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
                 if( settings.emotes.on ) {
                     client.trigger( 'dAmn.emotes.loaded', { name: 'dAmn.emotes.loaded' } );
                 }
+            } else {
+                client.trigger( 'dAmn.emotes.refreshed', { name: 'dAmn.emotes.refreshed' } );
             }
             
             settings.emotes.sort();
             settings.emotes.loaded = true;
             //settings.emotes.picker.loaded();
-            settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+            //settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
         },
         function(  ) {
             //settings.emotes.picker.loaded();
@@ -55,6 +58,8 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
             if( settings.emotes.on ) {
                 client.trigger( 'dAmn.emotes.loaded', { name: 'dAmn.emotes.loaded' } );
             }
+        } else {
+            client.trigger( 'dAmn.emotes.refreshed', { name: 'dAmn.emotes.refreshed' } );
         }
         
         settings.emotes.sort();
@@ -853,63 +858,154 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
 
 wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     
-    var emoteb = ui.menu.settings.add( 'emotes', 'CLOUD Emotes', function( event ) {
+    var pages = ui.menu.settings.page;
+    var page = pages.add('emotes');
+    var view = page.overlay.view;
+    var api = {};
     
-        toggle();
-        client.ext.dAmn.save();
-        toggleb();
+    // MENU BUTTONS
+    ui.menu.settings.add( 'emotes', 'CLOUD Emotes', function( event ) {
+    
+        pages.reveal('emotes');
     
     } );
     
-    emoteb.button.append(
-        ' <span class="switch red">Off</span> <span class="note faint">'
-        +'turn on</span>'
-    );
+    ui.menu.commands.add( 'emotes', 'emoteconfig', 'CLOUD Emotes', function( event ) {
     
-    var emotesw = emoteb.button.find('.switch');
-    var emoten = emoteb.button.find('.note');
+        pages.reveal('emotes');
     
-    var toggleb = function(  ) {
+    } );
+    
+    view.append('<nav class="emotes"><ul></ul></nav>');
+    
+    var ul = view.find('.emotes ul');
+    
+    // BACK BUTTON
+    new tadpole.MenuButton( ul, 'back', '', 'CLOUD Emotes', function( event ) {
+        page.overlay.hide();
+        page.hide();
+    }, 'left-open' );
+    
+    var emoteb = new tadpole.MenuButton( ul, 'toggle', '', 'Off', function( event ) {
+    
+        api.toggle();
+        client.ext.dAmn.save();
+        api.toggleb();
+    
+    }, 'cancel' );
+    
+    // RELOAD BUTTON
+    var loadb = new tadpole.MenuButton( ul, 'load', '', '', function( event ) {
+    
+        api.reload();
+    
+    } );
+    
+    loadb.button.append('<span class="label"></span><span class="faint">Loading... </span>');
+    var loadbll = loadb.button.find('.faint');
+    var loadbl = loadb.button.find('.label');
+    var emotes = [];
+    
+    // EMOTE LIST
+    /*var emulb = new tadpole.MenuButton( ul, 'eml', '', 'Emotes', function( event ) {} );
+    emulb.button.append('<ul class="emul"></ul>');
+    
+    var emul = emulb.button.find('ul.emul');*/
+    
+    api.toggleb = function(  ) {
     
         if( client.ext.dAmn.emotes.on ) {
-            
-            if( emotesw.hasClass( 'red' ) ) {
-                emotesw.removeClass('red');
-                emotesw.addClass('green');
-            }
-            
-            emotesw.text('On');
-            emoten.text('turn off');
-            return;
+            emoteb.button.html(
+                '<span class="green icon-ok"></span>On <span class="faint">'
+                +'tap to turn off</span>'
+            );
+        } else {
+            emoteb.button.html(
+                '<span class="red icon-cancel"></span>Off <span class="faint">'
+                +'tap to turn on</span>'
+            );
         }
-        
-        if( emotesw.hasClass( 'green' ) ) {
-            emotesw.removeClass('green');
-            emotesw.addClass('red');
-        }
-        
-        emotesw.text('Off');
-        emoten.text('turn on');
     
     };
     
-    var toggle = function(  ) {
+    api.toggle = function(  ) {
     
         var olds = client.ext.dAmn.emotes.on;
         client.ext.dAmn.emotes.on = !olds;
         
         if( client.ext.dAmn.emotes.on ) {
-            client.ext.dAmn.emotes.fetch();
+            api.reload();
             return;
         }
-        
-        if( client.ext.dAmn.emotes.fint === null )
-            return;
-        
-        clearTimeout(client.ext.dAmn.emotes.fint);
-        client.ext.dAmn.emotes.fint = null;
     };
     
-    toggleb();
+    api.loading = function(  ) {
+    
+        loadbl.text('');
+        loadbll.text('Refreshing...');
+    
+    };
+    
+    api.loaded = function(  ) {
+    
+        loadbl.text('Loaded ');
+        loadbll.text('refresh');
+        //api.update();
+    
+    };
+    
+    client.bind('dAmn.emotes.loaded', api.loaded);
+    client.bind('dAmn.emotes.refreshed', api.loaded);
+    
+    api.reload = function(  ) {
+    
+        if( client.ext.dAmn.emotes.fetching
+            || client.ext.dAmn.emotes.cache.loading )
+            return;
+        
+        api.loading();
+        client.ext.dAmn.emotes.fetch();
+    
+    };
+    
+    api.clear = function(  ) {
+    
+        while( emotes.length > 0 ) {
+        
+            emotes[i].remove();
+        
+        }
+    
+    };
+    
+    api.update = function(  ) {
+    
+        api.clear();
+        var edata = client.ext.dAmn.emotes.emote;
+        
+        for( var k in edata ) {
+        
+            if( !edata.hasOwnProperty(k) )
+                continue;
+            
+            var emote = new tadpole.MenuButton( emul, 'emote', edata[k].devid,
+                edata[k].code, function( event ) {
+                    var text = ui.control.get_text();
+                    
+                    control.set_text(
+                        text
+                        + ( text[text.length - 1] == ' ' ? '' : ' ' ) 
+                        + edata[k].code
+                    );
+                }
+            );
+            
+            // Add images to this bit?
+        
+        }
+    
+    };
+    
+    api.toggleb();
 
 };
