@@ -7,6 +7,12 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
     settings.emotes.fint = null;
     settings.emotes.fetching = false;
     settings.emotes.loaded = false;
+    settings.emotes.smap = {
+        'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': [], 'G': [],
+        'H': [], 'I': [], 'J': [], 'K': [], 'L': [], 'M': [], 'N': [],
+        'O': [], 'P': [], 'Q': [], 'R': [], 'S': [], 'T': [], 'U': [],
+        'V': [], 'W': [], 'X': [], 'Y': [], 'Z': [], '#': [], 
+    };
     
     settings.emotes.fetch = function(  ) {
         if( settings.emotes.loaded ) {
@@ -20,6 +26,7 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
             settings.emotes.fetching = false;
             settings.emotes.emote = data;
             settings.emotes.cache.update( data );
+            settings.emotes.sort();
             
             if( !settings.emotes.loaded ) {
                 if( settings.emotes.on ) {
@@ -29,7 +36,6 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
                 client.trigger( 'dAmn.emotes.refreshed', { name: 'dAmn.emotes.refreshed' } );
             }
             
-            settings.emotes.sort();
             settings.emotes.loaded = true;
             //settings.emotes.picker.loaded();
             //settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
@@ -53,6 +59,7 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
         
         settings.emotes.fetching = false;
         settings.emotes.emote = data;
+        settings.emotes.sort();
         
         if( !settings.emotes.loaded ) {
             if( settings.emotes.on ) {
@@ -62,10 +69,9 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
             client.trigger( 'dAmn.emotes.refreshed', { name: 'dAmn.emotes.refreshed' } );
         }
         
-        settings.emotes.sort();
         settings.emotes.loaded = true;
         //settings.emotes.picker.loaded();
-        settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
+        //settings.emotes.fint = setTimeout( settings.emotes.fetch, 3600000 );
     };
     
     settings.emotes.cache = new wsc.dAmn.Emotes.Cache(settings.emotes.receive);
@@ -124,27 +130,30 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
     
     settings.emotes.sort = function(  ) {
     
-        var map = [
-            [], [], [], [], [], [], [],
-            [], [], [], [], [], [], [],
-            [], [], [], [], [], [], [],
-            [], [], [], [], [], [], 
-        ];
+        settings.emotes.smap = {
+            'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': [], 'G': [],
+            'H': [], 'I': [], 'J': [], 'K': [], 'L': [], 'M': [], 'N': [],
+            'O': [], 'P': [], 'Q': [], 'R': [], 'S': [], 'T': [], 'U': [],
+            'V': [], 'W': [], 'X': [], 'Y': [], 'Z': [], '#': [], 
+        };
+        
         var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#';
         var emote = null;
+        var initial = '';
         var mitem = null;
         var prted = false;
         var idex = -1;
         var debug = true;
         
-        /*
-         * Until we have a better option...
         // First part we create our maps for our page items.
         for( var i in settings.emotes.emote ) {
+            
             if( !settings.emotes.emote.hasOwnProperty(i) )
                 continue;
             
             emote = settings.emotes.emote[i];
+            
+            /*
             var t = replaceAll(emote.img.split('/')
                 .pop().split('.').shift(),
                 '__', ' ');
@@ -166,22 +175,27 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
                 'title': 'created by ' + emote.by,
                 'html': true
             };
+            */
             
-            idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
+            initial = emote.code[1].toUpperCase();
+            //idex = alpha.indexOf( emote.code.substr(1, 1).toUpperCase() );
+            idex = alpha.indexOf( initial );
             
-            if( idex == -1 )
+            if( idex == -1 ) {
                 idex = alpha.indexOf( '#' );
+                initial = '#'
+            }
             
-            map[idex].push(mitem);
+            settings.emotes.smap[initial].push(emote);
         }
         
         var sorter = function( a, b ) {
-            return caseInsensitiveSort( a.value, b.value );
+            return caseInsensitiveSort( a.code, b.code );
         };
         
-        var dp = settings.emotes.picker.page( '#' );
-        var page = null;
-        
+        //var dp = settings.emotes.picker.page( '#' );
+        //var page = null;
+        /*
         // Now we sort all of the emotes on each page.
         for( var i = 0; i < alpha.length; i++ ) {
             map[i].sort( sorter );
@@ -192,6 +206,16 @@ wsc.dAmn.wsc.Emotes = function( client, storage, settings ) {
         // Display the newly sorted emotes.
         settings.emotes.picker.refresh();
         */
+        
+        for( var init in settings.emotes.smap ) {
+        
+            if( !settings.emotes.smap.hasOwnProperty(init) )
+                continue;
+            
+            settings.emotes.smap[init].sort( sorter );
+        
+        }
+        
     
     };
     
@@ -859,6 +883,7 @@ wsc.dAmn.Emotes.Page.prototype.refresh = function(  ) {
 wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     
     var pages = ui.menu.settings.page;
+    var cpages = ui.menu.commanditems;
     var page = pages.add('emotes');
     var view = page.overlay.view;
     var api = {};
@@ -872,7 +897,7 @@ wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     
     ui.menu.commands.add( 'emotes', 'emoteconfig', 'CLOUD Emotes', function( event ) {
     
-        pages.reveal('emotes');
+        cpages.reveal('emotes');
     
     } );
     
@@ -1007,5 +1032,99 @@ wsc.dAmn.tadpole.Emotes = function( client, ui, settings ) {
     };
     
     api.toggleb();
+    
+    wsc.dAmn.tadpole.EmotePicker( client, ui, settings );
+
+};
+
+
+wsc.dAmn.tadpole.EmotePicker = function( client, ui, settings ) {
+
+    var pages = ui.menu.settings.page;
+    var picker = ui.menu.commanditems.add( 'emotes' );
+    var view = picker.overlay.view;
+    var sub = {};
+    
+    view.append('<nav class="emotes"><ul></ul></nav>');
+    var ul = view.find( 'ul' );
+    
+    new tadpole.MenuButton( ul, 'back', '', 'CLOUD Emotes', function( event ) {
+        picker.overlay.hide();
+        picker.hide();
+    }, 'left-open' );
+    
+    var setup = function( initial ) {
+        
+        var selector = 'emotes-' + ( initial == '#' ? 'misc' : initial );
+        var page = pages.add(selector);
+        var items = [];
+        
+        new tadpole.MenuButton( ul, 'list', selector, 'List ' + initial, function( event ) {
+            pages.reveal(selector);
+            build();
+        });
+        
+        page.overlay.view.append('<nav class="emotelist"><ul></ul></nav>');
+        var emul = page.overlay.view.find('.emotelist ul');
+        
+        new tadpole.MenuButton( emul, 'title', '', 'Emotes "' + initial + '"',
+            function( event ) {
+                page.overlay.hide();
+                destroy();
+            }
+        );
+        
+        var build = function(  ) {
+        
+            for( var k in client.ext.dAmn.emotes.smap[initial] ) {
+            
+                var em = client.ext.dAmn.emotes.smap[initial][k];
+                
+                var item = new tadpole.MenuButton(
+                    emul, 'emote', em.devid, em.code,
+                    function( event ) {
+                        var text = ui.control.get_text();
+                        
+                        if( text.length > 0 ) {
+                            ui.control.set_text(
+                                text
+                                + ( text[text.length - 1] == ' ' ? '' : ' ' ) 
+                                + em.code
+                            );
+                            return;
+                        }
+                        
+                        ui.control.set_text(em.code);
+                    
+                    }
+                );
+                
+                items.push(item);
+            
+            }
+        
+        };
+        
+        var destroy = function(  ) {
+        
+            while( items.length > 0 ) {
+            
+                items.pop().remove();
+            
+            }
+        
+        };
+    
+    };
+    
+    for( var init in client.ext.dAmn.emotes.smap ) {
+    
+        if( !client.ext.dAmn.emotes.smap.hasOwnProperty(init) )
+            continue;
+        
+        setup(init);
+    
+    }
+    
 
 };
